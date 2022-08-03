@@ -1,0 +1,15 @@
+{
+  "name": "lamastinyhud",
+  "version-string": "1.0.0",
+  "description": "A Window to display more NPC Info",
+  "homepage": "https://github.com/mlthelama/LamasTinyHUD",
+  "license": "MIT",
+  "dependencies": [
+    "boost-atomic",
+    "boost-stl-interfaces",
+    "span-lite",
+    "spdlog",
+    "simpleini",
+    "commonlibsse-ng-flatrim"
+  ]
+}
