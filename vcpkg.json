@@ -10,6 +10,15 @@
     "span-lite",
     "spdlog",
     "simpleini",
-    "commonlibsse-ng-flatrim"
+    "commonlibsse-ng-flatrim",
+    {
+      "name": "imgui",
+        "features": [
+          "dx11-binding",
+          "win32-binding"
+        ]
+    },
+    "nlohmann-json",
+    "tomlplusplus"
   ]
 }

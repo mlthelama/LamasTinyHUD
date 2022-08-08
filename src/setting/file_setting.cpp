@@ -1,20 +1,18 @@
-#pragma once
-
+﻿#include "file_setting.h"
 #include <SimpleIni.h>
 
-class setting {
-    inline static const char* ini_path_ = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
+namespace config {
 
-    inline static int log_level_;
+    static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
 
-
-public:
-    static void load_settings() {
+    static int log_level;
+    
+    void file_setting::load_settings() {
         CSimpleIniA ini;
         ini.SetUnicode();
-        ini.LoadFile(ini_path_);
+        ini.LoadFile(ini_path);
 
-        log_level_ = ini.GetLongValue("General", "iLogLevel", 2);
+        log_level = ini.GetLongValue("General", "iLogLevel", 2);
 
     }
 
@@ -31,8 +29,8 @@ public:
         (void)ini.SaveFile(ini_path_);
     }*/
 
-    static int get_log_level() {
-        return log_level_;
+    int file_setting::get_log_level() {
+        return log_level;
     }
-	
+
 };

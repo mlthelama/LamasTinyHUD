@@ -13,9 +13,12 @@ def make_rel_archive(a_args):
     #archive.write(
     #    os.path.join(a_args.src_dir, "translations", "DialogueMoreNPCInfo_english.txt"),
     #    "Interface/Translations/LamasTinyHUD_english.txt")
-    #archive.write(
-    #    os.path.join(a_args.src_dir, "LamasTinyHUD.ini"),
-    #    "SKSE/Plugins/LamasTinyHUD.ini")
+    archive.write(
+        os.path.join(a_args.src_dir, "LamasTinyHUD.ini"),
+        "SKSE/Plugins/LamasTinyHUD.ini")
+    archive.write(
+        os.path.join(a_args.src_dir, "img", "hud.png"),
+        "SKSE/Plugins/img/hud.png")
 
 
 def make_dbg_archive(a_args):

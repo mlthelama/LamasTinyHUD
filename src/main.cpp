@@ -1,5 +1,7 @@
-#include "setting/setting.h"
+#include "setting/file_setting.h"
 #include "util/constant.h"
+#include "papyrus/papyrus.h"
+#include "ui/hud.h"
 
 void init_logger() {
     if (static bool initialized = false; !initialized) {
@@ -35,10 +37,10 @@ void init_logger() {
         logger::info("{} v{}"sv, Version::PROJECT, Version::NAME);
 
         try {
-            setting::load_settings();
+            config::file_setting::load_settings();
         } catch (const std::exception& e) { logger::warn("failed to load setting {}"sv, e.what()); }
 
-        switch (setting::get_log_level()) {
+        switch (config::file_setting::get_log_level()) {
             case util::const_log_trace:
                 spdlog::set_level(spdlog::level::trace);
                 spdlog::flush_on(spdlog::level::trace);
@@ -72,7 +74,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
 
     Init(a_skse);
 
-    SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* a_msg) {
+    /*SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* a_msg) {
         switch (a_msg->type) {
             case SKSE::MessagingInterface::kDataLoaded:
                 logger::info("Data loaded"sv);
@@ -80,7 +82,10 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
                 logger::info("Done with adding"sv);
                 break;
         }
-    });
+    });*/
+
+    papyrus::Register();
+    ui::hud::install();
 
     logger::info("{} loaded"sv, Version::PROJECT);
     return true;

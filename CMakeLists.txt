@@ -80,10 +80,16 @@ set(Boost_USE_STATIC_LIBS ON)
 
 
 # ---- Dependencies ----
-
 find_package(CommonLibSSE CONFIG REQUIRED)
 
 find_package(spdlog REQUIRED CONFIG)
+
+add_subdirectory(extern/dkutil DKUtil)
+
+include_directories(extern/stb)
+
+find_package(imgui REQUIRED)
+
 
 # ---- Add source files ----
 
@@ -135,7 +141,11 @@ target_link_libraries(
 	PRIVATE
 		CommonLibSSE::CommonLibSSE
 		spdlog::spdlog
+        DKUtil::DKUtil
+        imgui::imgui
 )
+
+link_directories(extern/stb) 
 
 if (MSVC)
 	target_compile_options(
