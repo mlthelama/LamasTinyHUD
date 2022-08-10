@@ -7,18 +7,30 @@ def make_rel_archive(a_args):
     archive.write(
         a_args.dll,
         "SKSE/Plugins/{}".format(os.path.basename(a_args.dll)))
-    #archive.write(
-    #    os.path.join(a_args.src_dir, "swf", "out", "LamasTinyHUD.swf"),
-    #    "Interface/LamasTinyHUD.swf")
-    #archive.write(
-    #    os.path.join(a_args.src_dir, "translations", "DialogueMoreNPCInfo_english.txt"),
-    #    "Interface/Translations/LamasTinyHUD_english.txt")
+    archive.write(
+        a_args.pdb,
+        "SKSE/Plugins/{}".format(os.path.basename(a_args.pdb)))
     archive.write(
         os.path.join(a_args.src_dir, "LamasTinyHUD.ini"),
         "SKSE/Plugins/LamasTinyHUD.ini")
     archive.write(
         os.path.join(a_args.src_dir, "img", "hud.png"),
         "SKSE/Plugins/img/hud.png")
+    archive.write(
+        os.path.join(a_args.src_dir, "mcm", "LamasTinyHUD.esl"),
+        "LamasTinyHUD.esl")
+    archive.write(
+        os.path.join(a_args.src_dir, "mcm", "scripts", "LamasTinyHUD_MCM.pex"),
+        "scripts/LamasTinyHUD_MCM.pex")
+    archive.write(
+        os.path.join(a_args.src_dir, "mcm", "Config", "LamasTinyHUD", "config.json"),
+        "mcm/Config/LamasTinyHUD/config.json")
+    archive.write(
+        os.path.join(a_args.src_dir, "mcm", "Config", "LamasTinyHUD", "settings.ini"),
+        "mcm/Config/LamasTinyHUD/settings.ini")
+    archive.write(
+        os.path.join(a_args.src_dir, "mcm", "Interface", "Translations", "LamasTinyHUD_english.txt"),
+        "Interface/Translations/LamasTinyHUD_english.txt")
 
 
 def make_dbg_archive(a_args):
@@ -43,7 +55,7 @@ def main():
 
     args = parse_arguments()
     make_rel_archive(args)
-    make_dbg_archive(args)
+    #make_dbg_archive(args)
 
 if __name__ == "__main__":
 	main()

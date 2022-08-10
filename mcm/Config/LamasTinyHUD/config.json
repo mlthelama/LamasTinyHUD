@@ -1,0 +1,28 @@
+{
+    "modName": "LamasTinyHUD",
+    "displayName": "Lamas Tiny HUD",
+    "minMcmVersion": 11,
+    "cursorFillMode": "topToBottom",
+    "pages": [
+        {
+            "pageDisplayName": "$LamasTinyHUD_ControlsPage",
+            "cursorFillMode": "topToBottom",
+            "content": [
+                {
+                    "text": "$LamasTinyHUD_Controls_HeaderText",
+                    "type": "header"
+                },
+                {
+                    "id": "uLeftActionKey:Controls",
+                    "text": "$LamasTinyHUD_LeftActionKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_LeftActionKey_InfoText",
+                    "ignoreConflicts": false,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                }
+            ]
+        }
+    ]
+}
