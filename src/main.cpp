@@ -1,6 +1,7 @@
 #include "setting/file_setting.h"
 #include "util/constant.h"
 #include "papyrus/papyrus.h"
+#include "setting/mcm_setting.h"
 #include "ui/hud.h"
 
 void init_logger() {
@@ -37,7 +38,8 @@ void init_logger() {
         logger::info("{} v{}"sv, Version::PROJECT, Version::NAME);
 
         try {
-            config::file_setting::load_settings();
+            config::file_setting::load_setting();
+            config::mcm_setting::read_setting();
         } catch (const std::exception& e) { logger::warn("failed to load setting {}"sv, e.what()); }
 
         switch (config::file_setting::get_log_level()) {

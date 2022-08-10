@@ -1,5 +1,7 @@
 ﻿#include "key_manager.h"
 
+#include "setting/mcm_setting.h"
+
 namespace event {
     using event_result = RE::BSEventNotifyControl;
 
@@ -18,10 +20,16 @@ namespace event {
         using event_type = RE::INPUT_EVENT_TYPE;
         using device_type = RE::INPUT_DEVICE;
 
-        //key_ = static_cast<uint32_t>(setting::get_toggle_key());
-        key_ = static_cast<uint32_t>(48);
 
-        if (key_ == k_invalid) {
+        //key_ = static_cast<uint32_t>(setting::get_toggle_key());
+        //key_ = static_cast<uint32_t>(48);
+        key_left_action_ = config::mcm_setting::get_left_action_key();
+
+        /*if (key_ == k_invalid) {
+            return event_result::kContinue;
+        }*/
+
+        if (!is_key_valid(key_left_action_)) {
             return event_result::kContinue;
         }
 
@@ -73,7 +81,7 @@ namespace event {
             }
 
 
-            if (key == key_) {
+            if (key == key_left_action_) {
                 logger::debug("configured Key ({}) pressed"sv, key);
 
 
@@ -143,4 +151,12 @@ namespace event {
 
         return index != k_invalid ? index + k_gamepad_offset : k_invalid;
     }
+
+    bool key_manager::is_key_valid(const uint32_t a_key) {
+        if (a_key == k_invalid) {
+            return false;
+        }
+        return true;
+    }
+
 }

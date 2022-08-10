@@ -23,6 +23,8 @@ namespace event {
 
         static uint32_t get_gamepad_index(RE::BSWin32GamepadDevice::Key a_key);
 
+        static bool is_key_valid(uint32_t a_key);
+
         enum : uint32_t {
             k_invalid = static_cast<uint32_t>(-1),
             k_keyboard_offset = 0,
@@ -31,6 +33,7 @@ namespace event {
         };
 
         uint32_t key_ = k_invalid;
+        uint32_t key_left_action_ = k_invalid;
     };
 
 }

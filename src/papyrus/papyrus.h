@@ -8,6 +8,6 @@ namespace papyrus {
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);
     };
-    
+
     void Register();
 }

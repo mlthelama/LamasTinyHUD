@@ -4,6 +4,7 @@ A small UI Element
 ## End User Dependencies
 * [SKSE64](https://skse.silverlock.org/)
 * [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
+* [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000)
 * for the rest we will see
 
 
