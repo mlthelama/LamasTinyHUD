@@ -10,14 +10,14 @@ namespace config {
     void file_setting::load_setting() {
         logger::info("reading dll ini files");
 
-        
+
         CSimpleIniA ini;
         ini.SetUnicode();
         ini.LoadFile(ini_path);
 
         log_level = ini.GetLongValue("General", "iLogLevel", 2);
 
-        
+
         logger::info("finished reading dll ini files");
     }
 

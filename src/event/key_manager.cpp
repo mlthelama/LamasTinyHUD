@@ -1,5 +1,7 @@
 ﻿#include "key_manager.h"
 
+#include "handle/slot_setting_handle.h"
+#include "item/potion.h"
 #include "setting/mcm_setting.h"
 
 namespace event {
@@ -24,12 +26,13 @@ namespace event {
         //key_ = static_cast<uint32_t>(setting::get_toggle_key());
         //key_ = static_cast<uint32_t>(48);
         key_left_action_ = config::mcm_setting::get_left_action_key();
+        key_top_action_ = config::mcm_setting::get_top_action_key();
 
         /*if (key_ == k_invalid) {
             return event_result::kContinue;
         }*/
 
-        if (!is_key_valid(key_left_action_)) {
+        if (!is_key_valid(key_left_action_) || !is_key_valid(key_top_action_)) {
             return event_result::kContinue;
         }
 
@@ -85,6 +88,16 @@ namespace event {
                 logger::debug("configured Key ({}) pressed"sv, key);
 
 
+                break;
+            }
+            if ( key == key_top_action_) {
+                logger::debug("top configured Key ({}) pressed"sv, key);
+                //check bla bla type
+
+                if (const auto top_handle = handle::slot_setting_handle::get_singleton()->get_top_from(); top_handle != nullptr) {
+                    item::potion::consume_potion(top_handle);
+                }
+                
                 break;
             }
         }

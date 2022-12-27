@@ -67,7 +67,6 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
 #ifndef NDEBUG
     while (!IsDebuggerPresent()) {};
 #endif
-    REL::Module::reset();
 
 
     init_logger();

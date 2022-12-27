@@ -4,6 +4,12 @@ set(sources ${sources}
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
+	src/handle/slot_setting_handle.cpp
+	src/handle/slot_setting_handle.h
+	src/item/inventory.cpp
+	src/item/inventory.h
+	src/item/potion.cpp
+	src/item/potion.h
 	src/main.cpp
 	src/papyrus/papyrus.cpp
 	src/papyrus/papyrus.h
@@ -14,4 +20,5 @@ set(sources ${sources}
 	src/ui/hud.cpp
 	src/ui/hud.h
 	src/util/constant.h
+	src/util/string_util.h
 )

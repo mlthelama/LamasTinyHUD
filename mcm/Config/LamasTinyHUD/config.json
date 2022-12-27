@@ -13,6 +13,36 @@
                     "type": "header"
                 },
                 {
+                    "id": "uTopActionKey:Controls",
+                    "text": "$LamasTinyHUD_TopActionKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_TopActionKey_InfoText",
+                    "ignoreConflicts": false,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uRightActionKey:Controls",
+                    "text": "$LamasTinyHUD_RightActionKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_RightActionKey_InfoText",
+                    "ignoreConflicts": false,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uBottomActionKey:Controls",
+                    "text": "$LamasTinyHUD_BottomActionKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_BottomActionKey_InfoText",
+                    "ignoreConflicts": false,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "uLeftActionKey:Controls",
                     "text": "$LamasTinyHUD_LeftActionKey_OptionText",
                     "type": "keymap",
@@ -21,6 +51,93 @@
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
                     }
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_TopPage",
+            "cursorFillMode": "topToBottom",
+            "content": [
+                {
+                    "text": "$LamasTinyHUD_Top_HeaderText",
+                    "type": "header"
+                },
+                {
+                    "id": "uTopType:TopPage",
+                    "text": "$LamasTinyHUD_TopType",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_TopType_InfoText",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Weapon"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "sRefreshTopItems:TopPage",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_RefreshItemsTop",
+                    "help": "$LamasTinyHUD_RefreshItemsTop_Help",
+                    "action": {
+                        "type": "CallFunction",
+                        "function": "RefreshItems"
+                    }
+                },
+                {
+                    "id": "sSelectedTopItemForm:TopPage",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedTopItemForm",
+                    "help": "$LamasTinyHUD_SelectedTopItemForm_Help"
+                },
+                {
+                    "id": "uTopSelectedItem:TopPage",
+                    "text": "$LamasTinyHUD_SelectedItem",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SelectedItem_InfoText",
+                    "valueOptions": {
+                        "options": [
+                            "$LamasTinyHUD_ENUM"
+                        ],
+                        "sourceType": "ModSettingInt",
+                        "defaultValue": 0
+                    }
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_RightPage",
+            "cursorFillMode": "topToBottom",
+            "content": [
+                {
+                    "text": "$LamasTinyHUD_Right_HeaderText",
+                    "type": "header"
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_BottomPage",
+            "cursorFillMode": "topToBottom",
+            "content": [
+                {
+                    "text": "$LamasTinyHUD_Bottom_HeaderText",
+                    "type": "header"
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_LeftPage",
+            "cursorFillMode": "topToBottom",
+            "content": [
+                {
+                    "text": "$LamasTinyHUD_Left_HeaderText",
+                    "type": "header"
                 }
             ]
         }
