@@ -7,6 +7,7 @@ namespace handle {
         static slot_setting_handle* get_singleton();
         void init_top_setting(RE::TESForm* a_form, util::selection_type a_type);
         [[nodiscard]] RE::TESForm* get_top_from() const;
+        [[nodiscard]] util::selection_type get_top_type() const;
 
         slot_setting_handle(const slot_setting_handle&) = delete;
         slot_setting_handle(slot_setting_handle&&) = delete;
@@ -21,6 +22,7 @@ namespace handle {
 
         struct slot_setting_handle_data {
             RE::TESForm* top_setting = nullptr;
+            util::selection_type top_type =  util::selection_type::unset;
         };
 
         slot_setting_handle_data* data_;

@@ -31,7 +31,7 @@ namespace config {
             top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopType", -1));
             std::stringstream s(mcm.GetValue("TopPage", "sSelectedTopItemForm", ""));
             s >> selected_top_item_form;
-            
+
         };
 
         read_mcm(mcm_default_setting);

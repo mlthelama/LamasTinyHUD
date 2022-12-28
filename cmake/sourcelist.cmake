@@ -10,6 +10,10 @@ set(sources ${sources}
 	src/item/inventory.h
 	src/item/potion.cpp
 	src/item/potion.h
+	src/magic/shout.cpp
+	src/magic/shout.h
+	src/magic/spell.cpp
+	src/magic/spell.h
 	src/main.cpp
 	src/papyrus/papyrus.cpp
 	src/papyrus/papyrus.h

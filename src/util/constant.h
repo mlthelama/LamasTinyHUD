@@ -7,6 +7,7 @@ namespace util {
     constexpr auto empty_enum_string = "$LamasTinyHUD_ENUM"sv;
 
     enum class selection_type {
+        unset = -1,
         item = 0,
         magic = 1,
         shout = 2,

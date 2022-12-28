@@ -2,6 +2,8 @@
 
 #include "handle/slot_setting_handle.h"
 #include "item/potion.h"
+#include "magic/shout.h"
+#include "magic/spell.h"
 #include "setting/mcm_setting.h"
 
 namespace event {
@@ -90,14 +92,32 @@ namespace event {
 
                 break;
             }
-            if ( key == key_top_action_) {
+            if (key == key_top_action_) {
                 logger::debug("top configured Key ({}) pressed"sv, key);
                 //check bla bla type
 
-                if (const auto top_handle = handle::slot_setting_handle::get_singleton()->get_top_from(); top_handle != nullptr) {
-                    item::potion::consume_potion(top_handle);
-                }
+                const auto top_handle = handle::slot_setting_handle::get_singleton()->get_top_from();
+                if (top_handle == nullptr) break;
                 
+                switch (handle::slot_setting_handle::get_singleton()->get_top_type()) {
+                    case util::selection_type::unset:
+                        logger::warn("nothing to do, nothing set"sv);
+                        break;
+                    case util::selection_type::item:
+                        item::potion::consume_potion(top_handle);
+                        break;
+                    case util::selection_type::magic:
+                        magic::spell::instant_cast(top_handle);
+                        break;
+                    case util::selection_type::shout:
+                        magic::shout::equip_shout(top_handle);
+                        break;
+                    case util::selection_type::power:
+                        break;
+                    case util::selection_type::weapon:
+                        break;
+                }
+
                 break;
             }
         }
