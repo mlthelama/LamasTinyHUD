@@ -7,6 +7,7 @@ namespace ui {
 
         //static inline bool show_hud_ = false;
         static inline bool open_ = false;
+
     public:
         hud() = delete;
 

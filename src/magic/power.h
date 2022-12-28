@@ -4,6 +4,5 @@ namespace magic {
     public:
         static std::vector<RE::SpellItem*> get_powers();
         static void equip_power(RE::TESForm* a_form);
-
     };
 }

@@ -197,5 +197,4 @@ namespace event {
         }
         return true;
     }
-
 }

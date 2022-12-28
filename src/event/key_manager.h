@@ -1,9 +1,9 @@
 ﻿#pragma once
 
 namespace event {
-
     class key_manager final : public RE::BSTEventSink<RE::InputEvent*> {
         using event_result = RE::BSEventNotifyControl;
+
     public:
         static key_manager* get_singleton();
         static void sink();
@@ -13,6 +13,7 @@ namespace event {
 
         key_manager& operator=(const key_manager&) = delete;
         key_manager& operator=(key_manager&&) = delete;
+
     protected:
         event_result ProcessEvent(RE::InputEvent* const* a_event,
             [[maybe_unused]] RE::BSTEventSource<RE::InputEvent*>* a_event_source) override;
@@ -36,5 +37,4 @@ namespace event {
         uint32_t key_top_action_ = k_invalid;
         uint32_t key_left_action_ = k_invalid;
     };
-
 }

@@ -2,7 +2,6 @@
 #include <SimpleIni.h>
 
 namespace config {
-
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
 
     static int log_level;
@@ -37,5 +36,4 @@ namespace config {
     int file_setting::get_log_level() {
         return log_level;
     }
-
 };

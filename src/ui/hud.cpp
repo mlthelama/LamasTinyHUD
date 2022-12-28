@@ -9,7 +9,6 @@
 #include "handle/read_data.h"
 
 namespace ui {
-
     struct image {
         ID3D11ShaderResourceView* texture = nullptr;
         int32_t width = 0;

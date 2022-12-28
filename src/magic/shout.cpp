@@ -28,5 +28,4 @@ namespace magic {
         RE::ActorEquipManager::GetSingleton()->EquipShout(RE::PlayerCharacter::GetSingleton(), shout);
         logger::trace("equipped shout {}"sv, a_form->GetName());
     }
-
 }

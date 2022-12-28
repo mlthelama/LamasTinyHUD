@@ -9,6 +9,7 @@ namespace papyrus {
         static uint32_t get_form_id_for_selection(RE::TESQuest*, uint32_t a_index);
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);
+
     private:
         inline static auto inventory_data_list_ = new std::vector<RE::InventoryEntryData>;
         inline static auto shout_data_list_ = new std::vector<RE::TESShout*>;

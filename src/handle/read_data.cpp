@@ -15,6 +15,5 @@ namespace handle {
                 RE::TESForm::LookupByID(config::mcm_setting::get_selected_top_item_form()),
                 static_cast<util::selection_type>(config::mcm_setting::get_top_type()));
         }
-
     }
 }

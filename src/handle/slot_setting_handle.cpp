@@ -30,5 +30,4 @@ namespace handle {
         }
         return util::selection_type::unset;
     }
-
 }

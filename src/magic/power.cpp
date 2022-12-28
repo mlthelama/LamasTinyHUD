@@ -26,7 +26,6 @@ namespace magic {
 
 
         for (uint32_t i = 0; i < added_spells.size(); ++i) {
-            //just consider normal spells
             if (const auto spell = added_spells.data()[i];
                 spell->GetSpellType() == RE::MagicSystem::SpellType::kPower || spell->GetSpellType() ==
                 RE::MagicSystem::SpellType::kLesserPower) {
@@ -54,6 +53,4 @@ namespace magic {
         RE::ActorEquipManager::GetSingleton()->EquipSpell(RE::PlayerCharacter::GetSingleton(), spell);
         logger::trace("equipped power {}"sv, a_form->GetName());
     }
-
-
 }

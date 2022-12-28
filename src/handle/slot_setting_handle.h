@@ -14,6 +14,7 @@ namespace handle {
 
         slot_setting_handle& operator=(const slot_setting_handle&) const = delete;
         slot_setting_handle& operator=(slot_setting_handle&&) const = delete;
+
     private:
         slot_setting_handle()
             : data_(nullptr) {}

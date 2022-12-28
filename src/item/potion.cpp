@@ -34,5 +34,4 @@ namespace item {
         RE::PlayerCharacter::GetSingleton()->DrinkPotion(alchemy_potion,
             inv_data.extraLists->front());
     }
-
 }
