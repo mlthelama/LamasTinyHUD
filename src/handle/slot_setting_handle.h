@@ -22,7 +22,7 @@ namespace handle {
 
         struct slot_setting_handle_data {
             RE::TESForm* top_setting = nullptr;
-            util::selection_type top_type =  util::selection_type::unset;
+            util::selection_type top_type = util::selection_type::unset;
         };
 
         slot_setting_handle_data* data_;

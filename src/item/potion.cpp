@@ -20,8 +20,8 @@ namespace item {
                 break;
             }
         }
-        
-        
+
+
         if (obj == nullptr) {
             logger::warn("could not find selected potion, maybe it all have been consumed"sv);
             //update ui in this case

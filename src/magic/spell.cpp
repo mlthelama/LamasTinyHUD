@@ -5,7 +5,7 @@ namespace magic {
         const auto spells = RE::PlayerCharacter::GetSingleton()->GetActorBase()->GetSpellList();
         auto added_spells = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().addedSpells;
         //if races have spells too, we should check those as well
-        
+
         std::vector<RE::SpellItem*> spell_list;
 
         if (spells->numSpells == 0) return spell_list;
@@ -48,6 +48,12 @@ namespace magic {
         //spell->avEffectSetting->data.dualCastScale
         //maybe add option to dual cast
         const auto actor = RE::PlayerCharacter::GetSingleton()->As<RE::Actor>();
-        actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
+        actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(spell,
+            false,
+            actor,
+            1.0f,
+            false,
+            0.0f,
+            nullptr);
     }
 }

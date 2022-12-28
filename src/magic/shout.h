@@ -6,4 +6,3 @@ namespace magic {
         static void equip_shout(RE::TESForm* a_form);
     };
 }
-

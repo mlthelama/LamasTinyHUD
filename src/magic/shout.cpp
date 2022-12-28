@@ -5,9 +5,9 @@
 namespace magic {
     std::vector<RE::TESShout*> shout::get_shouts() {
         const auto spells = RE::PlayerCharacter::GetSingleton()->GetActorBase()->GetSpellList();
-        
+
         std::vector<RE::TESShout*> shout_list;
-        
+
         if (spells->numShouts == 0) return shout_list;
 
         //maybe check if the shout has been learned

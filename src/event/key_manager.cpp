@@ -98,7 +98,7 @@ namespace event {
 
                 const auto top_handle = handle::slot_setting_handle::get_singleton()->get_top_from();
                 if (top_handle == nullptr) break;
-                
+
                 switch (handle::slot_setting_handle::get_singleton()->get_top_type()) {
                     case util::selection_type::unset:
                         logger::warn("nothing to do, nothing set"sv);
