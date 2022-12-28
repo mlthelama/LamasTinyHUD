@@ -1,33 +1,22 @@
 ﻿#include "papyrus.h"
 
-#include "handle/slot_setting_handle.h"
+#include "handle/read_data.h"
 #include "item/inventory.h"
+#include "magic/power.h"
 #include "magic/shout.h"
 #include "magic/spell.h"
-#include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/string_util.h"
 
 namespace papyrus {
     static const char* mcm_name = "LamasTinyHUD_MCM";
 
-    //handle startup so we fill the data as well
-    auto inventory_data_list = new std::vector<RE::InventoryEntryData>;
-    auto shout_data_list = new std::vector<RE::TESShout*>;
-    auto spell_data_list = new std::vector<RE::SpellItem*>;
-    util::selection_type index = util::selection_type::unset;
 
     void hud_mcm::on_config_close(RE::TESQuest*) {
-        logger::trace("Reading mcm config ..."sv);
-        config::mcm_setting::read_setting();
+        logger::info("on config close"sv);
+        handle::read_data::read_config_and_set_data();
 
-        logger::trace("Setting handlers ..."sv);
-        if (config::mcm_setting::get_selected_top_item_form() > 0) {
-            handle::slot_setting_handle::get_singleton()->init_top_setting(
-                RE::TESForm::LookupByID(config::mcm_setting::get_selected_top_item_form()),
-                static_cast<util::selection_type>(config::mcm_setting::get_top_type()));
-        }
-        index = util::selection_type::unset;
+        index_ = util::selection_type::unset;
         clear_list();
     }
 
@@ -37,9 +26,9 @@ namespace papyrus {
         const auto display_string_list = new std::vector<RE::BSFixedString>;
         clear_list();
 
-        index = static_cast<util::selection_type>(a_id);
+        index_ = static_cast<util::selection_type>(a_id);
 
-        if (index == util::selection_type::item) {
+        if (index_ == util::selection_type::item) {
             //maybe add a check if it is a potion
             for (auto potential_items = item::inventory::get_inventory_magic_items(); const auto& [item, inv_data] :
                  potential_items) {
@@ -47,28 +36,48 @@ namespace papyrus {
                 const auto& [num_items, entry] = inv_data;
                 if (inv_data.second->IsFavorited()) {
                     logger::trace("Item name {}, count {}"sv, entry->GetDisplayName(), num_items);
-                    inventory_data_list->push_back(*inv_data.second);
+                    inventory_data_list_->push_back(*inv_data.second);
                     display_string_list->push_back(
                         RE::BSFixedString{
                             format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
                 }
             }
-        } else if (index == util::selection_type::magic) {
+            logger::trace("potion list is size {}"sv, inventory_data_list_->size());
+        } else if (index_ == util::selection_type::magic) {
             //add filter for casting
             for (const auto spell_list = magic::spell::get_spells(); const auto spell : spell_list) {
                 display_string_list->push_back(spell->GetName());
-                spell_data_list->push_back(spell);
+                spell_data_list_->push_back(spell);
             }
-        } else if (index == util::selection_type::shout) {
+        } else if (index_ == util::selection_type::shout) {
             for (const auto shout_list = magic::shout::get_shouts(); const auto shout : shout_list) {
                 display_string_list->push_back(shout->GetName());
-                shout_data_list->push_back(shout);
+                shout_data_list_->push_back(shout);
             }
-        } else if (index == util::selection_type::power) {
+        } else if (index_ == util::selection_type::power) {
             /*if (const auto selected_power = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().selectedPower;
                 selected_power != nullptr) {
                 logger::trace("current selected power is"sv, selected_power->GetName());
             }*/
+            //power_data_list
+            for (const auto power_list = magic::power::get_powers(); const auto power : power_list) {
+                display_string_list->push_back(power->GetName());
+                power_data_list_->push_back(power);
+            }
+        } else if (index_ == util::selection_type::weapon) {
+            for (auto potential_weapons = item::inventory::get_inventory_weapon_items(); const auto& [item, inv_data] :
+                 potential_weapons) {
+                //just consider favored items
+                const auto& [num_items, entry] = inv_data;
+                if (inv_data.second->IsFavorited()) {
+                    logger::trace("Weapon name {}, count {}"sv, entry->GetDisplayName(), num_items);
+                    weapon_data_list_->push_back(*inv_data.second);
+                    display_string_list->push_back(
+                        RE::BSFixedString{
+                            format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                }
+            }
+            logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
         } else {
             logger::warn("Selected type {} not supported"sv, a_id);
         }
@@ -81,30 +90,43 @@ namespace papyrus {
     }
 
     uint32_t hud_mcm::get_form_id_for_selection(RE::TESQuest*, uint32_t a_index) {
-        logger::trace("Got Index {}, Search for Item for type {}"sv, a_index, static_cast<uint32_t>(index));
+        logger::trace("Got Index {}, Search for Item for type {}"sv, a_index, static_cast<uint32_t>(index_));
 
         RE::FormID form_id = 0;
 
-        if (index == util::selection_type::item && !inventory_data_list->empty()) {
-            logger::trace("Vector got a size of {}"sv, inventory_data_list->size());
-            if (is_size_ok(a_index, inventory_data_list->size())) {
-                const auto item = inventory_data_list->at(a_index);
+        if (index_ == util::selection_type::item && !inventory_data_list_->empty()) {
+            logger::trace("Vector got a size of {}"sv, inventory_data_list_->size());
+            if (is_size_ok(a_index, inventory_data_list_->size())) {
+                const auto item = inventory_data_list_->at(a_index);
                 const RE::TESBoundObject* item_obj = item.GetObject();
                 form_id = item_obj->GetFormID();
             }
-        } else if (index == util::selection_type::magic && !spell_data_list->empty()) {
-            logger::trace("Vector got a size of {}"sv, spell_data_list->size());
-            if (is_size_ok(a_index, spell_data_list->size())) {
-                const auto spell = spell_data_list->at(a_index);
+        } else if (index_ == util::selection_type::magic && !spell_data_list_->empty()) {
+            logger::trace("Vector got a size of {}"sv, spell_data_list_->size());
+            if (is_size_ok(a_index, spell_data_list_->size())) {
+                const auto spell = spell_data_list_->at(a_index);
                 form_id = spell->GetFormID();
             }
-        } else if (index == util::selection_type::shout && !shout_data_list->empty()) {
-            logger::trace("Vector got a size of {}"sv, shout_data_list->size());
-            if (is_size_ok(a_index, shout_data_list->size())) {
-                const auto shout = shout_data_list->at(a_index);
+        } else if (index_ == util::selection_type::shout && !shout_data_list_->empty()) {
+            logger::trace("Vector got a size of {}"sv, shout_data_list_->size());
+            if (is_size_ok(a_index, shout_data_list_->size())) {
+                const auto shout = shout_data_list_->at(a_index);
                 form_id = shout->GetFormID();
             }
-        } else if (index == util::selection_type::power) { } else if (index == util::selection_type::weapon) { }
+        } else if (index_ == util::selection_type::power && !power_data_list_->empty()) {
+            logger::trace("Vector got a size of {}"sv, power_data_list_->size());
+            if (is_size_ok(a_index, power_data_list_->size())) {
+                const auto power = power_data_list_->at(a_index);
+                form_id = power->GetFormID();
+            }
+        } else if (index_ == util::selection_type::weapon && !weapon_data_list_->empty()) {
+            logger::trace("Vector got a size of {}"sv, weapon_data_list_->size());
+            if (is_size_ok(a_index, weapon_data_list_->size())) {
+                const auto item = weapon_data_list_->at(a_index);
+                const RE::TESBoundObject* item_obj = item.GetObject();
+                form_id = item_obj->GetFormID();
+            }
+        }
 
         if (form_id == 0) return 0;
 
@@ -127,9 +149,11 @@ namespace papyrus {
     }
 
     void hud_mcm::clear_list() {
-        inventory_data_list->clear();
-        shout_data_list->clear();
-        spell_data_list->clear();
+        inventory_data_list_->clear();
+        shout_data_list_->clear();
+        spell_data_list_->clear();
+        power_data_list_->clear();
+        weapon_data_list_->clear();
     }
 
     bool hud_mcm::is_size_ok(uint32_t a_idx, uint64_t a_size) {

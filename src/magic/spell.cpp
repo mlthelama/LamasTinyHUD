@@ -6,6 +6,8 @@ namespace magic {
         auto added_spells = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().addedSpells;
         //if races have spells too, we should check those as well
 
+        //add setting to ui, just allow instant cast on spells with fire and forget, because others drain
+        //the magicka until it is gone
         std::vector<RE::SpellItem*> spell_list;
 
         if (spells->numSpells == 0) return spell_list;
@@ -37,6 +39,7 @@ namespace magic {
             }
         }
 
+        logger::trace("spell list is size {}"sv, spell_list.size());
         return spell_list;
     }
 
@@ -47,6 +50,11 @@ namespace magic {
 
         //spell->avEffectSetting->data.dualCastScale
         //maybe add option to dual cast
+        //and that it does consume mana
+        //spell->avEffectSetting->data.baseCost
+        /*logger::trace("dual cast scale {}, base cost {}"sv,
+            spell->avEffectSetting->data.dualCastScale,
+            spell->avEffectSetting->data.baseCost);*/
         const auto actor = RE::PlayerCharacter::GetSingleton()->As<RE::Actor>();
         actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(spell,
             false,
@@ -55,5 +63,6 @@ namespace magic {
             false,
             0.0f,
             nullptr);
+        logger::trace("instant casted spell {}"sv, a_form->GetName());
     }
 }

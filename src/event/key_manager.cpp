@@ -2,6 +2,8 @@
 
 #include "handle/slot_setting_handle.h"
 #include "item/potion.h"
+#include "item/weapon.h"
+#include "magic/power.h"
 #include "magic/shout.h"
 #include "magic/spell.h"
 #include "setting/mcm_setting.h"
@@ -113,8 +115,12 @@ namespace event {
                         magic::shout::equip_shout(top_handle);
                         break;
                     case util::selection_type::power:
+                        //make a setting in mcm for equip or instant cast
+                        //magic::power::equip_power(top_handle);
+                        magic::spell::instant_cast(top_handle);
                         break;
                     case util::selection_type::weapon:
+                        item::weapon::equip_weapon(top_handle);
                         break;
                 }
 

@@ -5,5 +5,8 @@ namespace item {
     public:
         static std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
             get_inventory_magic_items();
+
+        static std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
+            get_inventory_weapon_items();
     };
 }

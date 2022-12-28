@@ -7,10 +7,10 @@ namespace handle {
     }
 
     void slot_setting_handle::init_top_setting(RE::TESForm* a_form, const util::selection_type a_type) {
+        logger::trace("set top setting from {}"sv, a_form->GetName());
         if (!this->data_) {
             this->data_ = new slot_setting_handle_data();
         }
-        logger::trace("set top setting from {}"sv, a_form->GetName());
 
         slot_setting_handle_data* data = this->data_;
         data->top_setting = a_form;

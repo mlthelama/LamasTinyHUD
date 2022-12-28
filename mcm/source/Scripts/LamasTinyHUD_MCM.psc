@@ -18,9 +18,18 @@ Event OnSettingChange(String a_ID)
     ;elseif (a_ID == "uTopType:TopPage")
     ;    SetMenuOptions("uTopSelectedItem:TopPage", GetSelectedOptions("uTopType:TopPage"))
     endif
-    RefreshMenu()
+    ;RefreshMenu()
 EndEvent
 
-Event OnConfigOpen()
+;Event OnConfigOpen()
+;    RefreshItems()
+;EndEvent
+
+
+;Event OnPageSelect(string a_page)
+;    RefreshMenu()
+;EndEvent
+
+Event OnConfigInit()
     RefreshItems()
 EndEvent

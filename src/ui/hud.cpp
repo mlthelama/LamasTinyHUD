@@ -6,6 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "event/sink_event.h"
+#include "handle/read_data.h"
 
 namespace ui {
 
@@ -121,6 +122,7 @@ namespace ui {
             //img/hud.png
             //show_hud_ = true;
             event::sink_events();
+            handle::read_data::read_config_and_set_data();
             logger::info("done with data loaded");
         } else if (a_msg->type == SKSE::MessagingInterface::kPreLoadGame) {
             DKUtil::GUI::RemoveCallback(FUNC_INFO(draw_ui));

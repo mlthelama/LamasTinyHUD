@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "util/constant.h"
 
 namespace papyrus {
     class hud_mcm {
@@ -9,6 +10,13 @@ namespace papyrus {
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);
     private:
+        inline static auto inventory_data_list_ = new std::vector<RE::InventoryEntryData>;
+        inline static auto shout_data_list_ = new std::vector<RE::TESShout*>;
+        inline static auto spell_data_list_ = new std::vector<RE::SpellItem*>;
+        inline static auto power_data_list_ = new std::vector<RE::SpellItem*>;
+        inline static auto weapon_data_list_ = new std::vector<RE::InventoryEntryData>;
+        inline static util::selection_type index_ = util::selection_type::unset;
+
         static void clear_list();
         static bool is_size_ok(uint32_t a_idx, uint64_t a_size);
     };

@@ -4,12 +4,18 @@ set(sources ${sources}
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
+	src/handle/read_data.cpp
+	src/handle/read_data.h
 	src/handle/slot_setting_handle.cpp
 	src/handle/slot_setting_handle.h
 	src/item/inventory.cpp
 	src/item/inventory.h
 	src/item/potion.cpp
 	src/item/potion.h
+	src/item/weapon.cpp
+	src/item/weapon.h
+	src/magic/power.cpp
+	src/magic/power.h
 	src/magic/shout.cpp
 	src/magic/shout.h
 	src/magic/spell.cpp
