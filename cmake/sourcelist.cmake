@@ -29,6 +29,8 @@ set(sources ${sources}
 	src/setting/mcm_setting.h
 	src/ui/hud.cpp
 	src/ui/hud.h
+	src/ui/renderer.cpp
+	src/ui/renderer.h
 	src/util/constant.h
 	src/util/string_util.h
 )

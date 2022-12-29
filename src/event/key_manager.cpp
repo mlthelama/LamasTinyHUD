@@ -116,8 +116,8 @@ namespace event {
                         break;
                     case util::selection_type::power:
                         //make a setting in mcm for equip or instant cast
-                        //magic::power::equip_power(top_handle);
-                        magic::spell::instant_cast(top_handle);
+                        magic::power::equip_power(top_handle);
+                        //magic::spell::instant_cast(top_handle);
                         break;
                     case util::selection_type::weapon:
                         item::weapon::equip_weapon(top_handle);

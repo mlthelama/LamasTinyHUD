@@ -41,6 +41,6 @@ namespace item {
         //      , bool a_applyNow = false);
         RE::ActorEquipManager::GetSingleton()->EquipObject(RE::PlayerCharacter::GetSingleton(), weapon);
 
-        logger::trace("equipped weapon {}"sv, a_form->GetName());
+        logger::trace("equipped weapon {}. return."sv, a_form->GetName());
     }
 }

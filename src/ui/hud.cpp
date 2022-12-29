@@ -97,6 +97,7 @@ namespace ui {
 
         ImGui::End();
         open_ = true;
+        //logger::info("drawing ui done. return."sv);
     }
 
 
@@ -135,13 +136,13 @@ namespace ui {
     bool hud::install() {
         const auto g_message = SKSE::GetMessagingInterface();
         if (!g_message) {
-            logger::error("Messaging Interface Not Found!");
+            logger::error("Messaging Interface Not Found! return.");
             return false;
         }
 
         g_message->RegisterListener(callback);
 
-        logger::info("installed callback for ui");
+        logger::info("installed callback for ui. return.");
         return true;
     }
 

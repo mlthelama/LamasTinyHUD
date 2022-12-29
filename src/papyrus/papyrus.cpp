@@ -18,6 +18,7 @@ namespace papyrus {
 
         index_ = util::selection_type::unset;
         clear_list();
+        logger::debug("on config close done. return."sv);
     }
 
     std::vector<RE::BSFixedString> hud_mcm::get_selected_options(RE::TESQuest*, uint32_t a_id) {
@@ -39,7 +40,7 @@ namespace papyrus {
                     inventory_data_list_->push_back(*inv_data.second);
                     display_string_list->push_back(
                         RE::BSFixedString{
-                            format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                            fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
                 }
             }
             logger::trace("potion list is size {}"sv, inventory_data_list_->size());
@@ -74,7 +75,7 @@ namespace papyrus {
                     weapon_data_list_->push_back(*inv_data.second);
                     display_string_list->push_back(
                         RE::BSFixedString{
-                            format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                            fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
                 }
             }
             logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
@@ -83,9 +84,11 @@ namespace papyrus {
         }
 
         if (display_string_list->empty()) {
+            logger::debug("display list is empty for id {}. return."sv, a_id);
             return empty_string_vec;
         }
 
+        logger::debug("got list for id {}, size is {}. return."sv, a_id, display_string_list->size());
         return *display_string_list;
     }
 
@@ -131,7 +134,7 @@ namespace papyrus {
         if (form_id == 0) return 0;
 
         const auto form = RE::TESForm::LookupByID(form_id);
-        logger::trace("Item is {}, formid {}, formid not translated {}"sv,
+        logger::trace("Item is {}, formid {}, formid not translated {}. return."sv,
             form->GetName(),
             util::string_util::int_to_hex(form->GetFormID()),
             form->GetFormID());
@@ -144,7 +147,7 @@ namespace papyrus {
         a_vm->RegisterFunction("GetSelectedOptions", mcm_name, get_selected_options);
         a_vm->RegisterFunction("GetFormIdForSelection", mcm_name, get_form_id_for_selection);
 
-        logger::info("Registered {} class"sv, mcm_name);
+        logger::info("Registered {} class. return."sv, mcm_name);
         return true;
     }
 
@@ -158,7 +161,7 @@ namespace papyrus {
 
     bool hud_mcm::is_size_ok(uint32_t a_idx, uint64_t a_size) {
         if (a_idx > a_size) {
-            logger::warn("Index is {} but size is just {}, does not fit"sv, a_idx, a_size);
+            logger::warn("Index is {} but size is just {}, does not fit. return."sv, a_idx, a_size);
             return false;
         }
         return true;
@@ -167,6 +170,6 @@ namespace papyrus {
     void Register() {
         const auto papyrus = SKSE::GetPapyrusInterface();
         papyrus->Register(hud_mcm::Register);
-        logger::info("Registered papyrus functions"sv);
+        logger::info("Registered papyrus functions. return."sv);
     }
 }

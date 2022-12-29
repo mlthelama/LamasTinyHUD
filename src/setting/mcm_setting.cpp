@@ -29,14 +29,14 @@ namespace config {
 
             //got more settings, variables, but for now we are ok with these two
             top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopType", -1));
-            std::stringstream s(mcm.GetValue("TopPage", "sSelectedTopItemForm", ""));
-            s >> selected_top_item_form;
+            std::stringstream selected_top_item_form_stream(mcm.GetValue("TopPage", "sSelectedTopItemForm", ""));
+            selected_top_item_form_stream >> selected_top_item_form;
         };
 
         read_mcm(mcm_default_setting);
         read_mcm(mcm_config_setting);
 
-        logger::info("finished reading mcm ini files");
+        logger::info("finished reading mcm ini files. return.");
     }
 
     uint32_t mcm_setting::get_top_action_key() { return top_action_key; }

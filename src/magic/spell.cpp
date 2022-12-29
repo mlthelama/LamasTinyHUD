@@ -39,7 +39,7 @@ namespace magic {
             }
         }
 
-        logger::trace("spell list is size {}"sv, spell_list.size());
+        logger::trace("spell list is size {}. return."sv, spell_list.size());
         return spell_list;
     }
 
@@ -63,6 +63,6 @@ namespace magic {
             false,
             0.0f,
             nullptr);
-        logger::trace("instant casted spell {}"sv, a_form->GetName());
+        logger::trace("instant casted spell {}. return."sv, a_form->GetName());
     }
 }

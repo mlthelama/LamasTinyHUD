@@ -33,5 +33,6 @@ namespace item {
         //build a "cache" with formid and count, validate after consumption 
         RE::PlayerCharacter::GetSingleton()->DrinkPotion(alchemy_potion,
             inv_data.extraLists->front());
+        logger::trace("drank potion {}. return."sv, alchemy_potion->GetName());
     }
 }

@@ -17,7 +17,7 @@ namespace config {
         log_level = ini.GetLongValue("General", "iLogLevel", 2);
 
 
-        logger::info("finished reading dll ini files");
+        logger::info("finished reading dll ini files. return.");
     }
 
     /*static void set_show_window(const bool a_show_value) {
