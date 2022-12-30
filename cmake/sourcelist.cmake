@@ -4,8 +4,8 @@ set(sources ${sources}
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
-	src/handle/read_data.cpp
-	src/handle/read_data.h
+	src/handle/set_data.cpp
+	src/handle/set_data.h
 	src/handle/slot_setting_handle.cpp
 	src/handle/slot_setting_handle.h
 	src/item/inventory.cpp
@@ -27,10 +27,8 @@ set(sources ${sources}
 	src/setting/file_setting.h
 	src/setting/mcm_setting.cpp
 	src/setting/mcm_setting.h
-	src/ui/hud.cpp
-	src/ui/hud.h
-	src/ui/renderer.cpp
-	src/ui/renderer.h
+	src/ui/ui_renderer.cpp
+	src/ui/ui_renderer.h
 	src/util/constant.h
 	src/util/string_util.h
 )

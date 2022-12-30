@@ -3,7 +3,7 @@
 #include "inventory.h"
 
 namespace item {
-    void weapon::equip_weapon(RE::TESForm* a_form) {
+    void weapon::equip_weapon(const RE::TESForm* a_form) {
         logger::trace("try to equip {}"sv, a_form->GetName());
 
         RE::TESBoundObject* obj = nullptr;

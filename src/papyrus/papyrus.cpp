@@ -1,10 +1,11 @@
 ﻿#include "papyrus.h"
 
-#include "handle/read_data.h"
+#include "handle/set_data.h"
 #include "item/inventory.h"
 #include "magic/power.h"
 #include "magic/shout.h"
 #include "magic/spell.h"
+#include "ui/ui_renderer.h"
 #include "util/constant.h"
 #include "util/string_util.h"
 
@@ -14,7 +15,7 @@ namespace papyrus {
 
     void hud_mcm::on_config_close(RE::TESQuest*) {
         logger::info("on config close"sv);
-        handle::read_data::read_config_and_set_data();
+        handle::set_data::set_slot_data();
 
         index_ = util::selection_type::unset;
         clear_list();
@@ -101,7 +102,7 @@ namespace papyrus {
             logger::trace("Vector got a size of {}"sv, inventory_data_list_->size());
             if (is_size_ok(a_index, inventory_data_list_->size())) {
                 const auto item = inventory_data_list_->at(a_index);
-                const RE::TESBoundObject* item_obj = item.GetObject();
+                const RE::TESBoundObject* item_obj = item.object;
                 form_id = item_obj->GetFormID();
             }
         } else if (index_ == util::selection_type::magic && !spell_data_list_->empty()) {
@@ -126,7 +127,7 @@ namespace papyrus {
             logger::trace("Vector got a size of {}"sv, weapon_data_list_->size());
             if (is_size_ok(a_index, weapon_data_list_->size())) {
                 const auto item = weapon_data_list_->at(a_index);
-                const RE::TESBoundObject* item_obj = item.GetObject();
+                const RE::TESBoundObject* item_obj = item.object;
                 form_id = item_obj->GetFormID();
             }
         }
@@ -142,10 +143,22 @@ namespace papyrus {
         return form_id;
     }
 
+
+    RE::BSFixedString hud_mcm::get_resolution_width(RE::TESQuest*) {
+        return fmt::format(FMT_STRING("{:.2f}"), ui::ui_renderer::get_resolution_width());
+    }
+
+
+    RE::BSFixedString hud_mcm::get_resolution_height(RE::TESQuest*) {
+        return fmt::format(FMT_STRING("{:.2f}"), ui::ui_renderer::get_resolution_height());
+    }
+
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("OnConfigClose", mcm_name, on_config_close);
         a_vm->RegisterFunction("GetSelectedOptions", mcm_name, get_selected_options);
         a_vm->RegisterFunction("GetFormIdForSelection", mcm_name, get_form_id_for_selection);
+        a_vm->RegisterFunction("GetResolutionWidth", mcm_name, get_resolution_width);
+        a_vm->RegisterFunction("GetResolutionHeight", mcm_name, get_resolution_height);
 
         logger::info("Registered {} class. return."sv, mcm_name);
         return true;

@@ -61,7 +61,7 @@ namespace magic {
 
         const auto spell = a_form->As<RE::SpellItem>();
         //maybe check if it is already equipped
-        //and make a setting to instant cast, maybe in the keymanager already
+        //and make a setting to instant cast, maybe in the key manager already
         RE::ActorEquipManager::GetSingleton()->EquipSpell(RE::PlayerCharacter::GetSingleton(), spell);
         logger::trace("equipped power {}. return."sv, a_form->GetName());
     }

@@ -12,9 +12,6 @@ A small UI Element
 * [CommonLibSSE NG](https://github.com/CharmedBaryon/CommonLibSSE-NG)
 * [spdlog](https://github.com/gabime/spdlog)
 * [simpleini](https://github.com/brofield/simpleini)
-* [DKUtil](https://github.com/gottyduke/DKUtil) (for easier imgui handling)
-* [tomlplusplus](https://github.com/marzer/tomlplusplus) (to satisfy dkutil dependency)
-* [nlohmann-json](https://github.com/nlohmann/json) (to satisfy dkutil dependency)
 * [stb](https://github.com/nothings/stb) (for file reading into dx11 texture)
 * [imgui](https://github.com/ocornut/imgui) (for displaying ui elements)
 

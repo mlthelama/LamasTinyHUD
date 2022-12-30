@@ -2,7 +2,7 @@
 #include "util/constant.h"
 #include "papyrus/papyrus.h"
 #include "setting/mcm_setting.h"
-#include "ui/hud.h"
+#include "ui/ui_renderer.h"
 
 void init_logger() {
     if (static bool initialized = false; !initialized) {
@@ -86,7 +86,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
     });*/
 
     papyrus::Register();
-    ui::hud::install();
+    ui::ui_renderer::install();
 
     logger::info("{} loaded"sv, Version::PROJECT);
     return true;

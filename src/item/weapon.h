@@ -2,6 +2,6 @@
 namespace item {
     class weapon {
     public:
-        static void equip_weapon(RE::TESForm* a_form);
+        static void equip_weapon(const RE::TESForm* a_form);
     };
 }

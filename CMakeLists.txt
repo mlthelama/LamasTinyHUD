@@ -84,8 +84,6 @@ find_package(CommonLibSSE CONFIG REQUIRED)
 
 find_package(spdlog REQUIRED CONFIG)
 
-add_subdirectory(extern/dkutil DKUtil)
-
 include_directories(extern/stb)
 
 find_package(imgui REQUIRED)
@@ -119,8 +117,8 @@ add_library(
 	${CMAKE_CURRENT_BINARY_DIR}/include/Version.h
 	${CMAKE_CURRENT_BINARY_DIR}/version.rc
 	.clang-format
-    .editorconfig
-    LamasTinyHUD.ini
+    	.editorconfig
+	LamasTinyHUD.ini
 )
 
 target_compile_features(
@@ -141,8 +139,7 @@ target_link_libraries(
 	PRIVATE
 		CommonLibSSE::CommonLibSSE
 		spdlog::spdlog
-        DKUtil::DKUtil
-        imgui::imgui
+        	imgui::imgui
 )
 
 link_directories(extern/stb) 

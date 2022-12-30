@@ -3,9 +3,9 @@ ScriptName LamasTinyHUD_MCM Extends MCM_ConfigBase
 Event OnConfigClose() native
 
 function RefreshItems()
-    RefreshMenu()
+    ;RefreshMenu()
     SetMenuOptions("uTopSelectedItem:TopPage", GetSelectedOptions(GetModSettingInt("uTopType:TopPage")))
-    RefreshMenu()
+    ;RefreshMenu()
 endfunction
 
 string[] function GetSelectedOptions(int a_id) native
@@ -25,11 +25,18 @@ EndEvent
 ;    RefreshItems()
 ;EndEvent
 
+string function GetResolutionWidth() native
+string function GetResolutionHeight() native
 
-;Event OnPageSelect(string a_page)
-;    RefreshMenu()
-;EndEvent
+Event OnPageSelect(string a_page)
+    if (a_page == "$LamasTinyHUD_TopPage")
+        SetMenuOptions("uTopSelectedItem:TopPage", GetSelectedOptions(GetModSettingInt("uTopType:TopPage")))
+    elseif ( a_page == "$LamasTinyHUD_HudSetting" )
+        SetModSettingString("sDisplayResolutionWidth:HudSetting",GetResolutionWidth())
+        SetModSettingString("sDisplayResolutionHeight:HudSetting",GetResolutionHeight())
+    endIf
+EndEvent
 
 Event OnConfigInit()
-    RefreshItems()
+    ;RefreshItems()
 EndEvent
