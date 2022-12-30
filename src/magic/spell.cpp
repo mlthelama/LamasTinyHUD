@@ -8,12 +8,15 @@ namespace magic {
 
         //add setting to ui, just allow instant cast on spells with fire and forget, because others drain
         //the magicka until it is gone
+        //TODO config for casting type
         std::vector<RE::SpellItem*> spell_list;
 
         if (spells->numSpells == 0) return spell_list;
 
         for (uint32_t i = 0; i < spells->numSpells; ++i) {
-            if (const auto spell = spells->spells[i]; spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell) {
+            if (const auto spell = spells->spells[i];
+                spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell && spell->GetCastingType() ==
+                RE::MagicSystem::CastingType::kFireAndForget) {
                 logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
                     spell->GetName(),
                     static_cast<uint32_t>(spell->GetCastingType()),
@@ -27,7 +30,8 @@ namespace magic {
         for (uint32_t i = 0; i < added_spells.size(); ++i) {
             //just consider normal spells
             if (const auto spell = added_spells.data()[i];
-                spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell) {
+                spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell && spell->GetCastingType() ==
+                RE::MagicSystem::CastingType::kFireAndForget) {
                 logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
                     spell->GetName(),
                     static_cast<uint32_t>(spell->GetCastingType()),

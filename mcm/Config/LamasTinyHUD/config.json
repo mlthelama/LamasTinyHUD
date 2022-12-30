@@ -182,9 +182,9 @@
                     "help": "$LamasTinyHUD_HudSetting_ImagePositionWidth_InfoText",
                     "valueOptions": {
                         "min": 0.0,
-                        "max": 4000.0,
+                        "max": 5000.0,
                         "step": 1.0,
-                        "formatString": "{1}",
+                        "formatString": "{0}",
                         "sourceType": "ModSettingFloat"
                     }
                 },
@@ -205,9 +205,35 @@
                     "help": "$LamasTinyHUD_HudSetting_ImagePositionHeight_InfoText",
                     "valueOptions": {
                         "min": 0.0,
-                        "max": 4000.0,
+                        "max": 5000.0,
                         "step": 1.0,
-                        "formatString": "{1}",
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fHudSlotPositionOffset:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotPositionOffset_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_SlotPositionOffset_InfoText",
+                    "valueOptions": {
+                        "min": 0.0,
+                        "max": 300.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fHudKeyPositionOffset:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_KeyPositionOffset_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_KeyPositionOffset_InfoText",
+                    "valueOptions": {
+                        "min": 0.0,
+                        "max": 300.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
                         "sourceType": "ModSettingFloat"
                     }
                 }

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 
+#include <imgui.h>
 #include <windows.h>
 #include <WinUser.h>
 
@@ -31,6 +32,12 @@ namespace ui {
 
         ui_renderer();
 
+        static void draw_element(ID3D11ShaderResourceView* a_texture, ImVec2 a_center, ImVec2 a_size, float a_angle);
+        static void draw_hud(float a_x, float a_y);
+        static void draw_slot(float a_x, float a_y, float a_offset_x, float a_offset_y);
+        static void draw_slots(float a_x, float a_y);
+        static void draw_key(float a_x, float a_y, float a_offset_x, float a_offset_y);
+        static void draw_keys(float a_x, float a_y);
         static void draw_ui();
         static bool load_texture_from_file(const char* filename,
             ID3D11ShaderResourceView** out_srv,

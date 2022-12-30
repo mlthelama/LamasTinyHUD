@@ -15,7 +15,9 @@
 
 #include "event/sink_event.h"
 #include "handle/set_data.h"
+#include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
+#include "util/constant.h"
 
 namespace ui {
     struct image {
@@ -24,7 +26,7 @@ namespace ui {
         int32_t height = 0;
     };
 
-    static image image_struct;
+    static image image_struct[static_cast<int32_t>(util::image_type::total)];
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
         const UINT u_msg,
@@ -172,6 +174,138 @@ namespace ui {
 
     ui_renderer::ui_renderer() = default;
 
+    void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
+        const ImVec2 a_center,
+        const ImVec2 a_size,
+        const float a_angle) {
+        const float cos_a = cosf(a_angle);
+        const float sin_a = sinf(a_angle);
+        const ImVec2 pos[4] =
+        {
+            a_center + ImRotate(ImVec2(-a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
+            a_center + ImRotate(ImVec2(+a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
+            a_center + ImRotate(ImVec2(+a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a),
+            a_center + ImRotate(ImVec2(-a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a)
+
+        };
+        constexpr ImVec2 uvs[4] =
+        {
+            ImVec2(0.0f, 0.0f),
+            ImVec2(1.0f, 0.0f),
+            ImVec2(1.0f, 1.0f),
+            ImVec2(0.0f, 1.0f)
+        };
+
+        ImGui::GetWindowDrawList()->AddImageQuad(a_texture,
+            pos[0],
+            pos[1],
+            pos[2],
+            pos[3],
+            uvs[0],
+            uvs[1],
+            uvs[2],
+            uvs[3],
+            IM_COL32_WHITE);
+    }
+
+    void ui_renderer::draw_hud(const float a_x, const float a_y) {
+        constexpr auto angle = 0.f;
+
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        ImVec2 center;
+        if (width_setting > a_x || height_setting > a_y) {
+            center = ImVec2(0.f, 0.f);
+        } else {
+            center = ImVec2(width_setting, height_setting);
+        }
+
+        const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::hud)];
+
+        const auto size = ImVec2(
+            static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width(),
+            static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height());
+
+        draw_element(texture, center, size, angle);
+    }
+
+
+    void ui_renderer::draw_slot(const float a_x, const float a_y, const float a_offset_x, const float a_offset_y) {
+        constexpr auto angle = 0.f;
+
+        //get data from normal hud, and add an offset config for each image
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        ImVec2 center;
+        if (width_setting > a_x || height_setting > a_y) {
+            center = ImVec2(0.f, 0.f);
+        } else {
+            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
+        }
+
+        const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::round)];
+
+        //for now use scale from normal setting, but later add separate config
+        const auto size = ImVec2(
+            static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
+            config::file_setting::get_extra_size_for_image(),
+            static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
+            config::file_setting::get_extra_size_for_image());
+
+        draw_element(texture, center, size, angle);
+    }
+
+    void ui_renderer::draw_slots(const float a_x, const float a_y) {
+        const auto offset = config::mcm_setting::get_hud_slot_position_offset();
+        //T -> -y
+        //R -> +X
+        //D -> +Y
+        //L -> -X
+        draw_slot(a_x, a_y, 0.f, -offset);
+        draw_slot(a_x, a_y, offset, 0.f);
+        draw_slot(a_x, a_y, 0.f, offset);
+        draw_slot(a_x, a_y, -offset, 0.f);
+    }
+
+
+    void ui_renderer::draw_key(const float a_x, const float a_y, const float a_offset_x, const float a_offset_y) {
+        constexpr auto angle = 0.f;
+
+        //get data from normal hud, and add an offset config for each image
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        ImVec2 center;
+        if (width_setting > a_x || height_setting > a_y) {
+            center = ImVec2(0.f, 0.f);
+        } else {
+            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
+        }
+
+        const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::key)];
+
+        //for now use scale from normal setting, but later add separate config
+        //add hardcoded 1px 
+        const auto size = ImVec2(
+            static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
+            config::file_setting::get_extra_size_for_image(),
+            static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
+            config::file_setting::get_extra_size_for_image());
+
+        draw_element(texture, center, size, angle);
+    }
+
+    void ui_renderer::draw_keys(const float a_x, const float a_y) {
+        const auto offset = config::mcm_setting::get_hud_key_position_offset();
+        draw_key(a_x, a_y, 0.f, -offset);
+        draw_key(a_x, a_y, offset, 0.f);
+        draw_key(a_x, a_y, 0.f, offset);
+        draw_key(a_x, a_y, -offset, 0.f);
+    }
+
+
     void ui_renderer::draw_ui() {
         if (!show_ui_)
             return;
@@ -207,7 +341,7 @@ namespace ui {
             ImGui::SetNextWindowPos(ImVec2(width_setting, height_setting));
         }*/
 
-        ImGui::Begin("lamas_tiny_hud", nullptr, window_flag);
+        ImGui::Begin(util::hud_name, nullptr, window_flag);
 
         //config settings are read after each mcm close event or when on data loaded on startup
         /*ImGui::Image(image_struct.texture,
@@ -231,55 +365,9 @@ namespace ui {
         0.5f * std::abs(screen_size_x),
         0.5f * std::abs(screen_size_y));*/
 
-        ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-        constexpr auto angle = 0.f;
-
-
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        ImVec2 center;
-        if (width_setting > screen_size_x || height_setting > screen_size_y) {
-            center = ImVec2(0.f, 0.f);
-        } else {
-            center = ImVec2(width_setting, height_setting);
-        }
-
-
-        //const auto size = ImVec2(static_cast<float>(image_struct.width), static_cast<float>(image_struct.height));
-        const auto size = ImVec2(
-            static_cast<float>(image_struct.width) * config::mcm_setting::get_hud_image_scale_width(),
-            static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height());
-
-        const float cos_a = cosf(angle);
-        const float sin_a = sinf(angle);
-        const ImVec2 pos[4] =
-        {
-            center + ImRotate(ImVec2(-size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a),
-            center + ImRotate(ImVec2(+size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a),
-            center + ImRotate(ImVec2(+size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a),
-            center + ImRotate(ImVec2(-size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a)
-
-        };
-        constexpr ImVec2 uvs[4] =
-        {
-            ImVec2(0.0f, 0.0f),
-            ImVec2(1.0f, 0.0f),
-            ImVec2(1.0f, 1.0f),
-            ImVec2(0.0f, 1.0f)
-        };
-
-        draw_list->AddImageQuad(image_struct.texture,
-            pos[0],
-            pos[1],
-            pos[2],
-            pos[3],
-            uvs[0],
-            uvs[1],
-            uvs[2],
-            uvs[3],
-            IM_COL32_WHITE);
+        draw_hud(screen_size_x, screen_size_y);
+        draw_slots(screen_size_x, screen_size_y);
+        draw_keys(screen_size_x, screen_size_y);
 
         ImGui::End();
     }
@@ -291,15 +379,21 @@ namespace ui {
         if (msg->type == SKSE::MessagingInterface::kDataLoaded && d_3d_init_hook::initialized) {
             // Read Texture only after game engine finished load all it renderer resource.
 
-            const std::string path = R"(.\Data\SKSE\Plugins\img\hud.png)";
-            if (load_texture_from_file(path.c_str(), &image_struct.texture, image_struct.width, image_struct.height)) {
-                logger::info("loaded texture {}", path.c_str());
-            } else {
-                logger::error("failed to load texture {}", path.c_str());
+            for (auto [type, path] : util::image_type_path_map) {
+                const auto idx = static_cast<int32_t>(type);
+                if (load_texture_from_file(path,
+                    &image_struct[idx].texture,
+                    image_struct[idx].width,
+                    image_struct[idx].height)) {
+                    logger::info("loaded texture {}"sv, path);
+                } else {
+                    logger::error("failed to load texture {}"sv, path);
+                }
+
+                image_struct[idx].width *= static_cast<int32_t>(get_resolution_scale_width());
+                image_struct[idx].height *= static_cast<int32_t>(get_resolution_scale_height());
             }
 
-            image_struct.width *= static_cast<int32_t>(get_resolution_scale_width());
-            image_struct.height *= static_cast<int32_t>(get_resolution_scale_height());
 
             show_ui_ = true;
             event::sink_events();

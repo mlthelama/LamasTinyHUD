@@ -5,6 +5,7 @@ namespace config {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
 
     static int log_level;
+    static float extra_size_for_image;
 
     void file_setting::load_setting() {
         logger::info("reading dll ini files");
@@ -16,6 +17,7 @@ namespace config {
 
         log_level = ini.GetLongValue("General", "iLogLevel", 2);
 
+        extra_size_for_image = static_cast<float>(ini.GetDoubleValue("Image", "fExtraSizeForImage", 1));
 
         logger::info("finished reading dll ini files. return.");
     }
@@ -33,7 +35,6 @@ namespace config {
         (void)ini.SaveFile(ini_path_);
     }*/
 
-    int file_setting::get_log_level() {
-        return log_level;
-    }
+    int file_setting::get_log_level() { return log_level; }
+    float file_setting::get_extra_size_for_image() { return extra_size_for_image; }
 };

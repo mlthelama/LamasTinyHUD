@@ -17,6 +17,12 @@ def make_rel_archive(a_args):
         os.path.join(a_args.src_dir, "img", "hud.png"),
         "SKSE/Plugins/img/hud.png")
     archive.write(
+        os.path.join(a_args.src_dir, "img", "key.png"),
+        "SKSE/Plugins/img/key.png")
+    archive.write(
+        os.path.join(a_args.src_dir, "img", "round.png"),
+        "SKSE/Plugins/img/round.png")
+    archive.write(
         os.path.join(a_args.src_dir, "mcm", "LamasTinyHUD.esl"),
         "LamasTinyHUD.esl")
     archive.write(

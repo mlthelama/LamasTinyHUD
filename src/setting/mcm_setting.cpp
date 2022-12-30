@@ -16,9 +16,10 @@ namespace config {
 
     static float hud_image_scale_width;
     static float hud_image_scale_height;
-
     static float hud_image_position_width;
     static float hud_image_position_height;
+    static float hud_slot_position_offset;
+    static float hud_key_position_offset;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -43,6 +44,8 @@ namespace config {
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight"));
             hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionWidth"));
             hud_image_position_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionHeight"));
+            hud_slot_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffset"));
+            hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset"));
         };
 
         read_mcm(mcm_default_setting);
@@ -62,7 +65,8 @@ namespace config {
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height; }
-
     float mcm_setting::get_hud_image_position_width() { return hud_image_position_width; }
     float mcm_setting::get_hud_image_position_height() { return hud_image_position_height; }
+    float mcm_setting::get_hud_slot_position_offset() { return hud_slot_position_offset; }
+    float mcm_setting::get_hud_key_position_offset() { return hud_key_position_offset; }
 }
