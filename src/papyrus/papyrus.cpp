@@ -5,6 +5,7 @@
 #include "magic/power.h"
 #include "magic/shout.h"
 #include "magic/spell.h"
+#include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/constant.h"
 #include "util/string_util.h"
@@ -15,6 +16,7 @@ namespace papyrus {
 
     void hud_mcm::on_config_close(RE::TESQuest*) {
         logger::info("on config close"sv);
+        config::mcm_setting::read_setting();
         handle::set_data::set_slot_data();
 
         index_ = util::selection_type::unset;

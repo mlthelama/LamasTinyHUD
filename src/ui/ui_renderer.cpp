@@ -11,6 +11,8 @@
 #include "stb_image.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui_internal.h"
+
 #include "event/sink_event.h"
 #include "handle/set_data.h"
 #include "setting/mcm_setting.h"
@@ -194,24 +196,90 @@ namespace ui {
 
 
         ImGui::SetNextWindowSize(ImVec2(screen_size_x, screen_size_y));
-        //ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
+        ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        /*const auto width_setting = config::mcm_setting::get_hud_image_position_width();
         const auto height_setting = config::mcm_setting::get_hud_image_position_height();
 
         if (width_setting > screen_size_x || height_setting > screen_size_y) {
             ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
         } else {
             ImGui::SetNextWindowPos(ImVec2(width_setting, height_setting));
-        }
+        }*/
 
         ImGui::Begin("lamas_tiny_hud", nullptr, window_flag);
 
         //config settings are read after each mcm close event or when on data loaded on startup
-        ImGui::Image(image_struct.texture,
+        /*ImGui::Image(image_struct.texture,
             ImVec2(static_cast<float>(image_struct.width) * config::mcm_setting::get_hud_image_scale_width(),
-                static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height()));
+                static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height()));*/
 
+        //maybe use addimage and, change the next window pos to 0, 0
+        //need to take a closer look at that
+        //ImDrawList::AddImage();
+
+        //ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        /*draw_list->AddImage(image_struct.texture, ImVec2(static_cast<float>(image_struct.width) * config::mcm_setting::get_hud_image_scale_width(),
+                static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height()));*/
+
+        //draw_list->AddImage(image_struct.texture,
+
+        /*ImGui::GetWindowDrawList()->AddImage(image_struct.texture, ImVec2(0,0),
+        ImVec2(screen_size_x, screen_size_y));*/
+
+        /*auto const center = ImVec2(
+        0.5f * std::abs(screen_size_x),
+        0.5f * std::abs(screen_size_y));*/
+
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+        constexpr auto angle = 0.f;
+
+
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        ImVec2 center;
+        if (width_setting > screen_size_x || height_setting > screen_size_y) {
+            center = ImVec2(0.f, 0.f);
+        } else {
+            center = ImVec2(width_setting, height_setting);
+        }
+
+
+        //const auto size = ImVec2(static_cast<float>(image_struct.width), static_cast<float>(image_struct.height));
+        const auto size = ImVec2(
+            static_cast<float>(image_struct.width) * config::mcm_setting::get_hud_image_scale_width(),
+            static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height());
+
+        const float cos_a = cosf(angle);
+        const float sin_a = sinf(angle);
+        const ImVec2 pos[4] =
+        {
+            center + ImRotate(ImVec2(-size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a),
+            center + ImRotate(ImVec2(+size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a),
+            center + ImRotate(ImVec2(+size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a),
+            center + ImRotate(ImVec2(-size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a)
+
+        };
+        constexpr ImVec2 uvs[4] =
+        {
+            ImVec2(0.0f, 0.0f),
+            ImVec2(1.0f, 0.0f),
+            ImVec2(1.0f, 1.0f),
+            ImVec2(0.0f, 1.0f)
+        };
+
+        draw_list->AddImageQuad(image_struct.texture,
+            pos[0],
+            pos[1],
+            pos[2],
+            pos[3],
+            uvs[0],
+            uvs[1],
+            uvs[2],
+            uvs[3],
+            IM_COL32_WHITE);
 
         ImGui::End();
     }
