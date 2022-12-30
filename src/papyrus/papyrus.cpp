@@ -59,11 +59,6 @@ namespace papyrus {
                 shout_data_list_->push_back(shout);
             }
         } else if (index_ == util::selection_type::power) {
-            /*if (const auto selected_power = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().selectedPower;
-                selected_power != nullptr) {
-                logger::trace("current selected power is"sv, selected_power->GetName());
-            }*/
-            //power_data_list
             for (const auto power_list = magic::power::get_powers(); const auto power : power_list) {
                 display_string_list->push_back(power->GetName());
                 power_data_list_->push_back(power);

@@ -2,40 +2,26 @@
 
 
 namespace magic {
-    std::vector<RE::SpellItem*> power::get_powers() {
-        const auto spells = RE::PlayerCharacter::GetSingleton()->GetActorBase()->GetSpellList();
-        auto added_spells = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().addedSpells;
-        //if races have powers too, we should check those as well
+    std::vector<RE::TESForm*> power::get_powers() {
+        //easier just to use items that have been favourited, just filter them 
+        std::vector<RE::TESForm*> power_list;
 
-        std::vector<RE::SpellItem*> power_list;
+        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
+            if (form->Is(RE::FormType::Spell)) {
+                if (const auto spell = form->As<RE::SpellItem>();
+                    spell->GetSpellType() == RE::MagicSystem::SpellType::kPower || spell->GetSpellType() ==
+                    RE::MagicSystem::SpellType::kLesserPower) {
+                    logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
+                        spell->GetName(),
+                        static_cast<uint32_t>(spell->GetCastingType()),
+                        spell->IsTwoHanded(),
+                        static_cast<uint32_t>(spell->GetSpellType()));
 
-        if (spells->numSpells == 0) return power_list;
-
-        for (uint32_t i = 0; i < spells->numSpells; ++i) {
-            if (const auto spell = spells->spells[i];
-                spell->GetSpellType() == RE::MagicSystem::SpellType::kPower || spell->GetSpellType() ==
-                RE::MagicSystem::SpellType::kLesserPower) {
-                logger::trace("power is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                    spell->GetName(),
-                    static_cast<uint32_t>(spell->GetCastingType()),
-                    spell->IsTwoHanded(),
-                    static_cast<uint32_t>(spell->GetSpellType()));
-                power_list.push_back(spell);
-            }
-        }
-
-
-        for (uint32_t i = 0; i < added_spells.size(); ++i) {
-            if (const auto spell = added_spells.data()[i];
-                spell->GetSpellType() == RE::MagicSystem::SpellType::kPower || spell->GetSpellType() ==
-                RE::MagicSystem::SpellType::kLesserPower) {
-                logger::trace("power is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                    spell->GetName(),
-                    static_cast<uint32_t>(spell->GetCastingType()),
-                    spell->IsTwoHanded(),
-                    static_cast<uint32_t>(spell->GetSpellType()));
-                if (std::ranges::find(power_list, spell) == power_list.end()) {
-                    power_list.push_back(spell);
+                    power_list.push_back(form);
+                } else {
+                    logger::trace(" {} is not a power, not needed here form type {}"sv,
+                        form->GetName(),
+                        form->GetFormType());
                 }
             }
         }
@@ -43,6 +29,7 @@ namespace magic {
         logger::trace("power list is size {}. return."sv, power_list.size());
         return power_list;
     }
+
 
     void power::equip_power(RE::TESForm* a_form) {
         logger::trace("try to equip power {}"sv, a_form->GetName());

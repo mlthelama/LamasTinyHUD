@@ -14,9 +14,9 @@ namespace papyrus {
 
     private:
         inline static auto inventory_data_list_ = new std::vector<RE::InventoryEntryData>;
-        inline static auto shout_data_list_ = new std::vector<RE::TESShout*>;
-        inline static auto spell_data_list_ = new std::vector<RE::SpellItem*>;
-        inline static auto power_data_list_ = new std::vector<RE::SpellItem*>;
+        inline static auto shout_data_list_ = new std::vector<RE::TESForm*>;
+        inline static auto spell_data_list_ = new std::vector<RE::TESForm*>;
+        inline static auto power_data_list_ = new std::vector<RE::TESForm*>;
         inline static auto weapon_data_list_ = new std::vector<RE::InventoryEntryData>;
         inline static util::selection_type index_ = util::selection_type::unset;
 

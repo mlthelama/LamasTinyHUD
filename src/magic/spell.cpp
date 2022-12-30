@@ -1,44 +1,24 @@
 ﻿#include "spell.h"
 
 namespace magic {
-    std::vector<RE::SpellItem*> spell::get_spells() {
-        const auto spells = RE::PlayerCharacter::GetSingleton()->GetActorBase()->GetSpellList();
-        auto added_spells = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().addedSpells;
-        //if races have spells too, we should check those as well
+    std::vector<RE::TESForm*> spell::get_spells() {
+        //easier just to use items that have been favourited, just filter them 
+        std::vector<RE::TESForm*> spell_list;
 
-        //add setting to ui, just allow instant cast on spells with fire and forget, because others drain
-        //the magicka until it is gone
-        //TODO config for casting type
-        std::vector<RE::SpellItem*> spell_list;
-
-        if (spells->numSpells == 0) return spell_list;
-
-        for (uint32_t i = 0; i < spells->numSpells; ++i) {
-            if (const auto spell = spells->spells[i];
-                spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell && spell->GetCastingType() ==
-                RE::MagicSystem::CastingType::kFireAndForget) {
-                logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                    spell->GetName(),
-                    static_cast<uint32_t>(spell->GetCastingType()),
-                    spell->IsTwoHanded(),
-                    static_cast<uint32_t>(spell->GetSpellType()));
-                spell_list.push_back(spell);
-            }
-        }
-
-
-        for (uint32_t i = 0; i < added_spells.size(); ++i) {
-            //just consider normal spells
-            if (const auto spell = added_spells.data()[i];
-                spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell && spell->GetCastingType() ==
-                RE::MagicSystem::CastingType::kFireAndForget) {
-                logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                    spell->GetName(),
-                    static_cast<uint32_t>(spell->GetCastingType()),
-                    spell->IsTwoHanded(),
-                    static_cast<uint32_t>(spell->GetSpellType()));
-                if (std::ranges::find(spell_list, spell) == spell_list.end()) {
-                    spell_list.push_back(spell);
+        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
+            if (form->Is(RE::FormType::Spell)) {
+                if (const auto spell = form->As<RE::SpellItem>();
+                    spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell) {
+                    logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
+                        spell->GetName(),
+                        static_cast<uint32_t>(spell->GetCastingType()),
+                        spell->IsTwoHanded(),
+                        static_cast<uint32_t>(spell->GetSpellType()));
+                    spell_list.push_back(form);
+                } else {
+                    logger::trace(" {} is not a spell, not needed here form type {}"sv,
+                        form->GetName(),
+                        form->GetFormType());
                 }
             }
         }

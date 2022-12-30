@@ -3,18 +3,15 @@
 #include "item/inventory.h"
 
 namespace magic {
-    std::vector<RE::TESShout*> shout::get_shouts() {
-        const auto spells = RE::PlayerCharacter::GetSingleton()->GetActorBase()->GetSpellList();
+    std::vector<RE::TESForm*> shout::get_shouts() {
+        //easier just to use items that have been favourited, just filter them 
+        std::vector<RE::TESForm*> shout_list;
 
-        std::vector<RE::TESShout*> shout_list;
-
-        if (spells->numShouts == 0) return shout_list;
-
-        //maybe check if the shout has been learned
-        for (uint32_t i = 0; i < spells->numShouts; ++i) {
-            const auto shout = spells->shouts[i];
-            logger::trace("shout is {}"sv, shout->GetName());
-            shout_list.push_back(shout);
+        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
+            if (form->Is(RE::FormType::Shout)) {
+                logger::trace("shout name is {}"sv, form->GetName());
+                shout_list.push_back(form);
+            }
         }
 
         logger::trace("shout list is size {}. return."sv, shout_list.size());

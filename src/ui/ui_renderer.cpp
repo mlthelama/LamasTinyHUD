@@ -196,6 +196,8 @@ namespace ui {
             ImVec2(0.0f, 1.0f)
         };
 
+
+        
         ImGui::GetWindowDrawList()->AddImageQuad(a_texture,
             pos[0],
             pos[1],
@@ -332,38 +334,7 @@ namespace ui {
         ImGui::SetNextWindowSize(ImVec2(screen_size_x, screen_size_y));
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 
-        /*const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        if (width_setting > screen_size_x || height_setting > screen_size_y) {
-            ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
-        } else {
-            ImGui::SetNextWindowPos(ImVec2(width_setting, height_setting));
-        }*/
-
         ImGui::Begin(util::hud_name, nullptr, window_flag);
-
-        //config settings are read after each mcm close event or when on data loaded on startup
-        /*ImGui::Image(image_struct.texture,
-            ImVec2(static_cast<float>(image_struct.width) * config::mcm_setting::get_hud_image_scale_width(),
-                static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height()));*/
-
-        //maybe use addimage and, change the next window pos to 0, 0
-        //need to take a closer look at that
-        //ImDrawList::AddImage();
-
-        //ImDrawList* draw_list = ImGui::GetWindowDrawList();
-        /*draw_list->AddImage(image_struct.texture, ImVec2(static_cast<float>(image_struct.width) * config::mcm_setting::get_hud_image_scale_width(),
-                static_cast<float>(image_struct.height) * config::mcm_setting::get_hud_image_scale_height()));*/
-
-        //draw_list->AddImage(image_struct.texture,
-
-        /*ImGui::GetWindowDrawList()->AddImage(image_struct.texture, ImVec2(0,0),
-        ImVec2(screen_size_x, screen_size_y));*/
-
-        /*auto const center = ImVec2(
-        0.5f * std::abs(screen_size_x),
-        0.5f * std::abs(screen_size_y));*/
 
         draw_hud(screen_size_x, screen_size_y);
         draw_slots(screen_size_x, screen_size_y);
