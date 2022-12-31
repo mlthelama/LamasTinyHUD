@@ -39,7 +39,6 @@ namespace config {
             std::stringstream selected_top_item_form_stream(mcm.GetValue("TopPage", "sSelectedTopItemForm", ""));
             selected_top_item_form_stream >> selected_top_item_form;
 
-            //static_cast<float>(a_ini.GetDoubleValue(a_sectionName, a_settingName));
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth"));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight"));
             hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionWidth"));

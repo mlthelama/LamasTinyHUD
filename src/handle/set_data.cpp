@@ -12,7 +12,8 @@ namespace handle {
             slot_setting_handle::get_singleton()->init_top_setting(form,
                 static_cast<util::selection_type>(config::mcm_setting::get_top_type()));
         } else {
-            logger::warn("form for top type is null. skip."sv);
+            slot_setting_handle::get_singleton()->init_top_setting(nullptr, util::selection_type::unset);
+            logger::warn("form for top type is null. remove the setting."sv);
         }
         logger::trace("done setting. return."sv);
     }
