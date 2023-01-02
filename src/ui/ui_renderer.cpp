@@ -197,7 +197,6 @@ namespace ui {
         };
 
 
-        
         ImGui::GetWindowDrawList()->AddImageQuad(a_texture,
             pos[0],
             pos[1],

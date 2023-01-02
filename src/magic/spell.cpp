@@ -1,5 +1,6 @@
 ﻿#include "spell.h"
 
+
 namespace magic {
     std::vector<RE::TESForm*> spell::get_spells() {
         //easier just to use items that have been favourited, just filter them 
@@ -22,6 +23,7 @@ namespace magic {
                 }
             }
         }
+
 
         logger::trace("spell list is size {}. return."sv, spell_list.size());
         return spell_list;
