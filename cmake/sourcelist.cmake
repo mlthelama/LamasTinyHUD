@@ -4,6 +4,8 @@ set(sources ${sources}
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
+	src/handle/key_position.cpp
+	src/handle/key_position.h
 	src/handle/page/fade_setting.h
 	src/handle/page/page_setting.h
 	src/handle/page/slot_setting.h
@@ -11,6 +13,8 @@ set(sources ${sources}
 	src/handle/page_handle.h
 	src/handle/set_data.cpp
 	src/handle/set_data.h
+	src/handle/setting_execute.cpp
+	src/handle/setting_execute.h
 	src/item/inventory.cpp
 	src/item/inventory.h
 	src/item/potion.cpp

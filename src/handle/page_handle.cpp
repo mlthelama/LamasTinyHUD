@@ -11,12 +11,13 @@ namespace handle {
     void page_handle::init_page([[maybe_unused]] uint32_t a_page,
         const page_setting::position a_position,
         RE::TESForm* a_form,
-        const util::selection_type a_type) {
+        const util::selection_type a_type,
+        const float a_offset) {
         logger::trace("init page {}, position {}, form {}, type {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
             util::string_util::int_to_hex(a_form),
-            static_cast<uint32_t>(a_type));
+            static_cast<int>(a_type));
         if (!this->data_) {
             this->data_ = new page_handle_data();
         }
@@ -29,6 +30,7 @@ namespace handle {
         auto* fade = new fade_setting();
         fade->action = fade_setting::action::unset;
         fade->alpha = fade_setting::alpha::max;
+        fade->current_alpha = static_cast<uint32_t>(fade_setting::alpha::max);
 
         page->fade_setting = fade;
 
@@ -41,13 +43,36 @@ namespace handle {
 
         page->slot_settings = *slots;
 
-        data->page_settings.insert({ a_position, page });
+        float offset_x = 0.f;
+        float offset_y = 0.f;
+        switch (a_position) {
+            case page_setting::position::top:
+                offset_y = -a_offset;
+                break;
+            case page_setting::position::right:
+                offset_x = a_offset;
+                break;
+            case page_setting::position::down:
+                offset_y = a_offset;
+                break;
+            case page_setting::position::left:
+                offset_x = -a_offset;
+                break;
+        }
+
+        auto* offset = new offset_setting();
+        offset->offset_x = offset_x;
+        offset->offset_y = offset_y;
+
+        page->offset_setting = offset;
+
+        data->page_settings[a_position] = page;
 
         logger::trace("done setting page {}, position {}, form {}, type {}."sv,
             a_page,
             static_cast<uint32_t>(a_position),
             util::string_util::int_to_hex(a_form),
-            static_cast<uint32_t>(a_type));
+            static_cast<int>(a_type));
     }
 
     page_setting* page_handle::get_page_setting(const page_setting::position a_position) const {

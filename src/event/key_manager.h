@@ -35,6 +35,8 @@ namespace event {
 
         uint32_t key_ = k_invalid;
         uint32_t key_top_action_ = k_invalid;
+        uint32_t key_right_action_ = k_invalid;
+        uint32_t key_bottom_action_ = k_invalid;
         uint32_t key_left_action_ = k_invalid;
     };
 }

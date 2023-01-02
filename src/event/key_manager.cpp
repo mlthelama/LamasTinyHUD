@@ -1,12 +1,10 @@
 ﻿#include "key_manager.h"
 
+#include "handle/key_position.h"
 #include "handle/page_handle.h"
-#include "item/potion.h"
-#include "item/weapon.h"
-#include "magic/power.h"
-#include "magic/shout.h"
-#include "magic/spell.h"
+#include "handle/setting_execute.h"
 #include "setting/mcm_setting.h"
+#include "util/string_util.h"
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;
@@ -27,16 +25,14 @@ namespace event {
         using device_type = RE::INPUT_DEVICE;
 
 
-        //key_ = static_cast<uint32_t>(setting::get_toggle_key());
-        //key_ = static_cast<uint32_t>(48);
-        key_left_action_ = config::mcm_setting::get_left_action_key();
         key_top_action_ = config::mcm_setting::get_top_action_key();
+        key_right_action_ = config::mcm_setting::get_right_action_key();
+        key_bottom_action_ = config::mcm_setting::get_bottom_action_key();
+        key_left_action_ = config::mcm_setting::get_left_action_key();
 
-        /*if (key_ == k_invalid) {
-            return event_result::kContinue;
-        }*/
 
-        if (!is_key_valid(key_left_action_) || !is_key_valid(key_top_action_)) {
+        if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) || !
+            is_key_valid(key_left_action_)) {
             return event_result::kContinue;
         }
 
@@ -59,20 +55,22 @@ namespace event {
             //this stays static_cast
             const auto button = static_cast<RE::ButtonEvent*>(event);
             // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-            if (!button->IsDown()) {
+
+
+            key_ = button->idCode;
+            if (key_ == k_invalid) {
                 continue;
             }
 
-            auto key = button->idCode;
             switch (button->device.get()) {
                 case device_type::kMouse:
-                    key += k_mouse_offset;
+                    key_ += k_mouse_offset;
                     break;
                 case device_type::kKeyboard:
-                    key += k_keyboard_offset;
+                    key_ += k_keyboard_offset;
                     break;
                 case device_type::kGamepad:
-                    key = get_gamepad_index(static_cast<RE::BSWin32GamepadDevice::Key>(key));
+                    key_ = get_gamepad_index(static_cast<RE::BSWin32GamepadDevice::Key>(key_));
                     break;
                 default:
                     continue;
@@ -87,45 +85,46 @@ namespace event {
                 continue;
             }
 
-
-            if (key == key_left_action_) {
-                logger::debug("configured Key ({}) pressed"sv, key);
-
-
-                break;
-            }
-            if (key == key_top_action_) {
-                logger::debug("top configured Key ({}) pressed"sv, key);
-                //check bla bla type
-
-                const auto page =
-                    handle::page_handle::get_singleton()->get_page_setting(handle::page_setting::position::top);
-                if (page == nullptr) {
-                    logger::warn("nothing to do, nothing set"sv);
+            //init fade setting here
+            //currently not used, not sure this is te correct place
+            /*if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
+                                     || key_ ==
+                                     key_left_action_)) {
+                logger::debug("configured Key ({}) is down"sv, key_);
+                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                if (page_setting == nullptr) {
+                    logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
 
-                switch (page->slot_settings.front()->type) {
-                    case util::selection_type::unset:
-                        logger::warn("nothing to do, nothing set"sv);
-                        break;
-                    case util::selection_type::item:
-                        item::potion::consume_potion(page->slot_settings.front()->form);
-                        break;
-                    case util::selection_type::magic:
-                        magic::spell::instant_cast(page->slot_settings.front()->form);
-                        break;
-                    case util::selection_type::shout:
-                        magic::shout::equip_shout(page->slot_settings.front()->form);
-                        break;
-                    case util::selection_type::power:
-                        //make a setting in mcm for equip or instant cast
-                        magic::power::equip_power(page->slot_settings.front()->form);
-                    //magic::spell::instant_cast(top_handle);
-                        break;
-                    case util::selection_type::weapon:
-                        item::weapon::equip_weapon(page->slot_settings.front()->form);
-                        break;
+                logger::trace("trying to set fade setting for position {} ... "sv,
+                    static_cast<uint32_t>(page_setting->pos));
+                page_setting->fade_setting->action = handle::fade_setting::action::out;
+                page_setting->fade_setting->alpha = handle::fade_setting::alpha::min;
+                page_setting->fade_setting->current_alpha = static_cast<uint32_t>(handle::fade_setting::alpha::max);
+                logger::trace("done settinging fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
+            }*/
+
+
+            if (!button->IsDown()) {
+                continue;
+            }
+
+            if (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_ || key_ ==
+                key_left_action_) {
+                logger::debug("configured Key ({}) pressed"sv, key_);
+                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                if (page_setting == nullptr) {
+                    logger::trace("setting for key {} is null. return."sv, key_);
+                    break;
+                }
+
+                for (const auto setting : page_setting->slot_settings) {
+                    logger::trace("executing setting for type {}, action {}, form {} ..."sv,
+                        static_cast<uint32_t>(setting->type),
+                        static_cast<uint32_t>(setting->action),
+                        util::string_util::int_to_hex(setting->form));
+                    handle::setting_execute::execute_setting(setting);
                 }
 
                 break;

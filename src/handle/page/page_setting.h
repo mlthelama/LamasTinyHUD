@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "fade_setting.h"
+#include "offset_setting.h"
 #include "slot_setting.h"
 
 namespace handle {
@@ -10,5 +11,6 @@ namespace handle {
         position pos;
         fade_setting* fade_setting = nullptr;
         std::vector<slot_setting*> slot_settings;
+        offset_setting* offset_setting = nullptr;
     };
 }

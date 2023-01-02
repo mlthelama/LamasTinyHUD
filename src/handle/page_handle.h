@@ -5,10 +5,11 @@ namespace handle {
     class page_handle {
     public:
         static page_handle* get_singleton();
-        void init_page(uint32_t a_page,
+        void init_page([[maybe_unused]] uint32_t a_page,
             page_setting::position a_position,
             RE::TESForm* a_form,
-            util::selection_type a_type);
+            util::selection_type a_type,
+            float a_offset);
         [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
 

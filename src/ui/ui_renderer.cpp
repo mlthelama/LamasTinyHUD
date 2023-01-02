@@ -14,6 +14,7 @@
 #include "imgui_internal.h"
 
 #include "event/sink_event.h"
+#include "handle/page_handle.h"
 #include "handle/set_data.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
@@ -238,15 +239,12 @@ namespace ui {
     }
 
     void ui_renderer::draw_slots(const float a_x, const float a_y) {
-        const auto offset = config::mcm_setting::get_hud_slot_position_offset();
-        //T -> -y
-        //R -> +X
-        //D -> +Y
-        //L -> -X
-        draw_slot(a_x, a_y, 0.f, -offset);
-        draw_slot(a_x, a_y, offset, 0.f);
-        draw_slot(a_x, a_y, 0.f, offset);
-        draw_slot(a_x, a_y, -offset, 0.f);
+        for (const auto settings = handle::page_handle::get_singleton()->get_page(); auto [position, page_setting] :
+             settings) {
+            //we could access fade settings here too
+            const auto offset_setting = page_setting->offset_setting;
+            draw_slot(a_x, a_y, offset_setting->offset_x, offset_setting->offset_y);
+        }
     }
 
 

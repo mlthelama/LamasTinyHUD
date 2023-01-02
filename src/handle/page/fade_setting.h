@@ -9,5 +9,6 @@ namespace handle {
 
         action action = action::unset;
         alpha alpha = alpha::min;
+        uint32_t current_alpha;
     };
 }
