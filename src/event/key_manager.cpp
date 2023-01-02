@@ -97,13 +97,14 @@ namespace event {
             if (key == key_top_action_) {
                 logger::debug("top configured Key ({}) pressed"sv, key);
                 //check bla bla type
-                
-                const auto page = handle::page_handle::get_singleton()->get_page_setting(handle::page_setting::position::top);
+
+                const auto page = handle::page_handle::get_singleton()->get_page_setting(
+                    handle::page_setting::position::top);
                 if (page == nullptr) {
                     logger::warn("nothing to do, nothing set"sv);
                     break;
                 }
-                
+
                 switch (page->slot_settings.front()->type) {
                     case util::selection_type::unset:
                         logger::warn("nothing to do, nothing set"sv);
@@ -120,7 +121,7 @@ namespace event {
                     case util::selection_type::power:
                         //make a setting in mcm for equip or instant cast
                         magic::power::equip_power(page->slot_settings.front()->form);
-                        //magic::spell::instant_cast(top_handle);
+                    //magic::spell::instant_cast(top_handle);
                         break;
                     case util::selection_type::weapon:
                         item::weapon::equip_weapon(page->slot_settings.front()->form);

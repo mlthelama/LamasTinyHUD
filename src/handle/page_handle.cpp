@@ -40,9 +40,9 @@ namespace handle {
         slots->push_back(slot);
 
         page->slot_settings = *slots;
-        
-        data->page_settings.insert({a_position, page});
-        
+
+        data->page_settings.insert({ a_position, page });
+
         logger::trace("done setting page {}, position {}, form {}, type {}."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -51,12 +51,13 @@ namespace handle {
     }
 
     page_setting* page_handle::get_page_setting(const page_setting::position a_position) const {
-        if (const page_handle_data* data = this->data_; data && !data_->page_settings.empty() && data_->page_settings[a_position]) {
+        if (const page_handle_data* data = this->data_;
+            data && !data_->page_settings.empty() && data_->page_settings[a_position]) {
             return data_->page_settings[a_position];
         }
         return nullptr;
     }
-    
+
     std::map<page_setting::position, page_setting*> page_handle::get_page() const {
         if (const page_handle_data* data = this->data_; data && !data_->page_settings.empty()) {
             return data_->page_settings;
