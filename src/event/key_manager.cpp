@@ -98,8 +98,8 @@ namespace event {
                 logger::debug("top configured Key ({}) pressed"sv, key);
                 //check bla bla type
 
-                const auto page = handle::page_handle::get_singleton()->get_page_setting(
-                    handle::page_setting::position::top);
+                const auto page =
+                    handle::page_handle::get_singleton()->get_page_setting(handle::page_setting::position::top);
                 if (page == nullptr) {
                     logger::warn("nothing to do, nothing set"sv);
                     break;

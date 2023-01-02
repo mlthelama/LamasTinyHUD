@@ -9,8 +9,8 @@ namespace item {
         RE::TESBoundObject* obj = nullptr;
         //RE::InventoryEntryData inv_data;
         //uint32_t left;
-        for (auto potential_items = inventory::get_inventory_weapon_items(); const auto& [item, invData] :
-             potential_items) {
+        for (auto potential_items = inventory::get_inventory_weapon_items();
+             const auto& [item, invData] : potential_items) {
             if (invData.second->object->formID == a_form->formID) {
                 obj = item;
                 //inv_data = *invData.second;

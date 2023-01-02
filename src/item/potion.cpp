@@ -11,8 +11,8 @@ namespace item {
         RE::TESBoundObject* obj = nullptr;
         RE::InventoryEntryData inv_data;
         uint32_t left;
-        for (auto potential_items = inventory::get_inventory_magic_items(); const auto& [item, invData] :
-             potential_items) {
+        for (auto potential_items = inventory::get_inventory_magic_items();
+             const auto& [item, invData] : potential_items) {
             if (invData.second->object->formID == a_form->formID) {
                 obj = item;
                 inv_data = *invData.second;
@@ -30,9 +30,8 @@ namespace item {
         //update count and
         const auto alchemy_potion = obj->As<RE::AlchemyItem>();
         logger::trace("calling drink potion {}, count left {}"sv, alchemy_potion->GetName(), left);
-        //build a "cache" with formid and count, validate after consumption 
-        RE::PlayerCharacter::GetSingleton()->DrinkPotion(alchemy_potion,
-            inv_data.extraLists->front());
+        //build a "cache" with formid and count, validate after consumption
+        RE::PlayerCharacter::GetSingleton()->DrinkPotion(alchemy_potion, inv_data.extraLists->front());
         logger::trace("drank potion {}. return."sv, alchemy_potion->GetName());
     }
 }

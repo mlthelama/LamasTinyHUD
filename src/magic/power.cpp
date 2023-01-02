@@ -3,14 +3,14 @@
 
 namespace magic {
     std::vector<RE::TESForm*> power::get_powers() {
-        //easier just to use items that have been favourited, just filter them 
+        //easier just to use items that have been favourited, just filter them
         std::vector<RE::TESForm*> power_list;
 
         for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
             if (form->Is(RE::FormType::Spell)) {
                 if (const auto spell = form->As<RE::SpellItem>();
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kPower || spell->GetSpellType() ==
-                    RE::MagicSystem::SpellType::kLesserPower) {
+                    spell->GetSpellType() == RE::MagicSystem::SpellType::kPower ||
+                    spell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
                     logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
                         spell->GetName(),
                         static_cast<uint32_t>(spell->GetCastingType()),

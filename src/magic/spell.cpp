@@ -3,7 +3,7 @@
 
 namespace magic {
     std::vector<RE::TESForm*> spell::get_spells() {
-        //easier just to use items that have been favourited, just filter them 
+        //easier just to use items that have been favourited, just filter them
         std::vector<RE::TESForm*> spell_list;
 
         for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
@@ -42,13 +42,8 @@ namespace magic {
             spell->avEffectSetting->data.dualCastScale,
             spell->avEffectSetting->data.baseCost);*/
         const auto actor = RE::PlayerCharacter::GetSingleton()->As<RE::Actor>();
-        actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(spell,
-            false,
-            actor,
-            1.0f,
-            false,
-            0.0f,
-            nullptr);
+        actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
+             ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
         logger::trace("instant casted spell {}. return."sv, a_form->GetName());
     }
 }

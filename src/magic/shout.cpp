@@ -4,7 +4,7 @@
 
 namespace magic {
     std::vector<RE::TESForm*> shout::get_shouts() {
-        //easier just to use items that have been favourited, just filter them 
+        //easier just to use items that have been favourited, just filter them
         std::vector<RE::TESForm*> shout_list;
 
         for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {

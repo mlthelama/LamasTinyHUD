@@ -12,25 +12,11 @@ namespace util {
 
     constexpr auto hud_name = "lamas_tiny_hud";
 
-    enum class selection_type {
-        unset = -1,
-        item = 0,
-        magic = 1,
-        shout = 2,
-        power = 3,
-        weapon = 4
-    };
+    enum class selection_type { unset = -1, item = 0, magic = 1, shout = 2, power = 3, weapon = 4 };
 
-    enum class image_type {
-        hud = 0,
-        round = 1,
-        key = 2,
-        total = 3
-    };
+    enum class image_type { hud = 0, round = 1, key = 2, total = 3 };
 
-    inline static std::map<image_type, const char*> image_type_path_map = {
-        { image_type::hud, hud_image_path },
-        { image_type::round, round_image_path },
-        { image_type::key, key_image_path }
-    };
+    inline static std::map<image_type, const char*> image_type_path_map = { { image_type::hud, hud_image_path },
+                                                                            { image_type::round, round_image_path },
+                                                                            { image_type::key, key_image_path } };
 }

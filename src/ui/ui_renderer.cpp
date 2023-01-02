@@ -86,10 +86,7 @@ namespace ui {
         initialized.store(true);
 
         wnd_proc_hook::func = reinterpret_cast<WNDPROC>(
-            SetWindowLongPtrA(
-                sd.OutputWindow,
-                GWLP_WNDPROC,
-                reinterpret_cast<LONG_PTR>(wnd_proc_hook::thunk)));
+            SetWindowLongPtrA(sd.OutputWindow, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc_hook::thunk)));
         if (!wnd_proc_hook::func) {
             logger::error("SetWindowLongPtrA failed"sv);
         }
@@ -180,33 +177,17 @@ namespace ui {
         const float a_angle) {
         const float cos_a = cosf(a_angle);
         const float sin_a = sinf(a_angle);
-        const ImVec2 pos[4] =
-        {
-            a_center + ImRotate(ImVec2(-a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
-            a_center + ImRotate(ImVec2(+a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
-            a_center + ImRotate(ImVec2(+a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a),
-            a_center + ImRotate(ImVec2(-a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a)
+        const ImVec2 pos[4] = { a_center + ImRotate(ImVec2(-a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
+                                a_center + ImRotate(ImVec2(+a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
+                                a_center + ImRotate(ImVec2(+a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a),
+                                a_center + ImRotate(ImVec2(-a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a)
 
         };
-        constexpr ImVec2 uvs[4] =
-        {
-            ImVec2(0.0f, 0.0f),
-            ImVec2(1.0f, 0.0f),
-            ImVec2(1.0f, 1.0f),
-            ImVec2(0.0f, 1.0f)
-        };
+        constexpr ImVec2 uvs[4] = { ImVec2(0.0f, 0.0f), ImVec2(1.0f, 0.0f), ImVec2(1.0f, 1.0f), ImVec2(0.0f, 1.0f) };
 
 
-        ImGui::GetWindowDrawList()->AddImageQuad(a_texture,
-            pos[0],
-            pos[1],
-            pos[2],
-            pos[3],
-            uvs[0],
-            uvs[1],
-            uvs[2],
-            uvs[3],
-            IM_COL32_WHITE);
+        ImGui::GetWindowDrawList()
+            ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], IM_COL32_WHITE);
     }
 
     void ui_renderer::draw_hud(const float a_x, const float a_y) {
@@ -224,8 +205,7 @@ namespace ui {
 
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::hud)];
 
-        const auto size = ImVec2(
-            static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width(),
+        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width(),
             static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height());
 
         draw_element(texture, center, size, angle);
@@ -249,9 +229,8 @@ namespace ui {
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::round)];
 
         //for now use scale from normal setting, but later add separate config
-        const auto size = ImVec2(
-            static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
-            config::file_setting::get_extra_size_for_image(),
+        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
+                                 config::file_setting::get_extra_size_for_image(),
             static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
             config::file_setting::get_extra_size_for_image());
 
@@ -288,10 +267,9 @@ namespace ui {
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::key)];
 
         //for now use scale from normal setting, but later add separate config
-        //add hardcoded 1px 
-        const auto size = ImVec2(
-            static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
-            config::file_setting::get_extra_size_for_image(),
+        //add hardcoded 1px
+        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
+                                 config::file_setting::get_extra_size_for_image(),
             static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
             config::file_setting::get_extra_size_for_image());
 
@@ -311,9 +289,8 @@ namespace ui {
         if (!show_ui_)
             return;
 
-        if (const auto ui = RE::UI::GetSingleton();
-            !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() || !ui->IsShowingMenus() || !ui->GetMenu<
-                RE::HUDMenu>()) {
+        if (const auto ui = RE::UI::GetSingleton(); !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
+                                                    !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>()) {
             return;
         }
 
@@ -391,19 +368,11 @@ namespace ui {
         return true;
     }
 
-    float ui_renderer::get_resolution_scale_width() {
-        return ImGui::GetIO().DisplaySize.x / 1920.f;
-    }
+    float ui_renderer::get_resolution_scale_width() { return ImGui::GetIO().DisplaySize.x / 1920.f; }
 
-    float ui_renderer::get_resolution_scale_height() {
-        return ImGui::GetIO().DisplaySize.y / 1080.f;
-    }
+    float ui_renderer::get_resolution_scale_height() { return ImGui::GetIO().DisplaySize.y / 1080.f; }
 
-    float ui_renderer::get_resolution_width() {
-        return ImGui::GetIO().DisplaySize.x;
-    }
+    float ui_renderer::get_resolution_width() { return ImGui::GetIO().DisplaySize.x; }
 
-    float ui_renderer::get_resolution_height() {
-        return ImGui::GetIO().DisplaySize.y;
-    }
+    float ui_renderer::get_resolution_height() { return ImGui::GetIO().DisplaySize.y; }
 }

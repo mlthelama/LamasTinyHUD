@@ -30,6 +30,6 @@ namespace stl {
 namespace logger = SKSE::log;
 
 #define DLLEXPORT __declspec(dllexport)
-#define EXTERN_C       extern "C"
+#define EXTERN_C extern "C"
 
 #include "Version.h"

@@ -1,9 +1,9 @@
 ﻿#pragma once
 
 
+#include <WinUser.h>
 #include <imgui.h>
 #include <windows.h>
-#include <WinUser.h>
 
 namespace ui {
     class ui_renderer {

@@ -34,16 +34,15 @@ namespace papyrus {
 
         if (index_ == util::selection_type::item) {
             //maybe add a check if it is a potion
-            for (auto potential_items = item::inventory::get_inventory_magic_items(); const auto& [item, inv_data] :
-                 potential_items) {
+            for (auto potential_items = item::inventory::get_inventory_magic_items();
+                 const auto& [item, inv_data] : potential_items) {
                 //just consider favored items
                 const auto& [num_items, entry] = inv_data;
                 if (inv_data.second->IsFavorited()) {
                     logger::trace("Item name {}, count {}"sv, entry->GetDisplayName(), num_items);
                     inventory_data_list_->push_back(*inv_data.second);
                     display_string_list->push_back(
-                        RE::BSFixedString{
-                            fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
                 }
             }
             logger::trace("potion list is size {}"sv, inventory_data_list_->size());
@@ -64,16 +63,15 @@ namespace papyrus {
                 power_data_list_->push_back(power);
             }
         } else if (index_ == util::selection_type::weapon) {
-            for (auto potential_weapons = item::inventory::get_inventory_weapon_items(); const auto& [item, inv_data] :
-                 potential_weapons) {
+            for (auto potential_weapons = item::inventory::get_inventory_weapon_items();
+                 const auto& [item, inv_data] : potential_weapons) {
                 //just consider favored items
                 const auto& [num_items, entry] = inv_data;
                 if (inv_data.second->IsFavorited()) {
                     logger::trace("Weapon name {}, count {}"sv, entry->GetDisplayName(), num_items);
                     weapon_data_list_->push_back(*inv_data.second);
                     display_string_list->push_back(
-                        RE::BSFixedString{
-                            fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
                 }
             }
             logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
@@ -129,7 +127,9 @@ namespace papyrus {
             }
         }
 
-        if (form_id == 0) return 0;
+        if (form_id == 0) {
+            return 0;
+        }
 
         const auto form = RE::TESForm::LookupByID(form_id);
         logger::trace("Item is {}, formid {}, formid not translated {}. return."sv,
