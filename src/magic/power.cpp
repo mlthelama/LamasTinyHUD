@@ -19,7 +19,7 @@ namespace magic {
 
                     power_list.push_back(form);
                 } else {
-                    logger::trace(" {} is not a power, not needed here form type {}"sv,
+                    logger::trace("{} is not a power, not needed here form type {}"sv,
                         form->GetName(),
                         form->GetFormType());
                 }

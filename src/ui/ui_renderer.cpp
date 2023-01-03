@@ -238,12 +238,13 @@ namespace ui {
         draw_element(texture, center, size, angle);
     }
 
-    void ui_renderer::draw_slots(const float a_x, const float a_y) {
-        for (const auto settings = handle::page_handle::get_singleton()->get_page(); auto [position, page_setting] :
-             settings) {
+    void ui_renderer::draw_slots(const float a_x,
+        const float a_y,
+        const std::map<position, page_setting*>& a_settings) {
+        for (auto [position, page_setting] : a_settings) {
             //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
-            draw_slot(a_x, a_y, offset_setting->offset_x, offset_setting->offset_y);
+            draw_slot(a_x, a_y, offset_setting->offset_slot_x, offset_setting->offset_slot_y);
         }
     }
 
@@ -274,12 +275,12 @@ namespace ui {
         draw_element(texture, center, size, angle);
     }
 
-    void ui_renderer::draw_keys(const float a_x, const float a_y) {
-        const auto offset = config::mcm_setting::get_hud_key_position_offset();
-        draw_key(a_x, a_y, 0.f, -offset);
-        draw_key(a_x, a_y, offset, 0.f);
-        draw_key(a_x, a_y, 0.f, offset);
-        draw_key(a_x, a_y, -offset, 0.f);
+    void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
+        for (auto [position, page_setting] : a_settings) {
+            //we could access fade settings here too
+            const auto offset_setting = page_setting->offset_setting;
+            draw_key(a_x, a_y, offset_setting->offset_key_x, offset_setting->offset_key_y);
+        }
     }
 
 
@@ -310,9 +311,11 @@ namespace ui {
 
         ImGui::Begin(util::hud_name, nullptr, window_flag);
 
+        const auto settings = handle::page_handle::get_singleton()->get_page();
+
         draw_hud(screen_size_x, screen_size_y);
-        draw_slots(screen_size_x, screen_size_y);
-        draw_keys(screen_size_x, screen_size_y);
+        draw_slots(screen_size_x, screen_size_y, settings);
+        draw_keys(screen_size_x, screen_size_y, settings);
 
         ImGui::End();
     }

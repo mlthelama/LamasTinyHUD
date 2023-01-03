@@ -12,7 +12,8 @@ namespace handle {
         const page_setting::position a_position,
         RE::TESForm* a_form,
         const util::selection_type a_type,
-        const float a_offset) {
+        const float a_slot_offset,
+        const float a_key_offset) {
         logger::trace("init page {}, position {}, form {}, type {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -45,24 +46,16 @@ namespace handle {
 
         float offset_x = 0.f;
         float offset_y = 0.f;
-        switch (a_position) {
-            case page_setting::position::top:
-                offset_y = -a_offset;
-                break;
-            case page_setting::position::right:
-                offset_x = a_offset;
-                break;
-            case page_setting::position::down:
-                offset_y = a_offset;
-                break;
-            case page_setting::position::left:
-                offset_x = -a_offset;
-                break;
-        }
+
+        get_offset_values(a_position, a_slot_offset, offset_x, offset_y);
 
         auto* offset = new offset_setting();
-        offset->offset_x = offset_x;
-        offset->offset_y = offset_y;
+        offset->offset_slot_x = offset_x;
+        offset->offset_slot_y = offset_y;
+
+        get_offset_values(a_position, a_key_offset, offset_x, offset_y);
+        offset->offset_key_x = offset_x;
+        offset->offset_key_y = offset_y;
 
         page->offset_setting = offset;
 
@@ -88,5 +81,29 @@ namespace handle {
             return data_->page_settings;
         }
         return {};
+    }
+
+    void page_handle::get_offset_values(const page_setting::position a_position,
+        const float a_setting,
+        float& offset_x,
+        float& offset_y) {
+        offset_x = 0.f;
+        offset_y = 0.f;
+        // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
+        // ReSharper disable once CppIncompleteSwitchStatement
+        switch (a_position) {
+            case page_setting::position::top:
+                offset_y = -a_setting;
+                break;
+            case page_setting::position::right:
+                offset_x = a_setting;
+                break;
+            case page_setting::position::down:
+                offset_y = a_setting;
+                break;
+            case page_setting::position::left:
+                offset_x = -a_setting;
+                break;
+        }
     }
 }

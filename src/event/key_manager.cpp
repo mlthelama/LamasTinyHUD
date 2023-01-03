@@ -63,6 +63,7 @@ namespace event {
             }
 
             switch (button->device.get()) {
+                // NOLINT(clang-diagnostic-switch-enum)
                 case device_type::kMouse:
                     key_ += k_mouse_offset;
                     break;
@@ -186,7 +187,7 @@ namespace event {
             case key::kRightTrigger:
                 index = 15;
                 break;
-            default:
+            default: // NOLINT(clang-diagnostic-covered-switch-default)
                 index = k_invalid;
                 break;
         }

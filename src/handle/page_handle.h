@@ -9,7 +9,8 @@ namespace handle {
             page_setting::position a_position,
             RE::TESForm* a_form,
             util::selection_type a_type,
-            float a_offset);
+            float a_slot_offset,
+            float a_key_offset);
         [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
 
@@ -24,6 +25,8 @@ namespace handle {
             : data_(nullptr) {}
 
         ~page_handle() = default;
+
+        static void get_offset_values(page_setting::position a_position, float a_setting, float& offset_x, float& offset_y);
 
         struct page_handle_data {
             std::map<page_setting::position, page_setting*> page_settings;
