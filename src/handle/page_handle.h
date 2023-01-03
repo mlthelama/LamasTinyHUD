@@ -26,7 +26,10 @@ namespace handle {
 
         ~page_handle() = default;
 
-        static void get_offset_values(page_setting::position a_position, float a_setting, float& offset_x, float& offset_y);
+        static void get_offset_values(page_setting::position a_position,
+            float a_setting,
+            float& offset_x,
+            float& offset_y);
 
         struct page_handle_data {
             std::map<page_setting::position, page_setting*> page_settings;

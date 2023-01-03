@@ -1,5 +1,4 @@
 ﻿#include "mcm_setting.h"
-
 #include <SimpleIni.h>
 
 namespace config {

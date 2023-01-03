@@ -1,7 +1,4 @@
 ﻿#include "key_manager.h"
-
-#include "handle/key_position.h"
-#include "handle/page_handle.h"
 #include "handle/setting_execute.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"

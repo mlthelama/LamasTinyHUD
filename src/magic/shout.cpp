@@ -1,7 +1,5 @@
 ﻿#include "shout.h"
 
-#include "item/inventory.h"
-
 namespace magic {
     std::vector<RE::TESForm*> shout::get_shouts() {
         //easier just to use items that have been favourited, just filter them

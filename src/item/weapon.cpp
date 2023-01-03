@@ -1,5 +1,4 @@
 ﻿#include "weapon.h"
-
 #include "inventory.h"
 
 namespace item {

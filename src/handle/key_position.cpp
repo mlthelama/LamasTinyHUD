@@ -1,5 +1,4 @@
 ﻿#include "key_position.h"
-
 #include "setting/mcm_setting.h"
 
 namespace handle {

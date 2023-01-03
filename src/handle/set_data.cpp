@@ -1,5 +1,4 @@
 ﻿#include "set_data.h"
-
 #include "key_position.h"
 #include "page_handle.h"
 #include "setting/mcm_setting.h"

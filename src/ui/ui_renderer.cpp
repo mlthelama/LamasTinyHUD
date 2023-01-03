@@ -1,18 +1,12 @@
 ﻿#include "ui_renderer.h"
-
 #include <d3d11.h>
-
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-
 #include <dxgi.h>
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
-
 #include "event/sink_event.h"
 #include "handle/page_handle.h"
 #include "handle/set_data.h"

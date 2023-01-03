@@ -1,8 +1,5 @@
 ﻿#include "potion.h"
-
 #include "inventory.h"
-
-#include <xbyak/xbyak.h>
 
 namespace item {
     void potion::consume_potion(const RE::TESForm* a_form) {

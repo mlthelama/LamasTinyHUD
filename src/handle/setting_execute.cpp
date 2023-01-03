@@ -1,5 +1,4 @@
 ﻿#include "setting_execute.h"
-
 #include "key_position.h"
 #include "page_handle.h"
 #include "item/potion.h"

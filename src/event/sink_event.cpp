@@ -1,5 +1,4 @@
 ﻿#include "sink_event.h"
-
 #include "key_manager.h"
 
 namespace event {
