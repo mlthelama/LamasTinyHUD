@@ -14,6 +14,10 @@ A small UI Element
 * [simpleini](https://github.com/brofield/simpleini)
 * [stb](https://github.com/nothings/stb) (for file reading into dx11 texture)
 * [imgui](https://github.com/ocornut/imgui) (for displaying ui elements)
+* [vcpkg](https://github.com/microsoft/vcpkg) 
+  - Add the environment variable `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
+* [cmake](https://cmake.org) 
+  - installed dir needs to be added to the `PATH` environment variable
 
 ## Building
 ```
