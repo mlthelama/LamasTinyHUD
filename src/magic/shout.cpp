@@ -32,7 +32,6 @@ namespace magic {
         }
 
         const auto shout = a_form->As<RE::TESShout>();
-        //maybe check if it is already equipped
         RE::ActorEquipManager::GetSingleton()->EquipShout(RE::PlayerCharacter::GetSingleton(), shout);
         logger::trace("equipped shout {}. return."sv, a_form->GetName());
     }

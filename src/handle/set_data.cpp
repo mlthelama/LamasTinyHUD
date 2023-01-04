@@ -17,8 +17,9 @@ namespace handle {
                 static_cast<page_setting::position>(i),
                 nullptr,
                 util::selection_type::unset,
-                config::mcm_setting::get_hud_slot_position_offset(),
-                config::mcm_setting::get_hud_key_position_offset());
+                mcm::get_hud_slot_position_offset(),
+                mcm::get_hud_key_position_offset(),
+                slot_setting::acton_type::default_action);
         }
 
         if (const auto form = RE::TESForm::LookupByID(mcm::get_selected_top_item_form());
@@ -28,14 +29,16 @@ namespace handle {
                 form,
                 static_cast<util::selection_type>(mcm::get_top_type()),
                 config::mcm_setting::get_hud_slot_position_offset(),
-                config::mcm_setting::get_hud_key_position_offset());
+                config::mcm_setting::get_hud_key_position_offset(),
+                static_cast<slot_setting::acton_type>(mcm::get_top_slot_action()));
         } else {
             page_handle::get_singleton()->init_page(0,
                 page_setting::position::top,
                 nullptr,
                 util::selection_type::unset,
                 config::mcm_setting::get_hud_slot_position_offset(),
-                config::mcm_setting::get_hud_key_position_offset());
+                config::mcm_setting::get_hud_key_position_offset(),
+                slot_setting::acton_type::default_action);
             logger::warn("form for top type is null. remove the setting."sv);
         }
 

@@ -1,11 +1,18 @@
 ScriptName LamasTinyHUD_MCM Extends MCM_ConfigBase
 
+Bool Property bMagicSelected Auto
+Bool Property bPowerSelected Auto
+
 Event OnConfigClose() native
 
 function RefreshItems()
     string[] menu_list = GetSelectedOptions(GetModSettingInt("uTopType:TopPage"))
     SetMenuOptions("uTopSelectedItem:TopPage", menu_list, menu_list)
     SetModSettingInt("uTopSelectedItem:TopPage", 0)
+
+    bMagicSelected = GetModSettingInt("uTopType:TopPage") == 1
+    bPowerSelected = GetModSettingInt("uTopType:TopPage") == 3
+    SetModSettingInt("uTopSlotAction:TopPage", 0)
     RefreshMenu()
 endfunction
 
@@ -28,6 +35,9 @@ Event OnPageSelect(string a_page)
         ;no need to set uTopSelectedItem:TopPage here
         string[] menu_list = GetSelectedOptions(GetModSettingInt("uTopType:TopPage"))
         SetMenuOptions("uTopSelectedItem:TopPage", menu_list, menu_list)
+
+        bMagicSelected = GetModSettingInt("uTopType:TopPage") == 1
+        bPowerSelected = GetModSettingInt("uTopType:TopPage") == 3
         RefreshMenu()
     elseif ( a_page == "$LamasTinyHUD_HudSetting" )
         SetModSettingString("sDisplayResolutionWidth:HudSetting",GetResolutionWidth())

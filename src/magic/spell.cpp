@@ -1,5 +1,7 @@
 ﻿#include "spell.h"
 
+#include "equip/equip_slot.h"
+
 
 namespace magic {
     std::vector<RE::TESForm*> spell::get_spells() {
@@ -30,8 +32,8 @@ namespace magic {
     }
 
     //add toggle mcm if equip or cast
-    void spell::instant_cast(RE::TESForm* a_form) {
-        logger::trace("try to instant cast spell {}"sv, a_form->GetName());
+    void spell::cast_magic(RE::TESForm* a_form, action_type a_action) {
+        logger::trace("try to work spell {}, action {}"sv, a_form->GetName(), static_cast<uint32_t>(a_action));
         const auto spell = a_form->As<RE::SpellItem>();
 
         //spell->avEffectSetting->data.dualCastScale
@@ -41,9 +43,20 @@ namespace magic {
         /*logger::trace("dual cast scale {}, base cost {}"sv,
             spell->avEffectSetting->data.dualCastScale,
             spell->avEffectSetting->data.baseCost);*/
+        
+        //maybe check if the spell is already equipped
         const auto actor = RE::PlayerCharacter::GetSingleton()->As<RE::Actor>();
-        actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
-             ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
-        logger::trace("instant casted spell {}. return."sv, a_form->GetName());
+        if (a_action == action_type::instant) {
+            //TODO add magicka consumption and check if xp gets added
+            actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
+                 ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
+        } else {
+            //other slot options like i thought, so i get it like this now
+            RE::ActorEquipManager::GetSingleton()->EquipSpell(RE::PlayerCharacter::GetSingleton(),
+                spell,
+                equip::equip_slot::get_right_hand_slot());
+        }
+
+        logger::trace("worked spell {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
     }
 }

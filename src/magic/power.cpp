@@ -31,11 +31,12 @@ namespace magic {
     }
 
 
-    void power::equip_power(RE::TESForm* a_form) {
-        logger::trace("try to equip power {}"sv, a_form->GetName());
+    void power::equip_or_cast_power(RE::TESForm* a_form, action_type a_action) {
+        logger::trace("try to work power {}, action {}"sv, a_form->GetName(), static_cast<uint32_t>(a_action));
+
 
         if (const auto selected_power = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().selectedPower;
-            selected_power != nullptr) {
+            selected_power != nullptr && a_action != handle::slot_setting::acton_type::instant) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
                 selected_power->Is(RE::FormType::Shout),
@@ -47,9 +48,14 @@ namespace magic {
         }
 
         const auto spell = a_form->As<RE::SpellItem>();
-        //maybe check if it is already equipped
-        //and make a setting to instant cast, maybe in the key manager already
-        RE::ActorEquipManager::GetSingleton()->EquipSpell(RE::PlayerCharacter::GetSingleton(), spell);
-        logger::trace("equipped power {}. return."sv, a_form->GetName());
+        if (a_action == handle::slot_setting::acton_type::instant) {
+            //might not consider daily cool downs
+            const auto actor = RE::PlayerCharacter::GetSingleton()->As<RE::Actor>();
+            actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
+                 ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
+        } else {
+            RE::ActorEquipManager::GetSingleton()->EquipSpell(RE::PlayerCharacter::GetSingleton(), spell);
+        }
+        logger::trace("worked power {} action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
     }
 }

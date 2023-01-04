@@ -20,15 +20,13 @@ namespace handle {
                 item::potion::consume_potion(a_slot->form);
                 break;
             case util::selection_type::magic:
-                magic::spell::instant_cast(a_slot->form);
+                magic::spell::cast_magic(a_slot->form, a_slot->action);
                 break;
             case util::selection_type::shout:
                 magic::shout::equip_shout(a_slot->form);
                 break;
             case util::selection_type::power:
-                //make a setting in mcm for equip or instant cast
-                magic::power::equip_power(a_slot->form);
-            //magic::spell::instant_cast(top_handle);
+                magic::power::equip_or_cast_power(a_slot->form, a_slot->action);
                 break;
             case util::selection_type::weapon:
                 item::weapon::equip_weapon(a_slot->form);

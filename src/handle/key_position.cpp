@@ -16,7 +16,6 @@ namespace handle {
             this->data_ = new key_position_data();
         }
 
-
         data_->key_position_map[mcm::get_top_action_key()] = position::top;
         data_->key_position_map[mcm::get_right_action_key()] = position::right;
         data_->key_position_map[mcm::get_bottom_action_key()] = position::down;

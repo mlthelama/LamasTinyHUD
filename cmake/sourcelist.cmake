@@ -1,5 +1,7 @@
 set(sources ${sources}
 	src/PCH.h
+	src/equip/equip_slot.cpp
+	src/equip/equip_slot.h
 	src/event/key_manager.cpp
 	src/event/key_manager.h
 	src/event/sink_event.cpp
@@ -7,6 +9,7 @@ set(sources ${sources}
 	src/handle/key_position.cpp
 	src/handle/key_position.h
 	src/handle/page/fade_setting.h
+	src/handle/page/offset_setting.h
 	src/handle/page/page_setting.h
 	src/handle/page/slot_setting.h
 	src/handle/page_handle.cpp
@@ -37,5 +40,6 @@ set(sources ${sources}
 	src/ui/ui_renderer.cpp
 	src/ui/ui_renderer.h
 	src/util/constant.h
+	src/util/offset.h
 	src/util/string_util.h
 )

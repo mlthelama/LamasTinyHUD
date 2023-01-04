@@ -12,6 +12,7 @@ namespace config {
 
     static uint32_t top_type;
     static uint32_t selected_top_item_form;
+    static uint32_t top_slot_action;
 
     static float hud_image_scale_width;
     static float hud_image_scale_height;
@@ -37,6 +38,7 @@ namespace config {
             top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopType", -1));
             std::stringstream selected_top_item_form_stream(mcm.GetValue("TopPage", "sSelectedTopItemForm", ""));
             selected_top_item_form_stream >> selected_top_item_form;
+            top_slot_action = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopSlotAction", 0));
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth"));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight"));
@@ -60,6 +62,7 @@ namespace config {
 
     uint32_t mcm_setting::get_top_type() { return top_type; }
     uint32_t mcm_setting::get_selected_top_item_form() { return selected_top_item_form; }
+    uint32_t mcm_setting::get_top_slot_action() { return top_slot_action; }
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height; }

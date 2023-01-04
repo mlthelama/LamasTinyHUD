@@ -1,9 +1,12 @@
 ﻿#pragma once
+#include "handle/page/slot_setting.h"
+
 namespace magic {
     class spell {
     public:
-        static std::vector<RE::TESForm*> get_spells();
+        using action_type = handle::slot_setting::acton_type;
 
-        static void instant_cast(RE::TESForm* a_form);
+        static std::vector<RE::TESForm*> get_spells();
+        static void cast_magic(RE::TESForm* a_form, action_type a_action);
     };
 }

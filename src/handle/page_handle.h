@@ -10,7 +10,8 @@ namespace handle {
             RE::TESForm* a_form,
             util::selection_type a_type,
             float a_slot_offset,
-            float a_key_offset);
+            float a_key_offset,
+            slot_setting::acton_type a_action);
         [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
 

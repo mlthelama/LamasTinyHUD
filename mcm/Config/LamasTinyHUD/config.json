@@ -60,6 +60,22 @@
                     "type": "header"
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 1,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bMagicSelected"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 3,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bPowerSelected"
+                    }
+                },
+                {
                     "id": "uTopType:TopPage",
                     "text": "$LamasTinyHUD_TopType",
                     "type": "enum",
@@ -104,6 +120,18 @@
                         ],
                         "sourceType": "ModSettingInt",
                         "defaultValue": 0
+                    }
+                },
+                {
+                    "id": "uTopSlotAction:TopPage",
+                    "text": "$LamasTinyHUD_TopSlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_TopSlotAction_InfoText",
+                    "groupCondition": {"OR": [1, 3]},
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
                     }
                 }
             ]

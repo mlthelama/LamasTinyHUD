@@ -12,7 +12,8 @@ namespace handle {
         RE::TESForm* a_form,
         const util::selection_type a_type,
         const float a_slot_offset,
-        const float a_key_offset) {
+        const float a_key_offset,
+        slot_setting::acton_type a_action) {
         logger::trace("init page {}, position {}, form {}, type {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -37,6 +38,7 @@ namespace handle {
         auto* slot = new slot_setting();
         slot->form = a_form;
         slot->type = a_type;
+        slot->action = a_action;
 
         auto* slots = new std::vector<slot_setting*>;
         slots->push_back(slot);
