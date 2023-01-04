@@ -1,4 +1,6 @@
 ﻿#include "page_handle.h"
+
+#include "equip/equip_slot.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -13,7 +15,8 @@ namespace handle {
         const util::selection_type a_type,
         const float a_slot_offset,
         const float a_key_offset,
-        slot_setting::acton_type a_action) {
+        const slot_setting::acton_type a_action,
+        const slot_setting::hand_equip a_hand) {
         logger::trace("init page {}, position {}, form {}, type {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -35,10 +38,18 @@ namespace handle {
 
         page->fade_setting = fade;
 
+        RE::BGSEquipSlot* equip_slot = nullptr;
         auto* slot = new slot_setting();
         slot->form = a_form;
         slot->type = a_type;
         slot->action = a_action;
+        slot->equip = a_hand;
+
+        get_equip_slots(a_type, a_hand, equip_slot, false);
+        slot->equip_slot = equip_slot;
+        //set here the correct equip_slot
+        //get_equip_slots(a_type, a_hand, equip_slot, true);
+
 
         auto* slots = new std::vector<slot_setting*>;
         slots->push_back(slot);
@@ -106,5 +117,16 @@ namespace handle {
                 offset_x = -a_setting;
                 break;
         }
+    }
+
+    void page_handle::get_equip_slots(const util::selection_type a_type,
+        const slot_setting::hand_equip a_hand,
+        RE::BGSEquipSlot*& a_slot,
+        const bool a_left) {
+        if ((a_type == util::selection_type::magic || a_type == util::selection_type::weapon) && a_hand ==
+            slot_setting::hand_equip::single) {
+            a_slot = a_left ? equip::equip_slot::get_left_hand_slot() : equip::equip_slot::get_right_hand_slot();
+        }
+        a_slot = nullptr;
     }
 }

@@ -7,30 +7,19 @@
 #include "magic/shout.h"
 #include "magic/spell.h"
 #include "setting/mcm_setting.h"
+#include "util/string_util.h"
 
 namespace handle {
     using mcm = config::mcm_setting;
 
-    void setting_execute::execute_setting(const slot_setting* a_slot) {
-        switch (a_slot->type) {
-            case util::selection_type::unset:
-                logger::warn("nothing to do, nothing set"sv);
-                break;
-            case util::selection_type::item:
-                item::potion::consume_potion(a_slot->form);
-                break;
-            case util::selection_type::magic:
-                magic::spell::cast_magic(a_slot->form, a_slot->action);
-                break;
-            case util::selection_type::shout:
-                magic::shout::equip_shout(a_slot->form);
-                break;
-            case util::selection_type::power:
-                magic::power::equip_or_cast_power(a_slot->form, a_slot->action);
-                break;
-            case util::selection_type::weapon:
-                item::weapon::equip_weapon(a_slot->form);
-                break;
+    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
+        logger::trace("got {} settings execute"sv, a_slots.size());
+        for (const auto slot : a_slots) {
+            logger::trace("executing setting for type {}, action {}, form {} ..."sv,
+                static_cast<uint32_t>(slot->type),
+                static_cast<uint32_t>(slot->action),
+                util::string_util::int_to_hex(slot->form));
+            execute_setting(slot);
         }
     }
 
@@ -50,5 +39,28 @@ namespace handle {
             page_setting->slot_settings.size());
 
         return page_setting;
+    }
+
+    void setting_execute::execute_setting(const slot_setting* a_slot) {
+        switch (a_slot->type) {
+            case util::selection_type::unset:
+                logger::warn("nothing to do, nothing set"sv);
+                break;
+            case util::selection_type::item:
+                item::potion::consume_potion(a_slot->form);
+                break;
+            case util::selection_type::magic:
+                magic::spell::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot);
+                break;
+            case util::selection_type::shout:
+                magic::shout::equip_shout(a_slot->form);
+                break;
+            case util::selection_type::power:
+                magic::power::equip_or_cast_power(a_slot->form, a_slot->action);
+                break;
+            case util::selection_type::weapon:
+                item::weapon::equip_weapon(a_slot->form, a_slot->equip_slot);
+                break;
+        }
     }
 }

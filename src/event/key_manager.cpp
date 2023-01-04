@@ -117,13 +117,7 @@ namespace event {
                     break;
                 }
 
-                for (const auto setting : page_setting->slot_settings) {
-                    logger::trace("executing setting for type {}, action {}, form {} ..."sv,
-                        static_cast<uint32_t>(setting->type),
-                        static_cast<uint32_t>(setting->action),
-                        util::string_util::int_to_hex(setting->form));
-                    handle::setting_execute::execute_setting(setting);
-                }
+                handle::setting_execute::execute_settings(page_setting->slot_settings);
 
                 break;
             }

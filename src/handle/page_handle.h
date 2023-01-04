@@ -11,7 +11,8 @@ namespace handle {
             util::selection_type a_type,
             float a_slot_offset,
             float a_key_offset,
-            slot_setting::acton_type a_action);
+            slot_setting::acton_type a_action,
+            slot_setting::hand_equip a_hand);
         [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
 
@@ -31,6 +32,11 @@ namespace handle {
             float a_setting,
             float& offset_x,
             float& offset_y);
+
+        static void get_equip_slots(util::selection_type a_type,
+            slot_setting::hand_equip a_hand,
+            RE::BGSEquipSlot*& a_slot,
+            bool a_left);
 
         struct page_handle_data {
             std::map<page_setting::position, page_setting*> page_settings;

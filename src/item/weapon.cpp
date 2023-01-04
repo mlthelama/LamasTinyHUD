@@ -2,7 +2,7 @@
 #include "inventory.h"
 
 namespace item {
-    void weapon::equip_weapon(const RE::TESForm* a_form) {
+    void weapon::equip_weapon(const RE::TESForm* a_form, const RE::BGSEquipSlot* a_slot) {
         logger::trace("try to equip {}"sv, a_form->GetName());
 
         RE::TESBoundObject* obj = nullptr;
@@ -38,7 +38,10 @@ namespace item {
         //      , bool a_forceEquip = false
         //      , bool a_playSounds = true
         //      , bool a_applyNow = false);
-        RE::ActorEquipManager::GetSingleton()->EquipObject(RE::PlayerCharacter::GetSingleton(), weapon);
+        //RE::ActorEquipManager::GetSingleton()->EquipObject(RE::PlayerCharacter::GetSingleton(), weapon);
+
+        // ExtraDataList* a_extraData = nullptr, std::uint32_t a_count = 1, const BGSEquipSlot* a_slot = nullptr
+        RE::ActorEquipManager::GetSingleton()->EquipObject(RE::PlayerCharacter::GetSingleton(), weapon, nullptr, 1, a_slot);
 
         logger::trace("equipped weapon {}. return."sv, a_form->GetName());
     }

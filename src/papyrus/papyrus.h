@@ -5,7 +5,7 @@ namespace papyrus {
     class hud_mcm {
     public:
         static void on_config_close(RE::TESQuest*);
-        static std::vector<RE::BSFixedString> get_selected_options(RE::TESQuest*, uint32_t a_id);
+        static std::vector<RE::BSFixedString> get_selected_options(RE::TESQuest*, uint32_t a_id, bool a_both);
         static uint32_t get_form_id_for_selection(RE::TESQuest*, uint32_t a_index);
         static RE::BSFixedString get_resolution_width(RE::TESQuest*);
         static RE::BSFixedString get_resolution_height(RE::TESQuest*);

@@ -76,12 +76,40 @@
                     }
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 4,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bWeaponSelected"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 6,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bBothHands"
+                    }
+                },
+                {
                     "id": "uTopType:TopPage",
                     "text": "$LamasTinyHUD_TopType",
                     "type": "enum",
                     "help": "$LamasTinyHUD_TopType_InfoText",
                     "valueOptions": {
                         "options": ["$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Weapon"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uTopHandSelection:TopPage",
+                    "text": "$LamasTinyHUD_TopHandSelection",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_TopHandSelection_InfoText",
+                    "groupCondition": {"OR": [1, 4]},
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Single", "$LamasTinyHUD_Both"],
                         "sourceType": "ModSettingInt"
                     }
                 },

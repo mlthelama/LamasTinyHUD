@@ -24,8 +24,8 @@ namespace papyrus {
         logger::debug("on config close done. return."sv);
     }
 
-    std::vector<RE::BSFixedString> hud_mcm::get_selected_options(RE::TESQuest*, uint32_t a_id) {
-        logger::info("Got refresh for id {}"sv, a_id);
+    std::vector<RE::BSFixedString> hud_mcm::get_selected_options(RE::TESQuest*, uint32_t a_id, bool a_both) {
+        logger::info("Got refresh for id {}, both hands {}"sv, a_id, a_both);
         std::vector<RE::BSFixedString> empty_string_vec = { util::empty_enum_string };
         const auto display_string_list = new std::vector<RE::BSFixedString>;
         clear_list();
@@ -49,8 +49,11 @@ namespace papyrus {
         } else if (index_ == util::selection_type::magic) {
             //add filter for casting
             for (const auto spell_list = magic::spell::get_spells(); const auto spell : spell_list) {
-                display_string_list->push_back(spell->GetName());
-                spell_data_list_->push_back(spell);
+                if (const auto is_two_handed = spell->As<RE::SpellItem>()->IsTwoHanded();
+                    (is_two_handed && a_both) || (!is_two_handed && !a_both)) {
+                    display_string_list->push_back(spell->GetName());
+                    spell_data_list_->push_back(spell);
+                }
             }
         } else if (index_ == util::selection_type::shout) {
             for (const auto shout_list = magic::shout::get_shouts(); const auto shout : shout_list) {
@@ -63,15 +66,35 @@ namespace papyrus {
                 power_data_list_->push_back(power);
             }
         } else if (index_ == util::selection_type::weapon) {
+            auto is_two_handed = false;
             for (auto potential_weapons = item::inventory::get_inventory_weapon_items();
                  const auto& [item, inv_data] : potential_weapons) {
                 //just consider favored items
                 const auto& [num_items, entry] = inv_data;
                 if (inv_data.second->IsFavorited()) {
-                    logger::trace("Weapon name {}, count {}"sv, entry->GetDisplayName(), num_items);
-                    weapon_data_list_->push_back(*inv_data.second);
+                    is_two_handed = false;
+                    if (const auto object_weapon = item->As<RE::TESObjectWEAP>();
+                        object_weapon->IsBow() || object_weapon->IsCrossbow() || object_weapon->
+                        IsTwoHandedAxe() || object_weapon->IsTwoHandedSword()) {
+                        is_two_handed = true;
+                    }
+                    logger::trace("Weapon name {}, two handed {}, setting {}, count {}"sv,
+                        entry->GetDisplayName(),
+                        is_two_handed,
+                        a_both,
+                        num_items);
+
+                    if ((is_two_handed && a_both) || (!is_two_handed && !a_both)) {
+                        weapon_data_list_->push_back(*inv_data.second);
+                        display_string_list->push_back(
+                            RE::BSFixedString{
+                                fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                    }
+
+                    /*weapon_data_list_->push_back(*inv_data.second);
                     display_string_list->push_back(
-                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                        RE::BSFixedString{
+                            fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });*/
                 }
             }
             logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
@@ -84,7 +107,10 @@ namespace papyrus {
             return empty_string_vec;
         }
 
-        logger::debug("got list for id {}, size is {}. return."sv, a_id, display_string_list->size());
+        logger::debug("got list for id {}, both hands {}, size is {}. return."sv,
+            a_id,
+            a_both,
+            display_string_list->size());
         return *display_string_list;
     }
 
