@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 namespace handle {
     class set_data {
     public:

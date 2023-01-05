@@ -53,6 +53,7 @@ namespace handle {
                     form_left != nullptr && (top_type_left == util::selection_type::magic || top_type_left ==
                                              util::selection_type::weapon)) {
                     auto action_left = static_cast<slot_setting::acton_type>(mcm::get_top_slot_action_left());
+                    //TODO maybe check if instant cast is set, and if the other is a weapon, then default to equip
                     if (action != action_left) {
                         logger::warn("action type {} differ from action type left {}, setting both to {}"sv,
                             static_cast<int>(action),

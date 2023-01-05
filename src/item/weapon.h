@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 namespace item {
     class weapon {
     public:

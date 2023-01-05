@@ -1,5 +1,4 @@
 ﻿#pragma once
-
 #include "handle/page/page_setting.h"
 #include <windows.h>
 #include <WinUser.h>

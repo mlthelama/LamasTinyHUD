@@ -1,5 +1,4 @@
 ﻿#include "page_handle.h"
-
 #include "equip/equip_slot.h"
 #include "util/string_util.h"
 

@@ -1,5 +1,4 @@
 ﻿#include "spell.h"
-
 #include "equip/equip_slot.h"
 #include "handle/setting_execute.h"
 

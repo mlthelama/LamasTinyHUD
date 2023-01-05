@@ -1,7 +1,6 @@
 ﻿#include "key_manager.h"
 #include "handle/setting_execute.h"
 #include "setting/mcm_setting.h"
-#include "util/string_util.h"
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;

@@ -1,6 +1,5 @@
 ﻿#include "power.h"
 
-
 namespace magic {
     std::vector<RE::TESForm*> power::get_powers() {
         //easier just to use items that have been favourited, just filter them

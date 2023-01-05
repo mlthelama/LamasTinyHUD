@@ -1,5 +1,6 @@
 #pragma once
 
+// ReSharper disable once CppUnusedIncludeDirective
 #include "RE/Skyrim.h"
 #include "SKSE/SKSE.h"
 

@@ -1,5 +1,4 @@
 ﻿#include "papyrus.h"
-
 #include "handle/set_data.h"
 #include "item/inventory.h"
 #include "magic/power.h"
