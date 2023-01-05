@@ -6,6 +6,7 @@ set(sources ${sources}
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
+	src/handle/data/data_helper.h
 	src/handle/key_position.cpp
 	src/handle/key_position.h
 	src/handle/page/fade_setting.h

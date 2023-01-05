@@ -16,10 +16,10 @@ namespace magic {
         return shout_list;
     }
 
-    void shout::equip_shout(RE::TESForm* a_form) {
+    void shout::equip_shout(RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
         logger::trace("try to equip shout {}"sv, a_form->GetName());
 
-        if (const auto selected_power = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().selectedPower;
+        if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
             selected_power != nullptr) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
@@ -32,7 +32,7 @@ namespace magic {
         }
 
         const auto shout = a_form->As<RE::TESShout>();
-        RE::ActorEquipManager::GetSingleton()->EquipShout(RE::PlayerCharacter::GetSingleton(), shout);
+        RE::ActorEquipManager::GetSingleton()->EquipShout(a_player, shout);
         logger::trace("equipped shout {}. return."sv, a_form->GetName());
     }
 }

@@ -3,6 +3,6 @@
 namespace item {
     class potion {
     public:
-        static void consume_potion(const RE::TESForm* a_form);
+        static void consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
     };
 }

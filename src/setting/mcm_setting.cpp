@@ -15,6 +15,10 @@ namespace config {
     static uint32_t top_slot_action;
     static uint32_t top_hand_selection;
 
+    static uint32_t top_type_left;
+    static uint32_t selected_top_item_form_left;
+    static uint32_t top_slot_action_left;
+
     static float hud_image_scale_width;
     static float hud_image_scale_height;
     static float hud_image_position_width;
@@ -42,6 +46,12 @@ namespace config {
             top_slot_action = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopSlotAction", 0));
             top_hand_selection = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopHandSelection", 0));
 
+            top_type_left = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopTypeLeft", -1));
+            std::stringstream selected_top_item_form_left_stream(
+                mcm.GetValue("TopPage", "sSelectedTopItemFormLeft", ""));
+            selected_top_item_form_left_stream >> selected_top_item_form_left;
+            top_slot_action_left = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopSlotActionLeft", 0));
+
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth"));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight"));
             hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionWidth"));
@@ -66,6 +76,10 @@ namespace config {
     uint32_t mcm_setting::get_selected_top_item_form() { return selected_top_item_form; }
     uint32_t mcm_setting::get_top_slot_action() { return top_slot_action; }
     uint32_t mcm_setting::get_top_hand_selection() { return top_hand_selection; }
+
+    uint32_t mcm_setting::get_top_type_left() { return top_type_left; }
+    uint32_t mcm_setting::get_selected_top_item_form_left() { return selected_top_item_form_left; }
+    uint32_t mcm_setting::get_top_slot_action_left() { return top_slot_action_left; }
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height; }

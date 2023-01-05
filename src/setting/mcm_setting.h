@@ -15,6 +15,10 @@ namespace config {
         static uint32_t get_top_slot_action();
         static uint32_t get_top_hand_selection();
 
+        static uint32_t get_top_type_left();
+        static uint32_t get_selected_top_item_form_left();
+        static uint32_t get_top_slot_action_left();
+
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();
         static float get_hud_image_position_width();

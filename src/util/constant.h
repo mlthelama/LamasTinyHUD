@@ -12,7 +12,7 @@ namespace util {
 
     constexpr auto hud_name = "lamas_tiny_hud";
 
-    enum class selection_type { unset = -1, item = 0, magic = 1, shout = 2, power = 3, weapon = 4 };
+    enum class selection_type { unset = -1, weapon = 0, magic = 1, shout = 2, power = 3, item = 4 };
 
     enum class image_type { hud = 0, round = 1, key = 2, total = 3 };
 

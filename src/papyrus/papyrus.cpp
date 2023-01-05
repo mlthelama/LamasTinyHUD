@@ -31,10 +31,11 @@ namespace papyrus {
         clear_list();
 
         index_ = static_cast<util::selection_type>(a_id);
+        auto player = RE::PlayerCharacter::GetSingleton();
 
         if (index_ == util::selection_type::item) {
             //maybe add a check if it is a potion
-            for (auto potential_items = item::inventory::get_inventory_magic_items();
+            for (auto potential_items = item::inventory::get_inventory_magic_items(player);
                  const auto& [item, inv_data] : potential_items) {
                 //just consider favored items
                 const auto& [num_items, entry] = inv_data;
@@ -50,7 +51,7 @@ namespace papyrus {
             //add filter for casting
             for (const auto spell_list = magic::spell::get_spells(); const auto spell : spell_list) {
                 if (const auto is_two_handed = spell->As<RE::SpellItem>()->IsTwoHanded();
-                    (is_two_handed && a_both) || (!is_two_handed && !a_both)) {
+                    (is_two_handed && !a_both) || (!is_two_handed && a_both)) {
                     display_string_list->push_back(spell->GetName());
                     spell_data_list_->push_back(spell);
                 }
@@ -67,7 +68,7 @@ namespace papyrus {
             }
         } else if (index_ == util::selection_type::weapon) {
             auto is_two_handed = false;
-            for (auto potential_weapons = item::inventory::get_inventory_weapon_items();
+            for (auto potential_weapons = item::inventory::get_inventory_weapon_items(player);
                  const auto& [item, inv_data] : potential_weapons) {
                 //just consider favored items
                 const auto& [num_items, entry] = inv_data;
@@ -84,7 +85,7 @@ namespace papyrus {
                         a_both,
                         num_items);
 
-                    if ((is_two_handed && a_both) || (!is_two_handed && !a_both)) {
+                    if ((is_two_handed && !a_both) || (!is_two_handed && a_both)) {
                         weapon_data_list_->push_back(*inv_data.second);
                         display_string_list->push_back(
                             RE::BSFixedString{

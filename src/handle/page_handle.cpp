@@ -11,17 +11,15 @@ namespace handle {
 
     void page_handle::init_page([[maybe_unused]] uint32_t a_page,
         const page_setting::position a_position,
-        RE::TESForm* a_form,
-        const util::selection_type a_type,
+        const std::vector<data_helper*>& data_helpers,
         const float a_slot_offset,
         const float a_key_offset,
-        const slot_setting::acton_type a_action,
         const slot_setting::hand_equip a_hand) {
-        logger::trace("init page {}, position {}, form {}, type {} ..."sv,
+        logger::trace("init page {}, position {}, data_size for settings {}, hand {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
-            util::string_util::int_to_hex(a_form),
-            static_cast<int>(a_type));
+            data_helpers.size(),
+            static_cast<uint32_t>(a_hand));
         if (!this->data_) {
             this->data_ = new page_handle_data();
         }
@@ -38,21 +36,24 @@ namespace handle {
 
         page->fade_setting = fade;
 
-        RE::BGSEquipSlot* equip_slot = nullptr;
-        auto* slot = new slot_setting();
-        slot->form = a_form;
-        slot->type = a_type;
-        slot->action = a_action;
-        slot->equip = a_hand;
-
-        get_equip_slots(a_type, a_hand, equip_slot, false);
-        slot->equip_slot = equip_slot;
-        //set here the correct equip_slot
-        //get_equip_slots(a_type, a_hand, equip_slot, true);
-
 
         auto* slots = new std::vector<slot_setting*>;
-        slots->push_back(slot);
+        for (const auto element : data_helpers) {
+            logger::trace("processing form {}, type {}, action {}, left {}"sv,
+                util::string_util::int_to_hex(element->form),
+                static_cast<int>(element->type),
+                static_cast<uint32_t>(element->action_type),
+                element->left);
+            auto* slot = new slot_setting();
+            slot->form = element->form;
+            slot->type = element->type;
+            slot->action = element->action_type;
+            slot->equip = a_hand;
+            RE::BGSEquipSlot* equip_slot = nullptr;
+            get_equip_slots(element->type, a_hand, equip_slot, element->left);
+            slot->equip_slot = equip_slot;
+            slots->push_back(slot);
+        }
 
         page->slot_settings = *slots;
 
@@ -73,11 +74,9 @@ namespace handle {
 
         data->page_settings[a_position] = page;
 
-        logger::trace("done setting page {}, position {}, form {}, type {}."sv,
+        logger::trace("done setting page {}, position {}."sv,
             a_page,
-            static_cast<uint32_t>(a_position),
-            util::string_util::int_to_hex(a_form),
-            static_cast<int>(a_type));
+            static_cast<uint32_t>(a_position));
     }
 
     page_setting* page_handle::get_page_setting(const page_setting::position a_position) const {
@@ -123,10 +122,10 @@ namespace handle {
         const slot_setting::hand_equip a_hand,
         RE::BGSEquipSlot*& a_slot,
         const bool a_left) {
+        a_slot = nullptr;
         if ((a_type == util::selection_type::magic || a_type == util::selection_type::weapon) && a_hand ==
             slot_setting::hand_equip::single) {
             a_slot = a_left ? equip::equip_slot::get_left_hand_slot() : equip::equip_slot::get_right_hand_slot();
         }
-        a_slot = nullptr;
     }
 }

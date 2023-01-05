@@ -1,19 +1,20 @@
 ﻿#include "weapon.h"
 #include "inventory.h"
+#include "equip/equip_slot.h"
+#include "handle/setting_execute.h"
 
 namespace item {
-    void weapon::equip_weapon(const RE::TESForm* a_form, const RE::BGSEquipSlot* a_slot) {
-        logger::trace("try to equip {}"sv, a_form->GetName());
+    void weapon::equip_weapon(const RE::TESForm* a_form,
+        const RE::BGSEquipSlot* a_slot,
+        RE::PlayerCharacter*& a_player) {
+        auto left = a_slot == equip::equip_slot::get_left_hand_slot();
+        logger::trace("try to equip {}, left {}"sv, a_form->GetName(), left);
 
         RE::TESBoundObject* obj = nullptr;
-        //RE::InventoryEntryData inv_data;
-        //uint32_t left;
-        for (auto potential_items = inventory::get_inventory_weapon_items();
+        for (auto potential_items = inventory::get_inventory_weapon_items(a_player);
              const auto& [item, invData] : potential_items) {
             if (invData.second->object->formID == a_form->formID) {
-                obj = item;
-                //inv_data = *invData.second;
-                //left = invData.first;
+                obj = invData.second->object;
                 break;
             }
         }
@@ -26,23 +27,12 @@ namespace item {
 
         logger::trace("try to equip weapon {}"sv, a_form->GetName());
 
-        const auto weapon = obj->As<RE::TESObjectWEAP>();
-        //maybe check if it is already equipped
-        //RE::ActorEquipManager::GetSingleton()->EquipShout(RE::PlayerCharacter::GetSingleton(), shout);
-        //		void EquipObject(Actor* a_actor
-        //		, TESBoundObject* a_object
-        //      , ExtraDataList* a_extraData = nullptr
-        //      , std::uint32_t a_count = 1
-        //      , const BGSEquipSlot* a_slot = nullptr
-        //      , bool a_queueEquip = true
-        //      , bool a_forceEquip = false
-        //      , bool a_playSounds = true
-        //      , bool a_applyNow = false);
-        //RE::ActorEquipManager::GetSingleton()->EquipObject(RE::PlayerCharacter::GetSingleton(), weapon);
+        auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        if (a_slot != nullptr) {
+            handle::setting_execute::unequip_if_equipped(left, a_player, equip_manager);
+        }
 
-        // ExtraDataList* a_extraData = nullptr, std::uint32_t a_count = 1, const BGSEquipSlot* a_slot = nullptr
-        RE::ActorEquipManager::GetSingleton()->EquipObject(RE::PlayerCharacter::GetSingleton(), weapon, nullptr, 1, a_slot);
-
-        logger::trace("equipped weapon {}. return."sv, a_form->GetName());
+        equip_manager->EquipObject(a_player, obj, nullptr, 1, a_slot);
+        logger::trace("equipped weapon {}, left {}. return."sv, a_form->GetName(), left);
     }
 }

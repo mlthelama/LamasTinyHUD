@@ -2,13 +2,13 @@
 #include "inventory.h"
 
 namespace item {
-    void potion::consume_potion(const RE::TESForm* a_form) {
+    void potion::consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
         logger::trace("try to consume {}"sv, a_form->GetName());
 
         RE::TESBoundObject* obj = nullptr;
         RE::InventoryEntryData inv_data;
         uint32_t left;
-        for (auto potential_items = inventory::get_inventory_magic_items();
+        for (auto potential_items = inventory::get_inventory_magic_items(a_player);
              const auto& [item, invData] : potential_items) {
             if (invData.second->object->formID == a_form->formID) {
                 obj = item;
@@ -28,7 +28,7 @@ namespace item {
         const auto alchemy_potion = obj->As<RE::AlchemyItem>();
         logger::trace("calling drink potion {}, count left {}"sv, alchemy_potion->GetName(), left);
         //build a "cache" with formid and count, validate after consumption
-        RE::PlayerCharacter::GetSingleton()->DrinkPotion(alchemy_potion, inv_data.extraLists->front());
+        a_player->DrinkPotion(alchemy_potion, inv_data.extraLists->front());
         logger::trace("drank potion {}. return."sv, alchemy_potion->GetName());
     }
 }
