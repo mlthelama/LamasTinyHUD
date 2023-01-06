@@ -450,19 +450,8 @@ namespace ui {
 
     image ui_renderer::get_key_icon([[maybe_unused]] const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
-        //if (std::find(std::begin(key_struct), std::end(key_struct), a_key) != std::end(key_struct)) {
-        //    return_image = key_struct[a_key];
-        //}
-
-
-        /*for (auto elem : key_struct) {
-            if ()
-        }*/
-
-        //std::count(std::begin(points), std::end(points), a_key);
         if (key_icon_path_map.contains(static_cast<key_values>(a_key))) {
             return_image = key_struct[a_key];
-
         }
         return return_image;
     }
