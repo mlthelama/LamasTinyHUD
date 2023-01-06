@@ -11,13 +11,20 @@ namespace config {
     static uint32_t left_action_key;
 
     static uint32_t top_type;
-    static uint32_t selected_top_item_form;
+    static uint32_t top_selected_item_form;
     static uint32_t top_slot_action;
     static uint32_t top_hand_selection;
-
     static uint32_t top_type_left;
-    static uint32_t selected_top_item_form_left;
+    static uint32_t top_selected_item_form_left;
     static uint32_t top_slot_action_left;
+
+    static uint32_t right_type;
+    static uint32_t right_selected_item_form;
+    static uint32_t right_slot_action;
+    static uint32_t right_hand_selection;
+    static uint32_t right_type_left;
+    static uint32_t right_selected_item_form_left;
+    static uint32_t right_slot_action_left;
 
     static float hud_image_scale_width;
     static float hud_image_scale_height;
@@ -47,18 +54,30 @@ namespace config {
             bottom_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uBottomActionKey", 46));
             left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 48));
 
-            //got more settings, variables, but for now we are ok with these two
-            top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopType", -1));
-            std::stringstream selected_top_item_form_stream(mcm.GetValue("TopPage", "sSelectedTopItemForm", ""));
-            selected_top_item_form_stream >> selected_top_item_form;
-            top_slot_action = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopSlotAction", 0));
-            top_hand_selection = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopHandSelection", 0));
-
-            top_type_left = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopTypeLeft", -1));
+            //got more settings, variables, but for now we are ok
+            top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uType", 0));
+            std::stringstream selected_top_item_form_stream(mcm.GetValue("TopPage", "sSelectedItemForm", ""));
+            selected_top_item_form_stream >> top_selected_item_form;
+            top_slot_action = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uSlotAction", 0));
+            top_hand_selection = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uHandSelection", 1));
+            top_type_left = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTypeLeft", 0));
             std::stringstream selected_top_item_form_left_stream(
-                mcm.GetValue("TopPage", "sSelectedTopItemFormLeft", ""));
-            selected_top_item_form_left_stream >> selected_top_item_form_left;
-            top_slot_action_left = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uTopSlotActionLeft", 0));
+                mcm.GetValue("TopPage", "sSelectedItemFormLeft", ""));
+            selected_top_item_form_left_stream >> top_selected_item_form_left;
+            top_slot_action_left = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uSlotActionLeft", 0));
+
+            //got more settings, variables, but for now we are ok
+            right_type = static_cast<uint32_t>(mcm.GetLongValue("RightPage", "uType", 0));
+            std::stringstream selected_right_item_form_stream(mcm.GetValue("RightPage", "sSelectedItemForm", ""));
+            selected_right_item_form_stream >> right_selected_item_form;
+            right_slot_action = static_cast<uint32_t>(mcm.GetLongValue("RightPage", "uSlotAction", 0));
+            right_hand_selection = static_cast<uint32_t>(mcm.GetLongValue("RightPage", "uHandSelection", 1));
+            right_type_left = static_cast<uint32_t>(mcm.GetLongValue("RightPage", "uTypeLeft", 0));
+            std::stringstream selected_right_item_form_left_stream(mcm.GetValue("RightPage",
+                "sSelectedItemFormLeft",
+                ""));
+            selected_right_item_form_left_stream >> right_selected_item_form_left;
+            right_slot_action_left = static_cast<uint32_t>(mcm.GetLongValue("RightPage", "uSlotActionLeft", 0));
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth"));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight"));
@@ -87,14 +106,21 @@ namespace config {
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
 
     uint32_t mcm_setting::get_top_type() { return top_type; }
-    uint32_t mcm_setting::get_selected_top_item_form() { return selected_top_item_form; }
+    uint32_t mcm_setting::get_top_selected_item_form() { return top_selected_item_form; }
     uint32_t mcm_setting::get_top_slot_action() { return top_slot_action; }
     uint32_t mcm_setting::get_top_hand_selection() { return top_hand_selection; }
-
     uint32_t mcm_setting::get_top_type_left() { return top_type_left; }
-    uint32_t mcm_setting::get_selected_top_item_form_left() { return selected_top_item_form_left; }
+    uint32_t mcm_setting::get_top_selected_item_form_left() { return top_selected_item_form_left; }
     uint32_t mcm_setting::get_top_slot_action_left() { return top_slot_action_left; }
 
+    uint32_t mcm_setting::get_right_type() { return right_type; }
+    uint32_t mcm_setting::get_right_selected_item_form() { return right_selected_item_form; }
+    uint32_t mcm_setting::get_right_slot_action() { return right_slot_action; }
+    uint32_t mcm_setting::get_right_hand_selection() { return right_hand_selection; }
+    uint32_t mcm_setting::get_right_type_left() { return right_type_left; }
+    uint32_t mcm_setting::get_right_selected_item_form_left() { return right_selected_item_form_left; }
+    uint32_t mcm_setting::get_right_slot_action_left() { return right_slot_action_left; }
+    
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height; }
     float mcm_setting::get_hud_image_position_width() { return hud_image_position_width; }

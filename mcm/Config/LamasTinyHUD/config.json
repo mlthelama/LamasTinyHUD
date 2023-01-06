@@ -100,20 +100,20 @@
                     }
                 },
                 {
-                    "id": "uTopType:TopPage",
-                    "text": "$LamasTinyHUD_TopType",
+                    "id": "uType:TopPage",
+                    "text": "$LamasTinyHUD_Type",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_TopType_InfoText",
+                    "help": "$LamasTinyHUD_Type_InfoText",
                     "valueOptions": {
                         "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
                         "sourceType": "ModSettingInt"
                     }
                 },
                 {
-                    "id": "uTopHandSelection:TopPage",
-                    "text": "$LamasTinyHUD_TopHandSelection",
+                    "id": "uHandSelection:TopPage",
+                    "text": "$LamasTinyHUD_HandSelection",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_TopHandSelection_InfoText",
+                    "help": "$LamasTinyHUD_HandSelection_InfoText",
                     "groupCondition": {"OR": [1, 2, 4]},
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -122,31 +122,31 @@
                     }
                 },
                 {
-                    "id": "sRefreshTopItems:TopPage",
+                    "id": "sRefreshItems:TopPage",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
                     },
                     "type": "text",
-                    "text": "$LamasTinyHUD_RefreshItemsTop",
-                    "help": "$LamasTinyHUD_RefreshItemsTop_Help",
+                    "text": "$LamasTinyHUD_RefreshItems",
+                    "help": "$LamasTinyHUD_RefreshItems_Help",
                     "action": {
                         "type": "CallFunction",
                         "function": "RefreshItems"
                     }
                 },
                 {
-                    "id": "sSelectedTopItemForm:TopPage",
+                    "id": "sSelectedItemForm:TopPage",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
                     },
                     "type": "text",
-                    "text": "$LamasTinyHUD_SelectedTopItemForm",
-                    "help": "$LamasTinyHUD_SelectedTopItemForm_Help"
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
-                    "id": "uTopSelectedItem:TopPage",
+                    "id": "uSelectedItem:TopPage",
                     "text": "$LamasTinyHUD_SelectedItem",
                     "type": "enum",
                     "help": "$LamasTinyHUD_SelectedItem_InfoText",
@@ -159,10 +159,10 @@
                     }
                 },
                 {
-                    "id": "uTopSlotAction:TopPage",
-                    "text": "$LamasTinyHUD_TopSlotAction",
+                    "id": "uSlotAction:TopPage",
+                    "text": "$LamasTinyHUD_SlotAction",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_TopSlotAction_InfoText",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
                     "groupCondition": {"OR": [1, 3]},
                     "groupBehavior": "hide",
                     "valueOptions": {
@@ -190,10 +190,10 @@
                     }
                 },
                 {
-                    "id": "uTopTypeLeft:TopPage",
-                    "text": "$LamasTinyHUD_TopType",
+                    "id": "uTypeLeft:TopPage",
+                    "text": "$LamasTinyHUD_Type",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_TopType_InfoText",
+                    "help": "$LamasTinyHUD_Type_InfoText",
                     "groupCondition": 6,
                     "groupBehavior": "hide",
                     "valueOptions": {
@@ -202,14 +202,14 @@
                     }
                 },
                 {
-                    "id": "sRefreshTopItemsLeft:TopPage",
+                    "id": "sRefreshItemsLeft:TopPage",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
                     },
                     "type": "text",
-                    "text": "$LamasTinyHUD_RefreshItemsTop",
-                    "help": "$LamasTinyHUD_RefreshItemsTop_Help",
+                    "text": "$LamasTinyHUD_RefreshItems",
+                    "help": "$LamasTinyHUD_RefreshItems_Help",
                     "groupCondition": 6,
                     "groupBehavior": "hide",
                     "action": {
@@ -218,19 +218,19 @@
                     }
                 },
                 {
-                    "id": "sSelectedTopItemFormLeft:TopPage",
+                    "id": "sSelectedItemFormLeft:TopPage",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
                     },
                     "type": "text",
-                    "text": "$LamasTinyHUD_SelectedTopItemForm",
-                    "help": "$LamasTinyHUD_SelectedTopItemForm_Help",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
                     "groupCondition": 6,
                     "groupBehavior": "hide"
                 },
                 {
-                    "id": "uTopSelectedItemLeft:TopPage",
+                    "id": "uSelectedItemLeft:TopPage",
                     "text": "$LamasTinyHUD_SelectedItem",
                     "type": "enum",
                     "help": "$LamasTinyHUD_SelectedItem_InfoText",
@@ -245,10 +245,10 @@
                     }
                 },
                 {
-                    "id": "uTopSlotActionLeft:TopPage",
-                    "text": "$LamasTinyHUD_TopSlotAction",
+                    "id": "uSlotActionLeft:TopPage",
+                    "text": "$LamasTinyHUD_SlotAction",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_TopSlotAction_InfoText",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
                     "groupCondition": {"AND": [{"OR": [11, 13]}, 6]},
                     "groupBehavior": "hide",
                     "valueOptions": {
@@ -264,7 +264,206 @@
             "content": [{
                 "text": "$LamasTinyHUD_Right_HeaderText",
                 "type": "header"
-            }]
+            },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 21,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bMagicSelectedRight"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 23,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bPowerSelectedRight"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 24,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bWeaponSelectedRight"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 22,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bShieldSelectedRight"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 26,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bBothHandsRight"
+                    }
+                },
+                {
+                    "id": "uType:RightPage",
+                    "text": "$LamasTinyHUD_Type",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_Type_InfoText",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uHandSelection:RightPage",
+                    "text": "$LamasTinyHUD_HandSelection",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_HandSelection_InfoText",
+                    "groupCondition": {"OR": [21, 22, 24]},
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Single", "$LamasTinyHUD_Both"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "sRefreshItems:RightPage",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_RefreshItems",
+                    "help": "$LamasTinyHUD_RefreshItems_Help",
+                    "action": {
+                        "type": "CallFunction",
+                        "function": "RefreshItemsRight"
+                    }
+                },
+                {
+                    "id": "sSelectedItemForm:RightPage",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
+                },
+                {
+                    "id": "uSelectedItem:RightPage",
+                    "text": "$LamasTinyHUD_SelectedItem",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SelectedItem_InfoText",
+                    "valueOptions": {
+                        "options": [
+                            "$LamasTinyHUD_ENUM"
+                        ],
+                        "sourceType": "ModSettingInt",
+                        "defaultValue": 0
+                    }
+                },
+                {
+                    "id": "uSlotAction:RightPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {"OR": [21, 23]},
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                  "type": "empty"
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 31,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bMagicSelectedRightLeft"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 33,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bPowerSelectedRightLeft"
+                    }
+                },
+                {
+                    "id": "uTypeLeft:RightPage",
+                    "text": "$LamasTinyHUD_Type",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_TopType_InfoText",
+                    "groupCondition": 36,
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "sRefreshItemsLeft:RightPage",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_RefreshItems",
+                    "help": "$LamasTinyHUD_RefreshItems_Help",
+                    "groupCondition": 36,
+                    "groupBehavior": "hide",
+                    "action": {
+                        "type": "CallFunction",
+                        "function": "RefreshItemsRightLeft"
+                    }
+                },
+                {
+                    "id": "sSelectedItemFormLeft:RightPage",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "groupCondition": 36,
+                    "groupBehavior": "hide"
+                },
+                {
+                    "id": "uSelectedItemLeft:RightPage",
+                    "text": "$LamasTinyHUD_SelectedItem",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SelectedItem_InfoText",
+                    "groupCondition": 36,
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": [
+                            "$LamasTinyHUD_ENUM"
+                        ],
+                        "sourceType": "ModSettingInt",
+                        "defaultValue": 0
+                    }
+                },
+                {
+                    "id": "uSlotActionLeft:RightPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {"AND": [{"OR": [31, 33]}, 36]},
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                }
+            
+            ]
         },
         {
             "pageDisplayName": "$LamasTinyHUD_BottomPage",

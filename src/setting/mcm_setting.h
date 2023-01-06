@@ -11,13 +11,20 @@ namespace config {
         static uint32_t get_left_action_key();
 
         static uint32_t get_top_type();
-        static uint32_t get_selected_top_item_form();
+        static uint32_t get_top_selected_item_form();
         static uint32_t get_top_slot_action();
         static uint32_t get_top_hand_selection();
-
         static uint32_t get_top_type_left();
-        static uint32_t get_selected_top_item_form_left();
+        static uint32_t get_top_selected_item_form_left();
         static uint32_t get_top_slot_action_left();
+
+        static uint32_t get_right_type();
+        static uint32_t get_right_selected_item_form();
+        static uint32_t get_right_slot_action();
+        static uint32_t get_right_hand_selection();
+        static uint32_t get_right_type_left();
+        static uint32_t get_right_selected_item_form_left();
+        static uint32_t get_right_slot_action_left();
 
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();

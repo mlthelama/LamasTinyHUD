@@ -23,15 +23,25 @@ namespace handle {
         logger::trace("continue with overwriting data from configuration ..."sv);
 
         set_slot(page_setting::position::top,
-            mcm::get_selected_top_item_form(),
+            mcm::get_top_selected_item_form(),
             mcm::get_top_type(),
             mcm::get_top_hand_selection(),
             mcm::get_top_slot_action(),
-            mcm::get_selected_top_item_form_left(),
+            mcm::get_top_selected_item_form_left(),
             mcm::get_top_type_left(),
             mcm::get_top_slot_action_left(),
             key_pos);
 
+        set_slot(page_setting::position::right,
+            mcm::get_right_selected_item_form(),
+            mcm::get_right_type(),
+            mcm::get_right_hand_selection(),
+            mcm::get_right_slot_action(),
+            mcm::get_right_selected_item_form_left(),
+            mcm::get_right_type_left(),
+            mcm::get_right_slot_action_left(),
+            key_pos);
+        
         /*add other slots*/
 
         logger::trace("done setting. return."sv);
@@ -72,6 +82,9 @@ namespace handle {
         auto hand = static_cast<slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
 
+        logger::trace("start working data hands {} ..."sv, a_hand);
+
+
         slot_setting::acton_type action;
         if (a_action == a_action_left) {
             action = static_cast<slot_setting::acton_type>(a_action);
@@ -82,7 +95,7 @@ namespace handle {
                 a_action_left,
                 static_cast<uint32_t>(action));
         }
-        
+
 
         if (form != nullptr) {
             const auto type = static_cast<util::selection_type>(a_type);
@@ -92,10 +105,10 @@ namespace handle {
                 hand = slot_setting::hand_equip::total;
             }
 
-            if ( type ==  util::selection_type::shield) {
+            if (type == util::selection_type::shield) {
                 logger::warn("Equipping shield on the Right hand might fail, or hand will be empty"sv);
             }
-            
+
             logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_pos),
                 util::string_util::int_to_hex(form),
@@ -131,15 +144,17 @@ namespace handle {
             item_left->left = true;
             data.push_back(item_left);
         }
-        logger::trace("build data, calling handler."sv);
+        logger::trace("build data, calling handler, data size {}"sv, data.size());
 
-        page_handle::get_singleton()->init_page(0,
-            page_setting::position::top,
-            data,
-            config::mcm_setting::get_hud_slot_position_offset(),
-            config::mcm_setting::get_hud_key_position_offset(),
-            hand,
-            config::mcm_setting::get_icon_opacity(),
-            a_key_pos);
+        if (!data.empty()) {
+            page_handle::get_singleton()->init_page(0,
+                a_pos,
+                data,
+                config::mcm_setting::get_hud_slot_position_offset(),
+                config::mcm_setting::get_hud_key_position_offset(),
+                hand,
+                config::mcm_setting::get_icon_opacity(),
+                a_key_pos);
+        }
     }
 }
