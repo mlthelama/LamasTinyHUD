@@ -14,7 +14,8 @@ namespace handle {
         const float a_slot_offset,
         const float a_key_offset,
         const slot_setting::hand_equip a_hand,
-        const uint32_t a_opacity) {
+        const uint32_t a_opacity,
+        key_position*& a_key_pos) {
         logger::trace("init page {}, position {}, data_size for settings {}, hand {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -75,6 +76,8 @@ namespace handle {
         //TODO for now
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
         page->icon_opacity = a_opacity;
+
+        page->key = a_key_pos->get_key_for_position(a_position);
 
         data->page_settings[a_position] = page;
 

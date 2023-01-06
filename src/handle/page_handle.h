@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "key_position.h"
 #include "data/data_helper.h"
 #include "page/page_setting.h"
 #include "ui/image_path.h"
@@ -13,7 +14,8 @@ namespace handle {
             float a_slot_offset,
             float a_key_offset,
             slot_setting::hand_equip a_hand,
-            uint32_t a_opacity);
+            uint32_t a_opacity,
+            key_position*& a_key_pos);
         [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
 

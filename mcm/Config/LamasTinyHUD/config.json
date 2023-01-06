@@ -430,6 +430,32 @@
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"
                     }
+                },
+                {
+                    "id": "fKeyIconScaleWidth:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_KeyIconScaleWidth_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_KeyIconScaleWidth_InfoText",
+                    "valueOptions": {
+                        "min": 0.03,
+                        "max": 3.0,
+                        "step": 0.01,
+                        "formatString": "{2}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fKeyIconScaleHeight:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_KeyIconScaleHeight_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_KeyIconScaleHeight_InfoText",
+                    "valueOptions": {
+                        "min": 0.03,
+                        "max": 3.0,
+                        "step": 0.01,
+                        "formatString": "{2}",
+                        "sourceType": "ModSettingFloat"
+                    }
                 }
             ]
         }

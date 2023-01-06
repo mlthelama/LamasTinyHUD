@@ -31,6 +31,9 @@ namespace config {
     static uint32_t icon_opacity;
     static uint32_t slot_button_feedback;
 
+    static float key_icon_scale_width;
+    static float key_icon_scale_height;
+
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
 
@@ -67,6 +70,8 @@ namespace config {
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight"));
             icon_opacity = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uIconOpacity", 255));
             slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uSlotButtonFeedback"));
+            key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth"));
+            key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight"));
         };
 
         read_mcm(mcm_default_setting);
@@ -100,4 +105,6 @@ namespace config {
     float mcm_setting::get_icon_scale_height() { return icon_scale_height; }
     uint32_t mcm_setting::get_icon_opacity() { return icon_opacity; }
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
+    float mcm_setting::get_key_icon_scale_width() { return key_icon_scale_width; }
+    float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
 }

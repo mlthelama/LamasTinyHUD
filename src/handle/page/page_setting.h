@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "fade_setting.h"
 #include "hud_offset_setting.h"
 #include "slot_setting.h"
 #include "ui/image_path.h"
@@ -16,5 +15,6 @@ namespace handle {
         ui::icon_image_type icon_type = ui::icon_image_type::default_icon;
         uint32_t icon_opacity = ui::draw_full;
         uint32_t button_press_modify = ui::draw_full;
+        uint32_t key = 0;
     };
 }

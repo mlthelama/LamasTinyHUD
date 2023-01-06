@@ -29,5 +29,7 @@ namespace config {
         static float get_icon_scale_height();
         static uint32_t get_icon_opacity();
         static uint32_t get_slot_button_feedback();
+        static float get_key_icon_scale_width();
+        static float get_key_icon_scale_height();
     };
 }

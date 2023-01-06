@@ -7,6 +7,8 @@ namespace handle {
         static key_position* get_singleton();
         void init_key_position_map();
         [[nodiscard]] page_setting::position get_position_for_key(uint32_t a_key) const;
+        [[nodiscard]] uint32_t get_key_for_position(page_setting::position a_pos) const;
+
 
         key_position(const key_position&) = delete;
         key_position(key_position&&) = delete;
@@ -22,6 +24,7 @@ namespace handle {
 
         struct key_position_data {
             std::map<uint32_t, page_setting::position> key_position_map;
+            std::map<page_setting::position, uint32_t> position_key_map;
         };
 
         key_position_data* data_;

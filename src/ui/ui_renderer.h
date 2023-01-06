@@ -53,6 +53,12 @@ namespace ui {
             float a_offset_y,
             icon_image_type a_type,
             uint32_t a_opacity);
+        static void draw_key_icon(float a_x,
+            float a_y,
+            float a_offset_x,
+            float a_offset_y,
+            uint32_t a_key,
+            uint32_t a_opacity);
         static void draw_ui();
         static bool load_texture_from_file(const char* filename,
             ID3D11ShaderResourceView** out_srv,
@@ -66,6 +72,8 @@ namespace ui {
 
         template <typename T>
         static void load_images(std::map<T, const char*> a_map, image a_struct[]);
+
+        static image get_key_icon(uint32_t a_key);
 
     public:
         static bool install();

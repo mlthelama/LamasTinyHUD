@@ -12,9 +12,12 @@ namespace handle {
     void set_data::set_slot_data() {
         logger::trace("Setting handlers ..."sv);
 
+        auto key_pos = key_position::get_singleton();
+        key_pos->init_key_position_map();
+
         //set empty for each position, it will be overwritten if it is configured
         for (auto i = 0; i < static_cast<int>(page_setting::position::total); ++i) {
-            set_empty_slot(i);
+            set_empty_slot(i, key_pos);
         }
 
         logger::trace("continue with overwriting data from configuration ..."sv);
@@ -84,18 +87,18 @@ namespace handle {
                 config::mcm_setting::get_hud_slot_position_offset(),
                 config::mcm_setting::get_hud_key_position_offset(),
                 hand,
-                config::mcm_setting::get_icon_opacity());
+                config::mcm_setting::get_icon_opacity(),
+                key_pos);
         } else {
-            set_empty_slot(static_cast<int>(page_setting::position::top));
+            set_empty_slot(static_cast<int>(page_setting::position::top), key_pos);
             logger::warn("form for top type is null. remove the setting."sv);
         }
 
-        key_position::get_singleton()->init_key_position_map();
 
         logger::trace("done setting. return."sv);
     }
 
-    void set_data::set_empty_slot(int a_pos) {
+    void set_data::set_empty_slot(int a_pos, key_position*& a_key_pos) {
         logger::trace("setting empty config for position {}"sv, a_pos);
         std::vector<data_helper*> data;
         const auto item = new data_helper();
@@ -110,6 +113,7 @@ namespace handle {
             mcm::get_hud_slot_position_offset(),
             mcm::get_hud_key_position_offset(),
             slot_setting::hand_equip::total,
-            config::mcm_setting::get_icon_opacity());
+            config::mcm_setting::get_icon_opacity(),
+            a_key_pos);
     }
 }

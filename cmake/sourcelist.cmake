@@ -39,6 +39,7 @@ set(sources ${sources}
 	src/setting/mcm_setting.cpp
 	src/setting/mcm_setting.h
 	src/ui/image_path.h
+	src/ui/key_path.h
 	src/ui/ui_renderer.cpp
 	src/ui/ui_renderer.h
 	src/util/constant.h

@@ -20,6 +20,13 @@ namespace handle {
         data_->key_position_map[mcm::get_right_action_key()] = position::right;
         data_->key_position_map[mcm::get_bottom_action_key()] = position::down;
         data_->key_position_map[mcm::get_left_action_key()] = position::left;
+
+        data_->position_key_map[position::top] = mcm::get_top_action_key();
+        data_->position_key_map[position::right] = mcm::get_right_action_key();
+        data_->position_key_map[position::down] = mcm::get_bottom_action_key();
+        data_->position_key_map[position::left] = mcm::get_left_action_key();
+
+
         logger::trace("done with init of position key map."sv);
     }
 
@@ -31,5 +38,15 @@ namespace handle {
             return pos;
         }
         return position::total;
+    }
+
+    uint32_t key_position::get_key_for_position(const page_setting::position a_pos) const {
+        if (const key_position_data* data = this->data_;
+            data && !data_->position_key_map.empty() && data_->position_key_map.contains(a_pos)) {
+            const auto key = data_->position_key_map[a_pos];
+            logger::trace("got key {} for position {}"sv, key, static_cast<uint32_t>(a_pos));
+            return key;
+        }
+        return 0;
     }
 }

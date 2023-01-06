@@ -10,8 +10,10 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "image_path.h"
 #include "imgui_internal.h"
+#include "key_path.h"
 
 #include "event/sink_event.h"
+#include "handle/key_position.h"
 #include "handle/page_handle.h"
 #include "handle/set_data.h"
 #include "setting/file_setting.h"
@@ -25,8 +27,9 @@ namespace ui {
     };
 
     static image image_struct[static_cast<int32_t>(image_type::total)];
-
     static image icon_struct[static_cast<int32_t>(icon_image_type::total)];
+    static image key_struct[static_cast<int32_t>(key_values::total)];
+    static image default_key_struct[static_cast<int32_t>(default_keys::total)];
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
         const UINT u_msg,
@@ -296,6 +299,12 @@ namespace ui {
             //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
             draw_key(a_x, a_y, offset_setting->offset_key_x, offset_setting->offset_key_y);
+            draw_key_icon(a_x,
+                a_y,
+                offset_setting->offset_key_x,
+                offset_setting->offset_key_y,
+                page_setting->key,
+                draw_full);
         }
     }
 
@@ -325,6 +334,39 @@ namespace ui {
         const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_icon_scale_width() +
                                  config::file_setting::get_extra_size_for_image(),
             static_cast<float>(height) * config::mcm_setting::get_icon_scale_height() +
+            config::file_setting::get_extra_size_for_image());
+
+        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_opacity);
+
+        draw_element(texture, center, size, angle, color);
+    }
+
+    void ui_renderer::draw_key_icon(const float a_x,
+        const float a_y,
+        const float a_offset_x,
+        const float a_offset_y,
+        const uint32_t a_key,
+        const uint32_t a_opacity) {
+        constexpr auto angle = 0.f;
+
+        //get data from normal hud, and add an offset config for each image
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        ImVec2 center;
+        if (width_setting > a_x || height_setting > a_y) {
+            center = ImVec2(0.f, 0.f);
+        } else {
+            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
+        }
+
+        const auto [texture, width, height] = get_key_icon(a_key);
+
+        //for now use scale from normal setting, but later add separate config
+        //add hardcoded 1px
+        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_key_icon_scale_width() +
+                                 config::file_setting::get_extra_size_for_image(),
+            static_cast<float>(height) * config::mcm_setting::get_key_icon_scale_height() +
             config::file_setting::get_extra_size_for_image());
 
         const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_opacity);
@@ -377,6 +419,8 @@ namespace ui {
 
             load_images(image_type_path_map, image_struct);
             load_images(icon_type_path_map, icon_struct);
+            load_images(key_icon_path_map, key_struct);
+            load_images(default_key_icon_path_map, default_key_struct);
 
             show_ui_ = true;
             event::sink_events();
@@ -402,6 +446,25 @@ namespace ui {
             a_struct[idx].width *= static_cast<int32_t>(get_resolution_scale_width());
             a_struct[idx].height *= static_cast<int32_t>(get_resolution_scale_height());
         }
+    }
+
+    image ui_renderer::get_key_icon([[maybe_unused]] const uint32_t a_key) {
+        auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
+        //if (std::find(std::begin(key_struct), std::end(key_struct), a_key) != std::end(key_struct)) {
+        //    return_image = key_struct[a_key];
+        //}
+
+
+        /*for (auto elem : key_struct) {
+            if ()
+        }*/
+
+        //std::count(std::begin(points), std::end(points), a_key);
+        if (key_icon_path_map.contains(static_cast<key_values>(a_key))) {
+            return_image = key_struct[a_key];
+
+        }
+        return return_image;
     }
 
     bool ui_renderer::install() {
