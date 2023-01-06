@@ -66,7 +66,7 @@ namespace config {
             icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth"));
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight"));
             icon_opacity = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uIconOpacity", 255));
-            slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", " uSlotButtonFeedback"));
+            slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uSlotButtonFeedback"));
         };
 
         read_mcm(mcm_default_setting);
