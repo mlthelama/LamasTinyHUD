@@ -85,6 +85,14 @@
                 },
                 {
                     "type": "hiddenToggle",
+                    "groupControl": 2,
+                    "valueOptions": {
+                      "sourceType": "PropertyValueBool",
+                      "propertyName": "bShieldSelected"
+                    }
+                },
+                {
+                    "type": "hiddenToggle",
                     "groupControl": 6,
                     "valueOptions": {
                       "sourceType": "PropertyValueBool",
@@ -97,7 +105,7 @@
                     "type": "enum",
                     "help": "$LamasTinyHUD_TopType_InfoText",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -106,7 +114,7 @@
                     "text": "$LamasTinyHUD_TopHandSelection",
                     "type": "enum",
                     "help": "$LamasTinyHUD_TopHandSelection_InfoText",
-                    "groupCondition": {"OR": [1, 4]},
+                    "groupCondition": {"OR": [1, 2, 4]},
                     "groupBehavior": "disable",
                     "valueOptions": {
                         "options": ["$LamasTinyHUD_Single", "$LamasTinyHUD_Both"],
@@ -189,7 +197,7 @@
                     "groupCondition": 6,
                     "groupBehavior": "hide",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield"],
                         "sourceType": "ModSettingInt"
                     }
                 },

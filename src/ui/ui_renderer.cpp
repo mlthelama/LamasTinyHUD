@@ -448,7 +448,7 @@ namespace ui {
         }
     }
 
-    image ui_renderer::get_key_icon([[maybe_unused]] const uint32_t a_key) {
+    image ui_renderer::get_key_icon(const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
         if (key_icon_path_map.contains(static_cast<key_values>(a_key))) {
             return_image = key_struct[a_key];

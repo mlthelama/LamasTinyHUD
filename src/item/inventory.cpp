@@ -12,4 +12,10 @@ namespace item {
         return a_player->GetInventory(
             [](const RE::TESBoundObject& a_object) { return a_object.IsWeapon(); });
     }
+
+    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
+        inventory::get_inventory_armor_items(RE::PlayerCharacter*& a_player) {
+        return a_player->GetInventory(
+            [](const RE::TESBoundObject& a_object) { return a_object.IsArmor(); });
+    }
 }

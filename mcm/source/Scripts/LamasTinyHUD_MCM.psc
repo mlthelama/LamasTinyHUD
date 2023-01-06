@@ -3,6 +3,7 @@ ScriptName LamasTinyHUD_MCM Extends MCM_ConfigBase
 Bool Property bMagicSelected Auto
 Bool Property bPowerSelected Auto
 Bool Property bWeaponSelected Auto
+Bool Property bShieldSelected Auto
 Bool Property bBothHands Auto
 
 Bool Property bMagicSelectedLeft Auto
@@ -16,12 +17,14 @@ string function GetResolutionHeight() native
 
 function SetToggles()
     bMagicSelected = GetModSettingInt("uTopType:TopPage") == 1
-    bPowerSelected = GetModSettingInt("uTopType:TopPage") == 3
+    bPowerSelected = GetModSettingInt("uTopType:TopPage") == 4
     bWeaponSelected = GetModSettingInt("uTopType:TopPage") == 0
+    bShieldSelected = GetModSettingInt("uTopType:TopPage") == 2
     bBothHands = GetModSettingInt("uTopHandSelection:TopPage") == 0
     
     bMagicSelectedLeft = GetModSettingInt("uTopTypeLeft:TopPage") == 1
-    bPowerSelectedLeft = GetModSettingInt("uTopTypeLeft:TopPage") == 3
+    ;is normally not possible
+    bPowerSelectedLeft = GetModSettingInt("uTopTypeLeft:TopPage") == 4
 endfunction
 
 function SetHands(String a_id)

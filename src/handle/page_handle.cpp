@@ -141,8 +141,10 @@ namespace handle {
         auto icon = ui::icon_image_type::default_icon;
         switch (a_type) {
             case util::selection_type::weapon:
+                icon = ui::icon_image_type::two_handed_sword;
                 break;
             case util::selection_type::magic:
+                icon = ui::icon_image_type::default_spell;
                 break;
             case util::selection_type::shout:
                 icon = ui::icon_image_type::shout;
@@ -151,6 +153,10 @@ namespace handle {
                 icon = ui::icon_image_type::power;
                 break;
             case util::selection_type::item:
+                icon = ui::icon_image_type::default_potion;
+                break;
+            case util::selection_type::shield:
+                icon = ui::icon_image_type::shield;
                 break;
         }
         return icon;

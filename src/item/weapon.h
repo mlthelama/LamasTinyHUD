@@ -3,8 +3,9 @@
 namespace item {
     class weapon {
     public:
-        static void equip_weapon(const RE::TESForm* a_form,
+        static void equip_weapon_or_shield(const RE::TESForm* a_form,
             const RE::BGSEquipSlot* a_slot,
-            RE::PlayerCharacter*& a_player);
+            RE::PlayerCharacter*& a_player,
+            bool a_weapon = true);
     };
 }

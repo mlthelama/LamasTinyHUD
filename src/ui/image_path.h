@@ -25,14 +25,13 @@ namespace ui {
         staff = 8,
         bow = 9,
         crossbow = 10,
-        fire_spell = 11,
-        ice_spell = 12,
-        shock_spell = 13,
-        healing_spell = 14,
-        default_spell = 15,
-        shout = 16,
-        power = 17,
-        default_icon = 18,
+        default_spell = 11,
+        default_spell_alt = 12,
+        shout = 13,
+        power = 14,
+        food = 15,
+        shield = 16,
+        default_icon = 17,
         total
     };
 
@@ -49,13 +48,12 @@ namespace ui {
         { icon_image_type::staff, R"(.\Data\SKSE\Plugins\resources\icons\staff.png)" },
         { icon_image_type::bow, R"(.\Data\SKSE\Plugins\resources\icons\bow.png)" },
         { icon_image_type::crossbow, R"(.\Data\SKSE\Plugins\resources\icons\crossbow.png)" },
-        { icon_image_type::fire_spell, R"(.\Data\SKSE\Plugins\resources\icons\fire_spell.png)" },
-        { icon_image_type::ice_spell, R"(.\Data\SKSE\Plugins\resources\icons\ice_spell.png)" },
-        { icon_image_type::shock_spell, R"(.\Data\SKSE\Plugins\resources\icons\shock_spell.png)" },
-        { icon_image_type::healing_spell, R"(.\Data\SKSE\Plugins\resources\icons\heal_spell.png)" },
         { icon_image_type::default_spell, R"(.\Data\SKSE\Plugins\resources\icons\default_spell.png)" },
+        { icon_image_type::default_spell_alt, R"(.\Data\SKSE\Plugins\resources\icons\default_spell_alt.png)" },
         { icon_image_type::shout, R"(.\Data\SKSE\Plugins\resources\icons\shout.png)" },
         { icon_image_type::power, R"(.\Data\SKSE\Plugins\resources\icons\power.png)" },
+        { icon_image_type::food, R"(.\Data\SKSE\Plugins\resources\icons\food.png)" },
+        { icon_image_type::shield, R"(.\Data\SKSE\Plugins\resources\icons\shield.png)" },
         { icon_image_type::default_icon, R"(.\Data\SKSE\Plugins\resources\icons\default.png)" }
     };
 }

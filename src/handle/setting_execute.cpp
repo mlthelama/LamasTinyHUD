@@ -75,7 +75,11 @@ namespace handle {
                 magic::power::equip_or_cast_power(a_slot->form, a_slot->action, a_player);
                 break;
             case util::selection_type::weapon:
-                item::weapon::equip_weapon(a_slot->form, a_slot->equip_slot, a_player);
+                item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player);
+                break;
+            case util::selection_type::shield:
+                //should work for shields as well
+                item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player, false);
                 break;
         }
     }
