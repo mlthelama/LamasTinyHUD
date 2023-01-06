@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "ui/image_path.h"
 
 namespace event {
     class key_manager final : public RE::BSTEventSink<RE::InputEvent*> {
@@ -38,5 +39,7 @@ namespace event {
         uint32_t key_right_action_ = k_invalid;
         uint32_t key_bottom_action_ = k_invalid;
         uint32_t key_left_action_ = k_invalid;
+        
+        uint32_t button_press_modify_ = ui::draw_full; 
     };
 }

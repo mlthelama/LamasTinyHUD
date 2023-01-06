@@ -1,10 +1,13 @@
 ﻿#pragma once
+#include "image_path.h"
 #include "handle/page/page_setting.h"
 #include <windows.h>
 #include <WinUser.h>
 #include <imgui.h>
 
 namespace ui {
+    struct image;
+
     class ui_renderer {
         using position = handle::page_setting::position;
         using page_setting = handle::page_setting;
@@ -34,12 +37,22 @@ namespace ui {
 
         ui_renderer();
 
-        static void draw_element(ID3D11ShaderResourceView* a_texture, ImVec2 a_center, ImVec2 a_size, float a_angle);
+        static void draw_element(ID3D11ShaderResourceView* a_texture,
+            ImVec2 a_center,
+            ImVec2 a_size,
+            float a_angle,
+            ImU32 col = IM_COL32_WHITE);
         static void draw_hud(float a_x, float a_y);
-        static void draw_slot(float a_x, float a_y, float a_offset_x, float a_offset_y);
+        static void draw_slot(float a_x, float a_y, float a_offset_x, float a_offset_y, uint32_t a_modify);
         static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
         static void draw_key(float a_x, float a_y, float a_offset_x, float a_offset_y);
         static void draw_keys(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_icon(float a_x,
+            float a_y,
+            float a_offset_x,
+            float a_offset_y,
+            icon_image_type a_type,
+            uint32_t a_opacity);
         static void draw_ui();
         static bool load_texture_from_file(const char* filename,
             ID3D11ShaderResourceView** out_srv,
@@ -50,6 +63,9 @@ namespace ui {
         static inline bool show_ui_ = false;
         static inline ID3D11Device* device_ = nullptr;
         static inline ID3D11DeviceContext* context_ = nullptr;
+
+        template <typename T>
+        static void load_images(std::map<T, const char*> a_map, image a_struct[]);
 
     public:
         static bool install();

@@ -26,6 +26,8 @@ namespace event {
         key_bottom_action_ = config::mcm_setting::get_bottom_action_key();
         key_left_action_ = config::mcm_setting::get_left_action_key();
 
+        button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
+
 
         if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) || !
             is_key_valid(key_left_action_)) {
@@ -102,6 +104,30 @@ namespace event {
                 logger::trace("done settinging fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
             }*/
 
+            if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
+                                     || key_ == key_left_action_)) {
+                logger::debug("configured Key ({}) is down"sv, key_);
+                //set slot to a different color
+                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                if (page_setting == nullptr) {
+                    logger::trace("setting for key {} is null. return."sv, key_);
+                    break;
+                }
+                page_setting->button_press_modify = button_press_modify_;
+            }
+
+            if (button->IsUp() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_ ||
+                                   key_ == key_left_action_)) {
+                logger::debug("configured Key ({}) is up"sv, key_);
+                //set slot back to normal color
+                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                if (page_setting == nullptr) {
+                    logger::trace("setting for key {} is null. return."sv, key_);
+                    break;
+                }
+                page_setting->button_press_modify = ui::draw_full;
+            }
+
 
             if (!button->IsDown()) {
                 continue;
@@ -115,7 +141,6 @@ namespace event {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
-
                 handle::setting_execute::execute_settings(page_setting->slot_settings);
 
                 break;

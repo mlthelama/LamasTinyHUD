@@ -27,6 +27,8 @@ namespace item {
         //update count and
         const auto alchemy_potion = obj->As<RE::AlchemyItem>();
         logger::trace("calling drink potion {}, count left {}"sv, alchemy_potion->GetName(), left);
+
+
         //build a "cache" with formid and count, validate after consumption
         a_player->DrinkPotion(alchemy_potion, inv_data.extraLists->front());
         logger::trace("drank potion {}. return."sv, alchemy_potion->GetName());

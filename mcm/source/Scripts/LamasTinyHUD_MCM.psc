@@ -24,6 +24,21 @@ function SetToggles()
     bPowerSelectedLeft = GetModSettingInt("uTopTypeLeft:TopPage") == 3
 endfunction
 
+function SetHands(String a_id)
+    int mod_value = GetModSettingInt(a_ID)
+    if (mod_value != 0) || (mod_value != 1)
+        SetModSettingInt("uTopHandSelection:TopPage", 1)
+    endif
+endfunction
+
+function SetFromZero(String a_id)
+    if(a_ID == "uTopType:TopPage")
+        SetModSettingString("sSelectedTopItemForm:TopPage", "0")
+    elseIf (a_ID == "uTopTypeLeft:TopPage")
+        SetModSettingString("sSelectedTopItemFormLeft:TopPage", "0")
+    endif
+endfunction
+
 function RefreshItemsMain(string a_type, string a_selection, string a_action)
     SetToggles()
     string[] menu_list = GetSelectedOptions(GetModSettingInt(a_type), bBothHands)
@@ -43,11 +58,25 @@ function RefreshItemsLeft()
 endfunction
 
 Event OnSettingChange(String a_ID)
+    ;could also do a refresh of the items on a "uTopType:TopPage" or "uTopTypeLeft:TopPage" setting change
+    ;not sure if zero formid setting is nice like that
     if (a_ID == "uTopSelectedItem:TopPage")
         SetModSettingString("sSelectedTopItemForm:TopPage", GetFormIdForSelection(GetModSettingInt(a_ID)))
         RefreshMenu()
-    elseIf ( a_ID == "uTopSelectedItemLeft:TopPage")
+    elseIf (a_ID == "uTopSelectedItemLeft:TopPage")
         SetModSettingString("sSelectedTopItemFormLeft:TopPage", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        RefreshMenu()
+    elseif (a_ID == "uTopType:TopPage")
+        SetFromZero(a_ID)
+        SetHands(a_ID)
+        SetToggles()
+        RefreshMenu()
+     elseif (a_ID == "uTopTypeLeft:TopPage")
+        SetFromZero(a_ID)
+        SetToggles()
+        RefreshMenu()
+     elseif (a_ID == "uTopHandSelection:TopPage")
+        SetToggles()
         RefreshMenu()
     endif
 EndEvent

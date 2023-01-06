@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "data/data_helper.h"
 #include "page/page_setting.h"
+#include "ui/image_path.h"
 
 namespace handle {
     class page_handle {
@@ -11,7 +12,8 @@ namespace handle {
             const std::vector<data_helper*>& data_helpers,
             float a_slot_offset,
             float a_key_offset,
-            slot_setting::hand_equip a_hand);
+            slot_setting::hand_equip a_hand,
+            uint32_t a_opacity);
         [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
 
@@ -36,6 +38,8 @@ namespace handle {
             slot_setting::hand_equip a_hand,
             RE::BGSEquipSlot*& a_slot,
             bool a_left);
+
+        static ui::icon_image_type get_icon_type(util::selection_type a_type, RE::TESForm*& a_form);
 
         struct page_handle_data {
             std::map<page_setting::position, page_setting*> page_settings;

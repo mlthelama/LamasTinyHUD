@@ -8,6 +8,7 @@
 #include "stb_image.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include "image_path.h"
 #include "imgui_internal.h"
 
 #include "event/sink_event.h"
@@ -15,7 +16,6 @@
 #include "handle/set_data.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
-#include "util/constant.h"
 
 namespace ui {
     struct image {
@@ -24,7 +24,9 @@ namespace ui {
         int32_t height = 0;
     };
 
-    static image image_struct[static_cast<int32_t>(util::image_type::total)];
+    static image image_struct[static_cast<int32_t>(image_type::total)];
+
+    static image icon_struct[static_cast<int32_t>(icon_image_type::total)];
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
         const UINT u_msg,
@@ -172,7 +174,8 @@ namespace ui {
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
         const ImVec2 a_center,
         const ImVec2 a_size,
-        const float a_angle) {
+        const float a_angle,
+        const ImU32 col) {
         const float cos_a = cosf(a_angle);
         const float sin_a = sinf(a_angle);
         const ImVec2 pos[4] = { a_center + ImRotate(ImVec2(-a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
@@ -185,7 +188,7 @@ namespace ui {
 
 
         ImGui::GetWindowDrawList()
-            ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], IM_COL32_WHITE);
+            ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], col);
     }
 
     void ui_renderer::draw_hud(const float a_x, const float a_y) {
@@ -201,7 +204,7 @@ namespace ui {
             center = ImVec2(width_setting, height_setting);
         }
 
-        const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::hud)];
+        const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::hud)];
 
         const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width(),
             static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height());
@@ -210,7 +213,11 @@ namespace ui {
     }
 
 
-    void ui_renderer::draw_slot(const float a_x, const float a_y, const float a_offset_x, const float a_offset_y) {
+    void ui_renderer::draw_slot(const float a_x,
+        const float a_y,
+        const float a_offset_x,
+        const float a_offset_y,
+        const uint32_t a_modify) {
         constexpr auto angle = 0.f;
 
         //get data from normal hud, and add an offset config for each image
@@ -224,7 +231,7 @@ namespace ui {
             center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
         }
 
-        const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::round)];
+        const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::round)];
 
         //for now use scale from normal setting, but later add separate config
         const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
@@ -232,7 +239,9 @@ namespace ui {
             static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
             config::file_setting::get_extra_size_for_image());
 
-        draw_element(texture, center, size, angle);
+        const ImU32 color = IM_COL32(a_modify, a_modify, a_modify, draw_full);
+
+        draw_element(texture, center, size, angle, color);
     }
 
     void ui_renderer::draw_slots(const float a_x,
@@ -241,7 +250,17 @@ namespace ui {
         for (auto [position, page_setting] : a_settings) {
             //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
-            draw_slot(a_x, a_y, offset_setting->offset_slot_x, offset_setting->offset_slot_y);
+            draw_slot(a_x,
+                a_y,
+                offset_setting->offset_slot_x,
+                offset_setting->offset_slot_y,
+                page_setting->button_press_modify);
+            draw_icon(a_x,
+                a_y,
+                offset_setting->offset_slot_x,
+                offset_setting->offset_slot_y,
+                page_setting->icon_type,
+                page_setting->icon_opacity);
         }
     }
 
@@ -260,7 +279,7 @@ namespace ui {
             center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
         }
 
-        const auto [texture, width, height] = image_struct[static_cast<int32_t>(util::image_type::key)];
+        const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::key)];
 
         //for now use scale from normal setting, but later add separate config
         //add hardcoded 1px
@@ -280,6 +299,38 @@ namespace ui {
         }
     }
 
+    void ui_renderer::draw_icon(const float a_x,
+        const float a_y,
+        const float a_offset_x,
+        const float a_offset_y,
+        const icon_image_type a_type,
+        const uint32_t a_opacity) {
+        constexpr auto angle = 0.f;
+
+        //get data from normal hud, and add an offset config for each image
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        ImVec2 center;
+        if (width_setting > a_x || height_setting > a_y) {
+            center = ImVec2(0.f, 0.f);
+        } else {
+            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
+        }
+
+        const auto [texture, width, height] = icon_struct[static_cast<int32_t>(a_type)];
+
+        //for now use scale from normal setting, but later add separate config
+        //add hardcoded 1px
+        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_icon_scale_width() +
+                                 config::file_setting::get_extra_size_for_image(),
+            static_cast<float>(height) * config::mcm_setting::get_icon_scale_height() +
+            config::file_setting::get_extra_size_for_image());
+
+        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_opacity);
+
+        draw_element(texture, center, size, angle, color);
+    }
 
     void ui_renderer::draw_ui() {
         if (!show_ui_)
@@ -306,7 +357,7 @@ namespace ui {
         ImGui::SetNextWindowSize(ImVec2(screen_size_x, screen_size_y));
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 
-        ImGui::Begin(util::hud_name, nullptr, window_flag);
+        ImGui::Begin(hud_name, nullptr, window_flag);
 
         const auto settings = handle::page_handle::get_singleton()->get_page();
 
@@ -324,27 +375,32 @@ namespace ui {
         if (msg->type == SKSE::MessagingInterface::kDataLoaded && d_3d_init_hook::initialized) {
             // Read Texture only after game engine finished load all it renderer resource.
 
-            for (auto [type, path] : util::image_type_path_map) {
-                const auto idx = static_cast<int32_t>(type);
-                if (load_texture_from_file(path,
-                    &image_struct[idx].texture,
-                    image_struct[idx].width,
-                    image_struct[idx].height)) {
-                    logger::info("loaded texture {}"sv, path);
-                } else {
-                    logger::error("failed to load texture {}"sv, path);
-                }
-
-                image_struct[idx].width *= static_cast<int32_t>(get_resolution_scale_width());
-                image_struct[idx].height *= static_cast<int32_t>(get_resolution_scale_height());
-            }
-
+            load_images(image_type_path_map, image_struct);
+            load_images(icon_type_path_map, icon_struct);
 
             show_ui_ = true;
             event::sink_events();
             //config is already loaded
             handle::set_data::set_slot_data();
             logger::info("done with data loaded");
+        }
+    }
+
+    template <typename T>
+    void ui_renderer::load_images(std::map<T, const char*> a_map, image a_struct[]) {
+        for (auto [type, path] : a_map) {
+            const auto idx = static_cast<int32_t>(type);
+            if (load_texture_from_file(path,
+                &a_struct[idx].texture,
+                a_struct[idx].width,
+                a_struct[idx].height)) {
+                logger::info("loaded texture {}"sv, path);
+            } else {
+                logger::error("failed to load texture {}"sv, path);
+            }
+
+            a_struct[idx].width *= static_cast<int32_t>(get_resolution_scale_width());
+            a_struct[idx].height *= static_cast<int32_t>(get_resolution_scale_height());
         }
     }
 

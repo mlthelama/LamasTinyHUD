@@ -25,5 +25,9 @@ namespace config {
         static float get_hud_image_position_height();
         static float get_hud_slot_position_offset();
         static float get_hud_key_position_offset();
+        static float get_icon_scale_width();
+        static float get_icon_scale_height();
+        static uint32_t get_icon_opacity();
+        static uint32_t get_slot_button_feedback();
     };
 }

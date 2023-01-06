@@ -26,6 +26,11 @@ namespace config {
     static float hud_slot_position_offset;
     static float hud_key_position_offset;
 
+    static float icon_scale_width;
+    static float icon_scale_height;
+    static uint32_t icon_opacity;
+    static uint32_t slot_button_feedback;
+
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
 
@@ -58,6 +63,10 @@ namespace config {
             hud_image_position_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionHeight"));
             hud_slot_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffset"));
             hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset"));
+            icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth"));
+            icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight"));
+            icon_opacity = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uIconOpacity", 255));
+            slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", " uSlotButtonFeedback"));
         };
 
         read_mcm(mcm_default_setting);
@@ -87,4 +96,8 @@ namespace config {
     float mcm_setting::get_hud_image_position_height() { return hud_image_position_height; }
     float mcm_setting::get_hud_slot_position_offset() { return hud_slot_position_offset; }
     float mcm_setting::get_hud_key_position_offset() { return hud_key_position_offset; }
+    float mcm_setting::get_icon_scale_width() { return icon_scale_width; }
+    float mcm_setting::get_icon_scale_height() { return icon_scale_height; }
+    uint32_t mcm_setting::get_icon_opacity() { return icon_opacity; }
+    uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
 }

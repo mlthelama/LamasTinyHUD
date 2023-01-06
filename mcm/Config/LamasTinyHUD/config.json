@@ -378,6 +378,58 @@
                         "formatString": "{0}",
                         "sourceType": "ModSettingFloat"
                     }
+                },
+                {
+                    "id": "fIconScaleWidth:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_IconScaleWidth_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_IconScaleWidth_InfoText",
+                    "valueOptions": {
+                        "min": 0.03,
+                        "max": 2.0,
+                        "step": 0.01,
+                        "formatString": "{2}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fIconScaleHeight:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_IconScaleHeight_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_IconScaleHeight_InfoText",
+                    "valueOptions": {
+                        "min": 0.03,
+                        "max": 2.0,
+                        "step": 0.01,
+                        "formatString": "{2}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "uIconOpacity:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_IconOpacity_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_IconOpacity_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotButtonFeedback:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotButtonFeedback_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_SlotButtonFeedback_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
                 }
             ]
         }

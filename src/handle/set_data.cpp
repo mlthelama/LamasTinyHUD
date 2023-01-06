@@ -83,7 +83,8 @@ namespace handle {
                 data,
                 config::mcm_setting::get_hud_slot_position_offset(),
                 config::mcm_setting::get_hud_key_position_offset(),
-                hand);
+                hand,
+                config::mcm_setting::get_icon_opacity());
         } else {
             set_empty_slot(static_cast<int>(page_setting::position::top));
             logger::warn("form for top type is null. remove the setting."sv);
@@ -108,6 +109,7 @@ namespace handle {
             data,
             mcm::get_hud_slot_position_offset(),
             mcm::get_hud_key_position_offset(),
-            slot_setting::hand_equip::total);
+            slot_setting::hand_equip::total,
+            config::mcm_setting::get_icon_opacity());
     }
 }

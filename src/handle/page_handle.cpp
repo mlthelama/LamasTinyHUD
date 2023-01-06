@@ -13,7 +13,8 @@ namespace handle {
         const std::vector<data_helper*>& data_helpers,
         const float a_slot_offset,
         const float a_key_offset,
-        const slot_setting::hand_equip a_hand) {
+        const slot_setting::hand_equip a_hand,
+        const uint32_t a_opacity) {
         logger::trace("init page {}, position {}, data_size for settings {}, hand {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -28,13 +29,12 @@ namespace handle {
         auto* page = new page_setting();
         page->pos = a_position;
 
-        auto* fade = new fade_setting();
+        /*auto* fade = new fade_setting();
         fade->action = fade_setting::action::unset;
         fade->alpha = fade_setting::alpha::max;
         fade->current_alpha = static_cast<uint32_t>(fade_setting::alpha::max);
 
-        page->fade_setting = fade;
-
+        page->fade_setting = fade;*/
 
         auto* slots = new std::vector<slot_setting*>;
         for (const auto element : data_helpers) {
@@ -51,6 +51,7 @@ namespace handle {
             RE::BGSEquipSlot* equip_slot = nullptr;
             get_equip_slots(element->type, a_hand, equip_slot, element->left);
             slot->equip_slot = equip_slot;
+
             slots->push_back(slot);
         }
 
@@ -70,6 +71,10 @@ namespace handle {
         offset->offset_key_y = offset_y;
 
         page->offset_setting = offset;
+
+        //TODO for now
+        page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
+        page->icon_opacity = a_opacity;
 
         data->page_settings[a_position] = page;
 
@@ -126,5 +131,25 @@ namespace handle {
             slot_setting::hand_equip::single) {
             a_slot = a_left ? equip::equip_slot::get_left_hand_slot() : equip::equip_slot::get_right_hand_slot();
         }
+    }
+
+    ui::icon_image_type page_handle::get_icon_type(const util::selection_type a_type,
+        [[maybe_unused]] RE::TESForm*& a_form) {
+        auto icon = ui::icon_image_type::default_icon;
+        switch (a_type) {
+            case util::selection_type::weapon:
+                break;
+            case util::selection_type::magic:
+                break;
+            case util::selection_type::shout:
+                icon = ui::icon_image_type::shout;
+                break;
+            case util::selection_type::power:
+                icon = ui::icon_image_type::power;
+                break;
+            case util::selection_type::item:
+                break;
+        }
+        return icon;
     }
 }

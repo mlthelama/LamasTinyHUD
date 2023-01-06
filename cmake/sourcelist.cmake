@@ -10,7 +10,7 @@ set(sources ${sources}
 	src/handle/key_position.cpp
 	src/handle/key_position.h
 	src/handle/page/fade_setting.h
-	src/handle/page/offset_setting.h
+	src/handle/page/hud_offset_setting.h
 	src/handle/page/page_setting.h
 	src/handle/page/slot_setting.h
 	src/handle/page_handle.cpp
@@ -38,6 +38,7 @@ set(sources ${sources}
 	src/setting/file_setting.h
 	src/setting/mcm_setting.cpp
 	src/setting/mcm_setting.h
+	src/ui/image_path.h
 	src/ui/ui_renderer.cpp
 	src/ui/ui_renderer.h
 	src/util/constant.h
