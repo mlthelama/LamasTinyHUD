@@ -41,8 +41,26 @@ namespace handle {
             mcm::get_right_type_left(),
             mcm::get_right_slot_action_left(),
             key_pos);
-        
-        /*add other slots*/
+
+        set_slot(page_setting::position::bottom,
+            mcm::get_bottom_selected_item_form(),
+            mcm::get_bottom_type(),
+            mcm::get_bottom_hand_selection(),
+            mcm::get_bottom_slot_action(),
+            mcm::get_bottom_selected_item_form_left(),
+            mcm::get_bottom_type_left(),
+            mcm::get_bottom_slot_action_left(),
+            key_pos);
+
+        set_slot(page_setting::position::left,
+            mcm::get_left_selected_item_form(),
+            mcm::get_left_type(),
+            mcm::get_left_hand_selection(),
+            mcm::get_left_slot_action(),
+            mcm::get_left_selected_item_form_left(),
+            mcm::get_left_type_left(),
+            mcm::get_left_slot_action_left(),
+            key_pos);
 
         logger::trace("done setting. return."sv);
     }

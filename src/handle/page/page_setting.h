@@ -6,7 +6,7 @@
 namespace handle {
     class page_setting {
     public:
-        enum class position : std::uint32_t { top = 0, right = 1, down = 2, left = 3, total = 4 };
+        enum class position : std::uint32_t { top = 0, right = 1, bottom = 2, left = 3, total = 4 };
 
         position pos;
         //fade_setting* fade_setting = nullptr;

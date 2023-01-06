@@ -18,12 +18,12 @@ namespace handle {
 
         data_->key_position_map[mcm::get_top_action_key()] = position::top;
         data_->key_position_map[mcm::get_right_action_key()] = position::right;
-        data_->key_position_map[mcm::get_bottom_action_key()] = position::down;
+        data_->key_position_map[mcm::get_bottom_action_key()] = position::bottom;
         data_->key_position_map[mcm::get_left_action_key()] = position::left;
 
         data_->position_key_map[position::top] = mcm::get_top_action_key();
         data_->position_key_map[position::right] = mcm::get_right_action_key();
-        data_->position_key_map[position::down] = mcm::get_bottom_action_key();
+        data_->position_key_map[position::bottom] = mcm::get_bottom_action_key();
         data_->position_key_map[position::left] = mcm::get_left_action_key();
 
 

@@ -116,7 +116,7 @@ namespace handle {
             case page_setting::position::right:
                 offset_x = a_setting;
                 break;
-            case page_setting::position::down:
+            case page_setting::position::bottom:
                 offset_y = a_setting;
                 break;
             case page_setting::position::left:

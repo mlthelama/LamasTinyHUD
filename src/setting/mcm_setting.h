@@ -26,6 +26,22 @@ namespace config {
         static uint32_t get_right_selected_item_form_left();
         static uint32_t get_right_slot_action_left();
 
+        static uint32_t get_bottom_type();
+        static uint32_t get_bottom_selected_item_form();
+        static uint32_t get_bottom_slot_action();
+        static uint32_t get_bottom_hand_selection();
+        static uint32_t get_bottom_type_left();
+        static uint32_t get_bottom_selected_item_form_left();
+        static uint32_t get_bottom_slot_action_left();
+
+        static uint32_t get_left_type();
+        static uint32_t get_left_selected_item_form();
+        static uint32_t get_left_slot_action();
+        static uint32_t get_left_hand_selection();
+        static uint32_t get_left_type_left();
+        static uint32_t get_left_selected_item_form_left();
+        static uint32_t get_left_slot_action_left();
+
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();
         static float get_hud_image_position_width();
