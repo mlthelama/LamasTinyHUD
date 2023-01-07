@@ -5,6 +5,8 @@ from pathlib import Path
 
 
 def make_rel_archive(a_args):
+    languages: list[str] = ["czech", "french", "german", "italian", "japanese", "polish", "russian", "spanish"]
+
     archive: zipfile = zipfile.ZipFile(a_args.name + ".zip", "w", zipfile.ZIP_DEFLATED)
     archive.write(a_args.dll, "SKSE/Plugins/{}".format(os.path.basename(a_args.dll)))
     archive.write(a_args.pdb, "SKSE/Plugins/{}".format(os.path.basename(a_args.pdb)))
@@ -21,8 +23,9 @@ def make_rel_archive(a_args):
                   "mcm/Config/LamasTinyHUD/config.json")
     archive.write(os.path.join(a_args.src_dir, "mcm", "Config", "LamasTinyHUD", "settings.ini"),
                   "mcm/Config/LamasTinyHUD/settings.ini")
-    archive.write(os.path.join(a_args.src_dir, "mcm", "Interface", "Translations", "LamasTinyHUD_english.txt"),
-                  "Interface/Translations/LamasTinyHUD_english.txt")
+    for lang in languages:
+        archive.write(os.path.join(a_args.src_dir, "mcm", "Interface", "Translations", "LamasTinyHUD_english.txt"),
+                      "Interface/Translations/LamasTinyHUD_" + lang + ".txt")
 
 
 def parse_arguments():

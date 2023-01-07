@@ -52,10 +52,19 @@ namespace magic {
 
         //maybe check if the spell is already equipped
         const auto actor = a_player->As<RE::Actor>();
+
+
+        
         if (a_action == action_type::instant) {
-            //TODO add magicka consumption and check if xp gets added
+            //TODO add magicka consumption
+            //exp gets added
             /*actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
                  ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);*/
+
+            auto cost = spell->CalculateMagickaCost(a_player);
+            logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.4f}"), cost));
+            
+            
             actor->GetMagicCaster(get_casting_source(a_slot))->CastSpellImmediate(spell,
                 false,
                 actor,
