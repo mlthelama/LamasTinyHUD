@@ -37,7 +37,7 @@ Bool Property bMagicSelectedLeftLeft Auto
 Bool Property bPowerSelectedLeftLeft Auto
 
 Event OnConfigClose() native
-string[] function GetSelectedOptions(int a_id, bool a_both) native
+string[] function GetSelectedOptions(int a_id, bool a_both, bool a_instant) native
 int function GetFormIdForSelection(int a_index) native
 string function GetResolutionWidth() native
 string function GetResolutionHeight() native
@@ -117,9 +117,10 @@ function SetFromZero(String a_id)
     endif
 endfunction
 
-function RefreshItemsMain(string a_type, string a_selection, string a_action, bool a_hands)
+function RefreshItemsMain(string a_type, string a_selection, string a_action, bool a_hands, string a_instant_setting)
     SetToggles()
-    string[] menu_list = GetSelectedOptions(GetModSettingInt(a_type), a_hands)
+    bool instant_cast = GetModSettingInt(a_instant_setting) == 1
+    string[] menu_list = GetSelectedOptions(GetModSettingInt(a_type), a_hands, instant_cast)
     SetMenuOptions(a_selection, menu_list, menu_list)
     SetModSettingInt(a_selection, 0)
 
@@ -129,36 +130,36 @@ endFunction
 
 function RefreshItems()
     SetToggles()
-    RefreshItemsMain("uType:TopPage", "uSelectedItem:TopPage", "uSlotAction:TopPage", bBothHands)
+    RefreshItemsMain("uType:TopPage", "uSelectedItem:TopPage", "uSlotAction:TopPage", bBothHands, "uSlotAction:TopPage")
 endfunction
 
 function RefreshItemsLeft()
     SetToggles()
-    RefreshItemsMain("uTypeLeft:TopPage", "uSelectedItemLeft:TopPage", "uSlotActionLeft:TopPage", bBothHands)
+    RefreshItemsMain("uTypeLeft:TopPage", "uSelectedItemLeft:TopPage", "uSlotActionLeft:TopPage", bBothHands, "uSlotActionLeft:TopPage")
 endfunction
 
 function RefreshItemsRight()
-    RefreshItemsMain("uType:RightPage", "uSelectedItem:RightPage", "uSlotAction:RightPage", bBothHandsRight)
+    RefreshItemsMain("uType:RightPage", "uSelectedItem:RightPage", "uSlotAction:RightPage", bBothHandsRight, "uSlotAction:RightPage")
 endfunction
 
 function RefreshItemsRightLeft()
-    RefreshItemsMain("uTypeLeft:RightPage", "uSelectedItemLeft:RightPage", "uSlotActionLeft:RightPage", bBothHandsRight)
+    RefreshItemsMain("uTypeLeft:RightPage", "uSelectedItemLeft:RightPage", "uSlotActionLeft:RightPage", bBothHandsRight, "uSlotActionLeft:RightPage")
 endfunction
 
 function RefreshItemsBottom()
-    RefreshItemsMain("uType:BottomPage", "uSelectedItem:BottomPage", "uSlotAction:BottomPage", bBothHandsBottom)
+    RefreshItemsMain("uType:BottomPage", "uSelectedItem:BottomPage", "uSlotAction:BottomPage", bBothHandsBottom, "uSlotAction:BottomPage")
 endfunction
 
 function RefreshItemsBottomLeft()
-    RefreshItemsMain("uTypeLeft:BottomPage", "uSelectedItemLeft:BottomPage", "uSlotActionLeft:BottomPage", bBothHandsBottom)
+    RefreshItemsMain("uTypeLeft:BottomPage", "uSelectedItemLeft:BottomPage", "uSlotActionLeft:BottomPage", bBothHandsBottom, "uSlotActionLeft:BottomPage")
 endfunction
 
 function RefreshItemsLeftList()
-    RefreshItemsMain("uType:LeftPage", "uSelectedItem:LeftPage", "uSlotAction:LeftPage", bBothHandsLeft)
+    RefreshItemsMain("uType:LeftPage", "uSelectedItem:LeftPage", "uSlotAction:LeftPage", bBothHandsLeft, "uSlotAction:LeftPage")
 endfunction
 
 function RefreshItemsLeftLeft()
-    RefreshItemsMain("uTypeLeft:LeftPage", "uSelectedItemLeft:LeftPage", "uSlotActionLeft:LeftPage", bBothHandsLeft)
+    RefreshItemsMain("uTypeLeft:LeftPage", "uSelectedItemLeft:LeftPage", "uSlotActionLeft:LeftPage", bBothHandsLeft, "uSlotActionLeft:LeftPage")
 endfunction
 
 Event OnSettingChange(String a_ID)
@@ -249,40 +250,40 @@ Event OnPageSelect(string a_page)
     if (a_page == "$LamasTinyHUD_TopPage")
         SetToggles()
         ;no need to set uTopSelectedItem:TopPage here
-        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:TopPage"), bBothHands)
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:TopPage"), bBothHands, "uSlotAction:TopPage")
         SetMenuOptions("uSelectedItem:TopPage", menu_list, menu_list)
 
-        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:TopPage"), bBothHands)
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:TopPage"), bBothHands, "uSlotActionLeft:TopPage")
         SetMenuOptions("sSelectedItemFormLeft:TopPage", menu_list, menu_list)
 
         RefreshMenu()
     elseif (a_page == "$LamasTinyHUD_RightPage")
         SetToggles()
         ;no need to set uTopSelectedItem:TopPage here
-        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:RightPage"), bBothHandsRight)
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:RightPage"), bBothHandsRight, "uSlotAction:RightPage")
         SetMenuOptions("uSelectedItem:RightPage", menu_list, menu_list)
 
-        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:RightPage"), bBothHandsRight)
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:RightPage"), bBothHandsRight, "uSlotActionLeft:RightPage")
         SetMenuOptions("sSelectedItemFormLeft:RightPage", menu_list, menu_list)
 
         RefreshMenu()
     elseif (a_page == "$LamasTinyHUD_BottomPage")
         SetToggles()
         ;no need to set uTopSelectedItem:TopPage here
-        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:BottomPage"), bBothHandsBottom)
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:BottomPage"), bBothHandsBottom, "uSlotAction:BottomPage")
         SetMenuOptions("uSelectedItem:BottomPage", menu_list, menu_list)
 
-        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:BottomPage"), bBothHandsBottom)
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:BottomPage"), bBothHandsBottom, "uSlotActionLeft:BottomPage")
         SetMenuOptions("sSelectedItemFormLeft:BottomPage", menu_list, menu_list)
 
         RefreshMenu()
     elseif (a_page == "$LamasTinyHUD_LeftPage")
         SetToggles()
         ;no need to set uTopSelectedItem:TopPage here
-        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:LeftPage"), bBothHandsLeft)
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:LeftPage"), bBothHandsLeft, "uSlotAction:LeftPage")
         SetMenuOptions("uSelectedItem:LeftPage", menu_list, menu_list)
 
-        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:LeftPage"), bBothHandsLeft)
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:LeftPage"), bBothHandsLeft, "uSlotActionLeft:LeftPage")
         SetMenuOptions("sSelectedItemFormLeft:LeftPage", menu_list, menu_list)
 
         RefreshMenu()

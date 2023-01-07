@@ -1,9 +1,10 @@
 ﻿#include "spell.h"
 #include "equip/equip_slot.h"
 #include "handle/setting_execute.h"
+#include "util/offset.h"
 
 namespace magic {
-    std::vector<RE::TESForm*> spell::get_spells() {
+    std::vector<RE::TESForm*> spell::get_spells(bool a_instant, const bool a_single) {
         //easier just to use items that have been favourited, just filter them
         std::vector<RE::TESForm*> spell_list;
 
@@ -16,7 +17,15 @@ namespace magic {
                         static_cast<uint32_t>(spell->GetCastingType()),
                         spell->IsTwoHanded(),
                         static_cast<uint32_t>(spell->GetSpellType()));
-                    spell_list.push_back(form);
+                    if (spell->GetCastingType() == RE::MagicSystem::CastingType::kConcentration && a_instant) {
+                        logger::debug("skipping spell {} because it does not work will with instant cast"sv,
+                            spell->GetName());
+                        continue;
+                    }
+
+                    if ((spell->IsTwoHanded() && !a_single) || (!spell->IsTwoHanded() && a_single)) {
+                        spell_list.push_back(form);
+                    }
                 } else {
                     logger::trace(" {} is not a spell, not needed here form type {}"sv,
                         form->GetName(),
@@ -52,19 +61,28 @@ namespace magic {
 
         //maybe check if the spell is already equipped
         const auto actor = a_player->As<RE::Actor>();
-
-
-        
-        if (a_action == action_type::instant) {
-            //TODO add magicka consumption
-            //exp gets added
-            /*actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
-                 ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);*/
-
+        auto casting_type = spell->GetCastingType();
+        logger::trace("spell {} is type {}"sv, spell->GetName(), static_cast<uint32_t>(casting_type));
+        if (a_action == action_type::instant && casting_type != RE::MagicSystem::CastingType::kConcentration) {
+            //might cost nothing if nothing has been equipped into tha hands after start, so it seems
             auto cost = spell->CalculateMagickaCost(a_player);
-            logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.4f}"), cost));
-            
-            
+            logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.2f}"), cost));
+
+            float current_magicka = a_player->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
+            logger::trace("got temp magicka {}, cost {}"sv, current_magicka, cost);
+            a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                RE::ActorValue::kMagicka,
+                -cost);
+
+            if (current_magicka < cost) {
+                offset::flash_hud_menu_meter(RE::ActorValue::kMagicka);
+                logger::warn("not enough magicka for spell {}, magicka {}, cost {} return."sv,
+                    a_form->GetName(),
+                    current_magicka,
+                    cost);
+                return;
+            }
+
             actor->GetMagicCaster(get_casting_source(a_slot))->CastSpellImmediate(spell,
                 false,
                 actor,
@@ -73,7 +91,7 @@ namespace magic {
                 0.0f,
                 nullptr);
         } else {
-            //other slot options like i thought, so i get it like this now
+            //other slot options like i thought did not work, so i get it like this now
             auto equip_manager = RE::ActorEquipManager::GetSingleton();
             if (a_slot != nullptr) {
                 handle::setting_execute::unequip_if_equipped(left, a_player, equip_manager);

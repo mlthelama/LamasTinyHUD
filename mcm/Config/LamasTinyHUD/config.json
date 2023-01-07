@@ -124,6 +124,20 @@
                     }
                 },
                 {
+                    "id": "uSlotAction:TopPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "OR": [1, 3]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItems:TopPage",
                     "valueOptions": {
                         "value": "",
@@ -136,16 +150,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItems"
                     }
-                },
-                {
-                    "id": "sSelectedItemForm:TopPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "id": "uSelectedItem:TopPage",
@@ -161,18 +165,14 @@
                     }
                 },
                 {
-                    "id": "uSlotAction:TopPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "OR": [1, 3]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemForm:TopPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "type": "empty"
@@ -206,6 +206,22 @@
                     }
                 },
                 {
+                    "id": "uSlotActionLeft:TopPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "AND": [{
+                            "OR": [11, 13]
+                        }, 6]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItemsLeft:TopPage",
                     "valueOptions": {
                         "value": "",
@@ -220,18 +236,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsLeft"
                     }
-                },
-                {
-                    "id": "sSelectedItemFormLeft:TopPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
-                    "groupCondition": 6,
-                    "groupBehavior": "hide"
                 },
                 {
                     "id": "uSelectedItemLeft:TopPage",
@@ -249,20 +253,16 @@
                     }
                 },
                 {
-                    "id": "uSlotActionLeft:TopPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "AND": [{
-                            "OR": [11, 13]
-                        }, 6]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemFormLeft:TopPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "groupCondition": 6,
+                    "groupBehavior": "hide"
                 }
             ]
         },
@@ -338,6 +338,20 @@
                     }
                 },
                 {
+                    "id": "uSlotAction:RightPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "OR": [21, 23]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItems:RightPage",
                     "valueOptions": {
                         "value": "",
@@ -350,16 +364,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsRight"
                     }
-                },
-                {
-                    "id": "sSelectedItemForm:RightPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "id": "uSelectedItem:RightPage",
@@ -375,18 +379,14 @@
                     }
                 },
                 {
-                    "id": "uSlotAction:RightPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "OR": [21, 23]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemForm:RightPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "type": "empty"
@@ -420,6 +420,22 @@
                     }
                 },
                 {
+                    "id": "uSlotActionLeft:RightPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "AND": [{
+                            "OR": [31, 33]
+                        }, 26]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItemsLeft:RightPage",
                     "valueOptions": {
                         "value": "",
@@ -434,18 +450,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsRightLeft"
                     }
-                },
-                {
-                    "id": "sSelectedItemFormLeft:RightPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
-                    "groupCondition": 26,
-                    "groupBehavior": "hide"
                 },
                 {
                     "id": "uSelectedItemLeft:RightPage",
@@ -463,20 +467,16 @@
                     }
                 },
                 {
-                    "id": "uSlotActionLeft:RightPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "AND": [{
-                            "OR": [31, 33]
-                        }, 26]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemFormLeft:RightPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "groupCondition": 26,
+                    "groupBehavior": "hide"
                 }
             ]
         },
@@ -552,6 +552,20 @@
                     }
                 },
                 {
+                    "id": "uSlotAction:BottomPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "OR": [41, 43]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItems:BottomPage",
                     "valueOptions": {
                         "value": "",
@@ -564,16 +578,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsBottom"
                     }
-                },
-                {
-                    "id": "sSelectedItemForm:BottomPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "id": "uSelectedItem:BottomPage",
@@ -589,18 +593,14 @@
                     }
                 },
                 {
-                    "id": "uSlotAction:BottomPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "OR": [41, 43]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemForm:BottomPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "type": "empty"
@@ -634,6 +634,22 @@
                     }
                 },
                 {
+                    "id": "uSlotActionLeft:BottomPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "AND": [{
+                            "OR": [51, 53]
+                        }, 46]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItemsLeft:BottomPage",
                     "valueOptions": {
                         "value": "",
@@ -648,18 +664,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsBottomLeft"
                     }
-                },
-                {
-                    "id": "sSelectedItemFormLeft:BottomPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
-                    "groupCondition": 46,
-                    "groupBehavior": "hide"
                 },
                 {
                     "id": "uSelectedItemLeft:BottomPage",
@@ -677,20 +681,16 @@
                     }
                 },
                 {
-                    "id": "uSlotActionLeft:BottomPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "AND": [{
-                            "OR": [51, 53]
-                        }, 46]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemFormLeft:BottomPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "groupCondition": 46,
+                    "groupBehavior": "hide"
                 }
             ]
         },
@@ -766,6 +766,20 @@
                     }
                 },
                 {
+                    "id": "uSlotAction:LeftPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "OR": [61, 63]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItems:LeftPage",
                     "valueOptions": {
                         "value": "",
@@ -778,16 +792,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsLeftList"
                     }
-                },
-                {
-                    "id": "sSelectedItemForm:LeftPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "id": "uSelectedItem:LeftPage",
@@ -803,18 +807,14 @@
                     }
                 },
                 {
-                    "id": "uSlotAction:LeftPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "OR": [61, 63]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemForm:LeftPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help"
                 },
                 {
                     "type": "empty"
@@ -848,6 +848,22 @@
                     }
                 },
                 {
+                    "id": "uSlotActionLeft:LeftPage",
+                    "text": "$LamasTinyHUD_SlotAction",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "groupCondition": {
+                        "AND": [{
+                            "OR": [71, 73]
+                        }, 66]
+                    },
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "id": "sRefreshItemsLeft:LeftPage",
                     "valueOptions": {
                         "value": "",
@@ -862,18 +878,6 @@
                         "type": "CallFunction",
                         "function": "RefreshItemsLeftLeft"
                     }
-                },
-                {
-                    "id": "sSelectedItemFormLeft:LeftPage",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
-                    "groupCondition": 66,
-                    "groupBehavior": "hide"
                 },
                 {
                     "id": "uSelectedItemLeft:LeftPage",
@@ -891,20 +895,16 @@
                     }
                 },
                 {
-                    "id": "uSlotActionLeft:LeftPage",
-                    "text": "$LamasTinyHUD_SlotAction",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
-                    "groupCondition": {
-                        "AND": [{
-                            "OR": [71, 73]
-                        }, 66]
-                    },
-                    "groupBehavior": "hide",
+                    "id": "sSelectedItemFormLeft:LeftPage",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant"],
-                        "sourceType": "ModSettingInt"
-                    }
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "type": "text",
+                    "text": "$LamasTinyHUD_SelectedItemForm",
+                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "groupCondition": 66,
+                    "groupBehavior": "hide"
                 }
             ]
         },

@@ -23,7 +23,7 @@ namespace papyrus {
         logger::debug("on config close done. return."sv);
     }
 
-    std::vector<RE::BSFixedString> hud_mcm::get_selected_options(RE::TESQuest*, uint32_t a_id, bool a_both) {
+    std::vector<RE::BSFixedString> hud_mcm::get_selected_options(RE::TESQuest*, uint32_t a_id, bool a_both, bool a_instant_cast) {
         logger::info("Got refresh for id {}, both hands {}"sv, a_id, a_both);
         std::vector<RE::BSFixedString> empty_string_vec = { util::empty_enum_string };
         const auto display_string_list = new std::vector<RE::BSFixedString>;
@@ -48,7 +48,7 @@ namespace papyrus {
             logger::trace("potion list is size {}"sv, inventory_data_list_->size());
         } else if (index_ == util::selection_type::magic) {
             //add filter for casting
-            for (const auto spell_list = magic::spell::get_spells(); const auto spell : spell_list) {
+            for (const auto spell_list = magic::spell::get_spells(a_instant_cast, a_both); const auto spell : spell_list) {
                 if (const auto is_two_handed = spell->As<RE::SpellItem>()->IsTwoHanded();
                     (is_two_handed && !a_both) || (!is_two_handed && a_both)) {
                     display_string_list->push_back(spell->GetName());
