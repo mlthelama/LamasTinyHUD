@@ -12,7 +12,7 @@ namespace handle {
         //fade_setting* fade_setting = nullptr;
         std::vector<slot_setting*> slot_settings;
         offset_setting* offset_setting = nullptr;
-        ui::icon_image_type icon_type = ui::icon_image_type::default_icon;
+        ui::icon_image_type icon_type = ui::icon_image_type::icon_default;
         uint32_t icon_opacity = ui::draw_full;
         uint32_t button_press_modify = ui::draw_full;
         uint32_t key = 0;

@@ -35,7 +35,7 @@ The UI can be moved around with the MCM menu it will adjust after the Setting is
 Icon Set|Folder|License|Count
 ---|---|---|---
 [Xelu_Free_Controller&Key_Prompts](https://thoseawesomeguys.com/prompts/)|resources/key|[Creative Commons 0 (CC0)](https://creativecommons.org/publicdomain/zero/1.0/)|85
-[Game-Icons](https://game-icons.net)|resources/icon|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|18
+[Game-Icons](https://game-icons.net)|resources/icon|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|23
 none|resources/hud|drawn by me|3
 
 ### More info for Game-Icons
@@ -48,7 +48,7 @@ default.png |[source](https://game-icons.net/1x1/delapouite/perspective-dice-six
 default_potion.png |[source](https://game-icons.net/1x1/delapouite/magic-potion.html)
 default_spell.png |[source](https://game-icons.net/1x1/lorc/rolling-energy.html)
 default_spell_alt.png |[source](https://game-icons.net/1x1/lorc/crowned-explosion.html)
-food.png |[source](https://game-icons.net/1x1/caro-asercion/charcuterie.html)
+food.png |[source](https://game-icons.net/1x1/delapouite/bread.html)
 health_potion.png |[source](https://game-icons.net/1x1/caro-asercion/round-potion.html)
 mace.png |[source](https://game-icons.net/1x1/lorc/spiked-mace.html)
 one_handed_axe.png |[source](https://game-icons.net/1x1/lorc/battered-axe.html)
@@ -59,6 +59,11 @@ shout.png |[source](https://game-icons.net/1x1/lorc/shouting.html)
 staff.png |[source](https://game-icons.net/1x1/lorc/wizard-staff.html)
 two_handed_axe.png |[source](https://game-icons.net/1x1/lorc/battle-axe.html)
 two_handed_sword.png |[source](https://game-icons.net/1x1/lorc/broadsword.html)
+fire_spell.png|[source](https://game-icons.net/1x1/delapouite/fire-spell-cast.html)
+ice_spell.png|[source](https://game-icons.net/1x1/delapouite/ice-spell-cast.html)
+shock_spell.png|[source](https://game-icons.net/1x1/delapouite/bolt-spell-cast.html)
+heal_spell.png|[source](https://game-icons.net/1x1/delapouite/healing.html)
+poison_default.png|[source](https://game-icons.net/1x1/lorc/poison-bottle.html)
 
 ## Building
 ```

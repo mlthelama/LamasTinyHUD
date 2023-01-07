@@ -70,9 +70,6 @@ namespace magic {
 
             float current_magicka = a_player->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
             logger::trace("got temp magicka {}, cost {}"sv, current_magicka, cost);
-            a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
-                RE::ActorValue::kMagicka,
-                -cost);
 
             if (current_magicka < cost) {
                 offset::flash_hud_menu_meter(RE::ActorValue::kMagicka);
@@ -82,6 +79,10 @@ namespace magic {
                     cost);
                 return;
             }
+
+            a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+                RE::ActorValue::kMagicka,
+                -cost);
 
             actor->GetMagicCaster(get_casting_source(a_slot))->CastSpellImmediate(spell,
                 false,

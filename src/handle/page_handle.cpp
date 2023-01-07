@@ -136,15 +136,14 @@ namespace handle {
         }
     }
 
-    ui::icon_image_type page_handle::get_icon_type(const util::selection_type a_type,
-        [[maybe_unused]] RE::TESForm*& a_form) {
-        auto icon = ui::icon_image_type::default_icon;
+    ui::icon_image_type page_handle::get_icon_type(const util::selection_type a_type, RE::TESForm*& a_form) {
+        auto icon = ui::icon_image_type::icon_default;
         switch (a_type) {
             case util::selection_type::weapon:
-                icon = ui::icon_image_type::two_handed_sword;
+                get_icon_for_weapon_type(a_form, icon);
                 break;
             case util::selection_type::magic:
-                icon = ui::icon_image_type::default_spell;
+                get_icon_for_spell(a_form, icon);
                 break;
             case util::selection_type::shout:
                 icon = ui::icon_image_type::shout;
@@ -153,12 +152,115 @@ namespace handle {
                 icon = ui::icon_image_type::power;
                 break;
             case util::selection_type::item:
-                icon = ui::icon_image_type::default_potion;
+                get_icon_for_item(a_form, icon);
                 break;
             case util::selection_type::shield:
+                //kinda useless atm, icon is set by the first setting, basically right hand
                 icon = ui::icon_image_type::shield;
                 break;
         }
         return icon;
+    }
+
+    void page_handle::get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        switch (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
+            case RE::WEAPON_TYPE::kHandToHandMelee:
+                break;
+            case RE::WEAPON_TYPE::kOneHandSword:
+                a_icon = ui::icon_image_type::sword_one_handed;
+                break;
+            case RE::WEAPON_TYPE::kOneHandDagger:
+                a_icon = ui::icon_image_type::dagger;
+                break;
+            case RE::WEAPON_TYPE::kOneHandAxe:
+                a_icon = ui::icon_image_type::axe_one_handed;
+                break;
+            case RE::WEAPON_TYPE::kOneHandMace:
+                a_icon = ui::icon_image_type::mace;
+                break;
+            case RE::WEAPON_TYPE::kTwoHandSword:
+                a_icon = ui::icon_image_type::sword_two_handed;
+                break;
+            case RE::WEAPON_TYPE::kTwoHandAxe:
+                a_icon = ui::icon_image_type::axe_two_handed;
+                break;
+            case RE::WEAPON_TYPE::kBow:
+                a_icon = ui::icon_image_type::bow;
+                break;
+            case RE::WEAPON_TYPE::kStaff:
+                a_icon = ui::icon_image_type::staff;
+                break;
+            case RE::WEAPON_TYPE::kCrossbow:
+                a_icon = ui::icon_image_type::crossbow;
+                break;
+        }
+    }
+
+    void page_handle::get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        const auto spell = a_form->As<RE::SpellItem>();
+        const auto effect = spell->GetCostliestEffectItem()->baseEffect;
+        auto actor_value = effect->GetMagickSkill();
+        if (actor_value == RE::ActorValue::kNone) {
+            actor_value = effect->data.primaryAV;
+        }
+        
+        switch (actor_value) {
+            case RE::ActorValue::kAlteration:
+            case RE::ActorValue::kConjuration:
+            case RE::ActorValue::kDestruction:
+                switch (effect->data.resistVariable) {
+                    case RE::ActorValue::kResistFire:
+                        a_icon = ui::icon_image_type::spell_fire;
+                        break;
+                    case RE::ActorValue::kResistFrost:
+                        a_icon = ui::icon_image_type::spell_frost;
+                        break;
+                    case RE::ActorValue::kResistShock:
+                        a_icon = ui::icon_image_type::spell_frost;
+                        break;
+                    default:
+                        a_icon = ui::icon_image_type::spell_default_alt;
+                }
+                break;
+            case RE::ActorValue::kIllusion:
+                a_icon = ui::icon_image_type::spell_default;
+                break;
+            case RE::ActorValue::kRestoration:
+                //might not fit all spells
+                a_icon = ui::icon_image_type::spell_heal;
+                break;
+            default:
+                a_icon = ui::icon_image_type::spell_default;
+        }
+    }
+
+    void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        const auto alchemy_potion = a_form->As<RE::AlchemyItem>();
+
+        if (alchemy_potion->IsFood()) {
+            a_icon = ui::icon_image_type::food;
+            return;
+        }
+        if (alchemy_potion->IsPoison()) {
+            a_icon = ui::icon_image_type::poison_default;
+            return;
+        }
+
+        const auto effect = alchemy_potion->GetCostliestEffectItem()->baseEffect;
+        auto actor_value = effect->GetMagickSkill();
+
+        if (actor_value == RE::ActorValue::kNone) {
+            actor_value = effect->data.primaryAV;
+        }
+
+        switch (actor_value) {
+            case RE::ActorValue::kHealth:
+            case RE::ActorValue::kHealRateMult:
+            case RE::ActorValue::kHealRate:
+                a_icon = ui::icon_image_type::potion_health;
+                break;
+            default:
+                a_icon = ui::icon_image_type::potion_default;
+        }
     }
 }

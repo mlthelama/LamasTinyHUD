@@ -6,6 +6,6 @@ namespace offset {
     constexpr REL::RelocationID get_flash_hud(51907, 52845);
 
 
-    typedef void (_fastcall* t_flash_hud_menu_meter)(RE::ActorValue a_actor_value);
+    using t_flash_hud_menu_meter = void(_fastcall*)(RE::ActorValue a_actor_value);
     static REL::Relocation<t_flash_hud_menu_meter> flash_hud_menu_meter{ get_flash_hud };
 }

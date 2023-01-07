@@ -123,9 +123,14 @@ namespace config {
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.25));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.25));
-            hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionWidth", 140));
-            hud_image_position_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionHeight", 140));
-            hud_slot_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 85));
+            hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fHudImagePositionWidth",
+                140));
+            hud_image_position_height = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fHudImagePositionHeight",
+                140));
+            hud_slot_position_offset = static_cast<float>(mcm.
+                GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 85));
             hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 30));
             icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth", 0.11));
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.11));
