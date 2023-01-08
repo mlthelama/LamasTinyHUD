@@ -29,8 +29,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: main
-      - name: Checkout submodules
-        run: git submodule update --init --recursive
+          submodules: recursive
 
       - name: Setup MSVC Environment
         uses: ilammy/msvc-dev-cmd@v1.10.0
@@ -44,7 +43,7 @@ jobs:
       - name: Build
         uses: lukka/run-cmake@v10.0
         with:
-          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
+          cmakeListsTxtPath: ${{ github.workspace }}/main/CMakeLists.txt
           configurePreset: 'vs2022-windows'
           buildPreset: 'vs2022-windows'
 
