@@ -34,7 +34,7 @@ set(BUILD_TESTS OFF)
 
 project(
 	LamasTinyHUD
-	VERSION 1.0.0.2
+	VERSION 1.0.0.3
 	LANGUAGES CXX
 )
 
