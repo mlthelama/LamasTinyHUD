@@ -72,5 +72,5 @@ cd LamasTinyHUD
 
 git submodule update --init --recursive
 cmake --preset vs2022-windows
-cmake --build build --config Release
+cmake --build --preset vs2022-windows
 ```
