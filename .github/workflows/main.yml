@@ -1,0 +1,51 @@
+name: Main CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/main_ci.yml'
+      - 'cmake/**'
+      - 'src/**'
+      - 'CMakeLists.txt'
+      - 'CMakePresets.json'
+      - 'vcpkg-configuration.json'
+      - 'vcpkg.json'
+  pull_request:
+    branches: [ main, feature/* ]
+  workflow_dispatch:
+
+env:
+  VCPKG_COMMIT_ID: 01b29f6d8212bc845da64773b18665d682f5ab66
+
+jobs:
+  build-and-test-vcpkg:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: main
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+
+      - name: Setup MSVC Environment
+        uses: ilammy/msvc-dev-cmd@v1.10.0
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v10.0
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+          doNotCache: true
+
+      - name: Build
+        uses: lukka/run-cmake@v10.0
+        with:
+          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
+          configurePreset: 'vs2022-windows'
+          buildPreset: 'vs2022-windows'
+
+
