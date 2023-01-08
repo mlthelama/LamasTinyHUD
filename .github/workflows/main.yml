@@ -43,7 +43,7 @@ jobs:
       - name: Build
         uses: lukka/run-cmake@v10.0
         with:
-          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
+          cmakeListsTxtPath: ${{ github.workspace }}/main/CMakeLists.txt
           configurePreset: 'vs2022-windows'
           buildPreset: 'vs2022-windows'
 
