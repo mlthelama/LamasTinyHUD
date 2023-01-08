@@ -1,11 +1,4 @@
 # LamasTinyHUD
-![Platform](https://img.shields.io/static/v1?label=platform&message=windows&color=dimgray&style=plastic&logo=windows)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/mlthelama/LamasTinyHUD?style=plastic)
-![GitHub](https://img.shields.io/github/license/mlthelama/LamasTinyHUD)
-![GitHub top language](https://img.shields.io/github/languages/top/mlthelama/LamasTinyHUD?style=plastic)
-![GitHub language count](https://img.shields.io/github/languages/count/mlthelama/LamasTinyHUD?style=plastic)
-![GitHub last commit](https://img.shields.io/github/last-commit/mlthelama/LamasTinyHUD?style=plastic)
-
 A small UI Element
 
 ## What does it do
@@ -78,5 +71,6 @@ git clone https://github.com/mlthelama/LamasTinyHUD.git
 cd LamasTinyHUD
 
 git submodule update --init --recursive
-cmake -B build -S .
+cmake --preset vs2022-windows
+cmake --build build --config Release
 ```
