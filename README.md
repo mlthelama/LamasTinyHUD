@@ -15,7 +15,7 @@ Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to 
 * Powers can be equipped or instant casted with the Hotkey. Instant casting will not replace an already slotted Power or Shout.
 * Shouts can only be equipped. Equip will be skipped if it is already slotted.
 * Spells, Weapons and Shields can be combined in one Hotkey and will always just be equipped, current equipped Items will be unequipped before.
-* Spells can be instant casted, but they cost currently no magicka but give experience
+* Spells that do not need Concentration (=Button holding) can be instant casted, they do not have an animation currently 
 
 The UI can be moved around with the MCM menu it will adjust after the Setting is closed. The elements are drawn with [ImGui](https://github.com/ocornut/imgui) and the used pngs are loaded at the game start, if other assets are used the scaling might need to be adjusted in the Settings.
 

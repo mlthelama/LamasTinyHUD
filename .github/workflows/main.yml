@@ -19,7 +19,7 @@ env:
   VCPKG_COMMIT_ID: 01b29f6d8212bc845da64773b18665d682f5ab66
 
 jobs:
-  build-and-test-vcpkg:
+  build-vcpkg:
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -38,7 +38,6 @@ jobs:
         uses: lukka/run-vcpkg@v10.0
         with:
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
-          doNotCache: true
 
       - name: Build
         uses: lukka/run-cmake@v10.0
