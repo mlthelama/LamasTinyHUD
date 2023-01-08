@@ -1,7 +1,7 @@
 # LamasTinyHUD
 ![Platform](https://img.shields.io/static/v1?label=platform&message=windows&color=dimgray&style=plastic&logo=windows)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mlthelama/LamasTinyHUD?style=plastic)
-![GitHub](https://img.shields.io/github/license/mlthelama/LamasTinyHUD)
+![GitHub](https://img.shields.io/github/license/mlthelama/LamasTinyHUD?style=plastic)
 ![GitHub top language](https://img.shields.io/github/languages/top/mlthelama/LamasTinyHUD?style=plastic)
 ![GitHub language count](https://img.shields.io/github/languages/count/mlthelama/LamasTinyHUD?style=plastic)
 ![GitHub last commit](https://img.shields.io/github/last-commit/mlthelama/LamasTinyHUD?style=plastic)
