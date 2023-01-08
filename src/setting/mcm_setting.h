@@ -54,5 +54,7 @@ namespace config {
         static uint32_t get_slot_button_feedback();
         static float get_key_icon_scale_width();
         static float get_key_icon_scale_height();
+        static float get_slot_count_text_offset();
+        static float get_slot_count_text_font_size();
     };
 }

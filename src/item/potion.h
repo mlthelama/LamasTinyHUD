@@ -1,8 +1,9 @@
 ﻿#pragma once
+#include "handle/page/slot_setting.h"
 
 namespace item {
     class potion {
     public:
-        static void consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
+        static void consume_potion(handle::slot_setting*& a_slot, RE::PlayerCharacter*& a_player);
     };
 }

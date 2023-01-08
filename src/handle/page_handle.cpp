@@ -1,5 +1,6 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
+#include "item/inventory.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -51,6 +52,7 @@ namespace handle {
             slot->equip = a_hand;
             RE::BGSEquipSlot* equip_slot = nullptr;
             get_equip_slots(element->type, a_hand, equip_slot, element->left);
+            get_item_count(element->form, slot->item_count, element->type);
             slot->equip_slot = equip_slot;
 
             slots->push_back(slot);
@@ -73,7 +75,7 @@ namespace handle {
 
         page->offset_setting = offset;
 
-        //TODO for now
+        //TODO for now the right hand or the first setting defines the icon
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
         page->icon_opacity = a_opacity;
 
@@ -203,7 +205,7 @@ namespace handle {
         if (actor_value == RE::ActorValue::kNone) {
             actor_value = effect->data.primaryAV;
         }
-        
+
         switch (actor_value) {
             case RE::ActorValue::kAlteration:
             case RE::ActorValue::kConjuration:
@@ -262,5 +264,21 @@ namespace handle {
             default:
                 a_icon = ui::icon_image_type::potion_default;
         }
+    }
+
+    void page_handle::get_item_count(RE::TESForm*& a_form, uint32_t& a_count, const util::selection_type a_type) {
+        if (a_type != util::selection_type::item) {
+            a_count = 0;
+            return;
+        }
+        auto player = RE::PlayerCharacter::GetSingleton();
+        for (auto potential_items = item::inventory::get_inventory_magic_items(player);
+             const auto& [item, invData] : potential_items) {
+            if (invData.second->object->formID == a_form->formID) {
+                a_count = invData.first;
+                break;
+            }
+        }
+        logger::trace("Item {}, count {}"sv, a_form->GetName(), a_count);
     }
 }

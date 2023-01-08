@@ -15,7 +15,7 @@ namespace handle {
     void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
         logger::trace("got {} settings execute"sv, a_slots.size());
         auto player = RE::PlayerCharacter::GetSingleton();
-        for (const auto slot : a_slots) {
+        for (auto slot : a_slots) {
             logger::trace("executing setting for type {}, action {}, form {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),
@@ -57,13 +57,13 @@ namespace handle {
         }
     }
 
-    void setting_execute::execute_setting(const slot_setting* a_slot, RE::PlayerCharacter*& a_player) {
+    void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
             case util::selection_type::unset:
                 logger::warn("nothing to do, nothing set"sv);
                 break;
             case util::selection_type::item:
-                item::potion::consume_potion(a_slot->form, a_player);
+                item::potion::consume_potion(a_slot, a_player);
                 break;
             case util::selection_type::magic:
                 magic::spell::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot, a_player);

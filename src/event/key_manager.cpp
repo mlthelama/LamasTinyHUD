@@ -101,7 +101,7 @@ namespace event {
                 page_setting->fade_setting->action = handle::fade_setting::action::out;
                 page_setting->fade_setting->alpha = handle::fade_setting::alpha::min;
                 page_setting->fade_setting->current_alpha = static_cast<uint32_t>(handle::fade_setting::alpha::max);
-                logger::trace("done settinging fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
+                logger::trace("done setting fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
             }*/
 
             if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_

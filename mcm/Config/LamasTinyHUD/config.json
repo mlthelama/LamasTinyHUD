@@ -1090,6 +1090,32 @@
                         "formatString": "{2}",
                         "sourceType": "ModSettingFloat"
                     }
+                },
+                {
+                    "id": "fSlotCountTextOffset:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotCountTextOffset_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_SlotCountTextOffset_InfoText",
+                    "valueOptions": {
+                        "min": 0.0,
+                        "max": 300.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fSlotCountTextFontSize:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotCountTextFontSize_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_SlotCountTextFontSize_InfoText",
+                    "valueOptions": {
+                        "min": 10.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
                 }
             ]
         }

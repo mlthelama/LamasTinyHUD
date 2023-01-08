@@ -37,11 +37,13 @@ namespace ui {
 
         ui_renderer();
 
+        static void draw_text(float a_x, float a_y, float a_offset_x, float a_offset_y, const char* a_text, ImU32 a_color = IM_COL32_WHITE);
+        
         static void draw_element(ID3D11ShaderResourceView* a_texture,
             ImVec2 a_center,
             ImVec2 a_size,
             float a_angle,
-            ImU32 col = IM_COL32_WHITE);
+            ImU32 a_color = IM_COL32_WHITE);
         static void draw_hud(float a_x, float a_y);
         static void draw_slot(float a_x, float a_y, float a_offset_x, float a_offset_y, uint32_t a_modify);
         static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);

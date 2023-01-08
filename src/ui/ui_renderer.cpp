@@ -174,11 +174,38 @@ namespace ui {
 
     ui_renderer::ui_renderer() = default;
 
+    void ui_renderer::draw_text(const float a_x,
+        const float a_y,
+        const float a_offset_x,
+        const float a_offset_y,
+        const char* a_text,
+        const ImU32 a_color) {
+        
+        const ImFont* font = ImGui::GetFont();
+        const auto font_size = config::mcm_setting::get_slot_count_text_font_size();
+
+        //get data from normal hud, and add an offset config for each image
+        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
+        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+
+        const auto extra_x = config::mcm_setting::get_slot_count_text_offset();
+        const auto extra_y = extra_x;
+
+        ImVec2 position;
+        if (width_setting > a_x || height_setting > a_y) {
+            position = ImVec2(0.f, 0.f);
+        } else {
+            position = ImVec2(width_setting + a_offset_x + extra_x, height_setting + a_offset_y + extra_y);
+        }
+
+        ImGui::GetWindowDrawList()->AddText(font, font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
+    }
+
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
         const ImVec2 a_center,
         const ImVec2 a_size,
         const float a_angle,
-        const ImU32 col) {
+        const ImU32 a_color) {
         const float cos_a = cosf(a_angle);
         const float sin_a = sinf(a_angle);
         const ImVec2 pos[4] = { a_center + ImRotate(ImVec2(-a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
@@ -191,7 +218,7 @@ namespace ui {
 
 
         ImGui::GetWindowDrawList()
-            ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], col);
+            ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], a_color);
     }
 
     void ui_renderer::draw_hud(const float a_x, const float a_y) {
@@ -264,6 +291,15 @@ namespace ui {
                 offset_setting->offset_slot_y,
                 page_setting->icon_type,
                 page_setting->icon_opacity);
+            if (auto slot_settings = page_setting->slot_settings;
+                position == handle::page_setting::position::left && !slot_settings.empty() && slot_settings.front()->
+                item_count > 0) {
+                draw_text(a_x,
+                    a_y,
+                    offset_setting->offset_slot_x,
+                    offset_setting->offset_slot_y,
+                    std::to_string(slot_settings.front()->item_count).c_str());
+            }
         }
     }
 

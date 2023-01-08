@@ -48,14 +48,14 @@ namespace config {
     static float hud_image_position_height;
     static float hud_slot_position_offset;
     static float hud_key_position_offset;
-
     static float icon_scale_width;
     static float icon_scale_height;
     static uint32_t icon_opacity;
     static uint32_t slot_button_feedback;
-
     static float key_icon_scale_width;
     static float key_icon_scale_height;
+    static float slot_count_text_offset;
+    static float slot_count_text_font_size;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -138,6 +138,10 @@ namespace config {
             slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uSlotButtonFeedback", 200));
             key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth", 0.4));
             key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight", 0.4));
+            slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 10));
+            slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fSlotCountTextFontSize",
+                20));
         };
 
         read_mcm(mcm_default_setting);
@@ -196,4 +200,6 @@ namespace config {
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
     float mcm_setting::get_key_icon_scale_width() { return key_icon_scale_width; }
     float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
+    float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset; }
+    float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size; }
 }

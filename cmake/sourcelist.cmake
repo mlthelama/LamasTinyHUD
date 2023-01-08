@@ -2,6 +2,8 @@ set(sources ${sources}
 	src/PCH.h
 	src/equip/equip_slot.cpp
 	src/equip/equip_slot.h
+	src/event/inventory_event.cpp
+	src/event/inventory_event.h
 	src/event/key_manager.cpp
 	src/event/key_manager.h
 	src/event/sink_event.cpp

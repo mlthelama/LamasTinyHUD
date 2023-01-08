@@ -12,6 +12,6 @@ namespace handle {
             RE::ActorEquipManager*& a_actor_equip_manager);
 
     private:
-        static void execute_setting(const slot_setting* a_slot, RE::PlayerCharacter*& a_player);
+        static void execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player);
     };
 }
