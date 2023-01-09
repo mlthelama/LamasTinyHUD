@@ -37,8 +37,13 @@ namespace ui {
 
         ui_renderer();
 
-        static void draw_text(float a_x, float a_y, float a_offset_x, float a_offset_y, const char* a_text, ImU32 a_color = IM_COL32_WHITE);
-        
+        static void draw_text(float a_x,
+            float a_y,
+            float a_offset_x,
+            float a_offset_y,
+            const char* a_text,
+            ImU32 a_color = IM_COL32_WHITE);
+
         static void draw_element(ID3D11ShaderResourceView* a_texture,
             ImVec2 a_center,
             ImVec2 a_size,

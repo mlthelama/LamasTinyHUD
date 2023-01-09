@@ -1,6 +1,6 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
-#include "item/inventory.h"
+#include "equip/item/inventory.h"
 #include "util/string_util.h"
 
 namespace handle {

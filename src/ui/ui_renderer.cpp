@@ -180,7 +180,6 @@ namespace ui {
         const float a_offset_y,
         const char* a_text,
         const ImU32 a_color) {
-        
         const ImFont* font = ImGui::GetFont();
         const auto font_size = config::mcm_setting::get_slot_count_text_font_size();
 

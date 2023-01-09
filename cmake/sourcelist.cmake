@@ -2,6 +2,18 @@ set(sources ${sources}
 	src/PCH.h
 	src/equip/equip_slot.cpp
 	src/equip/equip_slot.h
+	src/equip/item/inventory.cpp
+	src/equip/item/inventory.h
+	src/equip/item/potion.cpp
+	src/equip/item/potion.h
+	src/equip/item/weapon.cpp
+	src/equip/item/weapon.h
+	src/equip/magic/power.cpp
+	src/equip/magic/power.h
+	src/equip/magic/shout.cpp
+	src/equip/magic/shout.h
+	src/equip/magic/spell.cpp
+	src/equip/magic/spell.h
 	src/event/inventory_event.cpp
 	src/event/inventory_event.h
 	src/event/key_manager.cpp
@@ -21,18 +33,8 @@ set(sources ${sources}
 	src/handle/set_data.h
 	src/handle/setting_execute.cpp
 	src/handle/setting_execute.h
-	src/item/inventory.cpp
-	src/item/inventory.h
-	src/item/potion.cpp
-	src/item/potion.h
-	src/item/weapon.cpp
-	src/item/weapon.h
-	src/magic/power.cpp
-	src/magic/power.h
-	src/magic/shout.cpp
-	src/magic/shout.h
-	src/magic/spell.cpp
-	src/magic/spell.h
+	src/hook/hook.cpp
+	src/hook/hook.h
 	src/main.cpp
 	src/papyrus/papyrus.cpp
 	src/papyrus/papyrus.h
