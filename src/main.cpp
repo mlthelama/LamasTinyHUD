@@ -1,3 +1,4 @@
+#include "hook/hook.h"
 #include "papyrus/papyrus.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
@@ -91,6 +92,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
 
     papyrus::Register();
     ui::ui_renderer::install();
+    hook::hook::install();
 
     logger::info("{} loaded"sv, Version::PROJECT);
     return true;

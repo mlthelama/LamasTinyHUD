@@ -14,8 +14,6 @@ set(sources ${sources}
 	src/equip/magic/shout.h
 	src/equip/magic/spell.cpp
 	src/equip/magic/spell.h
-	src/event/inventory_event.cpp
-	src/event/inventory_event.h
 	src/event/key_manager.cpp
 	src/event/key_manager.h
 	src/event/sink_event.cpp

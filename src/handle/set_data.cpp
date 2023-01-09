@@ -65,6 +65,10 @@ namespace handle {
         logger::trace("done setting. return."sv);
     }
 
+    void set_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, const int32_t a_count) {
+        set_new_item_count(a_obj->GetFormID(), a_obj->GetName(), a_count);
+    }
+
     void set_data::set_empty_slot(int a_pos, key_position*& a_key_pos) {
         logger::trace("setting empty config for position {}"sv, a_pos);
         std::vector<data_helper*> data;
@@ -173,6 +177,19 @@ namespace handle {
                 hand,
                 config::mcm_setting::get_icon_opacity(),
                 a_key_pos);
+        }
+    }
+
+    void set_data::set_new_item_count(const RE::FormID a_form_id, const char* a_name, int32_t a_count) {
+        //just consider magic items for now, that includes 
+        const auto page_handle = page_handle::get_singleton();
+        for (auto pages = page_handle->get_page(); auto [position, page] : pages) {
+            for (const auto setting : page->slot_settings) {
+                if (setting->type == util::selection_type::item && setting->form->formID == a_form_id) {
+                    setting->item_count = setting->item_count + a_count;
+                    logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
+                }
+            }
         }
     }
 }

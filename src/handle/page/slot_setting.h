@@ -14,6 +14,6 @@ namespace handle {
         acton_type action = acton_type::default_action;
         hand_equip equip = hand_equip::total;
         RE::BGSEquipSlot* equip_slot = nullptr;
-        uint32_t item_count = 0;
+        int32_t item_count = 0;
     };
 }

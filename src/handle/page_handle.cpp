@@ -266,7 +266,7 @@ namespace handle {
         }
     }
 
-    void page_handle::get_item_count(RE::TESForm*& a_form, uint32_t& a_count, const util::selection_type a_type) {
+    void page_handle::get_item_count(RE::TESForm*& a_form, int32_t& a_count, const util::selection_type a_type) {
         if (a_type != util::selection_type::item) {
             a_count = 0;
             return;

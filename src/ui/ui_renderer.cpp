@@ -459,9 +459,10 @@ namespace ui {
 
             show_ui_ = true;
             event::sink_events();
+            logger::info("done with data loaded");
+        } else if (msg->type == SKSE::MessagingInterface::kPostLoadGame) {
             //config is already loaded
             handle::set_data::set_slot_data();
-            logger::info("done with data loaded");
         }
     }
 

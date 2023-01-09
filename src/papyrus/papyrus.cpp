@@ -27,7 +27,7 @@ namespace papyrus {
         uint32_t a_id,
         bool a_both,
         bool a_instant_cast) {
-        logger::info("Got refresh for id {}, both hands {}"sv, a_id, a_both);
+        logger::info("Got refresh for id {}, both hands {}, instant {}"sv, a_id, a_both, a_instant_cast);
         std::vector<RE::BSFixedString> empty_string_vec = { util::empty_enum_string };
         const auto display_string_list = new std::vector<RE::BSFixedString>;
         clear_list();
