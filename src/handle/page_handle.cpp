@@ -288,13 +288,14 @@ namespace handle {
     void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
         switch (const auto weapon = a_form->As<RE::TESObjectARMO>(); weapon->GetArmorType()) {
             case RE::BIPED_MODEL::ArmorType::kLightArmor:
+                a_icon = ui::icon_image_type::armor_light;
                 break;
             case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
+                a_icon = ui::icon_image_type::armor_heavy;
                 break;
             case RE::BIPED_MODEL::ArmorType::kClothing:
+                a_icon = ui::icon_image_type::armor_clothing;
                 break;
-            default:
-                a_icon = ui::icon_image_type::icon_default;
         }
     }
 }

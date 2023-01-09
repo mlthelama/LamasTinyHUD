@@ -43,7 +43,7 @@ The UI can be moved around with the MCM menu it will adjust after the Setting is
 Icon Set|Folder|License|Count
 ---|---|---|---
 [Xelu_Free_Controller&Key_Prompts](https://thoseawesomeguys.com/prompts/)|resources/key|[Creative Commons 0 (CC0)](https://creativecommons.org/publicdomain/zero/1.0/)|85
-[Game-Icons](https://game-icons.net)|resources/icon|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|23
+[Game-Icons](https://game-icons.net)|resources/icon|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|26
 none|resources/hud|drawn by me|3
 
 ### More info for Game-Icons
@@ -72,6 +72,9 @@ ice_spell.png|[source](https://game-icons.net/1x1/delapouite/ice-spell-cast.html
 shock_spell.png|[source](https://game-icons.net/1x1/delapouite/bolt-spell-cast.html)
 heal_spell.png|[source](https://game-icons.net/1x1/delapouite/healing.html)
 poison_default.png|[source](https://game-icons.net/1x1/lorc/poison-bottle.html)
+armor_clothing.png|[source](https://game-icons.net/1x1/lucasms/shirt.html)
+armor_light.png|[source](https://game-icons.net/1x1/delapouite/leather-armor.html)
+armor_heavy.png|[source](https://game-icons.net/1x1/lorc/lamellar.html)
 
 ## Building
 ```

@@ -37,6 +37,9 @@ namespace ui {
         spell_shock = 20,
         spell_heal = 21,
         poison_default = 22,
+        armor_light = 23,
+        armor_heavy = 24,
+        armor_clothing = 25,
         total
     };
 
@@ -64,6 +67,9 @@ namespace ui {
         { icon_image_type::spell_frost, R"(.\Data\SKSE\Plugins\resources\icons\ice_spell.png)" },
         { icon_image_type::spell_shock, R"(.\Data\SKSE\Plugins\resources\icons\shock_spell.png)" },
         { icon_image_type::spell_heal, R"(.\Data\SKSE\Plugins\resources\icons\heal_spell.png)" },
-        { icon_image_type::poison_default, R"(.\Data\SKSE\Plugins\resources\icons\poison_default.png)" }
+        { icon_image_type::poison_default, R"(.\Data\SKSE\Plugins\resources\icons\poison_default.png)" },
+        { icon_image_type::armor_light, R"(.\Data\SKSE\Plugins\resources\icons\armor_light.png)" },
+        { icon_image_type::armor_heavy, R"(.\Data\SKSE\Plugins\resources\icons\armor_heavy.png)" },
+        { icon_image_type::armor_clothing, R"(.\Data\SKSE\Plugins\resources\icons\armor_clothing.png)" }
     };
 }
