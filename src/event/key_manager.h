@@ -9,6 +9,13 @@ namespace event {
         static key_manager* get_singleton();
         static void sink();
 
+        enum : uint32_t {
+            k_invalid = static_cast<uint32_t>(-1),
+            k_keyboard_offset = 0,
+            k_mouse_offset = 256,
+            k_gamepad_offset = 266
+        };
+
         key_manager(const key_manager&) = delete;
         key_manager(key_manager&&) = delete;
 
@@ -27,12 +34,6 @@ namespace event {
 
         static bool is_key_valid(uint32_t a_key);
 
-        enum : uint32_t {
-            k_invalid = static_cast<uint32_t>(-1),
-            k_keyboard_offset = 0,
-            k_mouse_offset = 256,
-            k_gamepad_offset = 266
-        };
 
         uint32_t key_ = k_invalid;
         uint32_t key_top_action_ = k_invalid;

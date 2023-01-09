@@ -56,5 +56,6 @@ namespace config {
         static float get_key_icon_scale_height();
         static float get_slot_count_text_offset();
         static float get_slot_count_text_font_size();
+        static uint32_t get_controller_set();
     };
 }

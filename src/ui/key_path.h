@@ -224,9 +224,7 @@ namespace ui {
         { key_values::z, R"(.\Data\SKSE\Plugins\resources\key\Z_Key_Dark.png)" },
     };
 
-
-    //TODO later
-    /*enum class gamepad_values : uint32_t {
+    enum class gamepad_values : uint32_t {
         up = 266,
         down,
         left,
@@ -242,9 +240,50 @@ namespace ui {
         x,
         y,
         left_trigger,
-        right_trigger
+        right_trigger,
+        total
     };
 
     inline static std::map<gamepad_values, const char*> gamepad_ps_icon_path_map = {
-    };*/
+        { gamepad_values::up, R"(.\Data\SKSE\Plugins\resources\key\PS5_Dpad_Up.png)" },
+        { gamepad_values::down, R"(.\Data\SKSE\Plugins\resources\key\PS5_Dpad_Down.png)" },
+        { gamepad_values::left, R"(.\Data\SKSE\Plugins\resources\key\PS5_Dpad_Left.png)" },
+        { gamepad_values::right, R"(.\Data\SKSE\Plugins\resources\key\PS5_Dpad_Right.png)" },
+        { gamepad_values::start, R"(.\Data\SKSE\Plugins\resources\key\PS5_Options_Alt.png)" },
+        { gamepad_values::back, R"(.\Data\SKSE\Plugins\resources\key\PS5_Share_Alt.png)" },
+        { gamepad_values::left_thumb, R"(.\Data\SKSE\Plugins\resources\key\PS5_Left_Stick_Click.png)" },
+        { gamepad_values::right_thumb, R"(.\Data\SKSE\Plugins\resources\key\PS5_Right_Stick_Click.png)" },
+        { gamepad_values::left_shoulder, R"(.\Data\SKSE\Plugins\resources\key\PS5_L1.png)" },
+        { gamepad_values::right_shoulder, R"(.\Data\SKSE\Plugins\resources\key\PS5_R1.png)" },
+        { gamepad_values::a, R"(.\Data\SKSE\Plugins\resources\key\PS5_Cross.png)" },
+        { gamepad_values::b, R"(.\Data\SKSE\Plugins\resources\key\PS5_Circle.png)" },
+        { gamepad_values::x, R"(.\Data\SKSE\Plugins\resources\key\PS5_Square.png)" },
+        { gamepad_values::y, R"(.\Data\SKSE\Plugins\resources\key\PS5_Triangle.png)" },
+        { gamepad_values::left_trigger, R"(.\Data\SKSE\Plugins\resources\key\PS5_L2.png)" },
+        { gamepad_values::right_trigger, R"(.\Data\SKSE\Plugins\resources\key\PS5_R2.png)" }
+    };
+
+    inline static std::map<gamepad_values, const char*> gamepad_xbox_icon_path_map = {
+        { gamepad_values::up, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Dpad_Up.png)" },
+        { gamepad_values::down, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Dpad_Down.png)" },
+        { gamepad_values::left, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Dpad_Left.png)" },
+        { gamepad_values::right, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Dpad_Right.png)" },
+        { gamepad_values::start, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Menu.png)" },
+        { gamepad_values::back, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_View.png)" },
+        { gamepad_values::left_thumb, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Left_Stick_Click.png)" },
+        { gamepad_values::right_thumb, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Right_Stick_Click.png)" },
+        { gamepad_values::left_shoulder, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_LB.png)" },
+        { gamepad_values::right_shoulder, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_RB.png)" },
+        { gamepad_values::a, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_A.png)" },
+        { gamepad_values::b, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_B.png)" },
+        { gamepad_values::x, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_X.png)" },
+        { gamepad_values::y, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_Y.png)" },
+        { gamepad_values::left_trigger, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_LT.png)" },
+        { gamepad_values::right_trigger, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_RT.png)" }
+    };
+
+    enum class controller_set:uint32_t {
+        playstation,
+        xbox
+    };
 }

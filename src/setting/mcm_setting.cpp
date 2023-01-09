@@ -56,6 +56,7 @@ namespace config {
     static float key_icon_scale_height;
     static float slot_count_text_offset;
     static float slot_count_text_font_size;
+    static uint32_t controller_set;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -142,6 +143,7 @@ namespace config {
             slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fSlotCountTextFontSize",
                 20));
+            controller_set = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uControllerSet", 0));
         };
 
         read_mcm(mcm_default_setting);
@@ -202,4 +204,5 @@ namespace config {
     float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
     float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset; }
     float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size; }
+    uint32_t mcm_setting::get_controller_set() { return controller_set; }
 }

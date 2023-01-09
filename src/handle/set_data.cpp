@@ -188,6 +188,8 @@ namespace handle {
                 if (setting->type == util::selection_type::consumable && setting->form->formID == a_form_id) {
                     setting->item_count = setting->item_count + a_count;
                     logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
+
+                    //TODO maybe add indicator to ui that the items are gone
                 }
             }
         }

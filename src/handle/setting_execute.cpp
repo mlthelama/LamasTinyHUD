@@ -63,7 +63,6 @@ namespace handle {
                 item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player);
                 break;
             case util::selection_type::shield:
-                //should work for shields as well
                 item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player, false);
                 break;
             case util::selection_type::armor:

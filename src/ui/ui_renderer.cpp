@@ -11,6 +11,7 @@
 #include "image_path.h"
 #include "imgui_internal.h"
 #include "key_path.h"
+#include "event/key_manager.h"
 
 #include "event/sink_event.h"
 #include "handle/key_position.h"
@@ -26,10 +27,12 @@ namespace ui {
         int32_t height = 0;
     };
 
-    static image image_struct[static_cast<int32_t>(image_type::total)];
-    static image icon_struct[static_cast<int32_t>(icon_image_type::total)];
-    static image key_struct[static_cast<int32_t>(key_values::total)];
-    static image default_key_struct[static_cast<int32_t>(default_keys::total)];
+    static std::map<uint32_t, image> image_struct;
+    static std::map<uint32_t, image> icon_struct;
+    static std::map<uint32_t, image> key_struct;
+    static std::map<uint32_t, image> default_key_struct;
+    static std::map<uint32_t, image> ps_key_struct;
+    static std::map<uint32_t, image> xbox_key_struct;
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
         const UINT u_msg,
@@ -333,7 +336,9 @@ namespace ui {
         for (auto [position, page_setting] : a_settings) {
             //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
-            draw_key(a_x, a_y, offset_setting->offset_key_x, offset_setting->offset_key_y);
+            if (config::file_setting::get_draw_key_background()) {
+                draw_key(a_x, a_y, offset_setting->offset_key_x, offset_setting->offset_key_y);
+            }
             draw_key_icon(a_x,
                 a_y,
                 offset_setting->offset_key_x,
@@ -397,8 +402,6 @@ namespace ui {
 
         const auto [texture, width, height] = get_key_icon(a_key);
 
-        //for now use scale from normal setting, but later add separate config
-        //add hardcoded 1px
         const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_key_icon_scale_width() +
                                  config::file_setting::get_extra_size_for_image(),
             static_cast<float>(height) * config::mcm_setting::get_key_icon_scale_height() +
@@ -456,6 +459,8 @@ namespace ui {
             load_images(icon_type_path_map, icon_struct);
             load_images(key_icon_path_map, key_struct);
             load_images(default_key_icon_path_map, default_key_struct);
+            load_images(gamepad_ps_icon_path_map, ps_key_struct);
+            load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
             show_ui_ = true;
             event::sink_events();
@@ -467,7 +472,7 @@ namespace ui {
     }
 
     template <typename T>
-    void ui_renderer::load_images(std::map<T, const char*> a_map, image a_struct[]) {
+    void ui_renderer::load_images(std::map<T, const char*>& a_map, std::map<uint32_t, image>& a_struct) {
         for (auto [type, path] : a_map) {
             const auto idx = static_cast<int32_t>(type);
             if (load_texture_from_file(path,
@@ -486,8 +491,16 @@ namespace ui {
 
     image ui_renderer::get_key_icon(const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
-        if (key_icon_path_map.contains(static_cast<key_values>(a_key))) {
-            return_image = key_struct[a_key];
+        if (a_key >= event::key_manager::k_gamepad_offset) {
+            if (config::mcm_setting::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
+                return_image = ps_key_struct[a_key];
+            } else {
+                return_image = xbox_key_struct[a_key];
+            }
+        } else {
+            if (key_struct.contains(a_key)) {
+                return_image = key_struct[a_key];
+            }
         }
         return return_image;
     }
