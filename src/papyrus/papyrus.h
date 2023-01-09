@@ -22,6 +22,7 @@ namespace papyrus {
         inline static auto power_data_list_ = new std::vector<RE::TESForm*>;
         inline static auto weapon_data_list_ = new std::vector<RE::InventoryEntryData>;
         inline static auto shield_data_list_ = new std::vector<RE::InventoryEntryData>;
+        inline static auto item_data_list_ = new std::vector<RE::InventoryEntryData>;
         inline static util::selection_type index_ = util::selection_type::unset;
 
         static void clear_list();

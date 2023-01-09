@@ -105,7 +105,7 @@
                     "type": "enum",
                     "help": "$LamasTinyHUD_Type_InfoText",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -319,7 +319,7 @@
                     "type": "enum",
                     "help": "$LamasTinyHUD_Type_InfoText",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -533,7 +533,7 @@
                     "type": "enum",
                     "help": "$LamasTinyHUD_Type_InfoText",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -747,7 +747,7 @@
                     "type": "enum",
                     "help": "$LamasTinyHUD_Type_InfoText",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Item"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item"],
                         "sourceType": "ModSettingInt"
                     }
                 },

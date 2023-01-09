@@ -44,8 +44,9 @@ namespace handle {
         static ui::icon_image_type get_icon_type(util::selection_type a_type, RE::TESForm*& a_form);
         static void get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
         static void get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
-        static void get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
+        static void get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
         static void get_item_count(RE::TESForm*& a_form, int32_t& a_count, util::selection_type a_type);
+        static void get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
 
         struct page_handle_data {
             std::map<page_setting::position, page_setting*> page_settings;

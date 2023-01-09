@@ -134,7 +134,7 @@ namespace handle {
         a_slot = nullptr;
         if ((a_type == util::selection_type::magic || a_type == util::selection_type::weapon) && a_hand ==
             slot_setting::hand_equip::single) {
-            a_slot = a_left ? equip::equip_slot::get_left_hand_slot() : equip::equip_slot::get_right_hand_slot();
+            a_slot = a_left ? item::equip_slot::get_left_hand_slot() : item::equip_slot::get_right_hand_slot();
         }
     }
 
@@ -153,12 +153,15 @@ namespace handle {
             case util::selection_type::power:
                 icon = ui::icon_image_type::power;
                 break;
-            case util::selection_type::item:
-                get_icon_for_item(a_form, icon);
+            case util::selection_type::consumable:
+                get_icon_for_consumable(a_form, icon);
                 break;
             case util::selection_type::shield:
                 //kinda useless atm, icon is set by the first setting, basically right hand
                 icon = ui::icon_image_type::shield;
+                break;
+            case util::selection_type::armor:
+                get_icon_for_item(a_form, icon);
                 break;
         }
         return icon;
@@ -236,7 +239,7 @@ namespace handle {
         }
     }
 
-    void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+    void page_handle::get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
         const auto alchemy_potion = a_form->As<RE::AlchemyItem>();
 
         if (alchemy_potion->IsFood()) {
@@ -267,7 +270,7 @@ namespace handle {
     }
 
     void page_handle::get_item_count(RE::TESForm*& a_form, int32_t& a_count, const util::selection_type a_type) {
-        if (a_type != util::selection_type::item) {
+        if (a_type != util::selection_type::consumable || a_type == util::selection_type::unset || a_form == nullptr) {
             a_count = 0;
             return;
         }
@@ -280,5 +283,18 @@ namespace handle {
             }
         }
         logger::trace("Item {}, count {}"sv, a_form->GetName(), a_count);
+    }
+
+    void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        switch (const auto weapon = a_form->As<RE::TESObjectARMO>(); weapon->GetArmorType()) {
+            case RE::BIPED_MODEL::ArmorType::kLightArmor:
+                break;
+            case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
+                break;
+            case RE::BIPED_MODEL::ArmorType::kClothing:
+                break;
+            default:
+                a_icon = ui::icon_image_type::icon_default;
+        }
     }
 }

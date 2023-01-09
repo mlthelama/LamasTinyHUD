@@ -42,27 +42,12 @@ namespace handle {
         return page_setting;
     }
 
-    void setting_execute::unequip_if_equipped(const bool a_left,
-        RE::PlayerCharacter*& a_player,
-        RE::ActorEquipManager*& a_actor_equip_manager) {
-        if (const auto inv_entry = a_player->GetEquippedEntryData(a_left); inv_entry != nullptr) {
-            logger::trace("Item {} is equipped, unequipping"sv, inv_entry->GetDisplayName());
-            a_actor_equip_manager->UnequipObject(a_player, inv_entry->object);
-        }
-
-        if (const auto object = a_player->GetEquippedObject(a_left); object != nullptr) {
-            logger::trace("Object {} is equipped, unequipping"sv, object->GetName());
-            const auto bound_object = object->As<RE::TESBoundObject>();
-            a_actor_equip_manager->UnequipObject(a_player, bound_object);
-        }
-    }
-
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
             case util::selection_type::unset:
                 logger::warn("nothing to do, nothing set"sv);
                 break;
-            case util::selection_type::item:
+            case util::selection_type::consumable:
                 item::potion::consume_potion(a_slot, a_player);
                 break;
             case util::selection_type::magic:
@@ -80,6 +65,9 @@ namespace handle {
             case util::selection_type::shield:
                 //should work for shields as well
                 item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player, false);
+                break;
+            case util::selection_type::armor:
+                item::weapon::equip_armor(a_slot->form, a_player);
                 break;
         }
     }

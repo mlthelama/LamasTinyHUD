@@ -185,7 +185,7 @@ namespace handle {
         const auto page_handle = page_handle::get_singleton();
         for (auto pages = page_handle->get_page(); auto [position, page] : pages) {
             for (const auto setting : page->slot_settings) {
-                if (setting->type == util::selection_type::item && setting->form->formID == a_form_id) {
+                if (setting->type == util::selection_type::consumable && setting->form->formID == a_form_id) {
                     setting->item_count = setting->item_count + a_count;
                     logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
                 }

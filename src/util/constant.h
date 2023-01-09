@@ -6,5 +6,14 @@ namespace util {
 
     constexpr auto empty_enum_string = "$LamasTinyHUD_ENUM"sv;
 
-    enum class selection_type { unset = -1, weapon = 0, magic = 1, shield = 2, shout = 3, power = 4, item = 5 };
+    enum class selection_type {
+        unset = -1,
+        weapon = 0,
+        magic = 1,
+        shield = 2,
+        shout = 3,
+        power = 4,
+        consumable = 5,
+        armor = 6
+    };
 }

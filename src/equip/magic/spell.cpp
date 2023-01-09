@@ -4,7 +4,7 @@
 #include "util/offset.h"
 
 namespace magic {
-    std::vector<RE::TESForm*> spell::get_spells(bool a_instant, const bool a_single) {
+    std::vector<RE::TESForm*> spell::get_spells(const bool a_instant, const bool a_single) {
         //easier just to use items that have been favourited, just filter them
         std::vector<RE::TESForm*> spell_list;
 
@@ -44,7 +44,7 @@ namespace magic {
         action_type a_action,
         const RE::BGSEquipSlot* a_slot,
         RE::PlayerCharacter*& a_player) {
-        auto left = a_slot == equip::equip_slot::get_left_hand_slot();
+        auto left = a_slot == item::equip_slot::get_left_hand_slot();
         logger::trace("try to work spell {}, action {}, left {}"sv,
             a_form->GetName(),
             static_cast<uint32_t>(a_action),
@@ -58,6 +58,7 @@ namespace magic {
         /*logger::trace("dual cast scale {}, base cost {}"sv,
             spell->avEffectSetting->data.dualCastScale,
             spell->avEffectSetting->data.baseCost);*/
+
 
         //maybe check if the spell is already equipped
         const auto actor = a_player->As<RE::Actor>();
@@ -84,6 +85,10 @@ namespace magic {
                 RE::ActorValue::kMagicka,
                 -cost);
 
+            //could trigger an animation here
+            //might need to set some things
+            //TODO make an animation to play here
+            //a_player->NotifyAnimationGraph("RightCastSelf");
             actor->GetMagicCaster(get_casting_source(a_slot))->CastSpellImmediate(spell,
                 false,
                 actor,
@@ -95,7 +100,7 @@ namespace magic {
             //other slot options like i thought did not work, so i get it like this now
             auto equip_manager = RE::ActorEquipManager::GetSingleton();
             if (a_slot != nullptr) {
-                handle::setting_execute::unequip_if_equipped(left, a_player, equip_manager);
+                item::equip_slot::unequip_if_equipped(left, a_player, equip_manager);
             }
             equip_manager->EquipSpell(a_player, spell, a_slot);
         }
@@ -104,10 +109,10 @@ namespace magic {
     }
 
     RE::MagicSystem::CastingSource spell::get_casting_source(const RE::BGSEquipSlot* a_slot) {
-        if (a_slot == equip::equip_slot::get_right_hand_slot()) {
+        if (a_slot == item::equip_slot::get_right_hand_slot()) {
             return RE::MagicSystem::CastingSource::kRightHand;
         }
-        if (a_slot == equip::equip_slot::get_left_hand_slot()) {
+        if (a_slot == item::equip_slot::get_left_hand_slot()) {
             return RE::MagicSystem::CastingSource::kLeftHand;
         }
         return RE::MagicSystem::CastingSource::kOther;

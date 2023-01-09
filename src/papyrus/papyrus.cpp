@@ -35,7 +35,7 @@ namespace papyrus {
         index_ = static_cast<util::selection_type>(a_id);
         auto player = RE::PlayerCharacter::GetSingleton();
 
-        if (index_ == util::selection_type::item) {
+        if (index_ == util::selection_type::consumable) {
             //maybe add a check if it is a potion
             for (auto potential_items = item::inventory::get_inventory_magic_items(player);
                  const auto& [item, inv_data] : potential_items) {
@@ -110,6 +110,19 @@ namespace papyrus {
                 }
             }
             logger::trace("shield list is size {}"sv, shield_data_list_->size());
+        } else if (index_ == util::selection_type::armor) {
+            for (auto potential_items = item::inventory::get_inventory_armor_items(player);
+                 const auto& [item, inv_data] : potential_items) {
+                //just consider favored items
+                const auto& [num_items, entry] = inv_data;
+                if (inv_data.second->IsFavorited() && !item->As<RE::TESObjectARMO>()->IsShield()) {
+                    logger::trace("Item name {}, count {}"sv, entry->GetDisplayName(), num_items);
+                    item_data_list_->push_back(*inv_data.second);
+                    display_string_list->push_back(
+                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
+                }
+            }
+            logger::trace("shield list is size {}"sv, item_data_list_->size());
         } else {
             logger::warn("Selected type {} not supported"sv, a_id);
         }
@@ -131,7 +144,7 @@ namespace papyrus {
 
         RE::FormID form_id = 0;
 
-        if (index_ == util::selection_type::item && !inventory_data_list_->empty()) {
+        if (index_ == util::selection_type::consumable && !inventory_data_list_->empty()) {
             logger::trace("Vector got a size of {}"sv, inventory_data_list_->size());
             if (is_size_ok(a_index, inventory_data_list_->size())) {
                 const auto item = inventory_data_list_->at(a_index);
@@ -166,6 +179,12 @@ namespace papyrus {
         } else if (index_ == util::selection_type::shield && !shield_data_list_->empty()) {
             if (is_size_ok(a_index, shield_data_list_->size())) {
                 const auto item = shield_data_list_->at(a_index);
+                const RE::TESBoundObject* item_obj = item.object;
+                form_id = item_obj->GetFormID();
+            }
+        } else if (index_ == util::selection_type::armor && !item_data_list_->empty()) {
+            if (is_size_ok(a_index, item_data_list_->size())) {
+                const auto item = item_data_list_->at(a_index);
                 const RE::TESBoundObject* item_obj = item.object;
                 form_id = item_obj->GetFormID();
             }
@@ -212,6 +231,7 @@ namespace papyrus {
         power_data_list_->clear();
         weapon_data_list_->clear();
         shield_data_list_->clear();
+        item_data_list_->clear();
     }
 
     bool hud_mcm::is_size_ok(uint32_t a_idx, uint64_t a_size) {
