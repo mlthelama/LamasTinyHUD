@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.20)
 
+set(NAME "LamasTinyHUD" CACHE STRING "")
+set(VERSION 1.0.0.8 CACHE STRING "")
+
 # ---- Options ----
+
+option(BUILD_GENERATE_SOURCE_FILE "Generate Source file" OFF)
 
 # ---- Cache build vars ----
 
@@ -30,11 +35,17 @@ option(ENABLE_SKYRIM_AE "Enable support for Skyrim AE in the dynamic runtime fea
 option(ENABLE_SKYRIM_VR "Enable support for Skyrim VR in the dynamic runtime feature." OFF)
 set(BUILD_TESTS OFF)
 
+# ---- Generate SourceList ----
+if (BUILD_GENERATE_SOURCE_FILE)
+    execute_process(COMMAND python cmake_generate.py 
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
+endif ()
+
 # ---- Project ----
 
 project(
-	LamasTinyHUD
-	VERSION 1.0.0.7
+	${NAME}
+	VERSION ${VERSION}
 	LANGUAGES CXX
 )
 
@@ -124,7 +135,7 @@ add_library(
 target_compile_features(
 	${PROJECT_NAME}
 	PRIVATE
-		cxx_std_20
+		cxx_std_23
 )
 
 target_include_directories(

@@ -37,6 +37,8 @@ The UI can be moved around with the MCM menu it will adjust after the Setting is
   - Add the environment variable `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
 * [cmake](https://cmake.org) 
   - installed dir needs to be added to the `PATH` environment variable
+* [python](https://www.python.org/downloads/)
+  - used for auto generating sourcelist and zip file after build
 
 ## Icon Sets
 
