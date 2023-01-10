@@ -18,7 +18,7 @@ namespace config {
 
         log_level = ini.GetLongValue("General", "iLogLevel", 2);
 
-        extra_size_for_image = static_cast<float>(ini.GetDoubleValue("Image", "fExtraSizeForImage", 1));
+        extra_size_for_image = static_cast<float>(ini.GetDoubleValue("Image", "fExtraSizeForImage", 0));
         draw_key_background = ini.GetBoolValue("Image", "bDrawKeyBackground", false);
 
         logger::info("finished reading dll ini files. return.");
