@@ -283,7 +283,7 @@ namespace ui {
     };
 
     enum class controller_set:uint32_t {
-        playstation,
-        xbox
+        playstation = 0,
+        xbox = 1
     };
 }

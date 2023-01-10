@@ -11,21 +11,40 @@ A small UI Element
 
 ## What does it do
 Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to a Hotkey. In order to bind it to a Hotkey the Item needs to be favorited. Before every Execute, it is checked if the Item is still avaliable or in the Inventory.
+
+### Can be Bound
 * Potions/Food will be consumed on the Hotkey
 * Powers can be equipped or instant casted with the Hotkey. Instant casting will not replace an already slotted Power or Shout.
 * Shouts can only be equipped. Equip will be skipped if it is already slotted.
 * Spells, Weapons and Shields can be combined in one Hotkey and will always just be equipped, current equipped Items will be unequipped before.
-* Spells that do not need Concentration (=Button holding) can be instant casted, they do not have an animation currently 
+* Spells that do not need Concentration (=Button holding) can be instant casted, they do not have an animation currently. 
+  The Spell will just appear or shoot out of the hand it was set to (still it does not equip it). It is also possible just to equip them.
 
-The UI can be moved around with the MCM menu it will adjust after the Setting is closed. The elements are drawn with [ImGui](https://github.com/ocornut/imgui) and the used pngs are loaded at the game start, if other assets are used the scaling might need to be adjusted in the Settings.
+### Currently can not be bound/set
+* Scrolls
+* Misc Items (e.g. Mods with Traps)
 
+### UI
+* The UI can be moved around with the MCM menu it will adjust after the Setting is closed. 
+* The elements are drawn with [ImGui](https://github.com/ocornut/imgui) and the used pngs are loaded at the game start, if other assets are used the scaling might need to be adjusted in the Settings.
+
+### Controller
+* Yes there is Controller support, in the MCM you can choose between PS/XBOX prompts
+
+### How is the Setting saved
+* It will be saved by the [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000) under MCM\Settings\LamasTinyHUD.ini
+* Generated [examples](https://github.com/mlthelama/LamasTinyHUD/wiki/Generated-Config-Examples)
+
+### Settings and Checks
+* Only favourited will be shown in the Selections in the MCM.
+* After the Setting is done, they do not need to be favorited anymore.
+* Before, equipping, casting or consuming something, there is a check if the player has the item/spell.
+* If a consumable hits 0, it will not be removed. The plugin checks, the bound Item has been looted, bought or dropped.
 
 ## End User Dependencies
 * [SKSE64](https://skse.silverlock.org/)
 * [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
 * [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000)
-* for the rest we will see
-
 
 ## Build Dependencies
 * [CommonLibSSE NG](https://github.com/CharmedBaryon/CommonLibSSE-NG)
@@ -48,35 +67,8 @@ Icon Set|Folder|License|Count
 [Game-Icons](https://game-icons.net)|resources/icon|[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)|26
 none|resources/hud|drawn by me|3
 
-### More info for Game-Icons
-File|Link
----|---
-bow.png |[source](https://game-icons.net/1x1/lorc/high-shot.html)
-crossbow.png |[source](https://game-icons.net/1x1/carl-olsen/crossbow.html)
-dagger.png |[source](https://game-icons.net/1x1/lorc/sacrificial-dagger.html)
-default.png |[source](https://game-icons.net/1x1/delapouite/perspective-dice-six-faces-random.html)
-default_potion.png |[source](https://game-icons.net/1x1/delapouite/magic-potion.html)
-default_spell.png |[source](https://game-icons.net/1x1/lorc/rolling-energy.html)
-default_spell_alt.png |[source](https://game-icons.net/1x1/lorc/crowned-explosion.html)
-food.png |[source](https://game-icons.net/1x1/delapouite/bread.html)
-health_potion.png |[source](https://game-icons.net/1x1/caro-asercion/round-potion.html)
-mace.png |[source](https://game-icons.net/1x1/lorc/spiked-mace.html)
-one_handed_axe.png |[source](https://game-icons.net/1x1/lorc/battered-axe.html)
-one_handed_sword.png |[source](https://game-icons.net/1x1/skoll/stiletto.html)
-power.png |[source](https://game-icons.net/1x1/lorc/embrassed-energy.html)
-shield.png |[source](https://game-icons.net/1x1/willdabeast/round-shield.html)
-shout.png |[source](https://game-icons.net/1x1/lorc/shouting.html)
-staff.png |[source](https://game-icons.net/1x1/lorc/wizard-staff.html)
-two_handed_axe.png |[source](https://game-icons.net/1x1/lorc/battle-axe.html)
-two_handed_sword.png |[source](https://game-icons.net/1x1/lorc/broadsword.html)
-fire_spell.png|[source](https://game-icons.net/1x1/delapouite/fire-spell-cast.html)
-ice_spell.png|[source](https://game-icons.net/1x1/delapouite/ice-spell-cast.html)
-shock_spell.png|[source](https://game-icons.net/1x1/delapouite/bolt-spell-cast.html)
-heal_spell.png|[source](https://game-icons.net/1x1/delapouite/healing.html)
-poison_default.png|[source](https://game-icons.net/1x1/lorc/poison-bottle.html)
-armor_clothing.png|[source](https://game-icons.net/1x1/lucasms/shirt.html)
-armor_light.png|[source](https://game-icons.net/1x1/delapouite/leather-armor.html)
-armor_heavy.png|[source](https://game-icons.net/1x1/lorc/lamellar.html)
+## More info for Game-Icons
+* [Detail File Info](https://github.com/mlthelama/LamasTinyHUD/wiki/Used-Icons-Detail)
 
 ## Building
 ```

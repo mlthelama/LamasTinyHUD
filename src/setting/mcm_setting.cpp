@@ -9,6 +9,7 @@ namespace config {
     static uint32_t right_action_key;
     static uint32_t bottom_action_key;
     static uint32_t left_action_key;
+    static uint32_t controller_set;
 
     static uint32_t top_type;
     static std::string top_selected_item_form;
@@ -56,7 +57,6 @@ namespace config {
     static float key_icon_scale_height;
     static float slot_count_text_offset;
     static float slot_count_text_font_size;
-    static uint32_t controller_set;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -70,6 +70,7 @@ namespace config {
             right_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uRightActionKey", 46));
             bottom_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uBottomActionKey", 46));
             left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 48));
+            controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
 
             //got more settings, variables, but for now we are ok
             top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uType", 0));
@@ -128,7 +129,6 @@ namespace config {
             slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fSlotCountTextFontSize",
                 20));
-            controller_set = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uControllerSet", 0));
         };
 
         read_mcm(mcm_default_setting);
@@ -142,6 +142,7 @@ namespace config {
     uint32_t mcm_setting::get_right_action_key() { return right_action_key; }
     uint32_t mcm_setting::get_bottom_action_key() { return bottom_action_key; }
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
+    uint32_t mcm_setting::get_controller_set() { return controller_set; }
 
     uint32_t mcm_setting::get_top_type() { return top_type; }
     std::string mcm_setting::get_top_selected_item_form() { return top_selected_item_form; }
@@ -189,5 +190,4 @@ namespace config {
     float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
     float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset; }
     float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size; }
-    uint32_t mcm_setting::get_controller_set() { return controller_set; }
 }

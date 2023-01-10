@@ -6,7 +6,6 @@ namespace handle {
     public:
         enum class acton_type : std::uint32_t { default_action = 0, instant = 1 };
 
-        //TODO , dual = 2 move to a different setting
         enum class hand_equip : std::uint32_t { single = 0, both = 1, total = 2 };
 
         RE::TESForm* form = nullptr;

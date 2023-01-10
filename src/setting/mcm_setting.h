@@ -9,6 +9,7 @@ namespace config {
         static uint32_t get_right_action_key();
         static uint32_t get_bottom_action_key();
         static uint32_t get_left_action_key();
+        static uint32_t get_controller_set();
 
         static uint32_t get_top_type();
         static std::string get_top_selected_item_form();
@@ -56,6 +57,5 @@ namespace config {
         static float get_key_icon_scale_height();
         static float get_slot_count_text_offset();
         static float get_slot_count_text_font_size();
-        static uint32_t get_controller_set();
     };
 }
