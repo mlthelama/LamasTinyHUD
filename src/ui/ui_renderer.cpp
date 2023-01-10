@@ -12,7 +12,6 @@
 #include "imgui_internal.h"
 #include "key_path.h"
 #include "event/key_manager.h"
-
 #include "event/sink_event.h"
 #include "handle/key_position.h"
 #include "handle/page_handle.h"

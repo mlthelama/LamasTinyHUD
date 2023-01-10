@@ -22,6 +22,7 @@ namespace handle {
 
         logger::trace("continue with overwriting data from configuration ..."sv);
 
+
         set_slot(page_setting::position::top,
             mcm::get_top_selected_item_form(),
             mcm::get_top_type(),
@@ -89,17 +90,18 @@ namespace handle {
     }
 
     void set_data::set_slot(page_setting::position a_pos,
-        const uint32_t a_form,
+        const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
         uint32_t a_action,
-        const uint32_t a_form_left,
+        const std::string& a_form_left,
         uint32_t a_type_left,
         const uint32_t a_action_left,
         key_position*& a_key_pos) {
-        const auto form = RE::TESForm::LookupByID(a_form);
-        const auto form_left = RE::TESForm::LookupByID(a_form_left);
-        if (form == nullptr && form_left) return;
+        const auto form = get_form_from_mod_id_string(a_form);
+        const auto form_left = get_form_from_mod_id_string(a_form_left);
+
+        if (form == nullptr && form_left == nullptr) return;
 
         auto hand = static_cast<slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
@@ -150,7 +152,8 @@ namespace handle {
         logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
 
         if (const auto type_left = static_cast<util::selection_type>(a_type_left);
-            (type_left == util::selection_type::magic || type_left == util::selection_type::weapon || type_left ==
+            (form_left != nullptr && type_left == util::selection_type::magic || type_left ==
+             util::selection_type::weapon || type_left ==
              util::selection_type::shield) && hand == slot_setting::hand_equip::single) {
             logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_pos),
@@ -193,5 +196,35 @@ namespace handle {
                 }
             }
         }
+    }
+
+    RE::TESForm* set_data::get_form_from_mod_id_string(const std::string& a_str) {
+        if (!a_str.find(util::delimiter)) {
+            return nullptr;
+        }
+        RE::TESForm* form;
+
+        std::istringstream string_stream{ a_str };
+        std::string plugin, id;
+
+        std::getline(string_stream, plugin, *util::delimiter);
+        std::getline(string_stream, id);
+        RE::FormID form_id;
+        std::istringstream(id) >> std::hex >> form_id;
+
+        if (plugin == util::dynamic_name) {
+            form = RE::TESForm::LookupByID(form_id);
+        } else {
+            logger::trace("checking mod {} for form {}"sv, plugin, form_id);
+
+            const auto data_handler = RE::TESDataHandler::GetSingleton();
+            form = data_handler->LookupForm(form_id, plugin);
+        }
+
+        if (form != nullptr) {
+            logger::trace("got form id {}, name {}", util::string_util::int_to_hex(form->GetFormID()), form->GetName());
+        }
+
+        return form;
     }
 }

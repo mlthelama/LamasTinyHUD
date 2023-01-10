@@ -30,7 +30,7 @@ namespace magic {
                 return;
             }
         }
-
+        
         const auto shout = a_form->As<RE::TESShout>();
         RE::ActorEquipManager::GetSingleton()->EquipShout(a_player, shout);
         logger::trace("equipped shout {}. return."sv, a_form->GetName());

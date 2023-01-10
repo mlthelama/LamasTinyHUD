@@ -38,7 +38,7 @@ Bool Property bPowerSelectedLeftLeft Auto
 
 Event OnConfigClose() native
 string[] function GetSelectedOptions(int a_id, bool a_both, bool a_instant) native
-int function GetFormIdForSelection(int a_index) native
+string function GetFormIdForSelection(int a_index) native
 string function GetResolutionWidth() native
 string function GetResolutionHeight() native
 

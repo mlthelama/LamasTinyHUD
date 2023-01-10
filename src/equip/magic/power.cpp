@@ -47,6 +47,12 @@ namespace magic {
         }
 
         const auto spell = a_form->As<RE::SpellItem>();
+
+        if (!a_player->HasSpell(spell)) {
+            logger::warn("player does not have spell {}. return."sv, spell->GetName());
+            return;
+        }
+
         if (a_action == handle::slot_setting::acton_type::instant) {
             //might not consider daily cool downs
             const auto actor = a_player->As<RE::Actor>();

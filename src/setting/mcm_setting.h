@@ -11,35 +11,35 @@ namespace config {
         static uint32_t get_left_action_key();
 
         static uint32_t get_top_type();
-        static uint32_t get_top_selected_item_form();
+        static std::string get_top_selected_item_form();
         static uint32_t get_top_slot_action();
         static uint32_t get_top_hand_selection();
         static uint32_t get_top_type_left();
-        static uint32_t get_top_selected_item_form_left();
+        static std::string get_top_selected_item_form_left();
         static uint32_t get_top_slot_action_left();
 
         static uint32_t get_right_type();
-        static uint32_t get_right_selected_item_form();
+        static std::string get_right_selected_item_form();
         static uint32_t get_right_slot_action();
         static uint32_t get_right_hand_selection();
         static uint32_t get_right_type_left();
-        static uint32_t get_right_selected_item_form_left();
+        static std::string get_right_selected_item_form_left();
         static uint32_t get_right_slot_action_left();
 
         static uint32_t get_bottom_type();
-        static uint32_t get_bottom_selected_item_form();
+        static std::string get_bottom_selected_item_form();
         static uint32_t get_bottom_slot_action();
         static uint32_t get_bottom_hand_selection();
         static uint32_t get_bottom_type_left();
-        static uint32_t get_bottom_selected_item_form_left();
+        static std::string get_bottom_selected_item_form_left();
         static uint32_t get_bottom_slot_action_left();
 
         static uint32_t get_left_type();
-        static uint32_t get_left_selected_item_form();
+        static std::string get_left_selected_item_form();
         static uint32_t get_left_slot_action();
         static uint32_t get_left_hand_selection();
         static uint32_t get_left_type_left();
-        static uint32_t get_left_selected_item_form_left();
+        static std::string get_left_selected_item_form_left();
         static uint32_t get_left_slot_action_left();
 
         static float get_hud_image_scale_width();

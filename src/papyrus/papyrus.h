@@ -9,7 +9,7 @@ namespace papyrus {
             uint32_t a_id,
             bool a_both,
             bool a_instant_cast);
-        static uint32_t get_form_id_for_selection(RE::TESQuest*, uint32_t a_index);
+        static RE::BSFixedString get_form_id_for_selection(RE::TESQuest*, uint32_t a_index);
         static RE::BSFixedString get_resolution_width(RE::TESQuest*);
         static RE::BSFixedString get_resolution_height(RE::TESQuest*);
 

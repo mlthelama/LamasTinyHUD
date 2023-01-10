@@ -59,6 +59,10 @@ namespace magic {
             spell->avEffectSetting->data.dualCastScale,
             spell->avEffectSetting->data.baseCost);*/
 
+        if (!a_player->HasSpell(spell)) {
+            logger::warn("player does not have spell {}. return."sv, spell->GetName());
+            return;
+        }
 
         //maybe check if the spell is already equipped
         const auto actor = a_player->As<RE::Actor>();

@@ -16,4 +16,7 @@ namespace util {
         consumable = 5,
         armor = 6
     };
+
+    constexpr auto dynamic_name = "dynamic";
+    constexpr auto delimiter = "|";
 }

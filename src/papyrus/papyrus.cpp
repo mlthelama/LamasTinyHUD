@@ -30,12 +30,14 @@ namespace papyrus {
         logger::info("Got refresh for id {}, both hands {}, instant {}"sv, a_id, a_both, a_instant_cast);
         std::vector<RE::BSFixedString> empty_string_vec = { util::empty_enum_string };
         const auto display_string_list = new std::vector<RE::BSFixedString>;
-        clear_list();
+        //clear_list();
+        //let the list be valid until it is refreshed again, might be an issue with magic and weapon
 
         index_ = static_cast<util::selection_type>(a_id);
         auto player = RE::PlayerCharacter::GetSingleton();
 
         if (index_ == util::selection_type::consumable) {
+            inventory_data_list_->clear();
             //maybe add a check if it is a potion
             for (auto potential_items = item::inventory::get_inventory_magic_items(player);
                  const auto& [item, inv_data] : potential_items) {
@@ -50,6 +52,7 @@ namespace papyrus {
             }
             logger::trace("potion list is size {}"sv, inventory_data_list_->size());
         } else if (index_ == util::selection_type::magic) {
+            inventory_data_list_->clear();
             //add filter for casting
             for (const auto spell_list = magic::spell::get_spells(a_instant_cast, a_both); const auto spell :
                  spell_list) {
@@ -60,16 +63,19 @@ namespace papyrus {
                 }
             }
         } else if (index_ == util::selection_type::shout) {
+            shout_data_list_->clear();
             for (const auto shout_list = magic::shout::get_shouts(); const auto shout : shout_list) {
                 display_string_list->push_back(shout->GetName());
                 shout_data_list_->push_back(shout);
             }
         } else if (index_ == util::selection_type::power) {
+            power_data_list_->clear();
             for (const auto power_list = magic::power::get_powers(); const auto power : power_list) {
                 display_string_list->push_back(power->GetName());
                 power_data_list_->push_back(power);
             }
         } else if (index_ == util::selection_type::weapon) {
+            weapon_data_list_->clear();
             auto is_two_handed = false;
             for (auto potential_weapons = item::inventory::get_inventory_weapon_items(player);
                  const auto& [item, inv_data] : potential_weapons) {
@@ -98,6 +104,7 @@ namespace papyrus {
             }
             logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
         } else if (index_ == util::selection_type::shield) {
+            shield_data_list_->clear();
             for (auto potential_items = item::inventory::get_inventory_armor_items(player);
                  const auto& [item, inv_data] : potential_items) {
                 //just consider favored items
@@ -111,6 +118,7 @@ namespace papyrus {
             }
             logger::trace("shield list is size {}"sv, shield_data_list_->size());
         } else if (index_ == util::selection_type::armor) {
+            item_data_list_->clear();
             for (auto potential_items = item::inventory::get_inventory_armor_items(player);
                  const auto& [item, inv_data] : potential_items) {
                 //just consider favored items
@@ -139,7 +147,7 @@ namespace papyrus {
         return *display_string_list;
     }
 
-    uint32_t hud_mcm::get_form_id_for_selection(RE::TESQuest*, uint32_t a_index) {
+    RE::BSFixedString hud_mcm::get_form_id_for_selection(RE::TESQuest*, uint32_t a_index) {
         logger::trace("Got Index {}, Search for Item for type {}"sv, a_index, static_cast<uint32_t>(index_));
 
         RE::FormID form_id = 0;
@@ -190,8 +198,9 @@ namespace papyrus {
             }
         }
 
+        std::string form_string;
         if (form_id == 0) {
-            return 0;
+            return form_string;
         }
 
         const auto form = RE::TESForm::LookupByID(form_id);
@@ -200,7 +209,29 @@ namespace papyrus {
             util::string_util::int_to_hex(form->GetFormID()),
             form->GetFormID());
 
-        return form_id;
+
+        if (form->IsDynamicForm()) {
+            form_string = fmt::format("{}{}{}",
+                util::dynamic_name,
+                util::delimiter,
+                util::string_util::int_to_hex(form->GetFormID()));
+        } else {
+            //it is not, search for the file it is from
+            auto source_file = form->sourceFiles.array->front()->fileName;
+            auto local_form = form->GetLocalFormID();
+
+            logger::info("form is from {}, local id is {}, translated {}"sv,
+                source_file,
+                local_form,
+                util::string_util::int_to_hex(local_form));
+
+            form_string = fmt::format("{}{}{}",
+                source_file,
+                util::delimiter,
+                util::string_util::int_to_hex(local_form));
+        }
+
+        return form_string;
     }
 
 
