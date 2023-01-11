@@ -101,11 +101,14 @@ namespace magic {
                 0.0f,
                 nullptr);
         } else {
-            //other slot options like i thought did not work, so i get it like this now
-            auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            if (a_slot != nullptr) {
-                item::equip_slot::unequip_if_equipped(left, a_player, equip_manager);
+            if (const auto equipped_object = a_player->GetEquippedObject(left);
+                equipped_object->formID == spell->formID) {
+                logger::debug("Object {} already equipped. return."sv, spell->GetName());
+                return;
             }
+
+            //other slot options like i thought did not work, so i get it like this now
+            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
             equip_manager->EquipSpell(a_player, spell, a_slot);
         }
 
