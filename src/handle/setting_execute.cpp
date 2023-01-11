@@ -19,7 +19,7 @@ namespace handle {
             logger::trace("executing setting for type {}, action {}, form {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),
-                util::string_util::int_to_hex(slot->form));
+                util::string_util::int_to_hex(slot->form->GetFormID()));
             execute_setting(slot, player);
         }
     }

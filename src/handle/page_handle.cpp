@@ -41,7 +41,7 @@ namespace handle {
         auto* slots = new std::vector<slot_setting*>;
         for (const auto element : data_helpers) {
             logger::trace("processing form {}, type {}, action {}, left {}"sv,
-                util::string_util::int_to_hex(element->form),
+                element->form != nullptr ? util::string_util::int_to_hex(element->form->GetFormID()) : "0",
                 static_cast<int>(element->type),
                 static_cast<uint32_t>(element->action_type),
                 element->left);

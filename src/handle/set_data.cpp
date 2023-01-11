@@ -135,7 +135,7 @@ namespace handle {
 
             logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_pos),
-                util::string_util::int_to_hex(form),
+                util::string_util::int_to_hex(form->GetFormID()),
                 static_cast<int>(type),
                 static_cast<uint32_t>(action),
                 static_cast<uint32_t>(hand));
@@ -157,7 +157,7 @@ namespace handle {
              util::selection_type::shield) && hand == slot_setting::hand_equip::single) {
             logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_pos),
-                util::string_util::int_to_hex(form_left),
+                util::string_util::int_to_hex(form_left->GetFormID()),
                 static_cast<int>(type_left),
                 static_cast<uint32_t>(action),
                 static_cast<uint32_t>(hand));
