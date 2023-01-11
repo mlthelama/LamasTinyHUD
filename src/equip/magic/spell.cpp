@@ -79,7 +79,8 @@ namespace magic {
             auto cost = spell->CalculateMagickaCost(a_player);
             logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.2f}"), cost));
 
-            float current_magicka = a_player->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
+            //float current_magicka = a_player->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
+            float current_magicka = a_player->GetActorValue(RE::ActorValue::kMagicka);
             logger::trace("got temp magicka {}, cost {}"sv, current_magicka, cost);
 
             if (current_magicka < cost) {
@@ -91,7 +92,8 @@ namespace magic {
                 return;
             }
 
-            a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+            //a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+            a_player->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                 RE::ActorValue::kMagicka,
                 -cost);
 
