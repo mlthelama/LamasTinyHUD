@@ -81,24 +81,68 @@ namespace handle {
 
         page->key = a_key_pos->get_key_for_position(a_position);
 
-        data->page_settings[a_position] = page;
+        data->page_settings[a_page][a_position] = page;
 
         logger::trace("done setting page {}, position {}."sv,
             a_page,
             static_cast<uint32_t>(a_position));
     }
 
-    page_setting* page_handle::get_page_setting(const page_setting::position a_position) const {
+    void page_handle::set_active_page(const uint32_t a_page) const {
+        if (!this->data_) {
+            return;
+        }
+        page_handle_data* data = this->data_;
+
+        logger::trace("set active page to {}"sv, a_page);
+
+        data->active_page = a_page;
+    }
+
+    page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
-            data && !data_->page_settings.empty() && data_->page_settings[a_position]) {
-            return data_->page_settings[a_position];
+            data && !data->page_settings.empty() && !data->page_settings.at(a_page).empty() && data->page_settings.
+            at(a_page).at(a_position)) {
+            return data->page_settings.at(a_page).at(a_position);
         }
         return nullptr;
     }
 
-    std::map<page_setting::position, page_setting*> page_handle::get_page() const {
-        if (const page_handle_data* data = this->data_; data && !data_->page_settings.empty()) {
-            return data_->page_settings;
+    std::map<page_setting::position, page_setting*> page_handle::get_page(const uint32_t a_page) const {
+        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
+            return data->page_settings.at(a_page);
+        }
+        return {};
+    }
+
+    std::map<uint32_t, std::map<page_setting::position, page_setting*>> page_handle::get_pages() const {
+        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
+            return data->page_settings;
+        }
+        return {};
+    }
+
+    std::map<page_setting::position, page_setting*> page_handle::get_active_page() const {
+        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
+            return data->page_settings.at(data->active_page);
+        }
+        return {};
+    }
+
+    uint32_t page_handle::get_active_page_id() const {
+        if (const page_handle_data* data = this->data_; data) {
+            return data->active_page;
+        }
+        return {};
+    }
+
+    uint32_t page_handle::get_next_page_id() const {
+        if (const page_handle_data* data = this->data_; data) {
+            //lets make it easy for now
+            if (data->active_page == 0) {
+                return 1;
+            }
+            return 0;
         }
         return {};
     }

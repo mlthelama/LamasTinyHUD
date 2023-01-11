@@ -36,6 +36,42 @@ Bool Property bBothHandsLeft Auto
 Bool Property bMagicSelectedLeftLeft Auto
 Bool Property bPowerSelectedLeftLeft Auto
 
+;Top
+Bool Property bMagicSelectedSetOne Auto
+Bool Property bPowerSelectedSetOne Auto
+Bool Property bWeaponSelectedSetOne Auto
+Bool Property bShieldSelectedSetOne Auto
+Bool Property bBothHandsSetOne Auto
+Bool Property bMagicSelectedLeftSetOne Auto
+Bool Property bPowerSelectedLeftSetOne Auto
+
+;Right
+Bool Property bMagicSelectedRightSetOne Auto
+Bool Property bPowerSelectedRightSetOne Auto
+Bool Property bWeaponSelectedRightSetOne Auto
+Bool Property bShieldSelectedRightSetOne Auto
+Bool Property bBothHandsRightSetOne Auto
+Bool Property bMagicSelectedRightLeftSetOne Auto
+Bool Property bPowerSelectedRightLeftSetOne Auto
+
+;Bottom
+Bool Property bMagicSelectedBottomSetOne Auto
+Bool Property bPowerSelectedBottomSetOne Auto
+Bool Property bWeaponSelectedBottomSetOne Auto
+Bool Property bShieldSelectedBottomSetOne Auto
+Bool Property bBothHandsBottomSetOne Auto
+Bool Property bMagicSelectedBottomLeftSetOne Auto
+Bool Property bPowerSelectedBottomLeftSetOne Auto
+
+;Left
+Bool Property bMagicSelectedLeftSettingSetOne Auto
+Bool Property bPowerSelectedLeftSettingSetOne Auto
+Bool Property bWeaponSelectedLeftSetOne Auto
+Bool Property bShieldSelectedLeftSetOne Auto
+Bool Property bBothHandsLeftSetOne Auto
+Bool Property bMagicSelectedLeftLeftSetOne Auto
+Bool Property bPowerSelectedLeftLeftSetOne Auto
+
 Event OnConfigClose() native
 string[] function GetSelectedOptions(int a_id, bool a_both, bool a_instant) native
 string function GetFormIdForSelection(int a_index) native
@@ -82,6 +118,46 @@ function SetToggles()
     bMagicSelectedLeftLeft = GetModSettingInt("uTypeLeft:LeftPage") == 1
     ;is normally not possible
     bPowerSelectedLeftLeft = GetModSettingInt("uTypeLeft:LeftPage") == 4
+    
+    ;Top
+    bMagicSelectedSetOne = GetModSettingInt("uType:TopPageSetOne") == 1
+    bPowerSelectedSetOne = GetModSettingInt("uType:TopPageSetOne") == 4
+    bWeaponSelectedSetOne = GetModSettingInt("uType:TopPageSetOne") == 0
+    bShieldSelectedSetOne = GetModSettingInt("uType:TopPageSetOne") == 2
+    bBothHandsSetOne = GetModSettingInt("uHandSelection:TopPageSetOne") == 0
+    bMagicSelectedLeftSetOne = GetModSettingInt("uTypeLeft:TopPageSetOne") == 1
+    ;is normally not possible
+    bPowerSelectedLeftSetOne = GetModSettingInt("uTypeLeft:TopPageSetOne") == 4
+    
+    ;Right
+    bMagicSelectedRightSetOne = GetModSettingInt("uType:RightPageSetOne") == 1
+    bPowerSelectedRightSetOne = GetModSettingInt("uType:RightPageSetOne") == 4
+    bWeaponSelectedRightSetOne = GetModSettingInt("uType:RightPageSetOne") == 0
+    bShieldSelectedRightSetOne = GetModSettingInt("uType:RightPageSetOne") == 2
+    bBothHandsRightSetOne = GetModSettingInt("uHandSelection:RightPageSetOne") == 0
+    bMagicSelectedRightLeftSetOne = GetModSettingInt("uTypeLeft:RightPageSetOne") == 1
+    ;is normally not possible
+    bPowerSelectedRightLeftSetOne = GetModSettingInt("uTypeLeft:RightPageSetOne") == 4
+
+    ;Bottom
+    bMagicSelectedBottomSetOne = GetModSettingInt("uType:BottomPageSetOne") == 1
+    bPowerSelectedBottomSetOne = GetModSettingInt("uType:BottomPageSetOne") == 4
+    bWeaponSelectedBottomSetOne = GetModSettingInt("uType:BottomPageSetOne") == 0
+    bShieldSelectedBottomSetOne = GetModSettingInt("uType:BottomPageSetOne") == 2
+    bBothHandsBottomSetOne = GetModSettingInt("uHandSelection:BottomPageSetOne") == 0
+    bMagicSelectedBottomLeftSetOne = GetModSettingInt("uTypeLeft:BottomPageSetOne") == 1
+    ;is normally not possible
+    bPowerSelectedBottomLeftSetOne = GetModSettingInt("uTypeLeft:BottomPageSetOne") == 4
+    
+    ;Left
+    bMagicSelectedLeftSettingSetOne = GetModSettingInt("uType:LeftPageSetOne") == 1
+    bPowerSelectedLeftSettingSetOne = GetModSettingInt("uType:LeftPageSetOne") == 4
+    bWeaponSelectedLeftSetOne = GetModSettingInt("uType:LeftPageSetOne") == 0
+    bShieldSelectedLeftSetOne = GetModSettingInt("uType:LeftPageSetOne") == 2
+    bBothHandsLeftSetOne = GetModSettingInt("uHandSelection:LeftPageSetOne") == 0
+    bMagicSelectedLeftLeftSetOne = GetModSettingInt("uTypeLeft:LeftPageSetOne") == 1
+    ;is normally not possible
+    bPowerSelectedLeftLeftSetOne = GetModSettingInt("uTypeLeft:LeftPageSetOne") == 4
 endfunction
 
 function SetHands(String a_id, String a_mod_set)
@@ -114,6 +190,30 @@ function SetFormZero(String a_id)
         SetModSettingString("sSelectedItemForm:LeftPage", "0")
     elseIf (a_ID == "uTypeLeft:LeftPage")
         SetModSettingString("sSelectedItemFormLeft:LeftPage", "0")
+    endif
+
+    if(a_ID == "uType:TopPageSet")
+        SetModSettingString("sSelectedItemForm:TopPageSetOne", "0")
+    elseIf (a_ID == "uTypeLeft:TopPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:TopPageSetOne", "0")
+    endif
+    
+    if(a_ID == "uType:RightPageSetOne")
+        SetModSettingString("sSelectedItemForm:RightPageSetOne", "0")
+    elseIf (a_ID == "uTypeLeft:RightPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:RightPageSetOne", "0")
+    endif
+
+    if(a_ID == "uType:BottomPageSetOne")
+        SetModSettingString("sSelectedItemForm:BottomPageSetOne", "0")
+    elseIf (a_ID == "uTypeLeft:BottomPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:BottomPageSetOne", "0")
+    endif
+
+    if(a_ID == "uType:LeftPageSetOne")
+        SetModSettingString("sSelectedItemForm:LeftPageSetOne", "0")
+    elseIf (a_ID == "uTypeLeft:LeftPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:LeftPageSetOne", "0")
     endif
 endfunction
 
@@ -160,6 +260,40 @@ endfunction
 
 function RefreshItemsLeftLeft()
     RefreshItemsMain("uTypeLeft:LeftPage", "uSelectedItemLeft:LeftPage", "uSlotActionLeft:LeftPage", bBothHandsLeft, "uSlotActionLeft:LeftPage")
+endfunction
+
+function RefreshItemsPageOne()
+    SetToggles()
+    RefreshItemsMain("uType:TopPageSetOne", "uSelectedItem:TopPageSetOne", "uSlotAction:TopPageSetOne", bBothHandsSetOne, "uSlotAction:TopPageSetOne")
+endfunction
+
+function RefreshItemsLeftPageOne()
+    SetToggles()
+    RefreshItemsMain("uTypeLeft:TopPageSetOne", "uSelectedItemLeft:TopPageSetOne", "uSlotActionLeft:TopPageSetOne", bBothHandsSetOne, "uSlotActionLeft:TopPageSetOne")
+endfunction
+
+function RefreshItemsRightPageOne()
+    RefreshItemsMain("uType:RightPageSetOne", "uSelectedItem:RightPageSetOne", "uSlotAction:RightPageSetOne", bBothHandsRightSetOne, "uSlotAction:RightPageSetOne")
+endfunction
+
+function RefreshItemsRightLeftPageOne()
+    RefreshItemsMain("uTypeLeft:RightPageSetOne", "uSelectedItemLeft:RightPageSetOne", "uSlotActionLeft:RightPageSetOne", bBothHandsRightSetOne, "uSlotActionLeft:RightPageSetOne")
+endfunction
+
+function RefreshItemsBottomPageOne()
+    RefreshItemsMain("uType:BottomPageSetOne", "uSelectedItem:BottomPageSetOne", "uSlotAction:BottomPageSetOne", bBothHandsBottomSetOne, "uSlotAction:BottomPageSetOne")
+endfunction
+
+function RefreshItemsBottomLeftPageOne()
+    RefreshItemsMain("uTypeLeft:BottomPageSetOne", "uSelectedItemLeft:BottomPageSetOne", "uSlotActionLeft:BottomPageSetOne", bBothHandsBottomSetOne, "uSlotActionLeft:BottomPageSetOne")
+endfunction
+
+function RefreshItemsLeftListPageOne()
+    RefreshItemsMain("uType:LeftPageSetOne", "uSelectedItem:LeftPageSetOne", "uSlotAction:LeftPageSetOne", bBothHandsLeftSetOne, "uSlotAction:LeftPageSetOne")
+endfunction
+
+function RefreshItemsLeftLeftPageOne()
+    RefreshItemsMain("uTypeLeft:LeftPageSetOne", "uSelectedItemLeft:LeftPageSetOne", "uSlotActionLeft:LeftPageSetOne", bBothHandsLeftSetOne, "uSlotActionLeft:LeftPageSetOne")
 endfunction
 
 Event OnSettingChange(String a_ID)
@@ -264,6 +398,106 @@ Event OnSettingChange(String a_ID)
         SetToggles()
         RefreshMenu()
     endif
+
+    if (a_ID == "uSelectedItem:TopPageSetOne")
+        SetModSettingString("sSelectedItemForm:TopPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        
+        if (!bBothHandsSetOne) 
+            SetModSettingString("sSelectedItemFormLeft:TopPageSetOne", "0")
+        endif
+        
+        RefreshMenu()
+    elseIf (a_ID == "uSelectedItemLeft:TopPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:TopPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        RefreshMenu()
+    elseif (a_ID == "uType:TopPageSetOne")
+        SetFormZero(a_ID)
+        SetHands(a_ID, "uHandSelection:TopPageSetOne")
+        SetToggles()
+        RefreshMenu()
+     elseif (a_ID == "uTypeLeft:TopPageSetOne")
+        SetFormZero(a_ID)
+        SetToggles()
+        RefreshMenu()
+     elseif (a_ID == "uHandSelection:TopPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    endif
+
+    if (a_ID == "uSelectedItem:RightPageSetOne")
+        SetModSettingString("sSelectedItemForm:RightPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        
+        if (!bBothHandsRightSetOne) 
+            SetModSettingString("sSelectedItemFormLeft:RightPageSetOne", "0")
+        endif
+        
+        RefreshMenu()
+    elseIf (a_ID == "uSelectedItemLeft:RightPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:RightPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        RefreshMenu()
+    elseif (a_ID == "uType:RightPageSetOne")
+        SetFormZero(a_ID)
+        SetHands(a_ID, "uHandSelection:RightPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    elseif (a_ID == "uTypeLeft:RightPageSetOne")
+        SetFormZero(a_ID)
+        SetToggles()
+        RefreshMenu()
+    elseif (a_ID == "uHandSelection:RightPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    endif
+
+    if (a_ID == "uSelectedItem:BottomPageSetOne")
+        SetModSettingString("sSelectedItemForm:BottomPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        
+        if (!bBothHandsBottomSetOne) 
+            SetModSettingString("sSelectedItemFormLeft:BottomPageSetOne", "0")
+        endif
+        
+        RefreshMenu()
+    elseIf (a_ID == "uSelectedItemLeft:BottomPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:BottomPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        RefreshMenu()
+    elseif (a_ID == "uType:BottomPageSetOne")
+        SetFormZero(a_ID)
+        SetHands(a_ID, "uHandSelection:BottomPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    elseif (a_ID == "uTypeLeft:BottomPageSetOne")
+        SetFormZero(a_ID)
+        SetToggles()
+        RefreshMenu()
+    elseif (a_ID == "uHandSelection:BottomPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    endif
+
+    if (a_ID == "uSelectedItem:LeftPageSetOne")
+        SetModSettingString("sSelectedItemForm:LeftPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        
+        if (!bBothHandsLeftSetOne) 
+            SetModSettingString("sSelectedItemFormLeft:LeftPageSetOne", "0")
+        endif
+        
+        RefreshMenu()
+    elseIf (a_ID == "uSelectedItemLeft:LeftPageSetOne")
+        SetModSettingString("sSelectedItemFormLeft:LeftPageSetOne", GetFormIdForSelection(GetModSettingInt(a_ID)))
+        RefreshMenu()
+    elseif (a_ID == "uType:LeftPageSetOne")
+        SetFormZero(a_ID)
+        SetHands(a_ID, "uHandSelection:LeftPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    elseif (a_ID == "uTypeLeft:LeftPageSetOne")
+        SetFormZero(a_ID)
+        SetToggles()
+        RefreshMenu()
+    elseif (a_ID == "uHandSelection:LeftPageSetOne")
+        SetToggles()
+        RefreshMenu()
+    endif
 EndEvent
 
 Event OnPageSelect(string a_page)
@@ -305,6 +539,46 @@ Event OnPageSelect(string a_page)
 
         menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:LeftPage"), bBothHandsLeft, "uSlotActionLeft:LeftPage")
         SetMenuOptions("uSelectedItemLeft:LeftPage", menu_list, menu_list)
+
+        RefreshMenu()
+    elseif (a_page == "$LamasTinyHUD_TopPageSetOne")
+        SetToggles()
+        ;no need to set uTopSelectedItem:TopPageSetOne here
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:TopPageSetOne"), bBothHandsSetOne, "uSlotAction:TopPageSetOne")
+        SetMenuOptions("uSelectedItem:TopPageSetOne", menu_list, menu_list)
+
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:TopPageSetOne"), bBothHandsSetOne, "uSlotActionLeft:TopPageSetOne")
+        SetMenuOptions("uSelectedItemLeft:TopPageSetOne", menu_list, menu_list)
+
+        RefreshMenu()
+    elseif (a_page == "$LamasTinyHUD_RightPageSetOne")
+        SetToggles()
+        ;no need to set uTopSelectedItem:TopPageSetOne here
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:RightPageSetOne"), bBothHandsRightSetOne, "uSlotAction:RightPageSetOne")
+        SetMenuOptions("uSelectedItem:RightPageSetOne", menu_list, menu_list)
+
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:RightPageSetOne"), bBothHandsRightSetOne, "uSlotActionLeft:RightPageSetOne")
+        SetMenuOptions("uSelectedItemLeft:RightPageSetOne", menu_list, menu_list)
+
+        RefreshMenu()
+    elseif (a_page == "$LamasTinyHUD_BottomPageSetOne")
+        SetToggles()
+        ;no need to set uTopSelectedItem:TopPageSetOne here
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:BottomPageSetOne"), bBothHandsBottomSetOne, "uSlotAction:BottomPageSetOne")
+        SetMenuOptions("uSelectedItem:BottomPageSetOne", menu_list, menu_list)
+
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:BottomPageSetOne"), bBothHandsBottomSetOne, "uSlotActionLeft:BottomPageSetOne")
+        SetMenuOptions("uSelectedItemLeft:BottomPageSetOne", menu_list, menu_list)
+
+        RefreshMenu()
+    elseif (a_page == "$LamasTinyHUD_LeftPageSetOne")
+        SetToggles()
+        ;no need to set uTopSelectedItem:TopPageSetOne here
+        string[] menu_list = GetSelectedOptions(GetModSettingInt("uType:LeftPageSetOne"), bBothHandsLeftSetOne, "uSlotAction:LeftPageSetOne")
+        SetMenuOptions("uSelectedItem:LeftPageSetOne", menu_list, menu_list)
+
+        menu_list = GetSelectedOptions(GetModSettingInt("uTypeLeft:LeftPageSetOne"), bBothHandsLeftSetOne, "uSlotActionLeft:LeftPageSetOne")
+        SetMenuOptions("uSelectedItemLeft:LeftPageSetOne", menu_list, menu_list)
 
         RefreshMenu()
     elseif ( a_page == "$LamasTinyHUD_HudSetting" )

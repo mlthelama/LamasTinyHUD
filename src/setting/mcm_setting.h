@@ -9,6 +9,7 @@ namespace config {
         static uint32_t get_right_action_key();
         static uint32_t get_bottom_action_key();
         static uint32_t get_left_action_key();
+        static uint32_t get_toggle_key();
         static uint32_t get_controller_set();
 
         static uint32_t get_top_type();
@@ -43,6 +44,38 @@ namespace config {
         static std::string get_left_selected_item_form_left();
         static uint32_t get_left_slot_action_left();
 
+        static uint32_t get_top_type_page_one();
+        static std::string get_top_selected_item_form_page_one();
+        static uint32_t get_top_slot_action_page_one();
+        static uint32_t get_top_hand_selection_page_one();
+        static uint32_t get_top_type_left_page_one();
+        static std::string get_top_selected_item_form_left_page_one();
+        static uint32_t get_top_slot_action_left_page_one();
+
+        static uint32_t get_right_type_page_one();
+        static std::string get_right_selected_item_form_page_one();
+        static uint32_t get_right_slot_action_page_one();
+        static uint32_t get_right_hand_selection_page_one();
+        static uint32_t get_right_type_left_page_one();
+        static std::string get_right_selected_item_form_left_page_one();
+        static uint32_t get_right_slot_action_left_page_one();
+
+        static uint32_t get_bottom_type_page_one();
+        static std::string get_bottom_selected_item_form_page_one();
+        static uint32_t get_bottom_slot_action_page_one();
+        static uint32_t get_bottom_hand_selection_page_one();
+        static uint32_t get_bottom_type_left_page_one();
+        static std::string get_bottom_selected_item_form_left_page_one();
+        static uint32_t get_bottom_slot_action_left_page_one();
+
+        static uint32_t get_left_type_page_one();
+        static std::string get_left_selected_item_form_page_one();
+        static uint32_t get_left_slot_action_page_one();
+        static uint32_t get_left_hand_selection_page_one();
+        static uint32_t get_left_type_left_page_one();
+        static std::string get_left_selected_item_form_left_page_one();
+        static uint32_t get_left_slot_action_left_page_one();
+
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();
         static float get_hud_image_position_width();
@@ -57,5 +90,8 @@ namespace config {
         static float get_key_icon_scale_height();
         static float get_slot_count_text_offset();
         static float get_slot_count_text_font_size();
+        static bool get_draw_toggle_button();
+        static float get_toggle_key_offset_x();
+        static float get_toggle_key_offset_y();
     };
 }

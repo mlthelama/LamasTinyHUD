@@ -15,7 +15,7 @@ namespace item {
         const REL::Relocation<func_t> func{ REL::ID(offset::get_left_hand_slot) };
         return func();
     }
-    
+
     bool equip_slot::unequip_if_equipped(RE::TESBoundObject*& a_obj,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {

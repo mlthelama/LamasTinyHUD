@@ -1,4 +1,6 @@
 ﻿#include "key_manager.h"
+
+#include "handle/page_handle.h"
 #include "handle/setting_execute.h"
 #include "setting/mcm_setting.h"
 
@@ -25,7 +27,7 @@ namespace event {
         key_right_action_ = config::mcm_setting::get_right_action_key();
         key_bottom_action_ = config::mcm_setting::get_bottom_action_key();
         key_left_action_ = config::mcm_setting::get_left_action_key();
-
+        key_toggle_ = config::mcm_setting::get_toggle_key();
         button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
 
 
@@ -84,6 +86,7 @@ namespace event {
                 continue;
             }
 
+
             //init fade setting here
             //currently not used, not sure this is te correct place
             /*if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
@@ -106,7 +109,7 @@ namespace event {
 
             if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
                                      || key_ == key_left_action_)) {
-                logger::debug("configured Key ({}) is down"sv, key_);
+                logger::debug("configured key ({}) is down"sv, key_);
                 //set slot to a different color
                 const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
                 if (page_setting == nullptr) {
@@ -131,6 +134,13 @@ namespace event {
 
             if (!button->IsDown()) {
                 continue;
+            }
+
+            if (is_key_valid(key_toggle_) && key_ == key_toggle_) {
+                logger::debug("configured toggle key ({}) is pressed"sv, key_);
+                //get_next_page_id
+                const auto handler = handle::page_handle::get_singleton();
+                handler->set_active_page(handler->get_next_page_id());
             }
 
             if (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_ || key_ ==

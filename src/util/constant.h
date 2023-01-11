@@ -19,4 +19,6 @@ namespace util {
 
     constexpr auto dynamic_name = "dynamic";
     constexpr auto delimiter = "|";
+
+    constexpr auto page_count = 2;
 }

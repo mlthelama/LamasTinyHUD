@@ -25,24 +25,24 @@ namespace item {
                 break;
             }
         }
-        
+
         if (obj == nullptr) {
             logger::warn("could not find selected weapon/shield, maybe it is gone"sv);
             //update ui in this case
             return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(left); equipped_object->formID == obj->formID ) {
+        if (const auto equipped_object = a_player->GetEquippedObject(left); equipped_object->formID == obj->formID) {
             logger::debug("Object {} already equipped. return."sv, obj->GetName());
             return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(left); equipped_object->formID == obj->formID ) {
+        if (const auto equipped_object = a_player->GetEquippedObject(left); equipped_object->formID == obj->formID) {
             logger::debug("Object {} already equipped. return."sv, obj->GetName());
             return;
         }
-        
+
         logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
         const auto equip_manager = RE::ActorEquipManager::GetSingleton();
-        
+
         equip_manager->EquipObject(a_player, obj, extra, 1, a_slot);
         //TODO add setting for that
         //a_player->DrawWeaponMagicHands(true);

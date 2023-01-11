@@ -16,14 +16,16 @@ namespace handle {
         key_pos->init_key_position_map();
 
         //set empty for each position, it will be overwritten if it is configured
-        for (auto i = 0; i < static_cast<int>(page_setting::position::total); ++i) {
-            set_empty_slot(i, key_pos);
+        for (auto i = 0; i < util::page_count; ++i) {
+            for (auto j = 0; j < static_cast<int>(page_setting::position::total); ++j) {
+                set_empty_slot(i, j, key_pos);
+            }
         }
 
         logger::trace("continue with overwriting data from configuration ..."sv);
 
-
-        set_slot(page_setting::position::top,
+        set_slot(0,
+            page_setting::position::top,
             mcm::get_top_selected_item_form(),
             mcm::get_top_type(),
             mcm::get_top_hand_selection(),
@@ -33,7 +35,8 @@ namespace handle {
             mcm::get_top_slot_action_left(),
             key_pos);
 
-        set_slot(page_setting::position::right,
+        set_slot(0,
+            page_setting::position::right,
             mcm::get_right_selected_item_form(),
             mcm::get_right_type(),
             mcm::get_right_hand_selection(),
@@ -43,7 +46,8 @@ namespace handle {
             mcm::get_right_slot_action_left(),
             key_pos);
 
-        set_slot(page_setting::position::bottom,
+        set_slot(0,
+            page_setting::position::bottom,
             mcm::get_bottom_selected_item_form(),
             mcm::get_bottom_type(),
             mcm::get_bottom_hand_selection(),
@@ -53,7 +57,8 @@ namespace handle {
             mcm::get_bottom_slot_action_left(),
             key_pos);
 
-        set_slot(page_setting::position::left,
+        set_slot(0,
+            page_setting::position::left,
             mcm::get_left_selected_item_form(),
             mcm::get_left_type(),
             mcm::get_left_hand_selection(),
@@ -63,6 +68,50 @@ namespace handle {
             mcm::get_left_slot_action_left(),
             key_pos);
 
+        set_slot(1,
+            page_setting::position::top,
+            mcm::get_top_selected_item_form_page_one(),
+            mcm::get_top_type_page_one(),
+            mcm::get_top_hand_selection_page_one(),
+            mcm::get_top_slot_action_page_one(),
+            mcm::get_top_selected_item_form_left_page_one(),
+            mcm::get_top_type_left_page_one(),
+            mcm::get_top_slot_action_left_page_one(),
+            key_pos);
+
+        set_slot(1,
+            page_setting::position::right,
+            mcm::get_right_selected_item_form_page_one(),
+            mcm::get_right_type_page_one(),
+            mcm::get_right_hand_selection_page_one(),
+            mcm::get_right_slot_action_page_one(),
+            mcm::get_right_selected_item_form_left_page_one(),
+            mcm::get_right_type_left_page_one(),
+            mcm::get_right_slot_action_left_page_one(),
+            key_pos);
+
+        set_slot(1,
+            page_setting::position::bottom,
+            mcm::get_bottom_selected_item_form_page_one(),
+            mcm::get_bottom_type_page_one(),
+            mcm::get_bottom_hand_selection_page_one(),
+            mcm::get_bottom_slot_action_page_one(),
+            mcm::get_bottom_selected_item_form_left_page_one(),
+            mcm::get_bottom_type_left_page_one(),
+            mcm::get_bottom_slot_action_left_page_one(),
+            key_pos);
+
+        set_slot(1,
+            page_setting::position::left,
+            mcm::get_left_selected_item_form_page_one(),
+            mcm::get_left_type_page_one(),
+            mcm::get_left_hand_selection_page_one(),
+            mcm::get_left_slot_action_page_one(),
+            mcm::get_left_selected_item_form_left_page_one(),
+            mcm::get_left_type_left_page_one(),
+            mcm::get_left_slot_action_left_page_one(),
+            key_pos);
+
         logger::trace("done setting. return."sv);
     }
 
@@ -70,8 +119,8 @@ namespace handle {
         set_new_item_count(a_obj->GetFormID(), a_obj->GetName(), a_count);
     }
 
-    void set_data::set_empty_slot(int a_pos, key_position*& a_key_pos) {
-        logger::trace("setting empty config for position {}"sv, a_pos);
+    void set_data::set_empty_slot(const int a_page, int a_pos, key_position*& a_key_pos) {
+        logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;
         const auto item = new data_helper();
         item->form = nullptr;
@@ -79,7 +128,7 @@ namespace handle {
         item->type = util::selection_type::unset;
         data.push_back(item);
 
-        page_handle::get_singleton()->init_page(0,
+        page_handle::get_singleton()->init_page(a_page,
             static_cast<page_setting::position>(a_pos),
             data,
             mcm::get_hud_slot_position_offset(),
@@ -89,7 +138,8 @@ namespace handle {
             a_key_pos);
     }
 
-    void set_data::set_slot(page_setting::position a_pos,
+    void set_data::set_slot(const uint32_t a_page,
+        page_setting::position a_pos,
         const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
@@ -106,7 +156,10 @@ namespace handle {
         auto hand = static_cast<slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
 
-        logger::trace("start working data hands {} ..."sv, a_hand);
+        logger::trace("page {}, pos {}, start working data hands {} ..."sv,
+            a_page,
+            static_cast<uint32_t>(a_pos),
+            a_hand);
 
 
         slot_setting::acton_type action;
@@ -151,28 +204,30 @@ namespace handle {
 
         logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
 
-        if (const auto type_left = static_cast<util::selection_type>(a_type_left);
-            (form_left != nullptr && type_left == util::selection_type::magic || type_left ==
-             util::selection_type::weapon || type_left ==
-             util::selection_type::shield) && hand == slot_setting::hand_equip::single) {
-            logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
-                static_cast<uint32_t>(a_pos),
-                util::string_util::int_to_hex(form_left->GetFormID()),
-                static_cast<int>(type_left),
-                static_cast<uint32_t>(action),
-                static_cast<uint32_t>(hand));
+        if (form_left != nullptr) {
+            if (const auto type_left = static_cast<util::selection_type>(a_type_left);
+                (type_left == util::selection_type::magic || type_left ==
+                 util::selection_type::weapon || type_left ==
+                 util::selection_type::shield) && hand == slot_setting::hand_equip::single) {
+                logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
+                    static_cast<uint32_t>(a_pos),
+                    util::string_util::int_to_hex(form_left->GetFormID()),
+                    static_cast<int>(type_left),
+                    static_cast<uint32_t>(action),
+                    static_cast<uint32_t>(hand));
 
-            const auto item_left = new data_helper();
-            item_left->form = form_left;
-            item_left->type = type_left;
-            item_left->action_type = action;
-            item_left->left = true;
-            data.push_back(item_left);
+                const auto item_left = new data_helper();
+                item_left->form = form_left;
+                item_left->type = type_left;
+                item_left->action_type = action;
+                item_left->left = true;
+                data.push_back(item_left);
+            }
         }
         logger::trace("build data, calling handler, data size {}"sv, data.size());
 
         if (!data.empty()) {
-            page_handle::get_singleton()->init_page(0,
+            page_handle::get_singleton()->init_page(a_page,
                 a_pos,
                 data,
                 config::mcm_setting::get_hud_slot_position_offset(),
@@ -186,13 +241,15 @@ namespace handle {
     void set_data::set_new_item_count(const RE::FormID a_form_id, const char* a_name, int32_t a_count) {
         //just consider magic items for now, that includes 
         const auto page_handle = page_handle::get_singleton();
-        for (auto pages = page_handle->get_page(); auto [position, page] : pages) {
-            for (const auto setting : page->slot_settings) {
-                if (setting->type == util::selection_type::consumable && setting->form->formID == a_form_id) {
-                    setting->item_count = setting->item_count + a_count;
-                    logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
+        for (auto pages = page_handle->get_pages(); auto [page, page_settings] : pages) {
+            for (auto [position, page_setting] : page_settings) {
+                for (const auto setting : page_setting->slot_settings) {
+                    if (setting->type == util::selection_type::consumable && setting->form->formID == a_form_id) {
+                        setting->item_count = setting->item_count + a_count;
+                        logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
 
-                    //TODO maybe add indicator to ui that the items are gone
+                        //TODO maybe add indicator to ui that the items are gone
+                    }
                 }
             }
         }
@@ -211,6 +268,10 @@ namespace handle {
         std::getline(string_stream, id);
         RE::FormID form_id;
         std::istringstream(id) >> std::hex >> form_id;
+
+        if (plugin.empty()) {
+            return nullptr;
+        }
 
         if (plugin == util::dynamic_name) {
             form = RE::TESForm::LookupByID(form_id);

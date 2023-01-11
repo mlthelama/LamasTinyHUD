@@ -31,11 +31,14 @@ namespace handle {
             return nullptr;
         }
 
-        const auto page_setting = page_handle::get_singleton()->get_page_setting(position);
+        const auto page_handle = page_handle::get_singleton();
+        auto page = page_handle->get_active_page_id();
+        const auto page_setting = page_handle->get_page_setting(page, position);
         if (page_setting == nullptr) {
             logger::warn("nothing to do, nothing set. return."sv);
         }
-        logger::debug("position is {}, setting count {}"sv,
+        logger::debug("page {}, position is {}, setting count {}"sv,
+            page,
             static_cast<uint32_t>(position),
             page_setting->slot_settings.size());
 

@@ -8,7 +8,7 @@ namespace handle {
     class page_handle {
     public:
         static page_handle* get_singleton();
-        void init_page([[maybe_unused]] uint32_t a_page,
+        void init_page(uint32_t a_page,
             page_setting::position a_position,
             const std::vector<data_helper*>& data_helpers,
             float a_slot_offset,
@@ -16,8 +16,15 @@ namespace handle {
             slot_setting::hand_equip a_hand,
             uint32_t a_opacity,
             key_position*& a_key_pos);
-        [[nodiscard]] page_setting* get_page_setting(page_setting::position a_position) const;
-        [[nodiscard]] std::map<page_setting::position, page_setting*> get_page() const;
+
+        void set_active_page(uint32_t a_page) const;
+
+        [[nodiscard]] page_setting* get_page_setting(uint32_t a_page, page_setting::position a_position) const;
+        [[nodiscard]] std::map<page_setting::position, page_setting*> get_page(uint32_t a_page) const;
+        [[nodiscard]] std::map<uint32_t, std::map<page_setting::position, page_setting*>> get_pages() const;
+        [[nodiscard]] std::map<page_setting::position, page_setting*> get_active_page() const;
+        [[nodiscard]] uint32_t get_active_page_id() const;
+        [[nodiscard]] uint32_t get_next_page_id() const;
 
         page_handle(const page_handle&) = delete;
         page_handle(page_handle&&) = delete;
@@ -49,7 +56,8 @@ namespace handle {
         static void get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
 
         struct page_handle_data {
-            std::map<page_setting::position, page_setting*> page_settings;
+            std::map<uint32_t, std::map<page_setting::position, page_setting*>> page_settings;
+            uint32_t active_page = 0;
         };
 
         page_handle_data* data_;

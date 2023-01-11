@@ -9,6 +9,7 @@ namespace config {
     static uint32_t right_action_key;
     static uint32_t bottom_action_key;
     static uint32_t left_action_key;
+    static uint32_t toggle_key;
     static uint32_t controller_set;
 
     static uint32_t top_type;
@@ -43,6 +44,38 @@ namespace config {
     static std::string left_selected_item_form_left;
     static uint32_t left_slot_action_left;
 
+    static uint32_t top_type_page_one;
+    static std::string top_selected_item_form_page_one;
+    static uint32_t top_slot_action_page_one;
+    static uint32_t top_hand_selection_page_one;
+    static uint32_t top_type_left_page_one;
+    static std::string top_selected_item_form_left_page_one;
+    static uint32_t top_slot_action_left_page_one;
+
+    static uint32_t right_type_page_one;
+    static std::string right_selected_item_form_page_one;
+    static uint32_t right_slot_action_page_one;
+    static uint32_t right_hand_selection_page_one;
+    static uint32_t right_type_left_page_one;
+    static std::string right_selected_item_form_left_page_one;
+    static uint32_t right_slot_action_left_page_one;
+
+    static uint32_t bottom_type_page_one;
+    static std::string bottom_selected_item_form_page_one;
+    static uint32_t bottom_slot_action_page_one;
+    static uint32_t bottom_hand_selection_page_one;
+    static uint32_t bottom_type_left_page_one;
+    static std::string bottom_selected_item_form_left_page_one;
+    static uint32_t bottom_slot_action_left_page_one;
+
+    static uint32_t left_type_page_one;
+    static std::string left_selected_item_form_page_one;
+    static uint32_t left_slot_action_page_one;
+    static uint32_t left_hand_selection_page_one;
+    static uint32_t left_type_left_page_one;
+    static std::string left_selected_item_form_left_page_one;
+    static uint32_t left_slot_action_left_page_one;
+
     static float hud_image_scale_width;
     static float hud_image_scale_height;
     static float hud_image_position_width;
@@ -57,6 +90,9 @@ namespace config {
     static float key_icon_scale_height;
     static float slot_count_text_offset;
     static float slot_count_text_font_size;
+    static bool draw_toggle_button;
+    static float toggle_key_offset_x;
+    static float toggle_key_offset_y;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -66,10 +102,11 @@ namespace config {
             mcm.SetUnicode();
             mcm.LoadFile(path.string().c_str());
 
-            top_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uTopActionKey", 45));
-            right_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uRightActionKey", 46));
-            bottom_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uBottomActionKey", 46));
-            left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 48));
+            top_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uTopActionKey", 10));
+            right_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uRightActionKey", 11));
+            bottom_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uBottomActionKey", 12));
+            left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 13));
+            toggle_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uToggleKey", 27));
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
 
             //got more settings, variables, but for now we are ok
@@ -108,6 +145,55 @@ namespace config {
             left_selected_item_form_left = mcm.GetValue("LeftPage", "sSelectedItemFormLeft", "");
             left_slot_action_left = static_cast<uint32_t>(mcm.GetLongValue("LeftPage", "uSlotActionLeft", 0));
 
+            //got more settings, variables, but for now we are ok
+            top_type_page_one = static_cast<uint32_t>(mcm.GetLongValue("TopPageSetOne", "uType", 0));
+            top_selected_item_form_page_one = mcm.GetValue("TopPageSetOne", "sSelectedItemForm", "");
+            top_slot_action_page_one = static_cast<uint32_t>(mcm.GetLongValue("TopPageSetOne", "uSlotAction", 0));
+            top_hand_selection_page_one = static_cast<uint32_t>(mcm.GetLongValue("TopPageSetOne", "uHandSelection", 1));
+            top_type_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("TopPageSetOne", "uTypeLeft", 0));
+            top_selected_item_form_left_page_one = mcm.GetValue("TopPageSetOne", "sSelectedItemFormLeft", "");
+            top_slot_action_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("TopPageSetOne",
+                "uSlotActionLeft",
+                0));
+
+            //got more settings, variables, but for now we are ok
+            right_type_page_one = static_cast<uint32_t>(mcm.GetLongValue("RightPageSetOne", "uType", 0));
+            right_selected_item_form_page_one = mcm.GetValue("RightPageSetOne", "sSelectedItemForm", "");
+            right_slot_action_page_one = static_cast<uint32_t>(mcm.GetLongValue("RightPageSetOne", "uSlotAction", 0));
+            right_hand_selection_page_one = static_cast<uint32_t>(mcm.GetLongValue("RightPageSetOne",
+                "uHandSelection",
+                1));
+            right_type_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("RightPageSetOne", "uTypeLeft", 0));
+            right_selected_item_form_left_page_one = mcm.GetValue("RightPageSetOne", "sSelectedItemFormLeft", "");
+            right_slot_action_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("RightPageSetOne",
+                "uSlotActionLeft",
+                0));
+
+            //got more settings, variables, but for now we are ok
+            bottom_type_page_one = static_cast<uint32_t>(mcm.GetLongValue("BottomPageSetOne", "uType", 0));
+            bottom_selected_item_form_page_one = mcm.GetValue("BottomPageSetOne", "sSelectedItemForm", "");
+            bottom_slot_action_page_one = static_cast<uint32_t>(mcm.GetLongValue("BottomPageSetOne", "uSlotAction", 0));
+            bottom_hand_selection_page_one = static_cast<uint32_t>(mcm.GetLongValue("BottomPageSetOne",
+                "uHandSelection",
+                1));
+            bottom_type_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("BottomPageSetOne", "uTypeLeft", 0));
+            bottom_selected_item_form_left_page_one = mcm.GetValue("BottomPageSetOne", "sSelectedItemFormLeft", "");
+            bottom_slot_action_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("BottomPageSetOne",
+                "uSlotActionLeft",
+                0));
+
+            //got more settings, variables, but for now we are ok
+            left_type_page_one = static_cast<uint32_t>(mcm.GetLongValue("LeftPageSetOne", "uType", 0));
+            left_selected_item_form_page_one = mcm.GetValue("LeftPageSetOne", "sSelectedItemForm", "");
+            left_slot_action_page_one = static_cast<uint32_t>(mcm.GetLongValue("LeftPageSetOne", "uSlotAction", 0));
+            left_hand_selection_page_one = static_cast<uint32_t>(mcm.
+                GetLongValue("LeftPageSetOne", "uHandSelection", 1));
+            left_type_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("LeftPageSetOne", "uTypeLeft", 0));
+            left_selected_item_form_left_page_one = mcm.GetValue("LeftPageSetOne", "sSelectedItemFormLeft", "");
+            left_slot_action_left_page_one = static_cast<uint32_t>(mcm.GetLongValue("LeftPageSetOne",
+                "uSlotActionLeft",
+                0));
+
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.25));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.25));
             hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
@@ -129,6 +215,13 @@ namespace config {
             slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fSlotCountTextFontSize",
                 20));
+            draw_toggle_button = mcm.GetBoolValue("HudSetting", "bDrawToggleButton", true);
+            toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fToggleKeyOffsetX",
+                90));
+            toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fToggleKeyOffsetY",
+                90));
         };
 
         read_mcm(mcm_default_setting);
@@ -142,6 +235,7 @@ namespace config {
     uint32_t mcm_setting::get_right_action_key() { return right_action_key; }
     uint32_t mcm_setting::get_bottom_action_key() { return bottom_action_key; }
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
+    uint32_t mcm_setting::get_toggle_key() { return toggle_key; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
 
     uint32_t mcm_setting::get_top_type() { return top_type; }
@@ -176,6 +270,50 @@ namespace config {
     std::string mcm_setting::get_left_selected_item_form_left() { return left_selected_item_form_left; }
     uint32_t mcm_setting::get_left_slot_action_left() { return left_slot_action_left; }
 
+    uint32_t mcm_setting::get_top_type_page_one() { return top_type_page_one; }
+    std::string mcm_setting::get_top_selected_item_form_page_one() { return top_selected_item_form_page_one; }
+    uint32_t mcm_setting::get_top_slot_action_page_one() { return top_slot_action_page_one; }
+    uint32_t mcm_setting::get_top_hand_selection_page_one() { return top_hand_selection_page_one; }
+    uint32_t mcm_setting::get_top_type_left_page_one() { return top_type_left_page_one; }
+    std::string mcm_setting::get_top_selected_item_form_left_page_one() { return top_selected_item_form_left_page_one; }
+    uint32_t mcm_setting::get_top_slot_action_left_page_one() { return top_slot_action_left_page_one; }
+
+    uint32_t mcm_setting::get_right_type_page_one() { return right_type_page_one; }
+    std::string mcm_setting::get_right_selected_item_form_page_one() { return right_selected_item_form_page_one; }
+    uint32_t mcm_setting::get_right_slot_action_page_one() { return right_slot_action_page_one; }
+    uint32_t mcm_setting::get_right_hand_selection_page_one() { return right_hand_selection_page_one; }
+    uint32_t mcm_setting::get_right_type_left_page_one() { return right_type_left_page_one; }
+
+    std::string mcm_setting::get_right_selected_item_form_left_page_one() {
+        return right_selected_item_form_left_page_one;
+    }
+
+    uint32_t mcm_setting::get_right_slot_action_left_page_one() { return right_slot_action_left_page_one; }
+
+    uint32_t mcm_setting::get_bottom_type_page_one() { return bottom_type_page_one; }
+    std::string mcm_setting::get_bottom_selected_item_form_page_one() { return bottom_selected_item_form_page_one; }
+    uint32_t mcm_setting::get_bottom_slot_action_page_one() { return bottom_slot_action_page_one; }
+    uint32_t mcm_setting::get_bottom_hand_selection_page_one() { return bottom_hand_selection_page_one; }
+    uint32_t mcm_setting::get_bottom_type_left_page_one() { return bottom_type_left_page_one; }
+
+    std::string mcm_setting::get_bottom_selected_item_form_left_page_one() {
+        return bottom_selected_item_form_left_page_one;
+    }
+
+    uint32_t mcm_setting::get_bottom_slot_action_left_page_one() { return bottom_slot_action_left_page_one; }
+
+    uint32_t mcm_setting::get_left_type_page_one() { return left_type_page_one; }
+    std::string mcm_setting::get_left_selected_item_form_page_one() { return left_selected_item_form_page_one; }
+    uint32_t mcm_setting::get_left_slot_action_page_one() { return left_slot_action_page_one; }
+    uint32_t mcm_setting::get_left_hand_selection_page_one() { return left_hand_selection_page_one; }
+    uint32_t mcm_setting::get_left_type_left_page_one() { return left_type_left_page_one; }
+
+    std::string mcm_setting::get_left_selected_item_form_left_page_one() {
+        return left_selected_item_form_left_page_one;
+    }
+
+    uint32_t mcm_setting::get_left_slot_action_left_page_one() { return left_slot_action_left_page_one; }
+
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height; }
     float mcm_setting::get_hud_image_position_width() { return hud_image_position_width; }
@@ -190,4 +328,7 @@ namespace config {
     float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
     float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset; }
     float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size; }
+    bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
+    float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x; }
+    float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y; }
 }

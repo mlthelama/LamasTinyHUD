@@ -1,5 +1,4 @@
 ﻿#include "hook.h"
-
 #include "handle/set_data.h"
 
 namespace hook {

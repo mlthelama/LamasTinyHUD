@@ -292,9 +292,9 @@ namespace ui {
                 offset_setting->offset_slot_y,
                 page_setting->icon_type,
                 page_setting->icon_opacity);
+
             if (auto slot_settings = page_setting->slot_settings;
-                position == handle::page_setting::position::left && !slot_settings.empty() && slot_settings.front()->
-                item_count > 0) {
+                !slot_settings.empty() && slot_settings.front()->item_count > 0) {
                 draw_text(a_x,
                     a_y,
                     offset_setting->offset_slot_x,
@@ -343,6 +343,15 @@ namespace ui {
                 offset_setting->offset_key_x,
                 offset_setting->offset_key_y,
                 page_setting->key,
+                draw_full);
+        }
+
+        if (config::mcm_setting::get_draw_toggle_button()) {
+            draw_key_icon(a_x,
+                a_y,
+                config::mcm_setting::get_toggle_key_offset_x(),
+                config::mcm_setting::get_toggle_key_offset_y(),
+                config::mcm_setting::get_toggle_key(),
                 draw_full);
         }
     }
@@ -438,7 +447,7 @@ namespace ui {
 
         ImGui::Begin(hud_name, nullptr, window_flag);
 
-        const auto settings = handle::page_handle::get_singleton()->get_page();
+        const auto settings = handle::page_handle::get_singleton()->get_active_page();
 
         draw_hud(screen_size_x, screen_size_y);
         draw_slots(screen_size_x, screen_size_y, settings);
