@@ -2112,5 +2112,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "customContent": {
+        "source": "LamasTinyHUD/Illustration_llamas_tiny_hut.dds",
+        "x": 258,
+        "y": 95
+    }
 }
