@@ -16,6 +16,10 @@ namespace handle {
         logger::trace("got {} settings execute"sv, a_slots.size());
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
+            if (slot->form == nullptr || slot->type == util::selection_type::unset) {
+                logger::warn("form is null, skipping."sv);
+                continue;
+            }
             logger::trace("executing setting for type {}, action {}, form {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),
