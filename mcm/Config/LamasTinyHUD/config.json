@@ -1970,8 +1970,6 @@
                         "sourceType": "ModSettingFloat"
                     }
                 },
-
-
                 {
                     "text": "$LamasTinyHUD_HudSetting_HeaderText_Offset",
                     "type": "header",
@@ -2090,6 +2088,24 @@
                     "text": "$LamasTinyHUD_DrawToggleButton_OptionText",
                     "type": "toggle",
                     "help": "$LamasTinyHUD_DrawToggleButton_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_MiscSetting",
+            "cursorFillMode": "topToBottom",
+            "content": [{
+                    "text": "$LamasTinyHUD_MiscSetting_HeaderText_Check",
+                    "type": "header"
+                },
+                {
+                    "id": "bActionCheck:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_MiscSetting_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }

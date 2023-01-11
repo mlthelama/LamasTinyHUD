@@ -93,5 +93,7 @@ namespace config {
         static bool get_draw_toggle_button();
         static float get_toggle_key_offset_x();
         static float get_toggle_key_offset_y();
+
+        static bool get_action_check();
     };
 }

@@ -94,6 +94,8 @@ namespace config {
     static float toggle_key_offset_x;
     static float toggle_key_offset_y;
 
+    static bool action_check;
+
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
 
@@ -222,6 +224,8 @@ namespace config {
             toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetY",
                 90));
+
+            action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", true);
         };
 
         read_mcm(mcm_default_setting);
@@ -331,4 +335,5 @@ namespace config {
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x; }
     float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y; }
+    bool mcm_setting::get_action_check() { return action_check; }
 }

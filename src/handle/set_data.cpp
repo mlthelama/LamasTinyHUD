@@ -156,21 +156,27 @@ namespace handle {
         auto hand = static_cast<slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
 
-        logger::trace("page {}, pos {}, start working data hands {} ..."sv,
+        auto action_check = config::mcm_setting::get_action_check();
+        logger::trace("page {}, pos {}, start working data hands {}, action_check {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_pos),
-            a_hand);
+            a_hand,
+            action_check);
 
 
         slot_setting::acton_type action;
-        if (a_action == a_action_left) {
-            action = static_cast<slot_setting::acton_type>(a_action);
+        if (action_check) {
+            if (a_action == a_action_left) {
+                action = static_cast<slot_setting::acton_type>(a_action);
+            } else {
+                action = slot_setting::acton_type::default_action;
+                logger::warn("action type {} differ from action type left {}, setting both to {}"sv,
+                    a_action,
+                    a_action_left,
+                    static_cast<uint32_t>(action));
+            }
         } else {
-            action = slot_setting::acton_type::default_action;
-            logger::warn("action type {} differ from action type left {}, setting both to {}"sv,
-                a_action,
-                a_action_left,
-                static_cast<uint32_t>(action));
+            action = static_cast<slot_setting::acton_type>(a_action);
         }
 
 

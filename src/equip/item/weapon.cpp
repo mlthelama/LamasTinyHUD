@@ -31,11 +31,13 @@ namespace item {
             //update ui in this case
             return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(left); equipped_object && equipped_object->formID == obj->formID) {
+        if (const auto equipped_object = a_player->GetEquippedObject(left);
+            equipped_object && equipped_object->formID == obj->formID) {
             logger::debug("Object {} already equipped. return."sv, obj->GetName());
             return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(left); equipped_object && equipped_object->formID == obj->formID) {
+        if (const auto equipped_object = a_player->GetEquippedObject(left);
+            equipped_object && equipped_object->formID == obj->formID) {
             logger::debug("Object {} already equipped. return."sv, obj->GetName());
             return;
         }

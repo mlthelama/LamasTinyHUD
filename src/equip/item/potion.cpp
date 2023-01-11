@@ -24,9 +24,9 @@ namespace item {
             //update ui in this case
             return;
         }
-        
+
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
-        
+
         const auto equip_manager = RE::ActorEquipManager::GetSingleton();
         equip_manager->EquipObject(a_player, obj);
         logger::trace("drank/ate potion/food {}. return."sv, obj->GetName());
