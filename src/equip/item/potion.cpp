@@ -24,24 +24,11 @@ namespace item {
             //update ui in this case
             return;
         }
-
-
-        if (obj->As<RE::MagicItem>()->IsFood()) {
-            logger::trace("trying to equip/eat a food item {}, count left {}"sv, obj->GetName(), left);
-            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            equip_manager->EquipObject(a_player, obj);
-            logger::trace("equipped/ate a food item {}"sv, obj->GetName());
-            return;
-        }
-
-
-        //update count and
-        const auto alchemy_potion = obj->As<RE::AlchemyItem>();
-        logger::trace("calling drink potion {}, count left {}"sv, alchemy_potion->GetName(), left);
-
-
-        //build a "cache" with formid and count, validate after consumption
-        a_player->DrinkPotion(alchemy_potion, inv_data.extraLists->front());
-        logger::trace("drank potion {}. return."sv, alchemy_potion->GetName());
+        
+        logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
+        
+        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        equip_manager->EquipObject(a_player, obj);
+        logger::trace("drank/ate potion/food {}. return."sv, obj->GetName());
     }
 }
