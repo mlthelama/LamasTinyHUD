@@ -49,6 +49,12 @@ namespace magic {
             a_form->GetName(),
             static_cast<uint32_t>(a_action),
             left);
+
+        if (!a_form->Is(RE::FormType::Spell)) {
+            logger::warn("object {} is not a spell. return."sv, a_form->GetName());
+            return;
+        }
+
         const auto spell = a_form->As<RE::SpellItem>();
 
         //spell->avEffectSetting->data.dualCastScale

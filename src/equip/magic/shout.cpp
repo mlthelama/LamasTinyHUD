@@ -19,6 +19,11 @@ namespace magic {
     void shout::equip_shout(RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
         logger::trace("try to equip shout {}"sv, a_form->GetName());
 
+        if (!a_form->Is(RE::FormType::Shout)) {
+            logger::warn("object {} is not a shout. return."sv, a_form->GetName());
+            return;
+        }
+
         if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
             selected_power != nullptr) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,

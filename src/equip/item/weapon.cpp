@@ -14,8 +14,16 @@ namespace item {
         RE::ExtraDataList* extra = nullptr;
         std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>> potential_items;
         if (a_weapon) {
+            if (!a_form->Is(RE::FormType::Weapon)) {
+                logger::warn("object {} is not a weapon. return."sv, a_form->GetName());
+                return;
+            }
             potential_items = inventory::get_inventory_weapon_items(a_player);
         } else {
+            if (!a_form->Is(RE::FormType::Armor)) {
+                logger::warn("object {} is not an armor. return."sv, a_form->GetName());
+                return;
+            }
             potential_items = inventory::get_inventory_armor_items(a_player);
         }
 

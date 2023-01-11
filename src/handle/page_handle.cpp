@@ -212,6 +212,9 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        if (!a_form->IsWeapon()) {
+            return;
+        }
         switch (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
             case RE::WEAPON_TYPE::kHandToHandMelee:
                 break;
@@ -246,6 +249,9 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        if (!a_form->Is(RE::FormType::Spell)) {
+            return;
+        }
         const auto spell = a_form->As<RE::SpellItem>();
         const auto effect = spell->GetCostliestEffectItem()->baseEffect;
         auto actor_value = effect->GetMagickSkill();
@@ -284,6 +290,9 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        if (!a_form->Is(RE::FormType::AlchemyItem)) {
+            return;
+        }
         const auto alchemy_potion = a_form->As<RE::AlchemyItem>();
 
         if (alchemy_potion->IsFood()) {
@@ -330,7 +339,10 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        switch (const auto weapon = a_form->As<RE::TESObjectARMO>(); weapon->GetArmorType()) {
+        if (!a_form->IsArmor()) {
+            return;
+        }
+        switch (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->GetArmorType()) {
             case RE::BIPED_MODEL::ArmorType::kLightArmor:
                 a_icon = ui::icon_image_type::armor_light;
                 break;

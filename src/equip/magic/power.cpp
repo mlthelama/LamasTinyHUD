@@ -33,6 +33,10 @@ namespace magic {
     void power::equip_or_cast_power(RE::TESForm* a_form, action_type a_action, RE::PlayerCharacter*& a_player) {
         logger::trace("try to work power {}, action {}"sv, a_form->GetName(), static_cast<uint32_t>(a_action));
 
+        if (!a_form->Is(RE::FormType::Spell)) {
+            logger::warn("object {} is not a spell. return."sv, a_form->GetName());
+            return;
+        }
 
         if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
             selected_power != nullptr && a_action != handle::slot_setting::acton_type::instant) {

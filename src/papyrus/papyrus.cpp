@@ -30,7 +30,7 @@ namespace papyrus {
         logger::info("Got refresh for id {}, both hands {}, instant {}"sv, a_id, a_both, a_instant_cast);
         std::vector<RE::BSFixedString> empty_string_vec = { util::empty_enum_string };
         const auto display_string_list = new std::vector<RE::BSFixedString>;
-        //clear_list();
+        clear_list();
         //let the list be valid until it is refreshed again, might be an issue with magic and weapon
 
         index_ = static_cast<util::selection_type>(a_id);
