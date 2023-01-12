@@ -108,7 +108,7 @@ namespace magic {
                 nullptr);
         } else {
             if (const auto equipped_object = a_player->GetEquippedObject(left);
-                equipped_object->formID == spell->formID) {
+                equipped_object && equipped_object->formID == spell->formID) {
                 logger::debug("Object {} already equipped. return."sv, spell->GetName());
                 return;
             }
