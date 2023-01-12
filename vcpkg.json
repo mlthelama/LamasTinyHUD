@@ -1,22 +1,22 @@
 {
-  "name": "lamastinyhud",
-  "version-string": "1.0.0",
-  "description": "A Window to display more NPC Info",
-  "homepage": "https://github.com/mlthelama/LamasTinyHUD",
-  "license": "MIT",
-  "dependencies": [
-    "boost-atomic",
-    "boost-stl-interfaces",
-    "span-lite",
-    "spdlog",
-    "simpleini",
-    "commonlibsse-ng-flatrim",
-    {
-      "name": "imgui",
-        "features": [
-          "dx11-binding",
-          "win32-binding"
-        ]
-    }
-  ]
+    "name": "lamastinyhud",
+    "version-string": "1.0.0",
+    "description": "hud element for skyrim",
+    "homepage": "https://github.com/mlthelama/LamasTinyHUD",
+    "license": "GPL-2.0-or-later",
+    "dependencies": [
+        "boost-atomic",
+        "boost-stl-interfaces",
+        "span-lite",
+        "spdlog",
+        "simpleini",
+        "commonlibsse-ng",
+        {
+            "name": "imgui",
+            "features": [
+                "dx11-binding",
+                "win32-binding"
+            ]
+        }
+    ]
 }
