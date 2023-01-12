@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(NAME "LamasTinyHUD" CACHE STRING "")
-set(VERSION 1.0.0.10 CACHE STRING "")
+set(VERSION 1.0.1.0 CACHE STRING "")
 
 # ---- Options ----
 
@@ -84,11 +84,12 @@ if (MSVC)
 	endif ()
 endif ()
 
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 
 set(Boost_USE_STATIC_LIBS ON)
-
 
 # ---- Dependencies ----
 find_package(CommonLibSSE CONFIG REQUIRED)
