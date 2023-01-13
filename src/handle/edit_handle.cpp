@@ -14,7 +14,7 @@ namespace handle {
         auto page = page_handle->get_active_page_id();
         logger::trace("init edit for page {}, position {}"sv, page, static_cast<uint32_t>(a_position));
 
-        constexpr std::vector<data_helper*> data_helpers;
+        std::vector<data_helper*> data_helpers;
         edit_handle_data* data = this->data_;
         data->page = page;
         data->position = a_position;
