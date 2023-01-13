@@ -9,7 +9,7 @@ namespace handle {
         return std::addressof(singleton);
     }
 
-    void page_handle::init_page([[maybe_unused]] uint32_t a_page,
+    void page_handle::init_page(uint32_t a_page,
         const page_setting::position a_position,
         const std::vector<data_helper*>& data_helpers,
         const float a_slot_offset,
@@ -171,40 +171,41 @@ namespace handle {
         }
     }
 
-    void page_handle::get_equip_slots(const util::selection_type a_type,
+    void page_handle::get_equip_slots(const slot_setting::slot_type a_type,
         const slot_setting::hand_equip a_hand,
         RE::BGSEquipSlot*& a_slot,
         const bool a_left) {
         a_slot = nullptr;
-        if ((a_type == util::selection_type::magic || a_type == util::selection_type::weapon) && a_hand ==
-            slot_setting::hand_equip::single) {
+        if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) && a_hand
+            ==
+            slot_setting::hand_equip::single || a_type == slot_setting::slot_type::unset) {
             a_slot = a_left ? item::equip_slot::get_left_hand_slot() : item::equip_slot::get_right_hand_slot();
         }
     }
 
-    ui::icon_image_type page_handle::get_icon_type(const util::selection_type a_type, RE::TESForm*& a_form) {
+    ui::icon_image_type page_handle::get_icon_type(const slot_setting::slot_type a_type, RE::TESForm*& a_form) {
         auto icon = ui::icon_image_type::icon_default;
         switch (a_type) {
-            case util::selection_type::weapon:
+            case slot_setting::slot_type::weapon:
                 get_icon_for_weapon_type(a_form, icon);
                 break;
-            case util::selection_type::magic:
+            case slot_setting::slot_type::magic:
                 get_icon_for_spell(a_form, icon);
                 break;
-            case util::selection_type::shout:
+            case slot_setting::slot_type::shout:
                 icon = ui::icon_image_type::shout;
                 break;
-            case util::selection_type::power:
+            case slot_setting::slot_type::power:
                 icon = ui::icon_image_type::power;
                 break;
-            case util::selection_type::consumable:
+            case slot_setting::slot_type::consumable:
                 get_icon_for_consumable(a_form, icon);
                 break;
-            case util::selection_type::shield:
+            case slot_setting::slot_type::shield:
                 //kinda useless atm, icon is set by the first setting, basically right hand
                 icon = ui::icon_image_type::shield;
                 break;
-            case util::selection_type::armor:
+            case slot_setting::slot_type::armor:
                 get_icon_for_item(a_form, icon);
                 break;
         }
@@ -322,8 +323,11 @@ namespace handle {
         }
     }
 
-    void page_handle::get_item_count(RE::TESForm*& a_form, int32_t& a_count, const util::selection_type a_type) {
-        if (a_type != util::selection_type::consumable || a_type == util::selection_type::unset || a_form == nullptr) {
+    void page_handle::get_item_count(RE::TESForm*& a_form,
+        int32_t& a_count,
+        const slot_setting::slot_type a_type) {
+        if (a_type != slot_setting::slot_type::consumable || a_type == slot_setting::slot_type::unset ||
+            a_form == nullptr) {
             a_count = 0;
             return;
         }

@@ -4,6 +4,7 @@
 #include "data/data_helper.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
+#include "util/helper.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -119,13 +120,41 @@ namespace handle {
         set_new_item_count(a_obj->GetFormID(), a_obj->GetName(), a_count);
     }
 
+    void set_data::set_single_slot(const uint32_t a_page,
+        const page_setting::position a_pos,
+        const std::vector<data_helper*>& a_data) {
+        //well for now we have to match
+        auto key_pos = key_position::get_singleton();
+        auto hand_equip = slot_setting::hand_equip::total;
+        if (const auto hand = a_data.size(); hand == 1) {
+            hand_equip = slot_setting::hand_equip::both;
+        } else if (hand == 2) {
+            hand_equip = slot_setting::hand_equip::single;
+        }
+        logger::trace("calling init page for page {}, position {} ..."sv, a_page, static_cast<uint32_t>(a_pos));
+        page_handle::get_singleton()->init_page(a_page,
+            a_pos,
+            a_data,
+            config::mcm_setting::get_hud_slot_position_offset(),
+            config::mcm_setting::get_hud_key_position_offset(),
+            hand_equip,
+            config::mcm_setting::get_icon_opacity(),
+            key_pos);
+
+        logger::debug("calling helper to write to file"sv);
+        util::helper::write_setting_helper(a_page,
+            static_cast<uint32_t>(a_pos),
+            a_data,
+            static_cast<uint32_t>(hand_equip));
+    }
+
     void set_data::set_empty_slot(const int a_page, int a_pos, key_position*& a_key_pos) {
         logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;
         const auto item = new data_helper();
         item->form = nullptr;
         item->action_type = slot_setting::acton_type::default_action;
-        item->type = util::selection_type::unset;
+        item->type = slot_setting::slot_type::unset;
         data.push_back(item);
 
         page_handle::get_singleton()->init_page(a_page,
@@ -181,14 +210,14 @@ namespace handle {
 
 
         if (form != nullptr) {
-            const auto type = static_cast<util::selection_type>(a_type);
+            const auto type = static_cast<slot_setting::slot_type>(a_type);
 
-            if (type != util::selection_type::magic && type != util::selection_type::weapon && type !=
-                util::selection_type::shield) {
+            if (type != slot_setting::slot_type::magic && type != slot_setting::slot_type::weapon && type !=
+                slot_setting::slot_type::shield) {
                 hand = slot_setting::hand_equip::total;
             }
 
-            if (type == util::selection_type::shield) {
+            if (type == slot_setting::slot_type::shield) {
                 logger::warn("Equipping shield on the Right hand might fail, or hand will be empty"sv);
             }
 
@@ -211,10 +240,10 @@ namespace handle {
         logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
 
         if (form_left != nullptr) {
-            if (const auto type_left = static_cast<util::selection_type>(a_type_left);
-                (type_left == util::selection_type::magic || type_left ==
-                 util::selection_type::weapon || type_left ==
-                 util::selection_type::shield) && hand == slot_setting::hand_equip::single) {
+            if (const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
+                (type_left == slot_setting::slot_type::magic || type_left ==
+                 slot_setting::slot_type::weapon || type_left ==
+                 slot_setting::slot_type::shield) && hand == slot_setting::hand_equip::single) {
                 logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
                     static_cast<uint32_t>(a_pos),
                     util::string_util::int_to_hex(form_left->GetFormID()),
@@ -250,7 +279,8 @@ namespace handle {
         for (auto pages = page_handle->get_pages(); auto [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
                 for (const auto setting : page_setting->slot_settings) {
-                    if (setting->type == util::selection_type::consumable && setting->form->formID == a_form_id) {
+                    if (setting->type == slot_setting::slot_type::consumable && setting->form->formID ==
+                        a_form_id) {
                         setting->item_count = setting->item_count + a_count;
                         logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
 

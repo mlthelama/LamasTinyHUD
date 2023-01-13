@@ -43,16 +43,16 @@ namespace handle {
             float& offset_x,
             float& offset_y);
 
-        static void get_equip_slots(util::selection_type a_type,
+        static void get_equip_slots(slot_setting::slot_type a_type,
             slot_setting::hand_equip a_hand,
             RE::BGSEquipSlot*& a_slot,
             bool a_left);
 
-        static ui::icon_image_type get_icon_type(util::selection_type a_type, RE::TESForm*& a_form);
+        static ui::icon_image_type get_icon_type(slot_setting::slot_type a_type, RE::TESForm*& a_form);
         static void get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
         static void get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
         static void get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
-        static void get_item_count(RE::TESForm*& a_form, int32_t& a_count, util::selection_type a_type);
+        static void get_item_count(RE::TESForm*& a_form, int32_t& a_count, slot_setting::slot_type a_type);
         static void get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
 
         struct page_handle_data {

@@ -75,6 +75,23 @@
                         "sourceType": "ModSettingInt",
                         "defaultValue": 0
                     }
+                },
+                {
+                    "text": "$LamasTinyHUD_Controls_Config",
+                    "type": "header"
+                },
+                {
+                    "id": "fConfigButtonHoldTime:Controls",
+                    "text": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_InfoText",
+                    "valueOptions": {
+                        "min": 3.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
                 }
             ]
         },
@@ -2106,6 +2123,15 @@
                     "text": "$LamasTinyHUD_MiscSetting_OptionText",
                     "type": "toggle",
                     "help": "$LamasTinyHUD_MiscSetting_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bEmptyHandSetting:MiscSetting",
+                    "text": "$LamasTinyHUD_EmptyHandSetting_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_EmptyHandSetting_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }

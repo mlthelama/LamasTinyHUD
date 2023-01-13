@@ -11,6 +11,7 @@ namespace config {
     static uint32_t left_action_key;
     static uint32_t toggle_key;
     static uint32_t controller_set;
+    static float config_button_hold_time;
 
     static uint32_t top_type;
     static std::string top_selected_item_form;
@@ -95,6 +96,7 @@ namespace config {
     static float toggle_key_offset_y;
 
     static bool action_check;
+    static bool empty_hand_setting;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -110,6 +112,7 @@ namespace config {
             left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 13));
             toggle_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uToggleKey", 27));
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
+            config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
 
             //got more settings, variables, but for now we are ok
             top_type = static_cast<uint32_t>(mcm.GetLongValue("TopPage", "uType", 0));
@@ -226,6 +229,7 @@ namespace config {
                 90));
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", true);
+            empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
         };
 
         read_mcm(mcm_default_setting);
@@ -241,6 +245,7 @@ namespace config {
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
     uint32_t mcm_setting::get_toggle_key() { return toggle_key; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
+    float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }
 
     uint32_t mcm_setting::get_top_type() { return top_type; }
     std::string mcm_setting::get_top_selected_item_form() { return top_selected_item_form; }
@@ -335,5 +340,45 @@ namespace config {
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x; }
     float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y; }
+
     bool mcm_setting::get_action_check() { return action_check; }
+    bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }
+
+    void mcm_setting::write_section_setting(const std::string& a_section,
+        const uint32_t a_type,
+        const std::string& a_form,
+        const uint32_t a_action,
+        const uint32_t a_hand,
+        const uint32_t a_type_left,
+        const std::string& a_form_left,
+        const uint32_t a_action_left) {
+        logger::trace(
+            "writing section {}, type {}, form {}, action {}, hand {}, type_left {}, a_form_left {}, action_left {}"sv,
+            a_section,
+            a_type,
+            a_form,
+            a_action,
+            a_hand,
+            a_type_left,
+            a_form_left,
+            a_action_left);
+
+        const auto section = a_section.c_str();
+
+        CSimpleIniA ini;
+        ini.SetUnicode();
+        ini.LoadFile(mcm_config_setting);
+
+        ini.Delete(section, nullptr);
+
+        ini.SetLongValue(section, "uType", a_type);
+        ini.SetValue(section, "sSelectedItemForm", a_form.c_str());
+        ini.SetLongValue(section, "uSlotAction", a_action);
+        ini.SetLongValue(section, "uHandSelection", a_hand);
+        ini.SetLongValue(section, "uTypeLeft", a_type_left);
+        ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
+        ini.SetLongValue(section, "uSlotActionLeft", a_action_left);
+
+        (void)ini.SaveFile(mcm_config_setting);
+    }
 }

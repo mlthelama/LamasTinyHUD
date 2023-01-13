@@ -11,6 +11,7 @@ namespace config {
         static uint32_t get_left_action_key();
         static uint32_t get_toggle_key();
         static uint32_t get_controller_set();
+        static float get_config_button_hold_time();
 
         static uint32_t get_top_type();
         static std::string get_top_selected_item_form();
@@ -95,5 +96,15 @@ namespace config {
         static float get_toggle_key_offset_y();
 
         static bool get_action_check();
+        static bool get_empty_hand_setting();
+
+        static void write_section_setting(const std::string& a_section,
+            uint32_t a_type,
+            const std::string& a_form,
+            uint32_t a_action,
+            uint32_t a_hand,
+            uint32_t a_type_left,
+            const std::string& a_form_left,
+            uint32_t a_action_left);
     };
 }

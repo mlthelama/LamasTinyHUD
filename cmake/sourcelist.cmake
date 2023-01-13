@@ -14,11 +14,15 @@ set(sources ${sources}
 	src/equip/magic/shout.h
 	src/equip/magic/spell.cpp
 	src/equip/magic/spell.h
+	src/event/equip_event.cpp
+	src/event/equip_event.h
 	src/event/key_manager.cpp
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
 	src/handle/data/data_helper.h
+	src/handle/edit_handle.cpp
+	src/handle/edit_handle.h
 	src/handle/key_position.cpp
 	src/handle/key_position.h
 	src/handle/page/fade_setting.h
@@ -45,6 +49,8 @@ set(sources ${sources}
 	src/ui/ui_renderer.cpp
 	src/ui/ui_renderer.h
 	src/util/constant.h
+	src/util/helper.cpp
+	src/util/helper.h
 	src/util/offset.h
 	src/util/string_util.h
 )

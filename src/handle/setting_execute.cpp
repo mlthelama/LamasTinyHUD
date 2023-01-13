@@ -1,6 +1,7 @@
 ﻿#include "setting_execute.h"
 #include "key_position.h"
 #include "page_handle.h"
+#include "equip/equip_slot.h"
 #include "equip/item/potion.h"
 #include "equip/item/weapon.h"
 #include "equip/magic/power.h"
@@ -15,16 +16,30 @@ namespace handle {
     void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
         logger::trace("got {} settings execute"sv, a_slots.size());
         auto player = RE::PlayerCharacter::GetSingleton();
+        std::vector<RE::BGSEquipSlot*> unequip;
         for (auto slot : a_slots) {
-            if (slot->form == nullptr || slot->type == util::selection_type::unset) {
+            //TODO allow nullptr if we have unequip action
+            if (slot->form == nullptr && slot->type == slot_setting::slot_type::unset && slot->action ==
+                slot_setting::acton_type::unequip && mcm::get_empty_hand_setting()) {
+                //needs to be done after the slot
+                unequip.push_back(slot->equip_slot);
+            }
+            if (slot->form == nullptr || slot->type == slot_setting::slot_type::unset) {
                 logger::warn("form is null, skipping."sv);
                 continue;
             }
-            logger::trace("executing setting for type {}, action {}, form {} ..."sv,
+            logger::trace("executing setting for type {}, action {}, form {}, left {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),
-                util::string_util::int_to_hex(slot->form->GetFormID()));
+                util::string_util::int_to_hex(slot->form->GetFormID()),
+                slot->equip_slot == item::equip_slot::get_left_hand_slot());
             execute_setting(slot, player);
+        }
+
+        if (!unequip.empty()) {
+            for (const auto slot : unequip) {
+                item::equip_slot::unequip_hand(slot, player);
+            }
         }
     }
 
@@ -51,28 +66,28 @@ namespace handle {
 
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
-            case util::selection_type::unset:
+            case slot_setting::slot_type::unset:
                 logger::warn("nothing to do, nothing set"sv);
                 break;
-            case util::selection_type::consumable:
+            case slot_setting::slot_type::consumable:
                 item::potion::consume_potion(a_slot, a_player);
                 break;
-            case util::selection_type::magic:
+            case slot_setting::slot_type::magic:
                 magic::spell::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot, a_player);
                 break;
-            case util::selection_type::shout:
+            case slot_setting::slot_type::shout:
                 magic::shout::equip_shout(a_slot->form, a_player);
                 break;
-            case util::selection_type::power:
+            case slot_setting::slot_type::power:
                 magic::power::equip_or_cast_power(a_slot->form, a_slot->action, a_player);
                 break;
-            case util::selection_type::weapon:
+            case slot_setting::slot_type::weapon:
                 item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player);
                 break;
-            case util::selection_type::shield:
+            case slot_setting::slot_type::shield:
                 item::weapon::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player, false);
                 break;
-            case util::selection_type::armor:
+            case slot_setting::slot_type::armor:
                 item::weapon::equip_armor(a_slot->form, a_player);
                 break;
         }

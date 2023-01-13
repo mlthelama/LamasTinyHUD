@@ -1,7 +1,8 @@
 ﻿#include "key_manager.h"
-
+#include "handle/edit_handle.h"
 #include "handle/page_handle.h"
 #include "handle/setting_execute.h"
+#include "handle/set_data.h"
 #include "setting/mcm_setting.h"
 
 namespace event {
@@ -107,6 +108,28 @@ namespace event {
                 logger::trace("done setting fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
             }*/
 
+
+            if (button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time() && (
+                    key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
+                    || key_ == key_left_action_)) {
+                if (RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+                    break;
+                }
+
+                const auto edit_handle = handle::edit_handle::get_singleton();
+                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ == k_invalid) {
+                    logger::debug("configured key ({}) is held, enter edit mode"sv, key_);
+                    edit_handle->init_edit(page_setting->pos);
+                    const auto message = fmt::format("Entered Edit Mode for Position {}"sv,
+                        static_cast<uint32_t>(page_setting->pos));
+                    RE::DebugNotification(message.c_str());
+                    edit_active_ = key_;
+                    break;
+                }
+            }
+
+
             if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
                                      || key_ == key_left_action_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
@@ -136,17 +159,49 @@ namespace event {
                 continue;
             }
 
-            if (is_key_valid(key_toggle_) && key_ == key_toggle_) {
+            if (button->IsPressed() && is_key_valid(key_toggle_) && key_ == key_toggle_) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
-                //get_next_page_id
                 const auto handler = handle::page_handle::get_singleton();
                 handler->set_active_page(handler->get_next_page_id());
+
+                if (edit_active_ != k_invalid) {
+                    //remove everything
+                    edit_active_ = k_invalid;
+                    handle::edit_handle::get_singleton()->init_edit(handle::page_setting::position::total);
+                }
             }
 
-            if (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_ || key_ ==
-                key_left_action_) {
+            if (button->IsPressed() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ ==
+                                        key_bottom_action_ || key_ == key_left_action_)) {
                 logger::debug("configured Key ({}) pressed"sv, key_);
+
+                const auto edit_handle = handle::edit_handle::get_singleton();
                 const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                auto edit_page = edit_handle->get_page();
+                auto edit_position = edit_handle->get_position();
+                if (const auto page_handle = handle::page_handle::get_singleton();
+                    edit_position == page_setting->pos && edit_page == page_handle->
+                    get_active_page_id() && key_ == edit_active_) {
+                    const auto message = fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
+                        static_cast<uint32_t>(page_setting->pos));
+                    RE::DebugNotification(message.c_str());
+
+                    const auto edit_data = edit_handle->get_hold_data();
+                    logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
+                        edit_page,
+                        static_cast<uint32_t>(edit_position),
+                        edit_data.size());
+
+                    handle::set_data::set_single_slot(edit_page,
+                        edit_position,
+                        edit_data);
+
+                    //remove everything
+                    edit_active_ = k_invalid;
+                    edit_handle->init_edit(handle::page_setting::position::total);
+                    break;
+                }
+
                 if (page_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;

@@ -27,9 +27,11 @@ namespace item {
             potential_items = inventory::get_inventory_armor_items(a_player);
         }
 
+        auto item_count = 0;
         for (const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
+                item_count = num_items;
                 break;
             }
         }
@@ -39,14 +41,28 @@ namespace item {
             //update ui in this case
             return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(left);
-            equipped_object && equipped_object->formID == obj->formID) {
+        auto equipped_count = 0;
+        const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+        const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+        if (obj_right && obj_right->formID == obj->formID) {
+            equipped_count++;
             logger::debug("Object {} already equipped. return."sv, obj->GetName());
-            return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(left);
-            equipped_object && equipped_object->formID == obj->formID) {
+
+        if (obj_left && obj_left->formID == obj->formID) {
+            equipped_count++;
             logger::debug("Object {} already equipped. return."sv, obj->GetName());
+        }
+
+        logger::trace("Got a count of {} in the Inventory {}, Equipped {}"sv,
+            obj->GetName(),
+            item_count,
+            equipped_count);
+        if (item_count == equipped_count) {
+            //all we have are already equipped
+            logger::warn("All Items we have of {} are equipped, return."sv, obj->GetName());
+            //try to prevent the game to equip something else
+            equip_slot::unequip_hand(a_slot, a_player);
             return;
         }
 

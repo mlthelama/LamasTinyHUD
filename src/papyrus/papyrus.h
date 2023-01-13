@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "util/constant.h"
+#include "handle/page/slot_setting.h"
 
 namespace papyrus {
     class hud_mcm {
@@ -23,7 +23,7 @@ namespace papyrus {
         inline static auto weapon_data_list_ = new std::vector<RE::InventoryEntryData>;
         inline static auto shield_data_list_ = new std::vector<RE::InventoryEntryData>;
         inline static auto item_data_list_ = new std::vector<RE::InventoryEntryData>;
-        inline static util::selection_type index_ = util::selection_type::unset;
+        inline static handle::slot_setting::slot_type index_ = handle::slot_setting::slot_type::unset;
 
         static void clear_list();
         static bool is_size_ok(uint32_t a_idx, uint64_t a_size);

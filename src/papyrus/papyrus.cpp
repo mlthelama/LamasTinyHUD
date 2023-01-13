@@ -7,6 +7,7 @@
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/constant.h"
+#include "util/helper.h"
 #include "util/string_util.h"
 
 namespace papyrus {
@@ -18,7 +19,7 @@ namespace papyrus {
         config::mcm_setting::read_setting();
         handle::set_data::set_slot_data();
 
-        index_ = util::selection_type::unset;
+        index_ = handle::slot_setting::slot_type::unset;
         clear_list();
         logger::debug("on config close done. return."sv);
     }
@@ -33,10 +34,10 @@ namespace papyrus {
         clear_list();
         //let the list be valid until it is refreshed again, might be an issue with magic and weapon
 
-        index_ = static_cast<util::selection_type>(a_id);
+        index_ = static_cast<handle::slot_setting::slot_type>(a_id);
         auto player = RE::PlayerCharacter::GetSingleton();
 
-        if (index_ == util::selection_type::consumable) {
+        if (index_ == handle::slot_setting::slot_type::consumable) {
             inventory_data_list_->clear();
             //maybe add a check if it is a potion
             for (auto potential_items = item::inventory::get_inventory_magic_items(player);
@@ -51,7 +52,7 @@ namespace papyrus {
                 }
             }
             logger::trace("potion list is size {}"sv, inventory_data_list_->size());
-        } else if (index_ == util::selection_type::magic) {
+        } else if (index_ == handle::slot_setting::slot_type::magic) {
             inventory_data_list_->clear();
             //add filter for casting
             for (const auto spell_list = magic::spell::get_spells(a_instant_cast, a_both); const auto spell :
@@ -62,19 +63,19 @@ namespace papyrus {
                     spell_data_list_->push_back(spell);
                 }
             }
-        } else if (index_ == util::selection_type::shout) {
+        } else if (index_ == handle::slot_setting::slot_type::shout) {
             shout_data_list_->clear();
             for (const auto shout_list = magic::shout::get_shouts(); const auto shout : shout_list) {
                 display_string_list->push_back(shout->GetName());
                 shout_data_list_->push_back(shout);
             }
-        } else if (index_ == util::selection_type::power) {
+        } else if (index_ == handle::slot_setting::slot_type::power) {
             power_data_list_->clear();
             for (const auto power_list = magic::power::get_powers(); const auto power : power_list) {
                 display_string_list->push_back(power->GetName());
                 power_data_list_->push_back(power);
             }
-        } else if (index_ == util::selection_type::weapon) {
+        } else if (index_ == handle::slot_setting::slot_type::weapon) {
             weapon_data_list_->clear();
             auto is_two_handed = false;
             for (auto potential_weapons = item::inventory::get_inventory_weapon_items(player);
@@ -103,7 +104,7 @@ namespace papyrus {
                 }
             }
             logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
-        } else if (index_ == util::selection_type::shield) {
+        } else if (index_ == handle::slot_setting::slot_type::shield) {
             shield_data_list_->clear();
             for (auto potential_items = item::inventory::get_inventory_armor_items(player);
                  const auto& [item, inv_data] : potential_items) {
@@ -117,7 +118,7 @@ namespace papyrus {
                 }
             }
             logger::trace("shield list is size {}"sv, shield_data_list_->size());
-        } else if (index_ == util::selection_type::armor) {
+        } else if (index_ == handle::slot_setting::slot_type::armor) {
             item_data_list_->clear();
             for (auto potential_items = item::inventory::get_inventory_armor_items(player);
                  const auto& [item, inv_data] : potential_items) {
@@ -152,45 +153,45 @@ namespace papyrus {
 
         RE::FormID form_id = 0;
 
-        if (index_ == util::selection_type::consumable && !inventory_data_list_->empty()) {
+        if (index_ == handle::slot_setting::slot_type::consumable && !inventory_data_list_->empty()) {
             logger::trace("Vector got a size of {}"sv, inventory_data_list_->size());
             if (is_size_ok(a_index, inventory_data_list_->size())) {
                 const auto item = inventory_data_list_->at(a_index);
                 const RE::TESBoundObject* item_obj = item.object;
                 form_id = item_obj->GetFormID();
             }
-        } else if (index_ == util::selection_type::magic && !spell_data_list_->empty()) {
+        } else if (index_ == handle::slot_setting::slot_type::magic && !spell_data_list_->empty()) {
             logger::trace("Vector got a size of {}"sv, spell_data_list_->size());
             if (is_size_ok(a_index, spell_data_list_->size())) {
                 const auto spell = spell_data_list_->at(a_index);
                 form_id = spell->GetFormID();
             }
-        } else if (index_ == util::selection_type::shout && !shout_data_list_->empty()) {
+        } else if (index_ == handle::slot_setting::slot_type::shout && !shout_data_list_->empty()) {
             logger::trace("Vector got a size of {}"sv, shout_data_list_->size());
             if (is_size_ok(a_index, shout_data_list_->size())) {
                 const auto shout = shout_data_list_->at(a_index);
                 form_id = shout->GetFormID();
             }
-        } else if (index_ == util::selection_type::power && !power_data_list_->empty()) {
+        } else if (index_ == handle::slot_setting::slot_type::power && !power_data_list_->empty()) {
             logger::trace("Vector got a size of {}"sv, power_data_list_->size());
             if (is_size_ok(a_index, power_data_list_->size())) {
                 const auto power = power_data_list_->at(a_index);
                 form_id = power->GetFormID();
             }
-        } else if (index_ == util::selection_type::weapon && !weapon_data_list_->empty()) {
+        } else if (index_ == handle::slot_setting::slot_type::weapon && !weapon_data_list_->empty()) {
             logger::trace("Vector got a size of {}"sv, weapon_data_list_->size());
             if (is_size_ok(a_index, weapon_data_list_->size())) {
                 const auto item = weapon_data_list_->at(a_index);
                 const RE::TESBoundObject* item_obj = item.object;
                 form_id = item_obj->GetFormID();
             }
-        } else if (index_ == util::selection_type::shield && !shield_data_list_->empty()) {
+        } else if (index_ == handle::slot_setting::slot_type::shield && !shield_data_list_->empty()) {
             if (is_size_ok(a_index, shield_data_list_->size())) {
                 const auto item = shield_data_list_->at(a_index);
                 const RE::TESBoundObject* item_obj = item.object;
                 form_id = item_obj->GetFormID();
             }
-        } else if (index_ == util::selection_type::armor && !item_data_list_->empty()) {
+        } else if (index_ == handle::slot_setting::slot_type::armor && !item_data_list_->empty()) {
             if (is_size_ok(a_index, item_data_list_->size())) {
                 const auto item = item_data_list_->at(a_index);
                 const RE::TESBoundObject* item_obj = item.object;
@@ -198,40 +199,7 @@ namespace papyrus {
             }
         }
 
-        std::string form_string;
-        if (form_id == 0) {
-            return form_string;
-        }
-
-        const auto form = RE::TESForm::LookupByID(form_id);
-        logger::trace("Item is {}, formid {}, formid not translated {}. return."sv,
-            form->GetName(),
-            util::string_util::int_to_hex(form->GetFormID()),
-            form->GetFormID());
-
-
-        if (form->IsDynamicForm()) {
-            form_string = fmt::format("{}{}{}",
-                util::dynamic_name,
-                util::delimiter,
-                util::string_util::int_to_hex(form->GetFormID()));
-        } else {
-            //it is not, search for the file it is from
-            auto source_file = form->sourceFiles.array->front()->fileName;
-            auto local_form = form->GetLocalFormID();
-
-            logger::info("form is from {}, local id is {}, translated {}"sv,
-                source_file,
-                local_form,
-                util::string_util::int_to_hex(local_form));
-
-            form_string = fmt::format("{}{}{}",
-                source_file,
-                util::delimiter,
-                util::string_util::int_to_hex(local_form));
-        }
-
-        return form_string;
+        return util::helper::get_mod_and_form(form_id);
     }
 
 

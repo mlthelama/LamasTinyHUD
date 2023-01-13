@@ -9,5 +9,6 @@ namespace item {
         static bool unequip_if_equipped(RE::TESBoundObject*& a_obj,
             RE::PlayerCharacter*& a_player,
             RE::ActorEquipManager*& a_actor_equip_manager);
+        static void unequip_hand(const RE::BGSEquipSlot* a_slot, RE::PlayerCharacter*& a_player);
     };
 }
