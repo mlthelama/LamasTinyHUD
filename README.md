@@ -41,6 +41,9 @@ Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to 
 * Before, equipping, casting or consuming something, there is a check if the player has the item/spell.
 * If a consumable hits 0, it will not be removed. The plugin checks, the bound Item has been looted, bought or dropped.
 
+## Nexusmods
+* [ LamasTinyHUD](https://www.nexusmods.com/skyrimspecialedition/mods/82545)
+
 ## End User Dependencies
 * [SKSE64](https://skse.silverlock.org/)
 * [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
