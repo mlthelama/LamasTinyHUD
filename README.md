@@ -54,6 +54,7 @@ Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to 
 * [imgui](https://github.com/ocornut/imgui) (for displaying ui elements)
 * [vcpkg](https://github.com/microsoft/vcpkg) 
   - Add the environment variable `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
+  - used commit hash `01b29f6d8212bc845da64773b18665d682f5ab66`
 * [cmake](https://cmake.org) 
   - installed dir needs to be added to the `PATH` environment variable
 * [python](https://www.python.org/downloads/)
