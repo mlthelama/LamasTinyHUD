@@ -2,6 +2,7 @@
 #include "key_position.h"
 #include "page_handle.h"
 #include "data/data_helper.h"
+#include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
@@ -9,8 +10,9 @@
 
 namespace handle {
     using mcm = config::mcm_setting;
+    using custom = config::custom_setting;
 
-    void set_data::set_slot_data() {
+    void set_data::read_and_set_data() {
         logger::trace("Setting handlers ..."sv);
 
         auto key_pos = key_position::get_singleton();
@@ -24,95 +26,20 @@ namespace handle {
         }
 
         logger::trace("continue with overwriting data from configuration ..."sv);
+        custom::read_setting();
 
-        set_slot(0,
-            page_setting::position::top,
-            mcm::get_top_selected_item_form(),
-            mcm::get_top_type(),
-            mcm::get_top_hand_selection(),
-            mcm::get_top_slot_action(),
-            mcm::get_top_selected_item_form_left(),
-            mcm::get_top_type_left(),
-            mcm::get_top_slot_action_left(),
-            key_pos);
-
-        set_slot(0,
-            page_setting::position::right,
-            mcm::get_right_selected_item_form(),
-            mcm::get_right_type(),
-            mcm::get_right_hand_selection(),
-            mcm::get_right_slot_action(),
-            mcm::get_right_selected_item_form_left(),
-            mcm::get_right_type_left(),
-            mcm::get_right_slot_action_left(),
-            key_pos);
-
-        set_slot(0,
-            page_setting::position::bottom,
-            mcm::get_bottom_selected_item_form(),
-            mcm::get_bottom_type(),
-            mcm::get_bottom_hand_selection(),
-            mcm::get_bottom_slot_action(),
-            mcm::get_bottom_selected_item_form_left(),
-            mcm::get_bottom_type_left(),
-            mcm::get_bottom_slot_action_left(),
-            key_pos);
-
-        set_slot(0,
-            page_setting::position::left,
-            mcm::get_left_selected_item_form(),
-            mcm::get_left_type(),
-            mcm::get_left_hand_selection(),
-            mcm::get_left_slot_action(),
-            mcm::get_left_selected_item_form_left(),
-            mcm::get_left_type_left(),
-            mcm::get_left_slot_action_left(),
-            key_pos);
-
-        set_slot(1,
-            page_setting::position::top,
-            mcm::get_top_selected_item_form_page_one(),
-            mcm::get_top_type_page_one(),
-            mcm::get_top_hand_selection_page_one(),
-            mcm::get_top_slot_action_page_one(),
-            mcm::get_top_selected_item_form_left_page_one(),
-            mcm::get_top_type_left_page_one(),
-            mcm::get_top_slot_action_left_page_one(),
-            key_pos);
-
-        set_slot(1,
-            page_setting::position::right,
-            mcm::get_right_selected_item_form_page_one(),
-            mcm::get_right_type_page_one(),
-            mcm::get_right_hand_selection_page_one(),
-            mcm::get_right_slot_action_page_one(),
-            mcm::get_right_selected_item_form_left_page_one(),
-            mcm::get_right_type_left_page_one(),
-            mcm::get_right_slot_action_left_page_one(),
-            key_pos);
-
-        set_slot(1,
-            page_setting::position::bottom,
-            mcm::get_bottom_selected_item_form_page_one(),
-            mcm::get_bottom_type_page_one(),
-            mcm::get_bottom_hand_selection_page_one(),
-            mcm::get_bottom_slot_action_page_one(),
-            mcm::get_bottom_selected_item_form_left_page_one(),
-            mcm::get_bottom_type_left_page_one(),
-            mcm::get_bottom_slot_action_left_page_one(),
-            key_pos);
-
-        set_slot(1,
-            page_setting::position::left,
-            mcm::get_left_selected_item_form_page_one(),
-            mcm::get_left_type_page_one(),
-            mcm::get_left_hand_selection_page_one(),
-            mcm::get_left_slot_action_page_one(),
-            mcm::get_left_selected_item_form_left_page_one(),
-            mcm::get_left_type_left_page_one(),
-            mcm::get_left_slot_action_left_page_one(),
-            key_pos);
-
+        for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
+            set_slot(custom::get_page_by_section(section),
+                static_cast<page_setting::position>(custom::get_position_by_section(section)),
+                custom::get_item_form_by_section(section),
+                custom::get_type_by_section(section),
+                custom::get_hand_selection_by_section(section),
+                custom::get_slot_action_by_section(section),
+                custom::get_item_form_left_by_section(section),
+                custom::get_type_left_by_section(section),
+                custom::get_slot_action_left_by_section(section),
+                key_pos);
+        }
         logger::trace("done setting. return."sv);
     }
 
@@ -177,8 +104,8 @@ namespace handle {
         uint32_t a_type_left,
         const uint32_t a_action_left,
         key_position*& a_key_pos) {
-        const auto form = get_form_from_mod_id_string(a_form);
-        const auto form_left = get_form_from_mod_id_string(a_form_left);
+        const auto form = util::helper::get_form_from_mod_id_string(a_form);
+        const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
         if (form == nullptr && form_left == nullptr) return;
 
@@ -289,39 +216,5 @@ namespace handle {
                 }
             }
         }
-    }
-
-    RE::TESForm* set_data::get_form_from_mod_id_string(const std::string& a_str) {
-        if (!a_str.find(util::delimiter)) {
-            return nullptr;
-        }
-        RE::TESForm* form;
-
-        std::istringstream string_stream{ a_str };
-        std::string plugin, id;
-
-        std::getline(string_stream, plugin, *util::delimiter);
-        std::getline(string_stream, id);
-        RE::FormID form_id;
-        std::istringstream(id) >> std::hex >> form_id;
-
-        if (plugin.empty()) {
-            return nullptr;
-        }
-
-        if (plugin == util::dynamic_name) {
-            form = RE::TESForm::LookupByID(form_id);
-        } else {
-            logger::trace("checking mod {} for form {}"sv, plugin, form_id);
-
-            const auto data_handler = RE::TESDataHandler::GetSingleton();
-            form = data_handler->LookupForm(form_id, plugin);
-        }
-
-        if (form != nullptr) {
-            logger::trace("got form id {}, name {}", util::string_util::int_to_hex(form->GetFormID()), form->GetName());
-        }
-
-        return form;
     }
 }

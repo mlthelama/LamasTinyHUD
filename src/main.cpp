@@ -1,9 +1,9 @@
 #include "hook/hook.h"
 #include "papyrus/papyrus.h"
 #include "setting/file_setting.h"
-#include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/constant.h"
+#include "util/helper.h"
 
 void init_logger() {
     if (static bool initialized = false; !initialized) {
@@ -39,8 +39,7 @@ void init_logger() {
         logger::info("{} v{}"sv, Version::PROJECT, Version::NAME);
 
         try {
-            config::file_setting::load_setting();
-            config::mcm_setting::read_setting();
+            util::helper::read_configs();
         } catch (const std::exception& e) {
             logger::warn("failed to load setting {}"sv, e.what());
         }
@@ -105,8 +104,8 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) constinit auto SKSEPlugin_Versio
     v.PluginVersion({ Version::MAJOR, Version::MINOR, Version::PATCH, Version::BETA });
     v.UsesAddressLibrary(true);
     v.CompatibleVersions({ SKSE::RUNTIME_SSE_LATEST });
-    v.UsesStructsPost629(true);
-    v.UsesNoStructs(true);
+    v.UsesStructsPost629();
+    v.UsesNoStructs();
     return v;
 }();
 

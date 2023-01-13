@@ -1,205 +1,20 @@
 ﻿#include "papyrus.h"
 #include "handle/set_data.h"
-#include "equip/item/inventory.h"
-#include "equip/magic/power.h"
-#include "equip/magic/shout.h"
-#include "equip/magic/spell.h"
+#include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
-#include "util/constant.h"
 #include "util/helper.h"
 #include "util/string_util.h"
 
 namespace papyrus {
     static const char* mcm_name = "LamasTinyHUD_MCM";
 
-
     void hud_mcm::on_config_close(RE::TESQuest*) {
         logger::info("on config close"sv);
         config::mcm_setting::read_setting();
-        handle::set_data::set_slot_data();
+        handle::set_data::read_and_set_data();
 
-        index_ = handle::slot_setting::slot_type::unset;
-        clear_list();
         logger::debug("on config close done. return."sv);
-    }
-
-    std::vector<RE::BSFixedString> hud_mcm::get_selected_options(RE::TESQuest*,
-        uint32_t a_id,
-        bool a_both,
-        bool a_instant_cast) {
-        logger::info("Got refresh for id {}, both hands {}, instant {}"sv, a_id, a_both, a_instant_cast);
-        std::vector<RE::BSFixedString> empty_string_vec = { util::empty_enum_string };
-        const auto display_string_list = new std::vector<RE::BSFixedString>;
-        clear_list();
-        //let the list be valid until it is refreshed again, might be an issue with magic and weapon
-
-        index_ = static_cast<handle::slot_setting::slot_type>(a_id);
-        auto player = RE::PlayerCharacter::GetSingleton();
-
-        if (index_ == handle::slot_setting::slot_type::consumable) {
-            inventory_data_list_->clear();
-            //maybe add a check if it is a potion
-            for (auto potential_items = item::inventory::get_inventory_magic_items(player);
-                 const auto& [item, inv_data] : potential_items) {
-                //just consider favored items
-                const auto& [num_items, entry] = inv_data;
-                if (inv_data.second->IsFavorited()) {
-                    logger::trace("Item name {}, count {}"sv, entry->GetDisplayName(), num_items);
-                    inventory_data_list_->push_back(*inv_data.second);
-                    display_string_list->push_back(
-                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
-                }
-            }
-            logger::trace("potion list is size {}"sv, inventory_data_list_->size());
-        } else if (index_ == handle::slot_setting::slot_type::magic) {
-            inventory_data_list_->clear();
-            //add filter for casting
-            for (const auto spell_list = magic::spell::get_spells(a_instant_cast, a_both); const auto spell :
-                 spell_list) {
-                if (const auto is_two_handed = spell->As<RE::SpellItem>()->IsTwoHanded();
-                    (is_two_handed && !a_both) || (!is_two_handed && a_both)) {
-                    display_string_list->push_back(spell->GetName());
-                    spell_data_list_->push_back(spell);
-                }
-            }
-        } else if (index_ == handle::slot_setting::slot_type::shout) {
-            shout_data_list_->clear();
-            for (const auto shout_list = magic::shout::get_shouts(); const auto shout : shout_list) {
-                display_string_list->push_back(shout->GetName());
-                shout_data_list_->push_back(shout);
-            }
-        } else if (index_ == handle::slot_setting::slot_type::power) {
-            power_data_list_->clear();
-            for (const auto power_list = magic::power::get_powers(); const auto power : power_list) {
-                display_string_list->push_back(power->GetName());
-                power_data_list_->push_back(power);
-            }
-        } else if (index_ == handle::slot_setting::slot_type::weapon) {
-            weapon_data_list_->clear();
-            auto is_two_handed = false;
-            for (auto potential_weapons = item::inventory::get_inventory_weapon_items(player);
-                 const auto& [item, inv_data] : potential_weapons) {
-                //just consider favored items
-                const auto& [num_items, entry] = inv_data;
-                if (inv_data.second->IsFavorited()) {
-                    is_two_handed = false;
-                    if (const auto object_weapon = item->As<RE::TESObjectWEAP>();
-                        object_weapon->IsBow() || object_weapon->IsCrossbow() || object_weapon->
-                        IsTwoHandedAxe() || object_weapon->IsTwoHandedSword()) {
-                        is_two_handed = true;
-                    }
-                    logger::trace("Weapon name {}, two handed {}, setting {}, count {}"sv,
-                        entry->GetDisplayName(),
-                        is_two_handed,
-                        a_both,
-                        num_items);
-
-                    if ((is_two_handed && !a_both) || (!is_two_handed && a_both)) {
-                        weapon_data_list_->push_back(*inv_data.second);
-                        display_string_list->push_back(
-                            RE::BSFixedString{
-                                fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
-                    }
-                }
-            }
-            logger::trace("weapon list is size {}"sv, weapon_data_list_->size());
-        } else if (index_ == handle::slot_setting::slot_type::shield) {
-            shield_data_list_->clear();
-            for (auto potential_items = item::inventory::get_inventory_armor_items(player);
-                 const auto& [item, inv_data] : potential_items) {
-                //just consider favored items
-                const auto& [num_items, entry] = inv_data;
-                if (inv_data.second->IsFavorited() && item->As<RE::TESObjectARMO>()->IsShield()) {
-                    logger::trace("Item name {}, count {}"sv, entry->GetDisplayName(), num_items);
-                    shield_data_list_->push_back(*inv_data.second);
-                    display_string_list->push_back(
-                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
-                }
-            }
-            logger::trace("shield list is size {}"sv, shield_data_list_->size());
-        } else if (index_ == handle::slot_setting::slot_type::armor) {
-            item_data_list_->clear();
-            for (auto potential_items = item::inventory::get_inventory_armor_items(player);
-                 const auto& [item, inv_data] : potential_items) {
-                //just consider favored items
-                const auto& [num_items, entry] = inv_data;
-                if (inv_data.second->IsFavorited() && !item->As<RE::TESObjectARMO>()->IsShield()) {
-                    logger::trace("Item name {}, count {}"sv, entry->GetDisplayName(), num_items);
-                    item_data_list_->push_back(*inv_data.second);
-                    display_string_list->push_back(
-                        RE::BSFixedString{ fmt::format(FMT_STRING("{} ({})"), entry->GetDisplayName(), num_items) });
-                }
-            }
-            logger::trace("shield list is size {}"sv, item_data_list_->size());
-        } else {
-            logger::warn("Selected type {} not supported"sv, a_id);
-        }
-
-        if (display_string_list->empty()) {
-            logger::debug("display list is empty for id {}. return."sv, a_id);
-            return empty_string_vec;
-        }
-
-        logger::debug("got list for id {}, both hands {}, size is {}. return."sv,
-            a_id,
-            a_both,
-            display_string_list->size());
-        return *display_string_list;
-    }
-
-    RE::BSFixedString hud_mcm::get_form_id_for_selection(RE::TESQuest*, uint32_t a_index) {
-        logger::trace("Got Index {}, Search for Item for type {}"sv, a_index, static_cast<uint32_t>(index_));
-
-        RE::FormID form_id = 0;
-
-        if (index_ == handle::slot_setting::slot_type::consumable && !inventory_data_list_->empty()) {
-            logger::trace("Vector got a size of {}"sv, inventory_data_list_->size());
-            if (is_size_ok(a_index, inventory_data_list_->size())) {
-                const auto item = inventory_data_list_->at(a_index);
-                const RE::TESBoundObject* item_obj = item.object;
-                form_id = item_obj->GetFormID();
-            }
-        } else if (index_ == handle::slot_setting::slot_type::magic && !spell_data_list_->empty()) {
-            logger::trace("Vector got a size of {}"sv, spell_data_list_->size());
-            if (is_size_ok(a_index, spell_data_list_->size())) {
-                const auto spell = spell_data_list_->at(a_index);
-                form_id = spell->GetFormID();
-            }
-        } else if (index_ == handle::slot_setting::slot_type::shout && !shout_data_list_->empty()) {
-            logger::trace("Vector got a size of {}"sv, shout_data_list_->size());
-            if (is_size_ok(a_index, shout_data_list_->size())) {
-                const auto shout = shout_data_list_->at(a_index);
-                form_id = shout->GetFormID();
-            }
-        } else if (index_ == handle::slot_setting::slot_type::power && !power_data_list_->empty()) {
-            logger::trace("Vector got a size of {}"sv, power_data_list_->size());
-            if (is_size_ok(a_index, power_data_list_->size())) {
-                const auto power = power_data_list_->at(a_index);
-                form_id = power->GetFormID();
-            }
-        } else if (index_ == handle::slot_setting::slot_type::weapon && !weapon_data_list_->empty()) {
-            logger::trace("Vector got a size of {}"sv, weapon_data_list_->size());
-            if (is_size_ok(a_index, weapon_data_list_->size())) {
-                const auto item = weapon_data_list_->at(a_index);
-                const RE::TESBoundObject* item_obj = item.object;
-                form_id = item_obj->GetFormID();
-            }
-        } else if (index_ == handle::slot_setting::slot_type::shield && !shield_data_list_->empty()) {
-            if (is_size_ok(a_index, shield_data_list_->size())) {
-                const auto item = shield_data_list_->at(a_index);
-                const RE::TESBoundObject* item_obj = item.object;
-                form_id = item_obj->GetFormID();
-            }
-        } else if (index_ == handle::slot_setting::slot_type::armor && !item_data_list_->empty()) {
-            if (is_size_ok(a_index, item_data_list_->size())) {
-                const auto item = item_data_list_->at(a_index);
-                const RE::TESBoundObject* item_obj = item.object;
-                form_id = item_obj->GetFormID();
-            }
-        }
-
-        return util::helper::get_mod_and_form(form_id);
     }
 
 
@@ -212,25 +27,137 @@ namespace papyrus {
         return fmt::format(FMT_STRING("{:.2f}"), ui::ui_renderer::get_resolution_height());
     }
 
+    std::vector<RE::BSFixedString> hud_mcm::get_section_names(RE::TESQuest*) {
+        const auto sections = util::helper::get_configured_section_page_names();
+        std::vector<RE::BSFixedString> sections_bs_string;
+        for (auto section : sections) {
+            sections_bs_string.push_back(section);
+        }
+        logger::trace("Returning {} sections"sv, sections_bs_string.size());
+        return sections_bs_string;
+    }
+
+    RE::BSFixedString hud_mcm::get_page(RE::TESQuest*, const uint32_t a_index) {
+        logger::trace("page was requsted for index {}"sv, a_index);
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            return std::to_string(config::custom_setting::get_page_by_section(section));
+        }
+        return "";
+    }
+
+    RE::BSFixedString hud_mcm::get_position(RE::TESQuest*, const uint32_t a_index) {
+        logger::trace("position was requsted for index {}"sv, a_index);
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            return std::to_string(config::custom_setting::get_position_by_section(section));
+        }
+        return "";
+    }
+
+    uint32_t hud_mcm::get_selection_type(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
+        auto type = 0;
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            if (a_left) {
+                type = config::custom_setting::get_type_left_by_section(section);
+            } else {
+                type = config::custom_setting::get_type_by_section(section);
+            }
+        }
+        logger::trace("return type {} index {}"sv, type, a_index);
+        return type;
+    }
+
+    RE::BSFixedString hud_mcm::get_form_string(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
+        std::string form_string;
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            if (a_left) {
+                form_string = config::custom_setting::get_item_form_left_by_section(section);
+            } else {
+                form_string = config::custom_setting::get_item_form_by_section(section);
+            }
+        }
+        return form_string;
+    }
+
+    uint32_t hud_mcm::get_slot_action(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
+        auto action = 0;
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            if (a_left) {
+                action = config::custom_setting::get_slot_action_left_by_section(section);
+            } else {
+                action = config::custom_setting::get_slot_action_by_section(section);
+            }
+        }
+        logger::trace("return action {} index {}"sv, action, a_index);
+        return action;
+    }
+
+    uint32_t hud_mcm::get_hand_selection(RE::TESQuest*, const uint32_t a_index) {
+        auto hand = 0;
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            hand = config::custom_setting::get_hand_selection_by_section(section);
+        }
+        logger::trace("return hand {} index {}"sv, hand, a_index);
+        return hand;
+    }
+
+    RE::BSFixedString hud_mcm::get_form_name(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
+        std::string form_string;
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            if (a_left) {
+                form_string = config::custom_setting::get_item_form_left_by_section(section);
+            } else {
+                form_string = config::custom_setting::get_item_form_by_section(section);
+            }
+        }
+
+        if (form_string == "") {
+            return form_string;
+        }
+
+        const auto form = util::helper::get_form_from_mod_id_string(form_string);
+        if (form == nullptr) {
+            return form_string;
+        }
+
+        return form->GetName();
+    }
+
+    void hud_mcm::reset_section(RE::TESQuest*, const uint32_t a_index) {
+        logger::trace("reset section was called for index {}"sv, a_index);
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            config::custom_setting::reset_section(section);
+        }
+    }
+
+    void hud_mcm::set_action_value(RE::TESQuest*, const uint32_t a_index, const bool a_left, const uint32_t a_value) {
+        logger::trace("set ection was called for index {}, left {}, value {}"sv, a_index, a_left, a_value);
+        if (const auto section = get_section_by_index(a_index); section != "") {
+            if (a_left) {
+                config::custom_setting::write_slot_action_left_by_section(section, a_value);
+            } else {
+                config::custom_setting::write_slot_action_by_section(section, a_value);
+            }
+        }
+    }
+
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("OnConfigClose", mcm_name, on_config_close);
-        a_vm->RegisterFunction("GetSelectedOptions", mcm_name, get_selected_options);
-        a_vm->RegisterFunction("GetFormIdForSelection", mcm_name, get_form_id_for_selection);
         a_vm->RegisterFunction("GetResolutionWidth", mcm_name, get_resolution_width);
         a_vm->RegisterFunction("GetResolutionHeight", mcm_name, get_resolution_height);
 
+        a_vm->RegisterFunction("GetSectionNames", mcm_name, get_section_names);
+        a_vm->RegisterFunction("GetPage", mcm_name, get_page);
+        a_vm->RegisterFunction("GetPosition", mcm_name, get_position);
+        a_vm->RegisterFunction("GetSelectionType", mcm_name, get_selection_type);
+        a_vm->RegisterFunction("GetFormString", mcm_name, get_form_string);
+        a_vm->RegisterFunction("GetSlotAction", mcm_name, get_slot_action);
+        a_vm->RegisterFunction("GetHandSelection", mcm_name, get_hand_selection);
+        a_vm->RegisterFunction("GetFormName", mcm_name, get_form_name);
+        a_vm->RegisterFunction("ResetSection", mcm_name, reset_section);
+        a_vm->RegisterFunction("SetActionValue", mcm_name, set_action_value);
+
         logger::info("Registered {} class. return."sv, mcm_name);
         return true;
-    }
-
-    void hud_mcm::clear_list() {
-        inventory_data_list_->clear();
-        shout_data_list_->clear();
-        spell_data_list_->clear();
-        power_data_list_->clear();
-        weapon_data_list_->clear();
-        shield_data_list_->clear();
-        item_data_list_->clear();
     }
 
     bool hud_mcm::is_size_ok(uint32_t a_idx, uint64_t a_size) {
@@ -239,6 +166,16 @@ namespace papyrus {
             return false;
         }
         return true;
+    }
+
+    std::string hud_mcm::get_section_by_index(const uint32_t a_index) {
+        std::string section = "";
+        if (const auto sections = util::helper::get_configured_section_page_names(); is_size_ok(a_index,
+            sections.size())) {
+            section = sections.at(a_index);
+        }
+        logger::trace("got section {} for index {}"sv, section, a_index);
+        return section;
     }
 
     void Register() {

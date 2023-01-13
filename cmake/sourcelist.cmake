@@ -40,6 +40,8 @@ set(sources ${sources}
 	src/main.cpp
 	src/papyrus/papyrus.cpp
 	src/papyrus/papyrus.h
+	src/setting/custom_setting.cpp
+	src/setting/custom_setting.h
 	src/setting/file_setting.cpp
 	src/setting/file_setting.h
 	src/setting/mcm_setting.cpp

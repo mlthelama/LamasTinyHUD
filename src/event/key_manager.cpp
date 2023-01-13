@@ -108,25 +108,26 @@ namespace event {
                 logger::trace("done setting fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
             }*/
 
-
-            if (button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time() && (
-                    key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
-                    || key_ == key_left_action_)) {
-                if (RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
-                    break;
+            if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+                if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time() &&
+                    (
+                        key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
+                        || key_ == key_left_action_)) {
+                    const auto edit_handle = handle::edit_handle::get_singleton();
+                    const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                    if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ ==
+                        k_invalid) {
+                        logger::debug("configured key ({}) is held, enter edit mode"sv, key_);
+                        edit_handle->init_edit(page_setting->pos);
+                        const auto message = fmt::format("Entered Edit Mode for Position {}"sv,
+                            static_cast<uint32_t>(page_setting->pos));
+                        RE::DebugNotification(message.c_str());
+                        edit_active_ = key_;
+                        break;
+                    }
                 }
-
-                const auto edit_handle = handle::edit_handle::get_singleton();
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ == k_invalid) {
-                    logger::debug("configured key ({}) is held, enter edit mode"sv, key_);
-                    edit_handle->init_edit(page_setting->pos);
-                    const auto message = fmt::format("Entered Edit Mode for Position {}"sv,
-                        static_cast<uint32_t>(page_setting->pos));
-                    RE::DebugNotification(message.c_str());
-                    edit_active_ = key_;
-                    break;
-                }
+            } else {
+                reset_edit();
             }
 
 
@@ -164,12 +165,9 @@ namespace event {
                 const auto handler = handle::page_handle::get_singleton();
                 handler->set_active_page(handler->get_next_page_id());
 
-                if (edit_active_ != k_invalid) {
-                    //remove everything
-                    edit_active_ = k_invalid;
-                    handle::edit_handle::get_singleton()->init_edit(handle::page_setting::position::total);
-                }
+                reset_edit();
             }
+
 
             if (button->IsPressed() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ ==
                                         key_bottom_action_ || key_ == key_left_action_)) {
@@ -197,8 +195,7 @@ namespace event {
                         edit_data);
 
                     //remove everything
-                    edit_active_ = k_invalid;
-                    edit_handle->init_edit(handle::page_setting::position::total);
+                    reset_edit();
                     break;
                 }
 
@@ -206,6 +203,7 @@ namespace event {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
+
                 handle::setting_execute::execute_settings(page_setting->slot_settings);
 
                 break;
@@ -280,5 +278,13 @@ namespace event {
             return false;
         }
         return true;
+    }
+
+    void key_manager::reset_edit() {
+        if (edit_active_ != k_invalid) {
+            //remove everything
+            edit_active_ = k_invalid;
+            handle::edit_handle::get_singleton()->init_edit(handle::page_setting::position::total);
+        }
     }
 }

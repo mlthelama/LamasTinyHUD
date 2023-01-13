@@ -11,15 +11,13 @@ namespace util {
             const std::vector<data_helper*>& a_data,
             uint32_t a_hand);
 
+        static void read_configs();
+
+        static std::vector<std::string> get_configured_section_page_names();
+
+        static RE::TESForm* get_form_from_mod_id_string(const std::string& a_str);
+
     private:
         static std::string get_section_name_for_page_position(uint32_t a_page, uint32_t a_position);
-
-        //TODO until i feel like renaming and i can generate them
-        inline static std::map<uint32_t, std::map<uint32_t, std::string>> page_position_section_map_ = {
-            { 0, { { 0, "TopPage" }, { 1, "RightPage" }, { 2, "BottomPage" }, { 3, "LeftPage" } } },
-            { 1,
-              { { 0, "TopPageSetOne" }, { 1, "RightPageSetOne" }, { 2, "BottomPageSetOne" },
-                { 3, "LeftPageSetOne" } } }
-        };
     };
 }

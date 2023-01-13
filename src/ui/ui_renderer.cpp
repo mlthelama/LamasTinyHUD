@@ -475,7 +475,7 @@ namespace ui {
             logger::info("done with data loaded");
         } else if (msg->type == SKSE::MessagingInterface::kPostLoadGame) {
             //config is already loaded
-            handle::set_data::set_slot_data();
+            handle::set_data::read_and_set_data();
         }
     }
 

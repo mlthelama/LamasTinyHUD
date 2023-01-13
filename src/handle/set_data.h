@@ -5,7 +5,7 @@
 namespace handle {
     class set_data {
     public:
-        static void set_slot_data();
+        static void read_and_set_data();
 
         static void set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, int32_t a_count);
 
@@ -27,7 +27,5 @@ namespace handle {
             key_position*& a_key_pos);
 
         static void set_new_item_count(RE::FormID a_form_id, const char* a_name, int32_t a_count);
-
-        static RE::TESForm* get_form_from_mod_id_string(const std::string& a_str);
     };
 }

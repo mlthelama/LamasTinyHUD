@@ -45,5 +45,7 @@ namespace event {
         uint32_t button_press_modify_ = ui::draw_full;
 
         uint32_t edit_active_ = k_invalid;
+
+        void reset_edit();
     };
 }
