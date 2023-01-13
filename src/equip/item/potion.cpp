@@ -7,20 +7,20 @@ namespace item {
 
 
         RE::TESBoundObject* obj = nullptr;
-        uint32_t left;
+        uint32_t left = 0;
         for (auto potential_items = inventory::get_inventory_magic_items(a_player);
-             const auto& [item, invData] : potential_items) {
-            if (invData.second->object->formID == a_slot->form->formID) {
+             const auto& [item, inv_data] : potential_items) {
+            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_slot->form->formID) {
                 obj = item;
-                left = invData.first;
+                left = inv_data.first;
                 break;
             }
         }
 
 
-        if (obj == nullptr) {
+        if (obj == nullptr || left == 0) {
             logger::warn("could not find selected potion, maybe it all have been consumed"sv);
-            //update ui in this case
+            //TODO update ui in this case
             return;
         }
 

@@ -107,10 +107,18 @@ namespace magic {
                 0.0f,
                 nullptr);
         } else {
-            if (const auto equipped_object = a_player->GetEquippedObject(left);
-                equipped_object && equipped_object->formID == spell->formID) {
-                logger::debug("Object {} already equipped. return."sv, spell->GetName());
-                return;
+            if (left) {
+                if (const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+                    obj_left && obj_left->formID == spell->formID) {
+                    logger::debug("Object {} already equipped. return."sv, spell->GetName());
+                    return;
+                }
+            } else {
+                if (const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+                    obj_right && obj_right->formID == spell->formID) {
+                    logger::debug("Object {} already equipped. return."sv, spell->GetName());
+                    return;
+                }
             }
 
             //other slot options like i thought did not work, so i get it like this now

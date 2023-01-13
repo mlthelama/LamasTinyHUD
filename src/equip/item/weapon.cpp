@@ -79,14 +79,16 @@ namespace item {
         logger::trace("try to equip {}"sv, a_form->GetName());
 
         RE::TESBoundObject* obj = nullptr;
-        for (const auto& [item, invData] : inventory::get_inventory_armor_items(a_player)) {
-            if (invData.second->object->formID == a_form->formID) {
-                obj = invData.second->object;
+        auto item_count = 0;
+        for (const auto& [item, inv_data] : inventory::get_inventory_armor_items(a_player)) {
+            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
+                obj = inv_data.second->object;
+                item_count = num_items;
                 break;
             }
         }
 
-        if (obj == nullptr) {
+        if (obj == nullptr || item_count == 0) {
             logger::warn("could not find selected armor, maybe it is gone"sv);
             //update ui in this case
             return;
