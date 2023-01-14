@@ -53,8 +53,8 @@ namespace config {
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
             config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
 
-            hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.25));
-            hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.25));
+            hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.23));
+            hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
             hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fHudImagePositionWidth",
                 140));
@@ -62,14 +62,14 @@ namespace config {
                 "fHudImagePositionHeight",
                 140));
             hud_slot_position_offset = static_cast<float>(mcm.
-                GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 85));
-            hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 30));
-            icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth", 0.11));
-            icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.11));
+                GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 105));
+            hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 38));
+            icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth", 0.10));
+            icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.10));
             icon_opacity = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uIconOpacity", 125));
             slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uSlotButtonFeedback", 200));
-            key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth", 0.4));
-            key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight", 0.4));
+            key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth", 0.38));
+            key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight", 0.38));
             slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 10));
             slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fSlotCountTextFontSize",
@@ -77,10 +77,10 @@ namespace config {
             draw_toggle_button = mcm.GetBoolValue("HudSetting", "bDrawToggleButton", true);
             toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetX",
-                90));
+                115));
             toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetY",
-                90));
+                115));
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);

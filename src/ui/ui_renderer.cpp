@@ -468,6 +468,10 @@ namespace ui {
         if (msg->type == SKSE::MessagingInterface::kDataLoaded && d_3d_init_hook::initialized) {
             // Read Texture only after game engine finished load all it renderer resource.
 
+            logger::trace("Load Images, scale values width {}, height {}"sv,
+                get_resolution_scale_width(),
+                get_resolution_scale_height());
+
             load_images(image_type_path_map, image_struct);
             load_images(icon_type_path_map, icon_struct);
             load_images(key_icon_path_map, key_struct);
@@ -497,8 +501,8 @@ namespace ui {
                 logger::error("failed to load texture {}"sv, path);
             }
 
-            a_struct[idx].width *= static_cast<int32_t>(get_resolution_scale_width());
-            a_struct[idx].height *= static_cast<int32_t>(get_resolution_scale_height());
+            a_struct[idx].width = static_cast<int32_t>(a_struct[idx].width * get_resolution_scale_width());
+            a_struct[idx].height = static_cast<int32_t>(a_struct[idx].height * get_resolution_scale_height());
         }
     }
 
