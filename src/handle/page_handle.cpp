@@ -76,6 +76,11 @@ namespace handle {
 
         //TODO for now the right hand or the first setting defines the icon
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
+        if (slots->size() == 2 && page->icon_type == ui::icon_image_type::icon_default) {
+            logger::debug("Could not find an Icon with first setting, try next");
+            page->icon_type = get_icon_type(slots->at(1)->type, slots->at(1)->form);
+        }
+
         page->icon_opacity = a_opacity;
 
         page->key = a_key_pos->get_key_for_position(a_position);
