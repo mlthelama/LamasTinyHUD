@@ -8,7 +8,7 @@
 namespace util {
     std::string helper::get_mod_and_form(const RE::FormID& a_form_id) {
         std::string form_string;
-        if (!a_form_id || a_form_id == 0) {
+        if (!a_form_id) {
             return form_string;
         }
 
@@ -61,14 +61,22 @@ namespace util {
         }
         if (!a_data.empty()) {
             type = static_cast<uint32_t>(a_data[0]->type);
-            form_string = get_mod_and_form(a_data[0]->form->formID);
+            if (a_data[0]->form) {
+                form_string = get_mod_and_form(a_data[0]->form->formID);
+            } else {
+                form_string = "";
+            }
             action = static_cast<uint32_t>(a_data[0]->action_type);
         }
 
 
         if (a_data.size() == 2) {
             type_left = static_cast<uint32_t>(a_data[1]->type);
-            form_string_left = get_mod_and_form(a_data[1]->form->formID);
+            if (a_data[1]->form) {
+                form_string_left = get_mod_and_form(a_data[1]->form->formID);
+            } else {
+                form_string = "";
+            }
             action_left = static_cast<uint32_t>(a_data[1]->action_type);
         }
 
