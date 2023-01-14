@@ -7,17 +7,8 @@ namespace config {
     static CSimpleIniA custom_ini;
 
     void custom_setting::read_setting() {
-        //logger::info("reading custom ini file");
-
-        /*CSimpleIniA ini;
-        ini.SetUnicode();
-        ini.LoadFile(ini_path);*/
-
         custom_ini.SetUnicode();
         custom_ini.LoadFile(ini_path);
-
-
-        //logger::info("finished reading dll ini files. return.");
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {
