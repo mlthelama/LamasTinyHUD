@@ -32,8 +32,8 @@ namespace handle {
 
     page_setting::position key_position::get_position_for_key(const uint32_t a_key) const {
         if (const key_position_data* data = this->data_;
-            data && !data_->key_position_map.empty() && data_->key_position_map.contains(a_key)) {
-            const auto pos = data_->key_position_map[a_key];
+            data && !data->key_position_map.empty() && data->key_position_map.contains(a_key)) {
+            const auto pos = data->key_position_map.at(a_key);
             logger::trace("got position {} for key {}"sv, static_cast<uint32_t>(pos), a_key);
             return pos;
         }
@@ -42,8 +42,8 @@ namespace handle {
 
     uint32_t key_position::get_key_for_position(const page_setting::position a_pos) const {
         if (const key_position_data* data = this->data_;
-            data && !data_->position_key_map.empty() && data_->position_key_map.contains(a_pos)) {
-            const auto key = data_->position_key_map[a_pos];
+            data && !data->position_key_map.empty() && data->position_key_map.contains(a_pos)) {
+            const auto key = data->position_key_map.at(a_pos);
             logger::trace("got key {} for position {}"sv, key, static_cast<uint32_t>(a_pos));
             return key;
         }
