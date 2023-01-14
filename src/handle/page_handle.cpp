@@ -151,6 +151,15 @@ namespace handle {
         return {};
     }
 
+    uint32_t page_handle::get_active_page_id_for_position([[maybe_unused]]page_setting::position a_pos) const {
+
+        return 0;
+    }
+
+    uint32_t page_handle::get_next_page_id_for_position([[maybe_unused]]page_setting::position a_pos) const {
+        return 0;
+    }
+
     void page_handle::get_offset_values(const page_setting::position a_position,
         const float a_setting,
         float& offset_x,
