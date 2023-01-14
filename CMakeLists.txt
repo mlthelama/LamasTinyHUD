@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(NAME "LamasTinyHUD" CACHE STRING "")
-set(VERSION 1.0.2.0 CACHE STRING "")
+set(VERSION 1.0.3.0 CACHE STRING "")
 
 # ---- Options ----
 
