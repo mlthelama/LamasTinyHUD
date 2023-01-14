@@ -26,7 +26,12 @@ namespace item {
         return is_worn;
     }
 
-    void equip_slot::unequip_hand(const RE::BGSEquipSlot* a_slot, RE::PlayerCharacter*& a_player) {
+    void equip_slot::unequip_hand(const RE::BGSEquipSlot* a_slot,
+        RE::PlayerCharacter*& a_player,
+        const action_type a_action) {
+        if (a_action != handle::slot_setting::acton_type::unequip) {
+            return;
+        }
         if (const auto equipped_object = a_player->GetEquippedObject(a_slot == get_left_hand_slot());
             equipped_object) {
             logger::debug("Object {} is equipped, is left {}."sv,

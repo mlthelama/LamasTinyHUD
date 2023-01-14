@@ -39,7 +39,7 @@ namespace magic {
         }
 
         if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
-            selected_power != nullptr && a_action != handle::slot_setting::acton_type::instant) {
+            selected_power && a_action != handle::slot_setting::acton_type::instant) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
                 selected_power->Is(RE::FormType::Shout),

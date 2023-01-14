@@ -1,5 +1,7 @@
 ﻿#include "equip_event.h"
 #include "handle/edit_handle.h"
+#include "setting/custom_setting.h"
+#include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
 namespace event {
@@ -45,6 +47,7 @@ namespace event {
                 //magic, weapon, shield handled outside
                 switch (type) {
                     case handle::slot_setting::slot_type::unset:
+                    case handle::slot_setting::slot_type::empty:
                         item->form = nullptr;
                         item->type = type;
                         data_.push_back(item);
@@ -138,31 +141,34 @@ namespace event {
         auto right_obj = player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         auto left_obj = player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
 
+        const auto empty_handle = config::mcm_setting::get_empty_hand_setting();
+
         const auto item = new data_helper();
         item->form = nullptr;
         item->left = false;
-        item->type = handle::slot_setting::slot_type::unset;
-        item->action_type = handle::slot_setting::acton_type::unequip;
+        item->type = handle::slot_setting::slot_type::empty;
+        item->action_type = empty_handle ?
+                                handle::slot_setting::acton_type::unequip :
+                                handle::slot_setting::acton_type::default_action;
         data.push_back(item);
 
         const auto item2 = new data_helper();
         item2->form = nullptr;
         item2->left = true;
-        item2->type = handle::slot_setting::slot_type::unset;
-        item2->action_type = handle::slot_setting::acton_type::unequip;
+        item2->type = handle::slot_setting::slot_type::empty;
+        item2->action_type = empty_handle ?
+                                 handle::slot_setting::acton_type::unequip :
+                                 handle::slot_setting::acton_type::default_action;
         data.push_back(item2);
 
-        if (right_obj != nullptr) {
-            logger::trace("got form {}, name {} on both/right hand"sv,
-                util::string_util::int_to_hex(right_obj->GetFormID()),
-                right_obj->GetName());
-        }
 
-        if (left_obj != nullptr) {
-            logger::trace("got form {}, name {} on left hand"sv,
-                util::string_util::int_to_hex(left_obj->GetFormID()),
-                left_obj->GetName());
-        }
+        logger::trace("got form {}, name {} on both/right hand"sv,
+            right_obj ? util::string_util::int_to_hex(right_obj->GetFormID()) : "null",
+            right_obj ? right_obj->GetName() : "null");
+
+        logger::trace("got form {}, name {} on left hand"sv,
+            left_obj ? util::string_util::int_to_hex(left_obj->GetFormID()) : "null",
+            left_obj ? left_obj->GetName() : "null");
 
         if (two_handed && right_obj && left_obj && right_obj->formID == left_obj->formID) {
             data[0]->form = right_obj;

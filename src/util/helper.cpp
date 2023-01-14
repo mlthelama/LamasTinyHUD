@@ -75,7 +75,7 @@ namespace util {
             if (a_data[1]->form) {
                 form_string_left = get_mod_and_form(a_data[1]->form->formID);
             } else {
-                form_string = "";
+                form_string_left = "";
             }
             action_left = static_cast<uint32_t>(a_data[1]->action_type);
         }

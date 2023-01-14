@@ -18,11 +18,12 @@ namespace handle {
             consumable = 5,
             armor = 6,
             scroll = 7,
-            misc = 8
+            empty = 8,
+            misc = 9
         };
 
         RE::TESForm* form = nullptr;
-        slot_type type = slot_type::unset;
+        slot_type type = slot_type::empty;
         acton_type action = acton_type::default_action;
         hand_equip equip = hand_equip::total;
         RE::BGSEquipSlot* equip_slot = nullptr;
