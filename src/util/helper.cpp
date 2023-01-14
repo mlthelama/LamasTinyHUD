@@ -8,7 +8,7 @@
 namespace util {
     std::string helper::get_mod_and_form(const RE::FormID& a_form_id) {
         std::string form_string;
-        if (a_form_id == 0) {
+        if (!a_form_id || a_form_id == 0) {
             return form_string;
         }
 

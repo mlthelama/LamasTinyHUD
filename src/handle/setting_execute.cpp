@@ -90,6 +90,13 @@ namespace handle {
             case slot_setting::slot_type::armor:
                 item::weapon::equip_armor(a_slot->form, a_player);
                 break;
+            case slot_setting::slot_type::scroll:
+                magic::spell::cast_scroll(a_slot->form, a_slot->action, a_player);
+                break;
+            case slot_setting::slot_type::misc:
+                //TODO
+                logger::warn("ignoring miscitem."sv);
+                break;
         }
     }
 }

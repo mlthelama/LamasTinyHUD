@@ -53,6 +53,8 @@ namespace event {
                     case handle::slot_setting::slot_type::power:
                     case handle::slot_setting::slot_type::consumable:
                     case handle::slot_setting::slot_type::armor:
+                    case handle::slot_setting::slot_type::scroll:
+                    case handle::slot_setting::slot_type::misc:
                         item->form = form;
                         item->type = type;
                         data_.push_back(item);
@@ -100,8 +102,11 @@ namespace event {
         if (a_form->Is(RE::FormType::AlchemyItem)) {
             return handle::slot_setting::slot_type::consumable;
         }
+        if (a_form->Is(RE::FormType::Scroll)) {
+            return handle::slot_setting::slot_type::scroll;
+        }
 
-        return handle::slot_setting::slot_type::unset;
+        return handle::slot_setting::slot_type::misc;
     }
 
     bool equip_event::is_two_handed(RE::TESForm*& a_form) {

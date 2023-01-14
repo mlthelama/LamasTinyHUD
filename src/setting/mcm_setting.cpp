@@ -13,70 +13,6 @@ namespace config {
     static uint32_t controller_set;
     static float config_button_hold_time;
 
-    static uint32_t top_type;
-    static std::string top_selected_item_form;
-    static uint32_t top_slot_action;
-    static uint32_t top_hand_selection;
-    static uint32_t top_type_left;
-    static std::string top_selected_item_form_left;
-    static uint32_t top_slot_action_left;
-
-    static uint32_t right_type;
-    static std::string right_selected_item_form;
-    static uint32_t right_slot_action;
-    static uint32_t right_hand_selection;
-    static uint32_t right_type_left;
-    static std::string right_selected_item_form_left;
-    static uint32_t right_slot_action_left;
-
-    static uint32_t bottom_type;
-    static std::string bottom_selected_item_form;
-    static uint32_t bottom_slot_action;
-    static uint32_t bottom_hand_selection;
-    static uint32_t bottom_type_left;
-    static std::string bottom_selected_item_form_left;
-    static uint32_t bottom_slot_action_left;
-
-    static uint32_t left_type;
-    static std::string left_selected_item_form;
-    static uint32_t left_slot_action;
-    static uint32_t left_hand_selection;
-    static uint32_t left_type_left;
-    static std::string left_selected_item_form_left;
-    static uint32_t left_slot_action_left;
-
-    static uint32_t top_type_page_one;
-    static std::string top_selected_item_form_page_one;
-    static uint32_t top_slot_action_page_one;
-    static uint32_t top_hand_selection_page_one;
-    static uint32_t top_type_left_page_one;
-    static std::string top_selected_item_form_left_page_one;
-    static uint32_t top_slot_action_left_page_one;
-
-    static uint32_t right_type_page_one;
-    static std::string right_selected_item_form_page_one;
-    static uint32_t right_slot_action_page_one;
-    static uint32_t right_hand_selection_page_one;
-    static uint32_t right_type_left_page_one;
-    static std::string right_selected_item_form_left_page_one;
-    static uint32_t right_slot_action_left_page_one;
-
-    static uint32_t bottom_type_page_one;
-    static std::string bottom_selected_item_form_page_one;
-    static uint32_t bottom_slot_action_page_one;
-    static uint32_t bottom_hand_selection_page_one;
-    static uint32_t bottom_type_left_page_one;
-    static std::string bottom_selected_item_form_left_page_one;
-    static uint32_t bottom_slot_action_left_page_one;
-
-    static uint32_t left_type_page_one;
-    static std::string left_selected_item_form_page_one;
-    static uint32_t left_slot_action_page_one;
-    static uint32_t left_hand_selection_page_one;
-    static uint32_t left_type_left_page_one;
-    static std::string left_selected_item_form_left_page_one;
-    static uint32_t left_slot_action_left_page_one;
-
     static float hud_image_scale_width;
     static float hud_image_scale_height;
     static float hud_image_position_width;
@@ -97,6 +33,8 @@ namespace config {
 
     static bool action_check;
     static bool empty_hand_setting;
+    static bool hide_outside_combat;
+    static bool disable_input_quick_loot;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -143,8 +81,10 @@ namespace config {
                 "fToggleKeyOffsetY",
                 90));
 
-            action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", true);
+            action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
+            hide_outside_combat = mcm.GetBoolValue("MiscSetting", "bHideOutsideCombat", false);
+            disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
         };
 
         read_mcm(mcm_default_setting);
@@ -182,4 +122,6 @@ namespace config {
 
     bool mcm_setting::get_action_check() { return action_check; }
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }
+    bool mcm_setting::get_hide_outside_combat() { return hide_outside_combat; }
+    bool mcm_setting::get_disable_input_quick_loot() { return disable_input_quick_loot; }
 }

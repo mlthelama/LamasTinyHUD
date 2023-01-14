@@ -27,6 +27,7 @@ namespace handle {
         }
 
         edit_handle_data* data = this->data_;
+        data->data_hold.clear();
         data->data_hold = std::move(a_data);
     }
 

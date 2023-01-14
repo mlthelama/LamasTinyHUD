@@ -1,5 +1,6 @@
 ﻿#include "spell.h"
 #include "equip/equip_slot.h"
+#include "equip/item/inventory.h"
 #include "handle/setting_execute.h"
 #include "util/offset.h"
 
@@ -127,6 +128,50 @@ namespace magic {
         }
 
         logger::trace("worked spell {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
+    }
+
+    void spell::cast_scroll(const RE::TESForm* a_form, action_type a_action, RE::PlayerCharacter*& a_player) {
+        logger::trace("try to work scroll {}, action {}"sv,
+            a_form->GetName(),
+            static_cast<uint32_t>(a_action));
+
+        if (!a_form->Is(RE::FormType::Scroll)) {
+            logger::warn("object {} is not a scroll. return."sv, a_form->GetName());
+            return;
+        }
+
+        RE::TESBoundObject* obj = nullptr;
+        uint32_t left = 0;
+        for (auto potential_items = item::inventory::get_inventory(a_player, RE::FormType::Scroll);
+             const auto& [item, inv_data] : potential_items) {
+            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
+                obj = item;
+                left = inv_data.first;
+                break;
+            }
+        }
+
+        if (obj == nullptr || left == 0) {
+            logger::warn("could not find selected scroll, maybe it all have been consumed"sv);
+        }
+
+        if (a_action == action_type::instant) {
+            const auto actor = a_player->As<RE::Actor>();
+            const auto scroll = obj->As<RE::ScrollItem>();
+            actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(scroll,
+                false,
+                actor,
+                1.0f,
+                false,
+                0.0f,
+                nullptr);
+            actor->RemoveItem(scroll, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
+        } else {
+            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            equip_manager->EquipObject(a_player, obj);
+        }
+
+        logger::trace("worked scroll {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
     }
 
     RE::MagicSystem::CastingSource spell::get_casting_source(const RE::BGSEquipSlot* a_slot) {

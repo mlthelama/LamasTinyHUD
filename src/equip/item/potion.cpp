@@ -8,7 +8,7 @@ namespace item {
 
         RE::TESBoundObject* obj = nullptr;
         uint32_t left = 0;
-        for (auto potential_items = inventory::get_inventory_magic_items(a_player);
+        for (auto potential_items = inventory::get_inventory(a_player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_slot->form->formID) {
                 obj = item;

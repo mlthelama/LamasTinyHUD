@@ -21,6 +21,9 @@ function SetActionValue(int a_index, bool a_left, int a_value) native
 
 function ResetSlot()
     ResetSection(GetModSettingInt("uPageList:Page"))
+    string[] menu_list = GetSectionNames()
+    SetMenuOptions("uPageList:Page", menu_list, menu_list)
+    SetModSettingInt("uPageList:Page", 0)
     RefreshMenu()
 endfunction
 
@@ -36,7 +39,8 @@ Event OnSettingChange(String a_ID)
         else
             SetModSettingInt("uType:Page", type)
         endif
-        bSpell = (type == 1) || (type == 4)
+        ;magic, power, scroll
+        bSpell = (type == 1) || (type == 4) ||(type == 7)
         
         SetModSettingInt("uHandSelection:Page", GetHandSelection(idx))
         SetModSettingInt("uSlotAction:Page", GetSlotAction(idx, false))

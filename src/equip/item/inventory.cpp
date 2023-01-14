@@ -19,6 +19,13 @@ namespace item {
             [](const RE::TESBoundObject& a_object) { return a_object.IsArmor(); });
     }
 
+    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>> inventory::get_inventory(
+        RE::PlayerCharacter*& a_player,
+        RE::FormType a_type) {
+        return a_player->GetInventory(
+            [a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
+    }
+
     bool inventory::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
         auto worn = false;
         for (const auto& [item, inv_data] : get_inventory_armor_items(a_player)) {

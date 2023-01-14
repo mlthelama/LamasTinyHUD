@@ -30,8 +30,8 @@ namespace papyrus {
     std::vector<RE::BSFixedString> hud_mcm::get_section_names(RE::TESQuest*) {
         const auto sections = util::helper::get_configured_section_page_names();
         std::vector<RE::BSFixedString> sections_bs_string;
-        for (auto section : sections) {
-            sections_bs_string.push_back(section);
+        for (const auto& section : sections) {
+            sections_bs_string.emplace_back(section);
         }
         logger::trace("Returning {} sections"sv, sections_bs_string.size());
         return sections_bs_string;
@@ -39,7 +39,7 @@ namespace papyrus {
 
     RE::BSFixedString hud_mcm::get_page(RE::TESQuest*, const uint32_t a_index) {
         logger::trace("page was requsted for index {}"sv, a_index);
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             return std::to_string(config::custom_setting::get_page_by_section(section));
         }
         return "";
@@ -47,15 +47,15 @@ namespace papyrus {
 
     RE::BSFixedString hud_mcm::get_position(RE::TESQuest*, const uint32_t a_index) {
         logger::trace("position was requsted for index {}"sv, a_index);
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             return std::to_string(config::custom_setting::get_position_by_section(section));
         }
         return "";
     }
 
     uint32_t hud_mcm::get_selection_type(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
-        auto type = 0;
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        uint32_t type = 0;
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             if (a_left) {
                 type = config::custom_setting::get_type_left_by_section(section);
             } else {
@@ -68,7 +68,7 @@ namespace papyrus {
 
     RE::BSFixedString hud_mcm::get_form_string(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
         std::string form_string;
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             if (a_left) {
                 form_string = config::custom_setting::get_item_form_left_by_section(section);
             } else {
@@ -79,8 +79,8 @@ namespace papyrus {
     }
 
     uint32_t hud_mcm::get_slot_action(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
-        auto action = 0;
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        uint32_t action = 0;
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             if (a_left) {
                 action = config::custom_setting::get_slot_action_left_by_section(section);
             } else {
@@ -92,8 +92,8 @@ namespace papyrus {
     }
 
     uint32_t hud_mcm::get_hand_selection(RE::TESQuest*, const uint32_t a_index) {
-        auto hand = 0;
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        uint32_t hand = 0;
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             hand = config::custom_setting::get_hand_selection_by_section(section);
         }
         logger::trace("return hand {} index {}"sv, hand, a_index);
@@ -102,7 +102,7 @@ namespace papyrus {
 
     RE::BSFixedString hud_mcm::get_form_name(RE::TESQuest*, const uint32_t a_index, const bool a_left) {
         std::string form_string;
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             if (a_left) {
                 form_string = config::custom_setting::get_item_form_left_by_section(section);
             } else {
@@ -110,7 +110,7 @@ namespace papyrus {
             }
         }
 
-        if (form_string == "") {
+        if (form_string.empty()) {
             return form_string;
         }
 
@@ -124,14 +124,14 @@ namespace papyrus {
 
     void hud_mcm::reset_section(RE::TESQuest*, const uint32_t a_index) {
         logger::trace("reset section was called for index {}"sv, a_index);
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             config::custom_setting::reset_section(section);
         }
     }
 
     void hud_mcm::set_action_value(RE::TESQuest*, const uint32_t a_index, const bool a_left, const uint32_t a_value) {
         logger::trace("set ection was called for index {}, left {}, value {}"sv, a_index, a_left, a_value);
-        if (const auto section = get_section_by_index(a_index); section != "") {
+        if (const auto section = get_section_by_index(a_index); !section.empty()) {
             if (a_left) {
                 config::custom_setting::write_slot_action_left_by_section(section, a_value);
             } else {
@@ -169,8 +169,9 @@ namespace papyrus {
     }
 
     std::string hud_mcm::get_section_by_index(const uint32_t a_index) {
-        std::string section = "";
-        if (const auto sections = util::helper::get_configured_section_page_names(); is_size_ok(a_index,
+        std::string section;
+        if (const auto sections = util::helper::get_configured_section_page_names(); !sections.empty() && is_size_ok(
+            a_index,
             sections.size())) {
             section = sections.at(a_index);
         }

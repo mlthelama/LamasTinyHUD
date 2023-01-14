@@ -42,6 +42,9 @@ namespace event {
         }
 
         const auto ui = RE::UI::GetSingleton();
+        if (!ui) {
+            return event_result::kContinue;
+        }
         const auto interface_strings = RE::InterfaceStrings::GetSingleton();
 
         if (ui->IsMenuOpen(interface_strings->console)) {
@@ -83,30 +86,24 @@ namespace event {
             }
 
             /*if the game is not paused with the menu, it triggers the menu always in the background*/
-            if (ui->GameIsPaused()) {
+            if (ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
+                !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>()) {
                 continue;
             }
 
+            if (RE::UI::GetSingleton()->IsMenuOpen("LootMenu") && config::mcm_setting::get_disable_input_quick_loot()) {
+                continue;
+            }
 
-            //init fade setting here
-            //currently not used, not sure this is te correct place
-            /*if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
-                                     || key_ ==
-                                     key_left_action_)) {
-                logger::debug("configured Key ({}) is down"sv, key_);
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                if (page_setting == nullptr) {
-                    logger::trace("setting for key {} is null. return."sv, key_);
-                    break;
-                }
+            if (const auto control_map = RE::ControlMap::GetSingleton();
+                !control_map || !control_map->IsMovementControlsEnabled() ||
+                control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
+                continue;
+            }
 
-                logger::trace("trying to set fade setting for position {} ... "sv,
-                    static_cast<uint32_t>(page_setting->pos));
-                page_setting->fade_setting->action = handle::fade_setting::action::out;
-                page_setting->fade_setting->alpha = handle::fade_setting::alpha::min;
-                page_setting->fade_setting->current_alpha = static_cast<uint32_t>(handle::fade_setting::alpha::max);
-                logger::trace("done setting fade for position {}"sv, static_cast<uint32_t>(page_setting->pos));
-            }*/
+            if (config::mcm_setting::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+                continue;
+            }
 
             if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
                 if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time() &&

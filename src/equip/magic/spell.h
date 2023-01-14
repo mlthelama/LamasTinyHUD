@@ -13,6 +13,8 @@ namespace magic {
             const RE::BGSEquipSlot* a_slot,
             RE::PlayerCharacter*& a_player);
 
+        static void cast_scroll(const RE::TESForm* a_form, action_type a_action, RE::PlayerCharacter*& a_player);
+
     private:
         static RE::MagicSystem::CastingSource get_casting_source(const RE::BGSEquipSlot* a_slot);
     };

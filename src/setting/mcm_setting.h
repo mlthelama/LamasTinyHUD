@@ -33,5 +33,7 @@ namespace config {
 
         static bool get_action_check();
         static bool get_empty_hand_setting();
+        static bool get_hide_outside_combat();
+        static bool get_disable_input_quick_loot();
     };
 }

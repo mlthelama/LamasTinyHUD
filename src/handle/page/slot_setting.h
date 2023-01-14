@@ -16,7 +16,9 @@ namespace handle {
             shout = 3,
             power = 4,
             consumable = 5,
-            armor = 6
+            armor = 6,
+            scroll = 7,
+            misc = 8
         };
 
         RE::TESForm* form = nullptr;

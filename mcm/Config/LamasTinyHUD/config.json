@@ -175,7 +175,7 @@
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Misc"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -308,7 +308,7 @@
                     }
                 }
             ]
-        }, 
+        },
         {
             "pageDisplayName": "$LamasTinyHUD_HudSetting",
             "cursorFillMode": "topToBottom",
@@ -596,13 +596,26 @@
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
+                },
+                {
+                    "id": "bHideOutsideCombat:MiscSetting",
+                    "text": "$LamasTinyHUD_HideOutsideCombat_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_HideOutsideCombat_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bDisableInputQuickLoot:MiscSetting",
+                    "text": "$LamasTinyHUD_DisableInputQuickLoot_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_DisableInputQuickLoot_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
                 }
             ]
         }
-    ],
-    "customContent": {
-        "source": "LamasTinyHUD/Illustration_llamas_tiny_hut.dds",
-        "x": 258,
-        "y": 95
-    }
+    ]
 }

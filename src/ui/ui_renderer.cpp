@@ -435,6 +435,11 @@ namespace ui {
             return;
         }
 
+        if (config::mcm_setting::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+            return;
+        }
+
+
         static constexpr ImGuiWindowFlags window_flag =
             ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs;
 

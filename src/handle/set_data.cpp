@@ -59,9 +59,21 @@ namespace handle {
             hand_equip = slot_setting::hand_equip::single;
         }
         logger::trace("calling init page for page {}, position {} ..."sv, a_page, static_cast<uint32_t>(a_pos));
+
+        std::vector<data_helper*> data;
+        if (a_data.empty()) {
+            const auto item = new data_helper();
+            item->form = nullptr;
+            item->action_type = slot_setting::acton_type::default_action;
+            item->type = slot_setting::slot_type::unset;
+            data.push_back(item);
+
+            logger::warn("Got no settings in List, create empty."sv);
+        }
+
         page_handle::get_singleton()->init_page(a_page,
             a_pos,
-            a_data,
+            a_data.empty() ? data : a_data,
             config::mcm_setting::get_hud_slot_position_offset(),
             config::mcm_setting::get_hud_key_position_offset(),
             hand_equip,

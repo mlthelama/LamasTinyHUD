@@ -208,6 +208,13 @@ namespace handle {
             case slot_setting::slot_type::armor:
                 get_icon_for_item(a_form, icon);
                 break;
+            case slot_setting::slot_type::scroll:
+                icon = ui::icon_image_type::scroll;
+                break;
+            case slot_setting::slot_type::unset:
+            case slot_setting::slot_type::misc:
+                icon = ui::icon_image_type::icon_default;
+                break;
         }
         return icon;
     }
@@ -326,18 +333,20 @@ namespace handle {
     void page_handle::get_item_count(RE::TESForm*& a_form,
         int32_t& a_count,
         const slot_setting::slot_type a_type) {
-        if (a_type != slot_setting::slot_type::consumable || a_type == slot_setting::slot_type::unset ||
-            a_form == nullptr) {
+        if (a_type == slot_setting::slot_type::unset || a_form == nullptr) {
             a_count = 0;
             return;
         }
-        auto player = RE::PlayerCharacter::GetSingleton();
-        for (auto potential_items = item::inventory::get_inventory_magic_items(player);
-             const auto& [item, invData] : potential_items) {
-            if (invData.second->object->formID == a_form->formID) {
-                a_count = invData.first;
-                break;
+        if (a_type == slot_setting::slot_type::consumable || a_type == slot_setting::slot_type::scroll) {
+            const auto player = RE::PlayerCharacter::GetSingleton();
+            for (auto potential_items = player->GetInventory(); const auto& [item, invData] : potential_items) {
+                if (invData.second->object->formID == a_form->formID) {
+                    a_count = invData.first;
+                    break;
+                }
             }
+        } else {
+            a_count = 0;
         }
         logger::trace("Item {}, count {}"sv, a_form->GetName(), a_count);
     }
