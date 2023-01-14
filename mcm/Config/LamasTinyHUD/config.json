@@ -614,6 +614,15 @@
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
+                },
+                {
+                    "id": "bElderDemonSouls:MiscSetting",
+                    "text": "$LamasTinyHUD_ElderDemonSouls_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_ElderDemonSouls_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
                 }
             ]
         }
