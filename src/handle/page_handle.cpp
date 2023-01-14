@@ -279,7 +279,7 @@ namespace handle {
                         a_icon = ui::icon_image_type::spell_frost;
                         break;
                     case RE::ActorValue::kResistShock:
-                        a_icon = ui::icon_image_type::spell_frost;
+                        a_icon = ui::icon_image_type::spell_shock;
                         break;
                     default:
                         a_icon = ui::icon_image_type::spell_default_alt;
