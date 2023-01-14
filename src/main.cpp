@@ -79,16 +79,6 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
 
     Init(a_skse);
 
-    /*SKSE::GetMessagingInterface()->RegisterListener([](SKSE::MessagingInterface::Message* a_msg) {
-        switch (a_msg->type) {
-            case SKSE::MessagingInterface::kDataLoaded:
-                logger::info("Data loaded"sv);
-
-                logger::info("Done with adding"sv);
-                break;
-        }
-    });*/
-
     papyrus::Register();
     ui::ui_renderer::install();
     hook::hook::install();
