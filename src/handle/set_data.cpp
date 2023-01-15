@@ -74,10 +74,7 @@ namespace handle {
         page_handle::get_singleton()->init_page(a_page,
             a_pos,
             a_data.empty() ? data : a_data,
-            config::mcm_setting::get_hud_slot_position_offset(),
-            config::mcm_setting::get_hud_key_position_offset(),
             hand_equip,
-            config::mcm_setting::get_icon_opacity(),
             key_pos);
 
         logger::debug("calling helper to write to file"sv);
@@ -99,10 +96,7 @@ namespace handle {
         page_handle::get_singleton()->init_page(a_page,
             static_cast<page_setting::position>(a_pos),
             data,
-            mcm::get_hud_slot_position_offset(),
-            mcm::get_hud_key_position_offset(),
             slot_setting::hand_equip::total,
-            config::mcm_setting::get_icon_opacity(),
             a_key_pos);
     }
 
@@ -199,10 +193,7 @@ namespace handle {
             page_handle::get_singleton()->init_page(a_page,
                 a_pos,
                 data,
-                config::mcm_setting::get_hud_slot_position_offset(),
-                config::mcm_setting::get_hud_key_position_offset(),
                 hand,
-                config::mcm_setting::get_icon_opacity(),
                 a_key_pos);
         }
     }

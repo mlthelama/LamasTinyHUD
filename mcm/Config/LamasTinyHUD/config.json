@@ -524,19 +524,6 @@
                     "type": "header"
                 },
                 {
-                    "id": "uIconOpacity:HudSetting",
-                    "text": "$LamasTinyHUD_HudSetting_IconOpacity_OptionText",
-                    "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_IconOpacity_InfoText",
-                    "valueOptions": {
-                        "min": 0,
-                        "max": 255,
-                        "step": 1,
-                        "formatString": "{0}",
-                        "sourceType": "ModSettingInt"
-                    }
-                },
-                {
                     "id": "uSlotButtonFeedback:HudSetting",
                     "text": "$LamasTinyHUD_HudSetting_SlotButtonFeedback_OptionText",
                     "type": "slider",
@@ -572,7 +559,87 @@
                     }
                 }
             ]
-        }, {
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_GraphicSetting",
+            "cursorFillMode": "topToBottom",
+            "content": [{
+                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Transparency",
+                    "type": "header"
+                },
+                {
+                    "id": "uBackgroundTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_BackgroundTransparency_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_BackgroundTransparency_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uBackgroundIconTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_BackgroundIconTransparency_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_BackgroundIconTransparency_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uIconTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_Icon_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_Icon_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uKeyTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_Key_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_Key_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uTextTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_Text_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_Text_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Color",
+                    "type": "header",
+                    "position": 1
+                }
+            ]
+        },
+        {
             "pageDisplayName": "$LamasTinyHUD_MiscSetting",
             "cursorFillMode": "topToBottom",
             "content": [{

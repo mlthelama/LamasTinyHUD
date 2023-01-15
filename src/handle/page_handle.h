@@ -11,10 +11,7 @@ namespace handle {
         void init_page(uint32_t a_page,
             page_setting::position a_position,
             const std::vector<data_helper*>& data_helpers,
-            float a_slot_offset,
-            float a_key_offset,
             slot_setting::hand_equip a_hand,
-            uint32_t a_opacity,
             key_position*& a_key_pos);
 
         void set_active_page(uint32_t a_page) const;
