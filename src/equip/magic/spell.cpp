@@ -1,7 +1,6 @@
 ﻿#include "spell.h"
 #include "equip/equip_slot.h"
 #include "equip/item/inventory.h"
-#include "handle/setting_execute.h"
 #include "util/offset.h"
 
 namespace magic {

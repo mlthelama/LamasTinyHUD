@@ -40,7 +40,7 @@ namespace handle {
         auto* slots = new std::vector<slot_setting*>;
         for (const auto element : data_helpers) {
             logger::trace("processing form {}, type {}, action {}, left {}"sv,
-                element->form != nullptr ? util::string_util::int_to_hex(element->form->GetFormID()) : "0",
+                element->form ? util::string_util::int_to_hex(element->form->GetFormID()) : "null",
                 static_cast<int>(element->type),
                 static_cast<uint32_t>(element->action_type),
                 element->left);
@@ -191,7 +191,7 @@ namespace handle {
         a_slot = nullptr;
         if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) && a_hand
             ==
-            slot_setting::hand_equip::single || a_type == slot_setting::slot_type::unset) {
+            slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
             a_slot = a_left ? item::equip_slot::get_left_hand_slot() : item::equip_slot::get_right_hand_slot();
         }
     }
@@ -226,6 +226,7 @@ namespace handle {
                 break;
             case slot_setting::slot_type::unset:
             case slot_setting::slot_type::misc:
+            case slot_setting::slot_type::empty:
                 icon = ui::icon_image_type::icon_default;
                 break;
         }

@@ -39,16 +39,16 @@ Event OnSettingChange(String a_ID)
         else
             SetModSettingInt("uType:Page", type)
         endif
-        ;magic, power, scroll
-        bSpell = (type == 1) || (type == 4) ||(type == 7)
+        ;magic, power, scroll, empty (to allow if something should be unequiped)
+        bSpell = (type == 1) || (type == 4) || (type == 7) || (type == 8)
         
         SetModSettingInt("uHandSelection:Page", GetHandSelection(idx))
         SetModSettingInt("uSlotAction:Page", GetSlotAction(idx, false))
         SetModSettingString("sFormName:Page", GetFormName(idx, false))
         SetModSettingString("sSelectedItemForm:Page", GetFormString(idx, false))
         
-        type = GetSelectionType(idx, false)
-        bSpellLeft = type == 1
+        type = GetSelectionType(idx, true)
+        bSpellLeft = (type == 1) || (type == 8)
         if (type < 0)
             SetModSettingInt("uTypeLeft:Page", 0)
         else

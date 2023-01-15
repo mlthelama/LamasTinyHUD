@@ -16,30 +16,17 @@ namespace handle {
     void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
         logger::trace("got {} settings execute"sv, a_slots.size());
         auto player = RE::PlayerCharacter::GetSingleton();
-        std::vector<RE::BGSEquipSlot*> unequip;
         for (auto slot : a_slots) {
-            //TODO allow nullptr if we have unequip action
-            if (slot->form == nullptr && slot->type == slot_setting::slot_type::unset && slot->action ==
-                slot_setting::acton_type::unequip && mcm::get_empty_hand_setting()) {
-                //needs to be done after the slot
-                unequip.push_back(slot->equip_slot);
-            }
-            if (slot->form == nullptr || slot->type == slot_setting::slot_type::unset) {
+            if (!slot->form || slot->type == slot_setting::slot_type::unset) {
                 logger::warn("form is null, skipping."sv);
                 continue;
             }
             logger::trace("executing setting for type {}, action {}, form {}, left {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),
-                util::string_util::int_to_hex(slot->form->GetFormID()),
+                slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null",
                 slot->equip_slot == item::equip_slot::get_left_hand_slot());
             execute_setting(slot, player);
-        }
-
-        if (!unequip.empty()) {
-            for (const auto slot : unequip) {
-                item::equip_slot::unequip_hand(slot, player);
-            }
         }
     }
 
@@ -96,6 +83,9 @@ namespace handle {
             case slot_setting::slot_type::misc:
                 //TODO
                 logger::warn("ignoring miscitem."sv);
+                break;
+            case slot_setting::slot_type::empty:
+                item::equip_slot::unequip_hand(a_slot->equip_slot, a_player, a_slot->action);
                 break;
         }
     }

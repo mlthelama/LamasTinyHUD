@@ -130,7 +130,7 @@ namespace papyrus {
     }
 
     void hud_mcm::set_action_value(RE::TESQuest*, const uint32_t a_index, const bool a_left, const uint32_t a_value) {
-        logger::trace("set ection was called for index {}, left {}, value {}"sv, a_index, a_left, a_value);
+        logger::trace("set action was called for index {}, left {}, value {}"sv, a_index, a_left, a_value);
         if (const auto section = get_section_by_index(a_index); !section.empty()) {
             if (a_left) {
                 config::custom_setting::write_slot_action_left_by_section(section, a_value);

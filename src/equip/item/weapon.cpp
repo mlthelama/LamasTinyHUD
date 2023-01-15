@@ -62,7 +62,7 @@ namespace item {
             //all we have are already equipped
             logger::warn("All Items we have of {} are equipped, return."sv, obj->GetName());
             //try to prevent the game to equip something else
-            equip_slot::unequip_hand(a_slot, a_player);
+            equip_slot::unequip_hand(a_slot, a_player, handle::slot_setting::acton_type::unequip);
             return;
         }
 

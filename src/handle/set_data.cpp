@@ -65,7 +65,7 @@ namespace handle {
             const auto item = new data_helper();
             item->form = nullptr;
             item->action_type = slot_setting::acton_type::default_action;
-            item->type = slot_setting::slot_type::unset;
+            item->type = slot_setting::slot_type::empty;
             data.push_back(item);
 
             logger::warn("Got no settings in List, create empty."sv);
@@ -93,7 +93,7 @@ namespace handle {
         const auto item = new data_helper();
         item->form = nullptr;
         item->action_type = slot_setting::acton_type::default_action;
-        item->type = slot_setting::slot_type::unset;
+        item->type = slot_setting::slot_type::empty;
         data.push_back(item);
 
         page_handle::get_singleton()->init_page(a_page,
@@ -148,56 +148,51 @@ namespace handle {
         }
 
 
-        if (form != nullptr) {
-            const auto type = static_cast<slot_setting::slot_type>(a_type);
+        const auto type = static_cast<slot_setting::slot_type>(a_type);
 
-            if (type != slot_setting::slot_type::magic && type != slot_setting::slot_type::weapon && type !=
-                slot_setting::slot_type::shield) {
-                hand = slot_setting::hand_equip::total;
-            }
-
-            if (type == slot_setting::slot_type::shield) {
-                logger::warn("Equipping shield on the Right hand might fail, or hand will be empty"sv);
-            }
-
-            logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
-                static_cast<uint32_t>(a_pos),
-                util::string_util::int_to_hex(form->GetFormID()),
-                static_cast<int>(type),
-                static_cast<uint32_t>(action),
-                static_cast<uint32_t>(hand));
-
-            const auto item = new data_helper();
-            item->form = form;
-            item->type = type;
-            item->action_type = action;
-            item->left = false;
-            data.push_back(item);
+        if (type != slot_setting::slot_type::magic && type != slot_setting::slot_type::weapon && type !=
+            slot_setting::slot_type::shield && type != slot_setting::slot_type::empty) {
+            hand = slot_setting::hand_equip::total;
         }
 
+        if (type == slot_setting::slot_type::shield) {
+            logger::warn("Equipping shield on the Right hand might fail, or hand will be empty"sv);
+        }
+
+        logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
+            static_cast<uint32_t>(a_pos),
+            form ? util::string_util::int_to_hex(form->GetFormID()) : "null",
+            static_cast<int>(type),
+            static_cast<uint32_t>(action),
+            static_cast<uint32_t>(hand));
+
+        const auto item = new data_helper();
+        item->form = form ? form : nullptr;
+        item->type = type;
+        item->action_type = action;
+        item->left = false;
+        data.push_back(item);
 
         logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
 
-        if (form_left != nullptr) {
-            if (const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
-                (type_left == slot_setting::slot_type::magic || type_left ==
-                 slot_setting::slot_type::weapon || type_left ==
-                 slot_setting::slot_type::shield) && hand == slot_setting::hand_equip::single) {
-                logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
-                    static_cast<uint32_t>(a_pos),
-                    util::string_util::int_to_hex(form_left->GetFormID()),
-                    static_cast<int>(type_left),
-                    static_cast<uint32_t>(action),
-                    static_cast<uint32_t>(hand));
+        if (hand == slot_setting::hand_equip::single) {
+            const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
+            action = static_cast<slot_setting::acton_type>(a_action_left);
+            logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
+                static_cast<uint32_t>(a_pos),
+                form_left ? util::string_util::int_to_hex(form_left->GetFormID()) : "null",
+                static_cast<int>(type_left),
+                static_cast<uint32_t>(action),
+                static_cast<uint32_t>(hand));
 
-                const auto item_left = new data_helper();
-                item_left->form = form_left;
-                item_left->type = type_left;
-                item_left->action_type = action;
-                item_left->left = true;
-                data.push_back(item_left);
-            }
+            const auto item_left = new data_helper();
+            item_left->form = form_left ? form_left : nullptr;
+            item_left->type = type_left;
+            item_left->action_type = action;
+            item_left->left = true;
+            data.push_back(item_left);
         }
+
         logger::trace("build data, calling handler, data size {}"sv, data.size());
 
         if (!data.empty()) {

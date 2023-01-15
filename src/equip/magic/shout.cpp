@@ -25,7 +25,7 @@ namespace magic {
         }
 
         if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
-            selected_power != nullptr) {
+            selected_power) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
                 selected_power->Is(RE::FormType::Shout),
