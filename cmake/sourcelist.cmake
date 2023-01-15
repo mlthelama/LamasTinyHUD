@@ -25,6 +25,8 @@ set(sources ${sources}
 	src/handle/edit_handle.h
 	src/handle/key_position.cpp
 	src/handle/key_position.h
+	src/handle/name_handle.cpp
+	src/handle/name_handle.h
 	src/handle/page/draw_setting.h
 	src/handle/page/fade_setting.h
 	src/handle/page/hud_offset_setting.h

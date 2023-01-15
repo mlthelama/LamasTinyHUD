@@ -19,5 +19,6 @@ namespace handle {
         uint32_t key = 0;
         transparency_setting* transparency_setting = nullptr;
         draw_setting* draw_setting = nullptr;
+        float font_size = 0.f;
     };
 }

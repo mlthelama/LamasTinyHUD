@@ -107,15 +107,16 @@ namespace magic {
                 0.0f,
                 nullptr);
         } else {
-
             const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
-            if(left && obj_left && obj_left->formID == spell->formID ) {
-                logger::debug("Object Left {} is already where it should be already equipped. return."sv, spell->GetName());
+            if (left && obj_left && obj_left->formID == spell->formID) {
+                logger::debug("Object Left {} is already where it should be already equipped. return."sv,
+                    spell->GetName());
                 return;
             }
-            if(!left && obj_right && obj_right->formID == spell->formID ) {
-                logger::debug("Object Right {} is already where it should be already equipped. return."sv, spell->GetName());
+            if (!left && obj_right && obj_right->formID == spell->formID) {
+                logger::debug("Object Right {} is already where it should be already equipped. return."sv,
+                    spell->GetName());
                 return;
             }
 

@@ -29,12 +29,19 @@ namespace config {
     static bool draw_toggle_button;
     static float toggle_key_offset_x;
     static float toggle_key_offset_y;
+    static float current_items_offset_x;
+    static float current_items_offset_y;
+    static float current_items_font_size;
+    static bool draw_current_items_text;
 
     static uint32_t background_transparency;
     static uint32_t background_icon_transparency;
     static uint32_t icon_transparency;
     static uint32_t key_transparency;
     static uint32_t text_transparency;
+    static uint32_t current_items_red;
+    static uint32_t current_items_green;
+    static uint32_t current_items_blue;
 
     static bool action_check;
     static bool empty_hand_setting;
@@ -56,6 +63,7 @@ namespace config {
             toggle_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uToggleKey", 27));
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
             config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
+            draw_toggle_button = mcm.GetBoolValue("Controls", "bDrawToggleButton", true);
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.23));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
@@ -77,13 +85,16 @@ namespace config {
             slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fSlotCountTextFontSize",
                 20));
-            draw_toggle_button = mcm.GetBoolValue("HudSetting", "bDrawToggleButton", true);
             toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetX",
                 115));
             toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetY",
                 115));
+            current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -400));
+            current_items_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetY", 130));
+            current_items_font_size = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsFontSize", 20));
+            draw_current_items_text = mcm.GetBoolValue("HudSetting", "bDrawCurrentItemsText", false);
 
             background_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting",
                 "uBackgroundTransparency",
@@ -94,6 +105,10 @@ namespace config {
             icon_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparency", 125));
             key_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uKeyTransparency", 255));
             text_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uTextTransparency", 255));
+
+            current_items_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsRed", 255));
+            current_items_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsGreen", 255));
+            current_items_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsBlue", 255));
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
@@ -132,11 +147,18 @@ namespace config {
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x; }
     float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y; }
+    float mcm_setting::get_current_items_offset_x() { return current_items_offset_x; }
+    float mcm_setting::get_current_items_offset_y() { return current_items_offset_y; }
+    float mcm_setting::get_current_items_font_size() { return current_items_font_size; }
+    bool mcm_setting::get_draw_current_items_text() { return draw_current_items_text; }
     uint32_t mcm_setting::get_background_transparency() { return background_transparency; }
     uint32_t mcm_setting::get_background_icon_transparency() { return background_icon_transparency; }
     uint32_t mcm_setting::get_icon_transparency() { return icon_transparency; }
     uint32_t mcm_setting::get_key_transparency() { return key_transparency; }
     uint32_t mcm_setting::get_text_transparency() { return text_transparency; }
+    uint32_t mcm_setting::get_current_items_red() { return current_items_red; }
+    uint32_t mcm_setting::get_current_items_green() { return current_items_green; }
+    uint32_t mcm_setting::get_current_items_blue() { return current_items_blue; }
 
     bool mcm_setting::get_action_check() { return action_check; }
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }

@@ -14,12 +14,15 @@
 #include "event/key_manager.h"
 #include "event/sink_event.h"
 #include "handle/key_position.h"
+#include "handle/name_handle.h"
 #include "handle/page_handle.h"
 #include "handle/set_data.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 
 namespace ui {
+    using mcm = config::mcm_setting;
+    
     struct image {
         ID3D11ShaderResourceView* texture = nullptr;
         int32_t width = 0;
@@ -180,17 +183,16 @@ namespace ui {
         const float a_y,
         const float a_offset_x,
         const float a_offset_y,
+        const float a_offset_extra_x,
+        const float a_offset_extra_y,
         const char* a_text,
-        const ImU32 a_color) {
+        const ImU32 a_color,
+        const float a_font_size) {
         const ImFont* font = ImGui::GetFont();
-        const auto font_size = config::mcm_setting::get_slot_count_text_font_size();
 
-        const auto extra_x = config::mcm_setting::get_slot_count_text_offset();
-        const auto extra_y = extra_x;
+        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x, a_y + a_offset_y + a_offset_extra_y);
 
-        const auto position = ImVec2(a_x + a_offset_x + extra_x, a_y + a_offset_y + extra_y);
-
-        ImGui::GetWindowDrawList()->AddText(font, font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
+        ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
 
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
@@ -246,28 +248,21 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_slots(const float a_screen_x,
-        const float a_screen_y,
+    void ui_renderer::draw_slots(const float a_x,
+        const float a_y,
         const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
-            const auto x = page_setting->draw_setting->width_setting <= a_screen_x ?
-                               page_setting->draw_setting->width_setting :
-                               0;
-            const auto y = page_setting->draw_setting->height_setting <= a_screen_y ?
-                               page_setting->draw_setting->height_setting :
-                               0;
-
             const auto offset_setting = page_setting->offset_setting;
-            draw_slot(x,
-                y,
+            draw_slot(a_x,
+                a_y,
                 page_setting->draw_setting->hud_image_scale_width,
                 page_setting->draw_setting->hud_image_scale_height,
                 offset_setting->offset_slot_x,
                 offset_setting->offset_slot_y,
                 page_setting->button_press_modify,
                 page_setting->transparency_setting->background_icon_transparency);
-            draw_icon(x,
-                y,
+            draw_icon(a_x,
+                a_y,
                 page_setting->draw_setting->icon_scale_width,
                 page_setting->draw_setting->icon_scale_height,
                 offset_setting->offset_slot_x,
@@ -285,12 +280,14 @@ namespace ui {
                     page_setting->draw_setting->height_setting,
                     offset_setting->offset_slot_x,
                     offset_setting->offset_slot_y,
+                    offset_setting->offset_text_x,
+                    offset_setting->offset_text_y,
                     std::to_string(slot_settings.front()->item_count).c_str(),
-                    color);
+                    color,
+                    page_setting->font_size);
             }
         }
     }
-
 
     void ui_renderer::draw_key(const float a_x,
         const float a_y,
@@ -309,29 +306,19 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_keys(const float a_screen_x,
-        const float a_screen_y,
-        const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
-            //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
-            const auto x = page_setting->draw_setting->width_setting <= a_screen_x ?
-                               page_setting->draw_setting->width_setting :
-                               0;
-            const auto y = page_setting->draw_setting->height_setting <= a_screen_y ?
-                               page_setting->draw_setting->height_setting :
-                               0;
-
             if (config::file_setting::get_draw_key_background()) {
-                draw_key(x,
-                    y,
+                draw_key(a_x,
+                    a_y,
                     page_setting->draw_setting->key_icon_scale_width,
                     page_setting->draw_setting->key_icon_scale_height,
                     offset_setting->offset_key_x,
                     offset_setting->offset_key_y);
             }
-            draw_key_icon(x,
-                y,
+            draw_key_icon(a_x,
+                a_y,
                 page_setting->draw_setting->key_icon_scale_width,
                 page_setting->draw_setting->key_icon_scale_height,
                 offset_setting->offset_key_x,
@@ -340,15 +327,15 @@ namespace ui {
                 page_setting->transparency_setting->key_transparency);
         }
 
-        if (config::mcm_setting::get_draw_toggle_button()) {
-            draw_key_icon(config::mcm_setting::get_hud_image_position_width(),
-                config::mcm_setting::get_hud_image_position_height(),
-                config::mcm_setting::get_key_icon_scale_width(),
-                config::mcm_setting::get_key_icon_scale_height(),
-                config::mcm_setting::get_toggle_key_offset_x(),
-                config::mcm_setting::get_toggle_key_offset_y(),
-                config::mcm_setting::get_toggle_key(),
-                config::mcm_setting::get_key_transparency());
+        if (mcm::get_draw_toggle_button()) {
+            draw_key_icon(mcm::get_hud_image_position_width(),
+                mcm::get_hud_image_position_height(),
+                mcm::get_key_icon_scale_width(),
+                mcm::get_key_icon_scale_height(),
+                mcm::get_toggle_key_offset_x(),
+                mcm::get_toggle_key_offset_y(),
+                mcm::get_toggle_key(),
+                mcm::get_key_transparency());
         }
     }
 
@@ -409,7 +396,7 @@ namespace ui {
             return;
         }
 
-        if (config::mcm_setting::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+        if (mcm::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
             return;
         }
 
@@ -428,18 +415,33 @@ namespace ui {
 
         const auto settings = handle::page_handle::get_singleton()->get_active_page();
 
-        const auto x = settings.begin()->second->draw_setting->width_setting;
-        const auto y = settings.begin()->second->draw_setting->height_setting;
+        auto x = settings.begin()->second->draw_setting->width_setting;
+        auto y = settings.begin()->second->draw_setting->height_setting;
         const auto scale_x = settings.begin()->second->draw_setting->hud_image_scale_width;
         const auto scale_y = settings.begin()->second->draw_setting->hud_image_scale_height;
         const auto alpha = settings.begin()->second->transparency_setting->background_transparency;
         if (screen_size_x < x || screen_size_y < y) {
-            draw_hud(0, 0, scale_x, scale_y, alpha);
-        } else {
-            draw_hud(x, y, scale_x, scale_y, alpha);
+            x = 0.f;
+            y = 0.f;
         }
-        draw_slots(screen_size_x, screen_size_y, settings);
-        draw_keys(screen_size_x, screen_size_y, settings);
+        draw_hud(x, y, scale_x, scale_y, alpha);
+        draw_slots(x, y, settings);
+        draw_keys(x, y, settings);
+        if (mcm::get_draw_current_items_text()) {
+            const ImU32 color = IM_COL32(mcm::get_current_items_red(),
+                mcm::get_current_items_green(),
+                mcm::get_current_items_blue(),
+                settings.begin()->second->transparency_setting->text_transparency);
+            draw_text(x,
+                y,
+                mcm::get_current_items_offset_x(),
+                mcm::get_current_items_offset_y(),
+                0.f,
+                0.f,
+                handle::name_handle::get_singleton()->get_item_name_string().c_str(),
+                color,
+                mcm::get_current_items_font_size());
+        }
 
         ImGui::End();
     }
@@ -492,7 +494,7 @@ namespace ui {
     image ui_renderer::get_key_icon(const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
         if (a_key >= event::key_manager::k_gamepad_offset) {
-            if (config::mcm_setting::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
+            if (mcm::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
                 return_image = ps_key_struct[a_key];
             } else {
                 return_image = xbox_key_struct[a_key];

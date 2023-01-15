@@ -43,8 +43,11 @@ namespace ui {
             float a_y,
             float a_offset_x,
             float a_offset_y,
+            float a_offset_extra_x,
+            float a_offset_extra_y,
             const char* a_text,
-            ImU32 a_color = IM_COL32_WHITE);
+            ImU32 a_color = IM_COL32_WHITE,
+            float a_font_size = 20.f);
         static void draw_element(ID3D11ShaderResourceView* a_texture,
             ImVec2 a_center,
             ImVec2 a_size,
@@ -59,7 +62,7 @@ namespace ui {
             float a_offset_y,
             uint32_t a_modify,
             uint32_t a_alpha);
-        static void draw_slots(float a_screen_x, float a_screen_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
         static void draw_key(float a_x,
             float a_y,
             float a_scale_x,
@@ -67,7 +70,7 @@ namespace ui {
             float a_offset_x,
             float a_offset_y,
             uint32_t a_alpha = 255);
-        static void draw_keys(float a_screen_x, float a_screen_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_keys(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
         static void draw_icon(float a_x,
             float a_y,
             float a_scale_x,

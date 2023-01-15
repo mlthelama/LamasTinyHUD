@@ -75,6 +75,10 @@ namespace handle {
         offset->offset_key_x = offset_x;
         offset->offset_key_y = offset_y;
 
+        //same for now
+        offset->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
+        offset->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
+
         page->offset_setting = offset;
 
         //TODO for now the right hand or the first setting defines the icon
@@ -104,6 +108,7 @@ namespace handle {
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
+        page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
         data->page_settings[a_page][a_position] = page;
 

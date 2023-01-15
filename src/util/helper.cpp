@@ -144,6 +144,133 @@ namespace util {
         return form;
     }
 
+    bool helper::is_two_handed(RE::TESForm*& a_form) {
+        //check if two handed
+        if (a_form->Is(RE::FormType::Spell)) {
+            if (const auto spell = a_form->As<RE::SpellItem>(); spell->IsTwoHanded()) {
+                return true;
+            }
+        }
+        if (a_form->IsWeapon()) {
+            if (const auto weapon = a_form->As<RE::TESObjectWEAP>();
+                weapon->IsTwoHandedAxe() || weapon->IsTwoHandedSword() || weapon->IsBow() || weapon->IsCrossbow()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    handle::slot_setting::slot_type helper::get_type(RE::TESForm*& a_form) {
+        if (a_form->IsWeapon()) {
+            if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); !weapon->IsBound()) {
+                return handle::slot_setting::slot_type::weapon;
+            }
+        }
+        if (a_form->IsArmor()) {
+            if (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->IsShield()) {
+                return handle::slot_setting::slot_type::shield;
+            }
+            return handle::slot_setting::slot_type::armor;
+        }
+        if (a_form->Is(RE::FormType::Spell)) {
+            const auto spell_type = a_form->As<RE::SpellItem>()->GetSpellType();
+            if (spell_type == RE::MagicSystem::SpellType::kSpell || spell_type ==
+                RE::MagicSystem::SpellType::kLeveledSpell) {
+                return handle::slot_setting::slot_type::magic;
+            }
+            if (spell_type == RE::MagicSystem::SpellType::kLesserPower || spell_type ==
+                RE::MagicSystem::SpellType::kPower) {
+                return handle::slot_setting::slot_type::power;
+            }
+        }
+        if (a_form->Is(RE::FormType::Shout)) {
+            return handle::slot_setting::slot_type::shout;
+        }
+        if (a_form->Is(RE::FormType::AlchemyItem)) {
+            return handle::slot_setting::slot_type::consumable;
+        }
+        if (a_form->Is(RE::FormType::Scroll)) {
+            return handle::slot_setting::slot_type::scroll;
+        }
+
+        return handle::slot_setting::slot_type::misc;
+    }
+
+    std::vector<data_helper*> helper::get_hand_assignment(RE::TESForm*& a_form) {
+        bool two_handed = false;
+        if (a_form) {
+            two_handed = is_two_handed(a_form);
+        }
+        
+        logger::trace("Item {} is two handed {}"sv, a_form ? a_form->GetName() : "null", two_handed);
+        return get_hand_assignment(two_handed);
+    }
+    
+    std::vector<data_helper*> helper::get_hand_assignment(bool a_two_handed) {
+        std::vector<data_helper*> data;
+        const auto player = RE::PlayerCharacter::GetSingleton();
+        auto right_obj = player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+        auto left_obj = player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+
+        const auto empty_handle = config::mcm_setting::get_empty_hand_setting();
+
+        const auto item = new data_helper();
+        item->form = nullptr;
+        item->left = false;
+        item->type = handle::slot_setting::slot_type::empty;
+        item->action_type = empty_handle ?
+                                handle::slot_setting::acton_type::unequip :
+                                handle::slot_setting::acton_type::default_action;
+        data.push_back(item);
+
+        const auto item2 = new data_helper();
+        item2->form = nullptr;
+        item2->left = true;
+        item2->type = handle::slot_setting::slot_type::empty;
+        item2->action_type = empty_handle ?
+                                 handle::slot_setting::acton_type::unequip :
+                                 handle::slot_setting::acton_type::default_action;
+        data.push_back(item2);
+
+        if (!a_two_handed) {
+            a_two_handed = right_obj ? is_two_handed(right_obj) : false;
+        }
+
+        logger::trace("got form {}, name {} on both/right hand"sv,
+            right_obj ? string_util::int_to_hex(right_obj->GetFormID()) : "null",
+            right_obj ? right_obj->GetName() : "null");
+
+        logger::trace("got form {}, name {} on left hand"sv,
+            left_obj ? string_util::int_to_hex(left_obj->GetFormID()) : "null",
+            left_obj ? left_obj->GetName() : "null");
+
+        if (a_two_handed && right_obj && left_obj && right_obj->formID == left_obj->formID) {
+            data[0]->form = right_obj;
+            data[0]->left = false;
+            data[0]->type = get_type(right_obj);
+            data[0]->action_type = handle::slot_setting::acton_type::default_action;
+            data.erase(data.begin() + 1);
+        }
+
+        if (right_obj) {
+            data[0]->form = right_obj;
+            data[0]->left = false;
+            data[0]->type = get_type(right_obj);
+            data[0]->action_type = handle::slot_setting::acton_type::default_action;
+        }
+
+        if (left_obj) {
+            data[1]->form = left_obj;
+            data[1]->left = true;
+            data[1]->type = get_type(left_obj);
+            data[1]->action_type = handle::slot_setting::acton_type::default_action;
+        }
+
+        logger::trace("got {} items in List now. return."sv, data.size());
+        return data;
+    }
+
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {
         //for now i will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);

@@ -92,6 +92,15 @@
                         "formatString": "{0}",
                         "sourceType": "ModSettingFloat"
                     }
+                },
+                {
+                    "id": "bDrawToggleButton:Controls",
+                    "text": "$LamasTinyHUD_DrawToggleButton_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_DrawToggleButton_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
                 }
             ]
         },
@@ -520,6 +529,32 @@
                     }
                 },
                 {
+                    "id": "fCurrentItemsOffsetX:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsOffsetX_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsOffsetX_InfoText",
+                    "valueOptions": {
+                        "min": -500.0,
+                        "max": 500.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fCurrentItemsOffsetY:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsOffsetY_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsOffsetY_InfoText",
+                    "valueOptions": {
+                        "min": -500.0,
+                        "max": 500.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_HudSetting_HeaderText_Misc",
                     "type": "header"
                 },
@@ -550,10 +585,23 @@
                     }
                 },
                 {
-                    "id": "bDrawToggleButton:HudSetting",
-                    "text": "$LamasTinyHUD_DrawToggleButton_OptionText",
+                    "id": "fCurrentItemsFontSize:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsFontSize_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsFontSize_InfoText",
+                    "valueOptions": {
+                        "min": 10.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "bDrawCurrentItemsText:HudSetting",
+                    "text": "$LamasTinyHUD_DrawCurrentItemsText_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_DrawToggleButton_InfoText",
+                    "help": "$LamasTinyHUD_DrawCurrentItemsText_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
@@ -636,6 +684,45 @@
                     "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Color",
                     "type": "header",
                     "position": 1
+                },
+                {
+                    "id": "uCurrentItemsRed:GraphicSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsRed_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsRed_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uCurrentItemsGreen:GraphicSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsGreen_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsGreen_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uCurrentItemsBlue:GraphicSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsBlue_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsBlue_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
                 }
             ]
         },
