@@ -160,6 +160,11 @@ namespace handle {
             static_cast<uint32_t>(action),
             static_cast<uint32_t>(hand));
 
+        if (form && action == slot_setting::acton_type::unequip) {
+            action = slot_setting::acton_type::default_action;
+            logger::warn("set action to default, because form was not null but unequip was set");
+        }
+        
         const auto item = new data_helper();
         item->form = form ? form : nullptr;
         item->type = type;
@@ -179,6 +184,11 @@ namespace handle {
                 static_cast<uint32_t>(action),
                 static_cast<uint32_t>(hand));
 
+            if (form_left && action == slot_setting::acton_type::unequip) {
+                action = slot_setting::acton_type::default_action;
+                logger::warn("set left action to default, because form was not null but unequip was set");
+            }
+            
             const auto item_left = new data_helper();
             item_left->form = form_left ? form_left : nullptr;
             item_left->type = type_left;

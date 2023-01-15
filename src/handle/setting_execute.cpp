@@ -15,18 +15,31 @@ namespace handle {
 
     void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
         logger::trace("got {} settings execute"sv, a_slots.size());
+        std::vector<RE::BGSEquipSlot*> unequip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
-            if (!slot->form || slot->type == slot_setting::slot_type::unset) {
-                logger::warn("form is null, skipping."sv);
+            if (!slot->form && slot->type != slot_setting::slot_type::empty) {
+                logger::warn("form is null and not type empty, skipping."sv);
                 continue;
             }
+
+            if (slot->form == nullptr && slot->type == slot_setting::slot_type::empty && slot->action ==
+                slot_setting::acton_type::unequip) {
+                unequip.push_back(slot->equip_slot);
+            }
+
             logger::trace("executing setting for type {}, action {}, form {}, left {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),
                 slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null",
                 slot->equip_slot == item::equip_slot::get_left_hand_slot());
             execute_setting(slot, player);
+        }
+
+        if (!unequip.empty()) {
+            for (const auto slot : unequip) {
+                item::equip_slot::unequip_hand(slot, player, slot_setting::acton_type::unequip);
+            }
         }
     }
 

@@ -41,17 +41,27 @@ namespace item {
             //update ui in this case
             return;
         }
-        auto equipped_count = 0;
         const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+        if(left && obj_left && obj_left->formID == obj->formID ) {
+            logger::debug("Object Left {} is already where it should be already equipped. return."sv, obj->GetName());
+            return;
+        }
+        if(!left && obj_right && obj_right->formID == obj->formID ) {
+            logger::debug("Object Right {} is already where it should be already equipped. return."sv, obj->GetName());
+            return;
+        }
+        
+        
+        auto equipped_count = 0;
         if (obj_right && obj_right->formID == obj->formID) {
             equipped_count++;
-            logger::debug("Object {} already equipped. return."sv, obj->GetName());
+            logger::debug("Object {} already equipped."sv, obj->GetName());
         }
 
         if (obj_left && obj_left->formID == obj->formID) {
             equipped_count++;
-            logger::debug("Object {} already equipped. return."sv, obj->GetName());
+            logger::debug("Object {} already equipped."sv, obj->GetName());
         }
 
         logger::trace("Got a count of {} in the Inventory {}, Equipped {}"sv,
