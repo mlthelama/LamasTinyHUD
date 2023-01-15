@@ -21,7 +21,6 @@ namespace config {
         static float get_hud_key_position_offset();
         static float get_icon_scale_width();
         static float get_icon_scale_height();
-        static uint32_t get_icon_opacity();
         static uint32_t get_slot_button_feedback();
         static float get_key_icon_scale_width();
         static float get_key_icon_scale_height();
@@ -30,7 +29,20 @@ namespace config {
         static bool get_draw_toggle_button();
         static float get_toggle_key_offset_x();
         static float get_toggle_key_offset_y();
+        static float get_current_items_offset_x();
+        static float get_current_items_offset_y();
+        static float get_current_items_font_size();
+        static bool get_draw_current_items_text();
 
+        static uint32_t get_background_transparency();
+        static uint32_t get_background_icon_transparency();
+        static uint32_t get_icon_transparency();
+        static uint32_t get_key_transparency();
+        static uint32_t get_text_transparency();
+        static uint32_t get_current_items_red();
+        static uint32_t get_current_items_green();
+        static uint32_t get_current_items_blue();
+        
         static bool get_action_check();
         static bool get_empty_hand_setting();
         static bool get_hide_outside_combat();

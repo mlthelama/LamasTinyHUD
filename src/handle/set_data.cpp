@@ -1,5 +1,6 @@
 ﻿#include "set_data.h"
 #include "key_position.h"
+#include "name_handle.h"
 #include "page_handle.h"
 #include "data/data_helper.h"
 #include "setting/custom_setting.h"
@@ -17,6 +18,8 @@ namespace handle {
 
         auto key_pos = key_position::get_singleton();
         key_pos->init_key_position_map();
+        
+        name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
         //set empty for each position, it will be overwritten if it is configured
         for (auto i = 0; i < util::page_count; ++i) {
@@ -74,10 +77,7 @@ namespace handle {
         page_handle::get_singleton()->init_page(a_page,
             a_pos,
             a_data.empty() ? data : a_data,
-            config::mcm_setting::get_hud_slot_position_offset(),
-            config::mcm_setting::get_hud_key_position_offset(),
             hand_equip,
-            config::mcm_setting::get_icon_opacity(),
             key_pos);
 
         logger::debug("calling helper to write to file"sv);
@@ -105,10 +105,7 @@ namespace handle {
         page_handle::get_singleton()->init_page(a_page,
             static_cast<page_setting::position>(a_pos),
             data,
-            mcm::get_hud_slot_position_offset(),
-            mcm::get_hud_key_position_offset(),
             slot_setting::hand_equip::total,
-            config::mcm_setting::get_icon_opacity(),
             a_key_pos);
     }
 
@@ -172,6 +169,11 @@ namespace handle {
             static_cast<uint32_t>(action),
             static_cast<uint32_t>(hand));
 
+        if (form && action == slot_setting::acton_type::unequip) {
+            action = slot_setting::acton_type::default_action;
+            logger::warn("set action to default, because form was not null but unequip was set");
+        }
+
         const auto item = new data_helper();
         item->form = form ? form : nullptr;
         item->type = type;
@@ -191,6 +193,11 @@ namespace handle {
                 static_cast<uint32_t>(action),
                 static_cast<uint32_t>(hand));
 
+            if (form_left && action == slot_setting::acton_type::unequip) {
+                action = slot_setting::acton_type::default_action;
+                logger::warn("set left action to default, because form was not null but unequip was set");
+            }
+
             const auto item_left = new data_helper();
             item_left->form = form_left ? form_left : nullptr;
             item_left->type = type_left;
@@ -205,10 +212,7 @@ namespace handle {
             page_handle::get_singleton()->init_page(a_page,
                 a_pos,
                 data,
-                config::mcm_setting::get_hud_slot_position_offset(),
-                config::mcm_setting::get_hud_key_position_offset(),
                 hand,
-                config::mcm_setting::get_icon_opacity(),
                 a_key_pos);
         }
     }

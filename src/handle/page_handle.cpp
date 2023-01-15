@@ -5,6 +5,8 @@
 #include "util/string_util.h"
 
 namespace handle {
+    using mcm = config::mcm_setting;
+
     page_handle* page_handle::get_singleton() {
         static page_handle singleton;
         return std::addressof(singleton);
@@ -13,10 +15,7 @@ namespace handle {
     void page_handle::init_page(uint32_t a_page,
         const page_setting::position a_position,
         const std::vector<data_helper*>& data_helpers,
-        const float a_slot_offset,
-        const float a_key_offset,
         const slot_setting::hand_equip a_hand,
-        const uint32_t a_opacity,
         key_position*& a_key_pos) {
         logger::trace("init page {}, position {}, data_size for settings {}, hand {} ..."sv,
             a_page,
@@ -28,6 +27,9 @@ namespace handle {
         }
 
         page_handle_data* data = this->data_;
+
+        const auto slot_offset = mcm::get_hud_slot_position_offset();
+        const auto key_offset = mcm::get_hud_key_position_offset();
 
         auto* page = new page_setting();
         page->pos = a_position;
@@ -64,15 +66,19 @@ namespace handle {
         float offset_x = 0.f;
         float offset_y = 0.f;
 
-        get_offset_values(a_position, a_slot_offset, offset_x, offset_y);
+        get_offset_values(a_position, slot_offset, offset_x, offset_y);
 
         auto* offset = new offset_setting();
         offset->offset_slot_x = offset_x;
         offset->offset_slot_y = offset_y;
 
-        get_offset_values(a_position, a_key_offset, offset_x, offset_y);
+        get_offset_values(a_position, key_offset, offset_x, offset_y);
         offset->offset_key_x = offset_x;
         offset->offset_key_y = offset_y;
+
+        //same for now
+        offset->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
+        offset->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
 
         page->offset_setting = offset;
 
@@ -83,9 +89,27 @@ namespace handle {
             page->icon_type = get_icon_type(slots->at(1)->type, slots->at(1)->form);
         }
 
-        page->icon_opacity = a_opacity;
+        auto* transparency = new transparency_setting();
+        transparency->background_transparency = mcm::get_background_transparency();
+        transparency->background_icon_transparency = mcm::get_background_icon_transparency();
+        transparency->icon_transparency = mcm::get_icon_transparency();
+        transparency->key_transparency = mcm::get_key_transparency();
+        transparency->text_transparency = mcm::get_text_transparency();
+        page->transparency_setting = transparency;
+
+        auto* draw = new draw_setting();
+        draw->width_setting = mcm::get_hud_image_position_width();
+        draw->height_setting = mcm::get_hud_image_position_height();
+        draw->hud_image_scale_width = mcm::get_hud_image_scale_width();
+        draw->hud_image_scale_height = mcm::get_hud_image_scale_height();
+        draw->key_icon_scale_width = mcm::get_key_icon_scale_width();
+        draw->key_icon_scale_height = mcm::get_key_icon_scale_height();
+        draw->icon_scale_width = mcm::get_icon_scale_width();
+        draw->icon_scale_height = mcm::get_icon_scale_height();
+        page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
+        page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
         data->page_settings[a_page][a_position] = page;
 

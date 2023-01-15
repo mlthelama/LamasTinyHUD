@@ -17,6 +17,13 @@ namespace util {
 
         static RE::TESForm* get_form_from_mod_id_string(const std::string& a_str);
 
+        static bool is_two_handed(RE::TESForm*& a_form);
+
+        static handle::slot_setting::slot_type get_type(RE::TESForm*& a_form);
+
+        static std::vector<data_helper*> get_hand_assignment(RE::TESForm*& a_form);
+
+        static std::vector<data_helper*> get_hand_assignment(bool a_two_handed = false);
     private:
         static std::string get_section_name_for_page_position(uint32_t a_page, uint32_t a_position);
     };

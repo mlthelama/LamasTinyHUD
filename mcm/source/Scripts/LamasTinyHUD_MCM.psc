@@ -63,16 +63,10 @@ Event OnSettingChange(String a_ID)
         
     elseif (a_ID == "uSlotAction:Page")
         int value = GetModSettingInt(a_ID)
-        if (value == 2)
-            value = 0
-        endif
         SetActionValue(GetModSettingInt("uPageList:Page"), False, value)
         RefreshMenu()
     elseif (a_ID == "uSlotActionLeft:Page")
         int value = GetModSettingInt(a_ID)
-        if (value == 2)
-            value = 0
-        endif
         SetActionValue(GetModSettingInt("uPageList:Page"), True, value)
         RefreshMenu()
     endif

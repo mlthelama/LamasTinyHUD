@@ -32,8 +32,15 @@ namespace item {
         if (a_action != handle::slot_setting::acton_type::unequip) {
             return;
         }
-        if (const auto equipped_object = a_player->GetEquippedObject(a_slot == get_left_hand_slot());
-            equipped_object) {
+        RE::TESForm* equipped_object = nullptr;
+        if (a_slot == get_left_hand_slot()) {
+            equipped_object = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+        }
+        if (a_slot == get_right_hand_slot()) {
+            equipped_object = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+        }
+
+        if (equipped_object) {
             logger::debug("Object {} is equipped, is left {}."sv,
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot());

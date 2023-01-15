@@ -14,12 +14,15 @@
 #include "event/key_manager.h"
 #include "event/sink_event.h"
 #include "handle/key_position.h"
+#include "handle/name_handle.h"
 #include "handle/page_handle.h"
 #include "handle/set_data.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 
 namespace ui {
+    using mcm = config::mcm_setting;
+    
     struct image {
         ID3D11ShaderResourceView* texture = nullptr;
         int32_t width = 0;
@@ -180,26 +183,16 @@ namespace ui {
         const float a_y,
         const float a_offset_x,
         const float a_offset_y,
+        const float a_offset_extra_x,
+        const float a_offset_extra_y,
         const char* a_text,
-        const ImU32 a_color) {
+        const ImU32 a_color,
+        const float a_font_size) {
         const ImFont* font = ImGui::GetFont();
-        const auto font_size = config::mcm_setting::get_slot_count_text_font_size();
 
-        //get data from normal hud, and add an offset config for each image
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
+        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x, a_y + a_offset_y + a_offset_extra_y);
 
-        const auto extra_x = config::mcm_setting::get_slot_count_text_offset();
-        const auto extra_y = extra_x;
-
-        ImVec2 position;
-        if (width_setting > a_x || height_setting > a_y) {
-            position = ImVec2(0.f, 0.f);
-        } else {
-            position = ImVec2(width_setting + a_offset_x + extra_x, height_setting + a_offset_y + extra_y);
-        }
-
-        ImGui::GetWindowDrawList()->AddText(font, font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
+        ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
 
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
@@ -222,55 +215,35 @@ namespace ui {
             ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], a_color);
     }
 
-    void ui_renderer::draw_hud(const float a_x, const float a_y) {
+    void ui_renderer::draw_hud(const float a_x,
+        const float a_y,
+        const float a_scale_x,
+        const float a_scale_y,
+        const uint32_t a_alpha) {
         constexpr auto angle = 0.f;
 
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        ImVec2 center;
-        if (width_setting > a_x || height_setting > a_y) {
-            center = ImVec2(0.f, 0.f);
-        } else {
-            center = ImVec2(width_setting, height_setting);
-        }
-
+        const auto center = ImVec2(a_x, a_y);
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::hud)];
+        const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
+        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
 
-        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width(),
-            static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height());
-
-        draw_element(texture, center, size, angle);
+        draw_element(texture, center, size, angle, color);
     }
 
-
-    void ui_renderer::draw_slot(const float a_x,
-        const float a_y,
+    void ui_renderer::draw_slot(const float a_screen_x,
+        const float a_screen_y,
+        const float a_scale_x,
+        const float a_scale_y,
         const float a_offset_x,
         const float a_offset_y,
-        const uint32_t a_modify) {
+        const uint32_t a_modify,
+        const uint32_t a_alpha) {
         constexpr auto angle = 0.f;
 
-        //get data from normal hud, and add an offset config for each image
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        ImVec2 center;
-        if (width_setting > a_x || height_setting > a_y) {
-            center = ImVec2(0.f, 0.f);
-        } else {
-            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
-        }
-
+        const auto center = ImVec2(a_screen_x + a_offset_x, a_screen_y + a_offset_y);
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::round)];
-
-        //for now use scale from normal setting, but later add separate config
-        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
-                                 config::file_setting::get_extra_size_for_image(),
-            static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
-            config::file_setting::get_extra_size_for_image());
-
-        const ImU32 color = IM_COL32(a_modify, a_modify, a_modify, draw_full);
+        const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
+        const ImU32 color = IM_COL32(a_modify, a_modify, a_modify, a_alpha);
 
         draw_element(texture, center, size, angle, color);
     }
@@ -279,143 +252,131 @@ namespace ui {
         const float a_y,
         const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
-            //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
             draw_slot(a_x,
                 a_y,
+                page_setting->draw_setting->hud_image_scale_width,
+                page_setting->draw_setting->hud_image_scale_height,
                 offset_setting->offset_slot_x,
                 offset_setting->offset_slot_y,
-                page_setting->button_press_modify);
+                page_setting->button_press_modify,
+                page_setting->transparency_setting->background_icon_transparency);
             draw_icon(a_x,
                 a_y,
+                page_setting->draw_setting->icon_scale_width,
+                page_setting->draw_setting->icon_scale_height,
                 offset_setting->offset_slot_x,
                 offset_setting->offset_slot_y,
                 page_setting->icon_type,
-                page_setting->icon_opacity);
+                page_setting->transparency_setting->icon_transparency);
 
             if (auto slot_settings = page_setting->slot_settings;
                 !slot_settings.empty() && slot_settings.front()->item_count > 0) {
-                draw_text(a_x,
-                    a_y,
+                const ImU32 color = IM_COL32(draw_full,
+                    draw_full,
+                    draw_full,
+                    page_setting->transparency_setting->text_transparency);
+                draw_text(page_setting->draw_setting->width_setting,
+                    page_setting->draw_setting->height_setting,
                     offset_setting->offset_slot_x,
                     offset_setting->offset_slot_y,
-                    std::to_string(slot_settings.front()->item_count).c_str());
+                    offset_setting->offset_text_x,
+                    offset_setting->offset_text_y,
+                    std::to_string(slot_settings.front()->item_count).c_str(),
+                    color,
+                    page_setting->font_size);
             }
         }
     }
 
-
-    void ui_renderer::draw_key(const float a_x, const float a_y, const float a_offset_x, const float a_offset_y) {
+    void ui_renderer::draw_key(const float a_x,
+        const float a_y,
+        const float a_scale_x,
+        const float a_scale_y,
+        const float a_offset_x,
+        const float a_offset_y,
+        const uint32_t a_alpha) {
         constexpr auto angle = 0.f;
 
-        //get data from normal hud, and add an offset config for each image
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        ImVec2 center;
-        if (width_setting > a_x || height_setting > a_y) {
-            center = ImVec2(0.f, 0.f);
-        } else {
-            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
-        }
-
+        const auto center = ImVec2(a_x + a_offset_x, a_y + a_offset_y);
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::key)];
+        const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
+        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
 
-        //for now use scale from normal setting, but later add separate config
-        //add hardcoded 1px
-        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_hud_image_scale_width() +
-                                 config::file_setting::get_extra_size_for_image(),
-            static_cast<float>(height) * config::mcm_setting::get_hud_image_scale_height() +
-            config::file_setting::get_extra_size_for_image());
-
-        draw_element(texture, center, size, angle);
+        draw_element(texture, center, size, angle, color);
     }
 
     void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
-            //we could access fade settings here too
             const auto offset_setting = page_setting->offset_setting;
             if (config::file_setting::get_draw_key_background()) {
-                draw_key(a_x, a_y, offset_setting->offset_key_x, offset_setting->offset_key_y);
+                draw_key(a_x,
+                    a_y,
+                    page_setting->draw_setting->key_icon_scale_width,
+                    page_setting->draw_setting->key_icon_scale_height,
+                    offset_setting->offset_key_x,
+                    offset_setting->offset_key_y);
             }
             draw_key_icon(a_x,
                 a_y,
+                page_setting->draw_setting->key_icon_scale_width,
+                page_setting->draw_setting->key_icon_scale_height,
                 offset_setting->offset_key_x,
                 offset_setting->offset_key_y,
                 page_setting->key,
-                draw_full);
+                page_setting->transparency_setting->key_transparency);
         }
 
-        if (config::mcm_setting::get_draw_toggle_button()) {
-            draw_key_icon(a_x,
-                a_y,
-                config::mcm_setting::get_toggle_key_offset_x(),
-                config::mcm_setting::get_toggle_key_offset_y(),
-                config::mcm_setting::get_toggle_key(),
-                draw_full);
+        if (mcm::get_draw_toggle_button()) {
+            draw_key_icon(mcm::get_hud_image_position_width(),
+                mcm::get_hud_image_position_height(),
+                mcm::get_key_icon_scale_width(),
+                mcm::get_key_icon_scale_height(),
+                mcm::get_toggle_key_offset_x(),
+                mcm::get_toggle_key_offset_y(),
+                mcm::get_toggle_key(),
+                mcm::get_key_transparency());
         }
     }
 
     void ui_renderer::draw_icon(const float a_x,
         const float a_y,
+        const float a_scale_x,
+        const float a_scale_y,
         const float a_offset_x,
         const float a_offset_y,
         const icon_image_type a_type,
-        const uint32_t a_opacity) {
+        const uint32_t a_alpha) {
         constexpr auto angle = 0.f;
 
-        //get data from normal hud, and add an offset config for each image
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        ImVec2 center;
-        if (width_setting > a_x || height_setting > a_y) {
-            center = ImVec2(0.f, 0.f);
-        } else {
-            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
-        }
+        const auto center = ImVec2(a_x + a_offset_x, a_y + a_offset_y);
 
         const auto [texture, width, height] = icon_struct[static_cast<int32_t>(a_type)];
 
-        //for now use scale from normal setting, but later add separate config
-        //add hardcoded 1px
-        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_icon_scale_width() +
-                                 config::file_setting::get_extra_size_for_image(),
-            static_cast<float>(height) * config::mcm_setting::get_icon_scale_height() +
-            config::file_setting::get_extra_size_for_image());
+        const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
 
-        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_opacity);
+        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
 
         draw_element(texture, center, size, angle, color);
     }
 
     void ui_renderer::draw_key_icon(const float a_x,
         const float a_y,
+        const float a_scale_x,
+        const float a_scale_y,
         const float a_offset_x,
         const float a_offset_y,
         const uint32_t a_key,
-        const uint32_t a_opacity) {
+        const uint32_t a_alpha) {
         constexpr auto angle = 0.f;
 
-        //get data from normal hud, and add an offset config for each image
-        const auto width_setting = config::mcm_setting::get_hud_image_position_width();
-        const auto height_setting = config::mcm_setting::get_hud_image_position_height();
-
-        ImVec2 center;
-        if (width_setting > a_x || height_setting > a_y) {
-            center = ImVec2(0.f, 0.f);
-        } else {
-            center = ImVec2(width_setting + a_offset_x, height_setting + a_offset_y);
-        }
+        const auto center = ImVec2(a_x + a_offset_x, a_y + a_offset_y);
 
         const auto [texture, width, height] = get_key_icon(a_key);
 
-        const auto size = ImVec2(static_cast<float>(width) * config::mcm_setting::get_key_icon_scale_width() +
-                                 config::file_setting::get_extra_size_for_image(),
-            static_cast<float>(height) * config::mcm_setting::get_key_icon_scale_height() +
-            config::file_setting::get_extra_size_for_image());
+        const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
 
-        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_opacity);
+        const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
 
         draw_element(texture, center, size, angle, color);
     }
@@ -435,7 +396,7 @@ namespace ui {
             return;
         }
 
-        if (config::mcm_setting::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+        if (mcm::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
             return;
         }
 
@@ -454,9 +415,33 @@ namespace ui {
 
         const auto settings = handle::page_handle::get_singleton()->get_active_page();
 
-        draw_hud(screen_size_x, screen_size_y);
-        draw_slots(screen_size_x, screen_size_y, settings);
-        draw_keys(screen_size_x, screen_size_y, settings);
+        auto x = settings.begin()->second->draw_setting->width_setting;
+        auto y = settings.begin()->second->draw_setting->height_setting;
+        const auto scale_x = settings.begin()->second->draw_setting->hud_image_scale_width;
+        const auto scale_y = settings.begin()->second->draw_setting->hud_image_scale_height;
+        const auto alpha = settings.begin()->second->transparency_setting->background_transparency;
+        if (screen_size_x < x || screen_size_y < y) {
+            x = 0.f;
+            y = 0.f;
+        }
+        draw_hud(x, y, scale_x, scale_y, alpha);
+        draw_slots(x, y, settings);
+        draw_keys(x, y, settings);
+        if (mcm::get_draw_current_items_text()) {
+            const ImU32 color = IM_COL32(mcm::get_current_items_red(),
+                mcm::get_current_items_green(),
+                mcm::get_current_items_blue(),
+                settings.begin()->second->transparency_setting->text_transparency);
+            draw_text(x,
+                y,
+                mcm::get_current_items_offset_x(),
+                mcm::get_current_items_offset_y(),
+                0.f,
+                0.f,
+                handle::name_handle::get_singleton()->get_item_name_string().c_str(),
+                color,
+                mcm::get_current_items_font_size());
+        }
 
         ImGui::End();
     }
@@ -509,7 +494,7 @@ namespace ui {
     image ui_renderer::get_key_icon(const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
         if (a_key >= event::key_manager::k_gamepad_offset) {
-            if (config::mcm_setting::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
+            if (mcm::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
                 return_image = ps_key_struct[a_key];
             } else {
                 return_image = xbox_key_struct[a_key];
