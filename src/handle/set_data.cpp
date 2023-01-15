@@ -87,6 +87,12 @@ namespace handle {
             static_cast<uint32_t>(hand_equip));
     }
 
+    void set_data::set_queue_slot([[maybe_unused]]page_setting::position a_pos,[[maybe_unused]] const std::vector<data_helper*>& a_data) {
+        //each data item will be a new page with this position
+        //get_next_page_id_for_position
+        
+    }
+
     void set_data::set_empty_slot(const int a_page, int a_pos, key_position*& a_key_pos) {
         logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;

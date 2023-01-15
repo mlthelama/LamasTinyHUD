@@ -38,8 +38,14 @@ namespace handle {
         }
 
         const auto page_handle = page_handle::get_singleton();
-        auto page = page_handle->get_active_page_id();
-        const auto page_setting = page_handle->get_page_setting(page, position);
+        page_setting* page_setting;
+        uint32_t page = 0;
+        if (mcm::get_elder_demon_souls()) {
+            page_setting = page_handle->get_active_position(position);
+        } else {
+            page = page_handle->get_active_page_id();
+            page_setting = page_handle->get_page_setting(page, position);
+        }
         if (page_setting == nullptr) {
             logger::warn("nothing to do, nothing set. return."sv);
         }

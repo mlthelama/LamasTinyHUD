@@ -13,6 +13,8 @@ namespace handle {
             page_setting::position a_pos,
             const std::vector<data_helper*>& a_data);
 
+        static void set_queue_slot(page_setting::position a_pos, const std::vector<data_helper*>& a_data);
+
     private:
         static void set_empty_slot(int a_page, int a_pos, key_position*& a_key_pos);
         static void set_slot(uint32_t a_page,

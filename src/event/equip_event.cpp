@@ -30,6 +30,10 @@ namespace event {
             return event_result::kContinue;
         }
 
+        //edit for elder demon souls
+        //right and left just weapons, left only one handed, right both
+        //buttom consumables, scrolls, and such
+        //top shouts, powers
         if (const auto edit_handle = handle::edit_handle::get_singleton();
             edit_handle->get_position() != handle::page_setting::position::total) {
             data_.clear();

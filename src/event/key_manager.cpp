@@ -107,9 +107,8 @@ namespace event {
 
             if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
                 if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time() &&
-                    (
-                        key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
-                        || key_ == key_left_action_)) {
+                    (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
+                     || key_ == key_left_action_)) {
                     const auto edit_handle = handle::edit_handle::get_singleton();
                     const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
                     if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ ==
@@ -160,7 +159,9 @@ namespace event {
             if (button->IsPressed() && is_key_valid(key_toggle_) && key_ == key_toggle_) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
                 const auto handler = handle::page_handle::get_singleton();
-                handler->set_active_page(handler->get_next_page_id());
+                if (!config::mcm_setting::get_elder_demon_souls()) {
+                    handler->set_active_page(handler->get_next_page_id());
+                }
 
                 reset_edit();
             }
@@ -187,9 +188,13 @@ namespace event {
                         static_cast<uint32_t>(edit_position),
                         edit_data.size());
 
-                    handle::set_data::set_single_slot(edit_page,
-                        edit_position,
-                        edit_data);
+                    if (config::mcm_setting::get_elder_demon_souls()) {
+                        handle::set_data::set_queue_slot(edit_position, edit_data);   
+                    } else {
+                        handle::set_data::set_single_slot(edit_page,
+                            edit_position,
+                            edit_data);
+                    }
 
                     //remove everything
                     reset_edit();
@@ -202,6 +207,11 @@ namespace event {
                 }
 
                 handle::setting_execute::execute_settings(page_setting->slot_settings);
+                if (config::mcm_setting::get_elder_demon_souls()) {
+                    //show next position for that
+                    //handler->set_active_page(handler->get_next_page_id());
+                    handle::page_handle::get_singleton()->set_next_active_for_position(page_setting->pos);
+                }
 
                 break;
             }

@@ -18,6 +18,7 @@ namespace handle {
             key_position*& a_key_pos);
 
         void set_active_page(uint32_t a_page) const;
+        void set_next_active_for_position(page_setting::position a_position) const;
 
         [[nodiscard]] page_setting* get_page_setting(uint32_t a_page, page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page(uint32_t a_page) const;
@@ -25,8 +26,10 @@ namespace handle {
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_active_page() const;
         [[nodiscard]] uint32_t get_active_page_id() const;
         [[nodiscard]] uint32_t get_next_page_id() const;
+        [[nodiscard]] page_setting* get_active_position(page_setting::position a_position) const;
         [[nodiscard]] uint32_t get_active_page_id_for_position(page_setting::position a_pos) const;
-        [[nodiscard]] uint32_t get_next_page_id_for_position(page_setting::position a_pos) const;
+        [[nodiscard]] uint32_t
+            get_next_page_id_for_position(page_setting::position a_pos, bool a_existing = true) const;
 
         page_handle(const page_handle&) = delete;
         page_handle(page_handle&&) = delete;

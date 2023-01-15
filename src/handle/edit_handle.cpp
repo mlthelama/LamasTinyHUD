@@ -1,5 +1,8 @@
 ﻿#include "edit_handle.h"
 
+#include "setting/custom_setting.h"
+#include "setting/mcm_setting.h"
+
 namespace handle {
     edit_handle* edit_handle::get_singleton() {
         static edit_handle singleton;
@@ -11,7 +14,11 @@ namespace handle {
             this->data_ = new edit_handle_data();
         }
         const auto page_handle = page_handle::get_singleton();
-        auto page = page_handle->get_active_page_id();
+        uint32_t page = 0;
+        if (!config::mcm_setting::get_elder_demon_souls()) {
+            //page does not matter for that setting, it will be a queue
+            page = page_handle->get_active_page_id();
+        }
         logger::trace("init edit for page {}, position {}"sv, page, static_cast<uint32_t>(a_position));
 
         std::vector<data_helper*> data_helpers;

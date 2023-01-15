@@ -1,5 +1,7 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
+#include "setting/custom_setting.h"
+#include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -103,6 +105,10 @@ namespace handle {
         data->active_page = a_page;
     }
 
+    void page_handle::set_next_active_for_position([[maybe_unused]]page_setting::position a_position) const {
+        
+    }
+
     page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && !data->page_settings.at(a_page).empty() && data->page_settings.
@@ -127,13 +133,26 @@ namespace handle {
     }
 
     std::map<page_setting::position, page_setting*> page_handle::get_active_page() const {
+        if (config::mcm_setting::get_elder_demon_souls()) {
+            std::map<page_setting::position, page_setting*> a_active;
+            for (auto i = 0; i < static_cast<int>(page_setting::position::total); ++i) {
+                auto pos = static_cast<page_setting::position>(i);
+                a_active.insert({pos, get_active_position(pos)});
+            }
+            return a_active;
+        }
+        
         if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
             return data->page_settings.at(data->active_page);
         }
+        
         return {};
     }
 
     uint32_t page_handle::get_active_page_id() const {
+        if (config::mcm_setting::get_elder_demon_souls()) {
+            return 0;
+        }
         if (const page_handle_data* data = this->data_; data) {
             return data->active_page;
         }
@@ -151,12 +170,17 @@ namespace handle {
         return {};
     }
 
+    page_setting* page_handle::get_active_position([[maybe_unused]] page_setting::position a_position) const {
+        return {};
+    }
+
     uint32_t page_handle::get_active_page_id_for_position([[maybe_unused]]page_setting::position a_pos) const {
 
         return 0;
     }
 
-    uint32_t page_handle::get_next_page_id_for_position([[maybe_unused]]page_setting::position a_pos) const {
+    uint32_t page_handle::get_next_page_id_for_position([[maybe_unused]]page_setting::position a_pos, [[maybe_unused]]bool a_existing) const {
+        //if not existing get last +1
         return 0;
     }
 
