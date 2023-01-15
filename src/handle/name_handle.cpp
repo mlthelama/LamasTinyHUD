@@ -32,7 +32,7 @@ namespace handle {
             if (data_helpers[1]->form) {
                 name_left = data_helpers[1]->form->GetName();
             }
-            data->name = fmt::format("{} {} {}", name_right, util::delimiter, name_left);
+            data->name = fmt::format("{} {} {}", name_left, util::delimiter, name_right);
         }
     }
 
