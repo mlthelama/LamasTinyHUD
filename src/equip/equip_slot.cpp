@@ -60,8 +60,9 @@ namespace item {
             }
             if (equipped_object->Is(RE::FormType::Spell)) {
                 //well since the spell can be "stuck" or the effect, lets go dummy dagger
-                unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
-
+                //unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
+                const auto hand = RE::TESForm::LookupByID<RE::TESForm>(0x000001F4)->As<RE::TESObjectWEAP>();
+                equip_manager->EquipObject(a_player, hand, nullptr, 1, a_slot);
                 did_call = true;
             }
             logger::trace("called unequip for {}, left {}, did call {}"sv,
