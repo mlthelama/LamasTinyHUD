@@ -1,5 +1,6 @@
 ﻿#include "equip_slot.h"
 #include "item/inventory.h"
+#include "magic/spell.h"
 #include "util/offset.h"
 
 namespace item {
@@ -45,7 +46,7 @@ namespace item {
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot());
             bool did_call = false;
-            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            auto equip_manager = RE::ActorEquipManager::GetSingleton();
             if (equipped_object->IsWeapon()) {
                 const auto weapon = equipped_object->As<RE::TESObjectWEAP>();
                 equip_manager->UnequipObject(a_player, weapon, nullptr, 1, a_slot);
@@ -58,8 +59,9 @@ namespace item {
                 }
             }
             if (equipped_object->Is(RE::FormType::Spell)) {
-                const auto spell = equipped_object->As<RE::SpellItem>();
-                equip_manager->UnequipObject(a_player, spell, nullptr, 1, a_slot);
+                //well since the spell can be "stuck" or the effect, lets go dummy dagger
+                unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
+
                 did_call = true;
             }
             logger::trace("called unequip for {}, left {}, did call {}"sv,
@@ -68,4 +70,22 @@ namespace item {
                 did_call);
         }
     }
+
+    void equip_slot::unequip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
+        RE::PlayerCharacter*& a_player,
+        RE::ActorEquipManager*& a_actor_equip_manager) {
+        const auto dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
+        a_actor_equip_manager->EquipObject(a_player, dummy, nullptr, 1, a_slot);
+        a_actor_equip_manager->UnequipObject(a_player, dummy, nullptr, 1, a_slot);
+    }
+
+    /*void equip_slot::unequip_spell(RE::BSScript::IVirtualMachine* a_vm,
+        RE::VMStackID a_stack_id,
+        RE::Actor* a_actor,
+        RE::SpellItem* a_spell,
+        uint32_t a_slot) {
+        using func_t = decltype(&unequip_spell);
+        REL::Relocation<func_t> func{ RELOCATION_ID(227783, 54666) };
+        func(a_vm, a_stack_id, a_actor, a_spell, a_slot);
+    }*/
 }

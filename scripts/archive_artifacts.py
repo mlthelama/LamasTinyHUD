@@ -18,8 +18,10 @@ def make_rel_archive(a_args):
         archive.write(path, os.path.join("SKSE/Plugins/resources/", path.parent.name, path.name))
 
     archive.write(os.path.join(a_args.src_dir, "mcm", "LamasTinyHUD.esl"), "LamasTinyHUD.esl")
-    archive.write(os.path.join(a_args.src_dir, "mcm", "scripts", "LamasTinyHUD_MCM.pex"),
-                  "scripts/LamasTinyHUD_MCM.pex")
+    v_path: str = os.path.join(a_args.src_dir, "mcm", "scripts")
+    for path in Path(v_path).rglob('*.pex'):
+        archive.write(path, os.path.join("scripts/", path.name))
+
     archive.write(os.path.join(a_args.src_dir, "mcm", "Config", "LamasTinyHUD", "config.json"),
                   "mcm/Config/LamasTinyHUD/config.json")
     archive.write(os.path.join(a_args.src_dir, "mcm", "Config", "LamasTinyHUD", "settings.ini"),
