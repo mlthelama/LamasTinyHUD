@@ -4,6 +4,7 @@
 #include "handle/setting_execute.h"
 #include "handle/set_data.h"
 #include "setting/mcm_setting.h"
+#include "util/helper.h"
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;
@@ -105,31 +106,13 @@ namespace event {
                 continue;
             }
 
-            if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
-                if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time() &&
-                    (
-                        key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
-                        || key_ == key_left_action_)) {
-                    const auto edit_handle = handle::edit_handle::get_singleton();
-                    const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                    if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ ==
-                        k_invalid) {
-                        logger::debug("configured key ({}) is held, enter edit mode"sv, key_);
-                        edit_handle->init_edit(page_setting->pos);
-                        const auto message = fmt::format("Entered Edit Mode for Position {}"sv,
-                            static_cast<uint32_t>(page_setting->pos));
-                        RE::DebugNotification(message.c_str());
-                        edit_active_ = key_;
-                        break;
-                    }
+            if (is_position_button(key_)) {
+                if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time()) {
+                    do_button_hold(key_);
                 }
-            } else {
-                reset_edit();
             }
 
-
-            if (button->IsDown() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_
-                                     || key_ == key_left_action_)) {
+            if (button->IsDown() && is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
                 //set slot to a different color
                 const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
@@ -140,8 +123,7 @@ namespace event {
                 page_setting->button_press_modify = button_press_modify_;
             }
 
-            if (button->IsUp() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ == key_bottom_action_ ||
-                                   key_ == key_left_action_)) {
+            if (button->IsUp() && is_position_button(key_)) {
                 logger::debug("configured Key ({}) is up"sv, key_);
                 //set slot back to normal color
                 const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
@@ -151,7 +133,6 @@ namespace event {
                 }
                 page_setting->button_press_modify = ui::draw_full;
             }
-
 
             if (!button->IsDown()) {
                 continue;
@@ -165,45 +146,10 @@ namespace event {
                 reset_edit();
             }
 
-
-            if (button->IsPressed() && (key_ == key_top_action_ || key_ == key_right_action_ || key_ ==
-                                        key_bottom_action_ || key_ == key_left_action_)) {
-                logger::debug("configured Key ({}) pressed"sv, key_);
-
-                const auto edit_handle = handle::edit_handle::get_singleton();
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                auto edit_page = edit_handle->get_page();
-                auto edit_position = edit_handle->get_position();
-                if (const auto page_handle = handle::page_handle::get_singleton();
-                    edit_position == page_setting->pos && edit_page == page_handle->
-                    get_active_page_id() && key_ == edit_active_) {
-                    const auto message = fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
-                        static_cast<uint32_t>(page_setting->pos));
-                    RE::DebugNotification(message.c_str());
-
-                    const auto edit_data = edit_handle->get_hold_data();
-                    logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
-                        edit_page,
-                        static_cast<uint32_t>(edit_position),
-                        edit_data.size());
-
-                    handle::set_data::set_single_slot(edit_page,
-                        edit_position,
-                        edit_data);
-
-                    //remove everything
-                    reset_edit();
-                    break;
+            if (is_position_button(key_)) {
+                if (button->IsPressed()) {
+                    do_button_press(key_);
                 }
-
-                if (page_setting == nullptr) {
-                    logger::trace("setting for key {} is null. return."sv, key_);
-                    break;
-                }
-
-                handle::setting_execute::execute_settings(page_setting->slot_settings);
-
-                break;
             }
         }
         return event_result::kContinue;
@@ -283,5 +229,69 @@ namespace event {
             edit_active_ = k_invalid;
             handle::edit_handle::get_singleton()->init_edit(handle::page_setting::position::total);
         }
+    }
+
+    void key_manager::do_button_press(uint32_t a_key) {
+        logger::debug("configured Key ({}) pressed"sv, a_key);
+
+        const auto edit_handle = handle::edit_handle::get_singleton();
+        const auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
+        auto edit_page = edit_handle->get_page();
+        auto edit_position = edit_handle->get_position();
+
+        if (const auto page_handle = handle::page_handle::get_singleton();
+            edit_position == page_setting->pos && edit_page == page_handle->
+            get_active_page_id() && a_key == edit_active_) {
+            util::helper::write_notification(fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
+                static_cast<uint32_t>(page_setting->pos)));
+
+            const auto edit_data = edit_handle->get_hold_data();
+            logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
+                edit_page,
+                static_cast<uint32_t>(edit_position),
+                edit_data.size());
+
+            handle::set_data::set_single_slot(edit_page,
+                edit_position,
+                edit_data);
+
+            //remove everything
+            reset_edit();
+            return;
+        }
+
+        if (page_setting == nullptr) {
+            logger::trace("setting for key {} is null. return."sv, a_key);
+        }
+
+
+        handle::setting_execute::execute_settings(page_setting->slot_settings);
+    }
+
+    void key_manager::do_button_hold(uint32_t a_key) {
+        if (RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+            reset_edit();
+            return;
+        }
+
+        const auto edit_handle = handle::edit_handle::get_singleton();
+        const auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
+        if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ ==
+            k_invalid) {
+            logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
+            edit_handle->init_edit(page_setting->pos);
+
+            util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
+                static_cast<uint32_t>(page_setting->pos)));
+            edit_active_ = a_key;
+        }
+    }
+
+    bool key_manager::is_position_button(const uint32_t a_key) const {
+        if (a_key == key_top_action_ || a_key == key_right_action_ || a_key == key_bottom_action_
+            || a_key == key_left_action_) {
+            return true;
+        }
+        return false;
     }
 }

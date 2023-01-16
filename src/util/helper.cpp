@@ -202,11 +202,11 @@ namespace util {
         if (a_form) {
             two_handed = is_two_handed(a_form);
         }
-        
+
         logger::trace("Item {} is two handed {}"sv, a_form ? a_form->GetName() : "null", two_handed);
         return get_hand_assignment(two_handed);
     }
-    
+
     std::vector<data_helper*> helper::get_hand_assignment(bool a_two_handed) {
         std::vector<data_helper*> data;
         const auto player = RE::PlayerCharacter::GetSingleton();
@@ -269,6 +269,10 @@ namespace util {
 
         logger::trace("got {} items in List now. return."sv, data.size());
         return data;
+    }
+
+    void helper::write_notification(std::string a_string) {
+        RE::DebugNotification(a_string.c_str());
     }
 
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {

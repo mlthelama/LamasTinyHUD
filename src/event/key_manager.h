@@ -34,7 +34,6 @@ namespace event {
 
         static bool is_key_valid(uint32_t a_key);
 
-
         uint32_t key_ = k_invalid;
         uint32_t key_top_action_ = k_invalid;
         uint32_t key_right_action_ = k_invalid;
@@ -47,5 +46,9 @@ namespace event {
         uint32_t edit_active_ = k_invalid;
 
         void reset_edit();
+
+        void do_button_press(uint32_t a_key);
+        void do_button_hold(uint32_t a_key);
+        [[nodiscard]] bool is_position_button(uint32_t a_key) const;
     };
 }

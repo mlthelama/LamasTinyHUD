@@ -22,7 +22,7 @@
 
 namespace ui {
     using mcm = config::mcm_setting;
-    
+
     struct image {
         ID3D11ShaderResourceView* texture = nullptr;
         int32_t width = 0;

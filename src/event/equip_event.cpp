@@ -25,7 +25,7 @@ namespace event {
         if (config::mcm_setting::get_draw_current_items_text()) {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
-        
+
         if (handle::edit_handle::get_singleton()->get_position() == handle::page_setting::position::total) {
             return event_result::kContinue;
         }

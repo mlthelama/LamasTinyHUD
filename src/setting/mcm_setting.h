@@ -42,7 +42,7 @@ namespace config {
         static uint32_t get_current_items_red();
         static uint32_t get_current_items_green();
         static uint32_t get_current_items_blue();
-        
+
         static bool get_action_check();
         static bool get_empty_hand_setting();
         static bool get_hide_outside_combat();
