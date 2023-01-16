@@ -18,7 +18,7 @@ namespace handle {
 
         auto key_pos = key_position::get_singleton();
         key_pos->init_key_position_map();
-        
+
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
         //set empty for each position, it will be overwritten if it is configured
