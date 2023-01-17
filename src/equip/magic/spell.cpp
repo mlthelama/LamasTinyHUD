@@ -83,7 +83,11 @@ namespace magic {
             logger::trace("got temp magicka {}, cost {}"sv, current_magicka, cost);
 
             if (current_magicka < cost) {
-                offset::flash_hud_menu_meter(RE::ActorValue::kMagicka);
+                if (const auto ui = RE::UI::GetSingleton(); !ui->GetMenu<RE::HUDMenu>()) {
+                    logger::warn("Will not flash HUD Menu, because I could not find it.");
+                } else {
+                    offset::flash_hud_menu_meter(RE::ActorValue::kMagicka);
+                }
                 logger::warn("not enough magicka for spell {}, magicka {}, cost {} return."sv,
                     a_form->GetName(),
                     current_magicka,

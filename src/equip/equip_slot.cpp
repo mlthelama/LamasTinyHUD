@@ -1,5 +1,7 @@
 ﻿#include "equip_slot.h"
 #include "item/inventory.h"
+#include "magic/spell.h"
+#include "util/helper.h"
 #include "util/offset.h"
 
 namespace item {
@@ -45,7 +47,7 @@ namespace item {
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot());
             bool did_call = false;
-            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            auto equip_manager = RE::ActorEquipManager::GetSingleton();
             if (equipped_object->IsWeapon()) {
                 const auto weapon = equipped_object->As<RE::TESObjectWEAP>();
                 equip_manager->UnequipObject(a_player, weapon, nullptr, 1, a_slot);
@@ -58,8 +60,7 @@ namespace item {
                 }
             }
             if (equipped_object->Is(RE::FormType::Spell)) {
-                const auto spell = equipped_object->As<RE::SpellItem>();
-                equip_manager->UnequipObject(a_player, spell, nullptr, 1, a_slot);
+                unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
                 did_call = true;
             }
             logger::trace("called unequip for {}, left {}, did call {}"sv,
@@ -67,5 +68,51 @@ namespace item {
                 a_slot == get_left_hand_slot(),
                 did_call);
         }
+    }
+
+    void equip_slot::unequip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
+        RE::PlayerCharacter*& a_player,
+        RE::ActorEquipManager*& a_actor_equip_manager) {
+        const auto dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
+        //sound false, queue false, force true
+        a_actor_equip_manager->EquipObject(a_player, dummy, nullptr, 1, a_slot, false, true, false);
+        a_actor_equip_manager->UnequipObject(a_player, dummy, nullptr, 1, a_slot, false, true, false);
+    }
+
+    void equip_slot::equip_unarmed(RE::PlayerCharacter*& a_player) {
+        const auto hand = RE::TESForm::LookupByID<RE::TESForm>(0x000001F4)->As<RE::TESObjectWEAP>();
+        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        equip_manager->EquipObject(a_player, hand, nullptr, 1, get_right_hand_slot());
+        equip_manager->EquipObject(a_player, hand, nullptr, 1, get_left_hand_slot());
+    }
+
+    void equip_slot::unequip_spell_by_slot(RE::Actor* a_actor, RE::SpellItem* a_spell, const RE::BGSEquipSlot* a_slot) {
+        int slot = 2;
+        if (a_slot == get_left_hand_slot()) {
+            slot = 1;
+        }
+        if (a_slot == get_right_hand_slot()) {
+            slot = 0;
+        }
+
+        /*const auto skyrim_vm = RE::SkyrimVM::GetSingleton();
+        if (const auto vm = skyrim_vm ? skyrim_vm->impl : nullptr) {
+            RE::BSTSmartPointer<RE::BSScript::IStackCallbackFunctor> callback;
+            const auto handle = skyrim_vm->handlePolicy.GetHandleForObject(static_cast<RE::VMTypeID>(RE::Actor::FORMTYPE), a_actor);
+            const auto args = RE::MakeFunctionArguments(std::move(a_spell), std::move(slot));
+            vm->DispatchMethodCall2(handle, "Actor", "UnequipSpell", args, callback);
+        }*/
+        
+        unequip_spell(nullptr, 0, a_actor, a_spell, slot);
+    }
+
+    void equip_slot::unequip_spell(RE::BSScript::IVirtualMachine* a_vm,
+        RE::VMStackID a_stack_id,
+        RE::Actor* a_actor,
+        RE::SpellItem* a_spell,
+        uint32_t a_slot) {
+        using func_t = decltype(&unequip_spell);
+        const REL::Relocation<func_t> func{ RELOCATION_ID(227784, 54669) };
+        func(a_vm, a_stack_id, a_actor, a_spell, a_slot);
     }
 }

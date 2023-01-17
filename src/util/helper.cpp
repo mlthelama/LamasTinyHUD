@@ -271,7 +271,7 @@ namespace util {
         return data;
     }
 
-    void helper::write_notification(std::string a_string) {
+    void helper::write_notification(const std::string a_string) {
         RE::DebugNotification(a_string.c_str());
     }
 

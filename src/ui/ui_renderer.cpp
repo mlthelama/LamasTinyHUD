@@ -415,32 +415,34 @@ namespace ui {
 
         const auto settings = handle::page_handle::get_singleton()->get_active_page();
 
-        auto x = settings.begin()->second->draw_setting->width_setting;
-        auto y = settings.begin()->second->draw_setting->height_setting;
-        const auto scale_x = settings.begin()->second->draw_setting->hud_image_scale_width;
-        const auto scale_y = settings.begin()->second->draw_setting->hud_image_scale_height;
-        const auto alpha = settings.begin()->second->transparency_setting->background_transparency;
-        if (screen_size_x < x || screen_size_y < y) {
-            x = 0.f;
-            y = 0.f;
-        }
-        draw_hud(x, y, scale_x, scale_y, alpha);
-        draw_slots(x, y, settings);
-        draw_keys(x, y, settings);
-        if (mcm::get_draw_current_items_text()) {
-            const ImU32 color = IM_COL32(mcm::get_current_items_red(),
-                mcm::get_current_items_green(),
-                mcm::get_current_items_blue(),
-                settings.begin()->second->transparency_setting->text_transparency);
-            draw_text(x,
-                y,
-                mcm::get_current_items_offset_x(),
-                mcm::get_current_items_offset_y(),
-                0.f,
-                0.f,
-                handle::name_handle::get_singleton()->get_item_name_string().c_str(),
-                color,
-                mcm::get_current_items_font_size());
+        if (!settings.empty()) {
+            auto x = settings.begin()->second->draw_setting->width_setting;
+            auto y = settings.begin()->second->draw_setting->height_setting;
+            const auto scale_x = settings.begin()->second->draw_setting->hud_image_scale_width;
+            const auto scale_y = settings.begin()->second->draw_setting->hud_image_scale_height;
+            const auto alpha = settings.begin()->second->transparency_setting->background_transparency;
+            if (screen_size_x < x || screen_size_y < y) {
+                x = 0.f;
+                y = 0.f;
+            }
+            draw_hud(x, y, scale_x, scale_y, alpha);
+            draw_slots(x, y, settings);
+            draw_keys(x, y, settings);
+            if (mcm::get_draw_current_items_text()) {
+                const ImU32 color = IM_COL32(mcm::get_current_items_red(),
+                    mcm::get_current_items_green(),
+                    mcm::get_current_items_blue(),
+                    settings.begin()->second->transparency_setting->text_transparency);
+                draw_text(x,
+                    y,
+                    mcm::get_current_items_offset_x(),
+                    mcm::get_current_items_offset_y(),
+                    0.f,
+                    0.f,
+                    handle::name_handle::get_singleton()->get_item_name_string().c_str(),
+                    color,
+                    mcm::get_current_items_font_size());
+            }
         }
 
         ImGui::End();
@@ -450,26 +452,29 @@ namespace ui {
     void ui_renderer::message_callback(SKSE::MessagingInterface::Message* msg)
     //CallBack & LoadTextureFromFile should called after resource loaded.
     {
-        if (msg->type == SKSE::MessagingInterface::kDataLoaded && d_3d_init_hook::initialized) {
-            // Read Texture only after game engine finished load all it renderer resource.
+        switch (msg->type) {
+            case SKSE::MessagingInterface::kDataLoaded:
+                if (d_3d_init_hook::initialized) {
+                    logger::trace("Load Images, scale values width {}, height {}"sv,
+                        get_resolution_scale_width(),
+                        get_resolution_scale_height());
 
-            logger::trace("Load Images, scale values width {}, height {}"sv,
-                get_resolution_scale_width(),
-                get_resolution_scale_height());
+                    load_images(image_type_path_map, image_struct);
+                    load_images(icon_type_path_map, icon_struct);
+                    load_images(key_icon_path_map, key_struct);
+                    load_images(default_key_icon_path_map, default_key_struct);
+                    load_images(gamepad_ps_icon_path_map, ps_key_struct);
+                    load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
-            load_images(image_type_path_map, image_struct);
-            load_images(icon_type_path_map, icon_struct);
-            load_images(key_icon_path_map, key_struct);
-            load_images(default_key_icon_path_map, default_key_struct);
-            load_images(gamepad_ps_icon_path_map, ps_key_struct);
-            load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
-
-            show_ui_ = true;
-            event::sink_events();
-            logger::info("done with data loaded");
-        } else if (msg->type == SKSE::MessagingInterface::kPostLoadGame) {
-            //config is already loaded
-            handle::set_data::read_and_set_data();
+                    show_ui_ = true;
+                    event::sink_events();
+                    logger::info("done with data loaded");
+                }
+                break;
+            case SKSE::MessagingInterface::kPostLoadGame:
+            case SKSE::MessagingInterface::kNewGame:
+                handle::set_data::read_and_set_data();
+                break;
         }
     }
 

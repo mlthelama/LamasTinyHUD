@@ -13,5 +13,14 @@ namespace item {
             RE::PlayerCharacter*& a_player,
             RE::ActorEquipManager*& a_actor_equip_manager);
         static void unequip_hand(const RE::BGSEquipSlot* a_slot, RE::PlayerCharacter*& a_player, action_type a_action);
+        static void unequip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
+            RE::PlayerCharacter*& a_player,
+            RE::ActorEquipManager*& a_actor_equip_manager);
+
+        //if I need them, I have them
+        static void equip_unarmed(RE::PlayerCharacter*& a_player);
+        static void unequip_spell_by_slot(RE::Actor* a_actor, RE::SpellItem* a_spell, const RE::BGSEquipSlot* a_slot);
+        // 0 - Left hand,  1 - Right hand
+        static void unequip_spell(RE::BSScript::IVirtualMachine* a_vm, RE::VMStackID a_stack_id, RE::Actor* a_actor, RE::SpellItem* a_spell, uint32_t a_slot);
     };
 }
