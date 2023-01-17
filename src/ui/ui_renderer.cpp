@@ -472,6 +472,8 @@ namespace ui {
         } else if (msg->type == SKSE::MessagingInterface::kPostLoadGame) {
             //config is already loaded
             handle::set_data::read_and_set_data();
+        } else if (msg->type == SKSE::MessagingInterface::kNewGame) {
+            handle::set_data::read_and_set_data();
         }
     }
 
