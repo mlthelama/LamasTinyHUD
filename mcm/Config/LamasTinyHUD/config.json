@@ -768,15 +768,6 @@
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
-                },
-                {
-                    "id": "bAlternativeEmptyHandEquip:MiscSetting",
-                    "text": "$LamasTinyHUD_AlternativeEmptyHandEquip_OptionText",
-                    "type": "toggle",
-                    "help": "$LamasTinyHUD_AlternativeEmptyHandEquip_InfoText",
-                    "valueOptions": {
-                        "sourceType": "ModSettingBool"
-                    }
                 }
             ]
         }

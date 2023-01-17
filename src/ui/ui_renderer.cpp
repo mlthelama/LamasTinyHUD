@@ -452,28 +452,29 @@ namespace ui {
     void ui_renderer::message_callback(SKSE::MessagingInterface::Message* msg)
     //CallBack & LoadTextureFromFile should called after resource loaded.
     {
-        if (msg->type == SKSE::MessagingInterface::kDataLoaded && d_3d_init_hook::initialized) {
-            // Read Texture only after game engine finished load all it renderer resource.
+        switch (msg->type) {
+            case SKSE::MessagingInterface::kDataLoaded:
+                if (d_3d_init_hook::initialized) {
+                    logger::trace("Load Images, scale values width {}, height {}"sv,
+                        get_resolution_scale_width(),
+                        get_resolution_scale_height());
 
-            logger::trace("Load Images, scale values width {}, height {}"sv,
-                get_resolution_scale_width(),
-                get_resolution_scale_height());
+                    load_images(image_type_path_map, image_struct);
+                    load_images(icon_type_path_map, icon_struct);
+                    load_images(key_icon_path_map, key_struct);
+                    load_images(default_key_icon_path_map, default_key_struct);
+                    load_images(gamepad_ps_icon_path_map, ps_key_struct);
+                    load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
-            load_images(image_type_path_map, image_struct);
-            load_images(icon_type_path_map, icon_struct);
-            load_images(key_icon_path_map, key_struct);
-            load_images(default_key_icon_path_map, default_key_struct);
-            load_images(gamepad_ps_icon_path_map, ps_key_struct);
-            load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
-
-            show_ui_ = true;
-            event::sink_events();
-            logger::info("done with data loaded");
-        } else if (msg->type == SKSE::MessagingInterface::kPostLoadGame) {
-            //config is already loaded
-            handle::set_data::read_and_set_data();
-        } else if (msg->type == SKSE::MessagingInterface::kNewGame) {
-            handle::set_data::read_and_set_data();
+                    show_ui_ = true;
+                    event::sink_events();
+                    logger::info("done with data loaded");
+                }
+                break;
+            case SKSE::MessagingInterface::kPostLoadGame:
+            case SKSE::MessagingInterface::kNewGame:
+                handle::set_data::read_and_set_data();
+                break;
         }
     }
 
