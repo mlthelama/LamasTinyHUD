@@ -14,8 +14,12 @@ namespace handle {
             slot_setting::hand_equip a_hand,
             key_position*& a_key_pos);
 
+        void init_actives(uint32_t a_page, page_setting::position a_position);
+
         void set_active_page(uint32_t a_page) const;
+        void set_active_page_per_position(uint32_t a_page, page_setting::position a_pos) const;
         void set_next_active_for_position(page_setting::position a_position) const;
+        void set_highest_page_for_position(uint32_t a_page, page_setting::position a_pos) const;
 
         [[nodiscard]] page_setting* get_page_setting(uint32_t a_page, page_setting::position a_position) const;
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_page(uint32_t a_page) const;
@@ -25,8 +29,8 @@ namespace handle {
         [[nodiscard]] uint32_t get_next_page_id() const;
         [[nodiscard]] page_setting* get_active_position(page_setting::position a_position) const;
         [[nodiscard]] uint32_t get_active_page_id_for_position(page_setting::position a_pos) const;
-        [[nodiscard]] uint32_t
-            get_next_page_id_for_position(page_setting::position a_pos, bool a_existing = true) const;
+        [[nodiscard]] uint32_t get_next_page_id_for_position(page_setting::position a_pos, bool a_existing = true) const;
+        [[nodiscard]] uint32_t get_highest_page_id_per_position(page_setting::position a_pos) const;
 
         page_handle(const page_handle&) = delete;
         page_handle(page_handle&&) = delete;
@@ -60,7 +64,8 @@ namespace handle {
         struct page_handle_data {
             std::map<uint32_t, std::map<page_setting::position, page_setting*>> page_settings;
             uint32_t active_page = 0;
-            std::vector<page_setting::position> active_page_per_positions;
+            std::map<uint32_t, uint32_t> active_page_per_positions;
+            std::map<uint32_t, uint32_t> highest_page_per_positions;
         };
 
         page_handle_data* data_;

@@ -36,12 +36,36 @@ namespace event {
             return event_result::kContinue;
         }
 
+
+        if (const auto edit_handle = handle::edit_handle::get_singleton();
+            edit_handle->get_position() != handle::page_setting::position::total &&
+            config::mcm_setting::get_elder_demon_souls() && a_event->equipped) {
+            const auto item = util::helper::is_suitable_for_position(form, edit_handle->get_position());
+            if (item->form) {
+                data_.push_back(item);
+                util::helper::write_notification(fmt::format("Added Item {}", form ? form->GetName() : "null"));
+            }
+
+            //check how many we already have
+            if (data_.size() == util::page_count) {
+                edit_handle->set_hold_data(data_);
+                util::helper::write_notification(fmt::format("Max Amount of {} Reached, rest will be Ignored",
+                    util::page_count));
+            }
+            if (data_.size() > util::page_count) {
+                util::helper::write_notification(fmt::format("Ignored Item {}", form ? form->GetName() : "null"));
+            }
+            edit_handle->set_hold_data(data_);
+            logger::trace("Size is {}"sv, data_.size());
+        }
+
         //edit for elder demon souls
         //right and left just weapons, left only one handed, right both
         //buttom consumables, scrolls, and such
         //top shouts, powers
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::page_setting::position::total) {
+            edit_handle->get_position() != handle::page_setting::position::total && !
+            config::mcm_setting::get_elder_demon_souls()) {
             data_.clear();
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always

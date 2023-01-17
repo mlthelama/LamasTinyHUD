@@ -275,6 +275,65 @@ namespace util {
         RE::DebugNotification(a_string.c_str());
     }
 
+    data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form, const handle::page_setting::position a_pos) {
+        //all kind of weapons and magic/spells
+        const auto item = new data_helper();
+        const auto type = get_type(a_form);
+        const auto two_handed = is_two_handed(a_form);
+        
+        switch (a_pos) {
+            case handle::page_setting::position::top:
+                switch (type) {
+                    case handle::slot_setting::slot_type::power:
+                    case handle::slot_setting::slot_type::shout:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        break;
+                }
+                break;
+            case handle::page_setting::position::right:
+                switch (type) {
+                    case handle::slot_setting::slot_type::weapon:
+                    case handle::slot_setting::slot_type::magic:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        break;
+                }
+                break;
+            case handle::page_setting::position::bottom:
+                switch (type) {
+                    case handle::slot_setting::slot_type::consumable:
+                    case handle::slot_setting::slot_type::scroll:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        break;
+                }
+                break;
+            case handle::page_setting::position::left:
+                switch (type) {
+                    case handle::slot_setting::slot_type::weapon:
+                    case handle::slot_setting::slot_type::magic:
+                    case handle::slot_setting::slot_type::shield:
+                        if (!two_handed) {
+                            item->form = a_form;
+                            item->type = type;
+                            item->two_handed = two_handed;
+                            item->left = true;
+                        }
+                        break;
+                }
+                break;
+        }
+        
+        return item;
+    }
+
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {
         //for now i will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);

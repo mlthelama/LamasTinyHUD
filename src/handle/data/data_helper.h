@@ -7,4 +7,5 @@ public:
     handle::slot_setting::slot_type type = handle::slot_setting::slot_type::empty;
     handle::slot_setting::acton_type action_type = handle::slot_setting::acton_type::default_action;
     bool left = false;
+    bool two_handed = false;
 };

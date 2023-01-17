@@ -1,14 +1,22 @@
 ﻿#include "custom_setting.h"
+
+#include "mcm_setting.h"
+
 #include <SimpleIni.h>
 
 namespace config {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom.ini)";
+    static const char* ini_path_elden = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom_Elden.ini)";
 
     static CSimpleIniA custom_ini;
 
     void custom_setting::read_setting() {
         custom_ini.SetUnicode();
-        custom_ini.LoadFile(ini_path);
+        if (mcm_setting::get_elder_demon_souls()) {
+            custom_ini.LoadFile(ini_path_elden);
+        } else {
+            custom_ini.LoadFile(ini_path);
+        }
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {

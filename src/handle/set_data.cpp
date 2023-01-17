@@ -22,7 +22,7 @@ namespace handle {
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
         //set empty for each position, it will be overwritten if it is configured
-        for (auto i = 0; i < util::page_count; ++i) {
+        for (auto i = 0; i <= util::page_count; ++i) {
             for (auto j = 0; j < static_cast<int>(page_setting::position::total); ++j) {
                 set_empty_slot(i, j, key_pos);
             }
@@ -44,6 +44,12 @@ namespace handle {
                 key_pos);
         }
         logger::trace("done setting. return."sv);
+
+        const auto handler = page_handle::get_singleton();
+        for (auto i = 0; i < static_cast<int>(page_setting::position::total); ++i) {
+            //will do for now, items could have been removed what so ever
+            handler->init_actives(0, static_cast<page_setting::position>(i));
+        }
     }
 
     void set_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, const int32_t a_count) {
@@ -87,10 +93,38 @@ namespace handle {
             static_cast<uint32_t>(hand_equip));
     }
 
-    void set_data::set_queue_slot([[maybe_unused]]page_setting::position a_pos,[[maybe_unused]] const std::vector<data_helper*>& a_data) {
+    void set_data::set_queue_slot(page_setting::position a_pos, const std::vector<data_helper*>& a_data) {
         //each data item will be a new page with this position
         //get_next_page_id_for_position
-        
+        logger::trace("Got {} items to process"sv, a_data.size());
+        if (a_data.empty()) {
+            return;
+        }
+
+        auto pos = static_cast<uint32_t>(a_pos);
+        auto key_pos = key_position::get_singleton();
+        const auto page_handle = page_handle::get_singleton();
+        for (auto item : a_data) {
+            const auto page = page_handle->get_next_page_id_for_position(a_pos, false);
+            auto hand = item->two_handed ? slot_setting::hand_equip::both : slot_setting::hand_equip::single;
+            logger::trace("working page {}, pos {}"sv, page, pos);
+            //for now make a vector with one item...
+            std::vector<data_helper*> data;
+            data.push_back(item);
+            page_handle->init_page(page,
+                a_pos,
+                data,
+                hand,
+                key_pos);
+
+            page_handle->set_highest_page_for_position(page, a_pos);
+            logger::debug("calling helper to write to file, page {}, pos {}"sv, page, pos);
+            util::helper::write_setting_helper(page,
+                pos,
+                a_data,
+                static_cast<uint32_t>(hand));
+        }
+        logger::trace("done with data items"sv);
     }
 
     void set_data::set_empty_slot(const int a_page, int a_pos, key_position*& a_key_pos) {
@@ -209,11 +243,16 @@ namespace handle {
         logger::trace("build data, calling handler, data size {}"sv, data.size());
 
         if (!data.empty()) {
-            page_handle::get_singleton()->init_page(a_page,
+            const auto page_handle = page_handle::get_singleton();
+            page_handle->init_page(a_page,
                 a_pos,
                 data,
                 hand,
                 a_key_pos);
+
+            if (mcm::get_elder_demon_souls()) {
+                page_handle->set_highest_page_for_position(a_page, a_pos);
+            }
         }
     }
 

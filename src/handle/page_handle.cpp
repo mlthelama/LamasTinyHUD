@@ -2,6 +2,7 @@
 #include "equip/equip_slot.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
+#include "util/constant.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -112,10 +113,20 @@ namespace handle {
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
         data->page_settings[a_page][a_position] = page;
-
         logger::trace("done setting page {}, position {}."sv,
             a_page,
             static_cast<uint32_t>(a_position));
+    }
+
+    void page_handle::init_actives(uint32_t a_page, page_setting::position a_position) {
+        if (!this->data_) {
+            this->data_ = new page_handle_data();
+        }
+        page_handle_data* data = this->data_;
+        auto pos = static_cast<uint32_t>(a_position);
+        logger::trace("init active page {} for postion {}"sv, a_page, pos);
+        data->active_page_per_positions[pos] = a_page;
+        data->highest_page_per_positions[pos] = a_page;
     }
 
     void page_handle::set_active_page(const uint32_t a_page) const {
@@ -129,8 +140,43 @@ namespace handle {
         data->active_page = a_page;
     }
 
-    void page_handle::set_next_active_for_position([[maybe_unused]]page_setting::position a_position) const {
-        
+    void page_handle::set_active_page_per_position(uint32_t a_page, page_setting::position a_pos) const {
+        if (!this->data_) {
+            return;
+        }
+        page_handle_data* data = this->data_;
+        auto pos = static_cast<uint32_t>(a_pos);
+        logger::trace("set active page {} for postion {}"sv, a_page, pos);
+        data->active_page_per_positions[pos] = a_page;
+    }
+
+    void page_handle::set_next_active_for_position(page_setting::position a_position) const {
+        if (const page_handle_data* data = this->data_; data && !data->active_page_per_positions.empty()) {
+            auto pos = static_cast<uint32_t>(a_position);
+            const auto current_active = get_active_page_id_for_position(a_position);
+            uint32_t next_page = 0;
+            //TODO that would result in empties util max, fix that later
+            if (current_active < util::page_count) {
+                next_page = current_active + 1;
+            }
+            logger::trace("set next active page {} for postion {}"sv, next_page, pos);
+            set_active_page_per_position(next_page, a_position);
+        }
+    }
+
+    void page_handle::set_highest_page_for_position(const uint32_t a_page, page_setting::position a_pos) const {
+        //highest_page_per_positions
+        const auto pos = static_cast<uint32_t>(a_pos);
+        if (page_handle_data* data = this->data_; data) {
+            uint32_t highest = 0;
+            if (data->highest_page_per_positions.contains(pos)) {
+                highest = data->highest_page_per_positions.at(pos);
+            }
+
+            if (highest < a_page) {
+                data->highest_page_per_positions[pos] = a_page;
+            }
+        }
     }
 
     page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
@@ -161,15 +207,15 @@ namespace handle {
             std::map<page_setting::position, page_setting*> a_active;
             for (auto i = 0; i < static_cast<int>(page_setting::position::total); ++i) {
                 auto pos = static_cast<page_setting::position>(i);
-                a_active.insert({pos, get_active_position(pos)});
+                a_active.insert({ pos, get_active_position(pos) });
             }
             return a_active;
         }
-        
+
         if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
             return data->page_settings.at(data->active_page);
         }
-        
+
         return {};
     }
 
@@ -194,17 +240,61 @@ namespace handle {
         return {};
     }
 
-    page_setting* page_handle::get_active_position([[maybe_unused]] page_setting::position a_position) const {
+    page_setting* page_handle::get_active_position(page_setting::position a_position) const {
+        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
+            const auto active = data->active_page_per_positions.at(static_cast<uint32_t>(a_position));
+            return data->page_settings.at(active).at(a_position);
+        }
         return {};
     }
 
-    uint32_t page_handle::get_active_page_id_for_position([[maybe_unused]]page_setting::position a_pos) const {
-
+    uint32_t page_handle::get_active_page_id_for_position(page_setting::position a_pos) const {
+        if (const page_handle_data* data = this->data_; data && !data->active_page_per_positions.empty()) {
+            return data->active_page_per_positions.at(static_cast<int32_t>(a_pos));
+        }
         return 0;
     }
 
-    uint32_t page_handle::get_next_page_id_for_position([[maybe_unused]]page_setting::position a_pos, [[maybe_unused]]bool a_existing) const {
-        //if not existing get last +1
+    uint32_t page_handle::get_next_page_id_for_position(page_setting::position a_pos, const bool a_existing) const {
+        const auto pos = static_cast<int32_t>(a_pos);
+        if (a_existing) {
+            return 0;
+        }
+        const page_handle_data* data = this->data_;
+        if (!data) {
+            return 0;
+        }
+
+        if (!data->highest_page_per_positions.empty() && data->highest_page_per_positions.contains(pos)) {
+            return data->highest_page_per_positions.at(pos) + 1;
+        }
+        
+        /*if (const page_handle_data* data = this->data_;
+            data && !data->active_page_per_positions.empty()) {
+            if (data->highest_page_per_positions.empty()) {
+                return 0;
+            }
+            const auto highest = data->highest_page_per_positions.at(pos);
+            const auto current = data->active_page_per_positions.at(pos);
+            if (a_existing) {
+                if (current < highest) {
+                    return current + 1;
+                }
+                return 0;
+            }
+
+            if (highest < util::page_count) {
+                return highest + 1;
+            }
+            return -1;
+        }*/
+        return 0;
+    }
+
+    uint32_t page_handle::get_highest_page_id_per_position(page_setting::position a_pos) const {
+        if (const page_handle_data* data = this->data_; data && !data->active_page_per_positions.empty()) {
+            return data->highest_page_per_positions.at(static_cast<int32_t>(a_pos));
+        }
         return 0;
     }
 
