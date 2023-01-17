@@ -1,6 +1,8 @@
 ﻿#include "equip_slot.h"
 #include "item/inventory.h"
 #include "magic/spell.h"
+#include "setting/custom_setting.h"
+#include "setting/mcm_setting.h"
 #include "util/offset.h"
 
 namespace item {
@@ -59,10 +61,15 @@ namespace item {
                 }
             }
             if (equipped_object->Is(RE::FormType::Spell)) {
-                //well since the spell can be "stuck" or the effect, lets go dummy dagger
-                //unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
-                if (a_slot == get_left_hand_slot()) {
-                    unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
+                if (config::mcm_setting::get_alternative_empty_hand_equip()) {
+                    //well since the spell can be "stuck" or the effect, lets go dummy dagger
+                    //unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
+                    if (a_slot == get_left_hand_slot()) {
+                        unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
+                    } else {
+                        const auto hand = RE::TESForm::LookupByID<RE::TESForm>(0x000001F4)->As<RE::TESObjectWEAP>();
+                        equip_manager->EquipObject(a_player, hand, nullptr, 1, a_slot);
+                    }
                 } else {
                     const auto hand = RE::TESForm::LookupByID<RE::TESForm>(0x000001F4)->As<RE::TESObjectWEAP>();
                     equip_manager->EquipObject(a_player, hand, nullptr, 1, a_slot);

@@ -47,6 +47,7 @@ namespace config {
     static bool empty_hand_setting;
     static bool hide_outside_combat;
     static bool disable_input_quick_loot;
+    static bool alternative_empty_hand_equip;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -114,6 +115,7 @@ namespace config {
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
             hide_outside_combat = mcm.GetBoolValue("MiscSetting", "bHideOutsideCombat", false);
             disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
+            alternative_empty_hand_equip = mcm.GetBoolValue("MiscSetting", "bAlternativeEmptyHandEquip", false);
         };
 
         read_mcm(mcm_default_setting);
@@ -164,4 +166,5 @@ namespace config {
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }
     bool mcm_setting::get_hide_outside_combat() { return hide_outside_combat; }
     bool mcm_setting::get_disable_input_quick_loot() { return disable_input_quick_loot; }
+    bool mcm_setting::get_alternative_empty_hand_equip() { return alternative_empty_hand_equip; }
 }
