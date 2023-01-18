@@ -1,12 +1,13 @@
 ﻿#include "setting_execute.h"
-#include "key_position.h"
-#include "page_handle.h"
 #include "equip/equip_slot.h"
 #include "equip/item/potion.h"
 #include "equip/item/weapon.h"
 #include "equip/magic/power.h"
 #include "equip/magic/shout.h"
 #include "equip/magic/spell.h"
+#include "handle/handle/key_position_handle.h"
+#include "handle/handle/page_handle.h"
+#include "handle/page/position_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
@@ -43,15 +44,15 @@ namespace handle {
         }
     }
 
-    page_setting* setting_execute::get_page_setting_for_key(const uint32_t a_key) {
-        const auto position = key_position::get_singleton()->get_position_for_key(a_key);
-        if (position == page_setting::position::total) {
+    position_setting* setting_execute::get_page_setting_for_key(const uint32_t a_key) {
+        const auto position = key_position_handle::get_singleton()->get_position_for_key(a_key);
+        if (position == position_setting::position::total) {
             logger::warn("nothing to do, nothing set. return."sv);
             return nullptr;
         }
 
         const auto page_handle = page_handle::get_singleton();
-        page_setting* page_setting;
+        position_setting* page_setting;
         uint32_t page;
         if (mcm::get_elder_demon_souls()) {
             page = page_handle->get_active_page_id_position(position);

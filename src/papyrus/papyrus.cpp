@@ -1,5 +1,6 @@
 ﻿#include "papyrus.h"
-#include "handle/set_data.h"
+
+#include "handle/setting/set_setting_data.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
@@ -12,16 +13,14 @@ namespace papyrus {
     void hud_mcm::on_config_close(RE::TESQuest*) {
         logger::info("on config close"sv);
         config::mcm_setting::read_setting();
-        handle::set_data::read_and_set_data();
+        handle::set_setting_data::read_and_set_data();
 
         logger::debug("on config close done. return."sv);
     }
 
-
     RE::BSFixedString hud_mcm::get_resolution_width(RE::TESQuest*) {
         return fmt::format(FMT_STRING("{:.2f}"), ui::ui_renderer::get_resolution_width());
     }
-
 
     RE::BSFixedString hud_mcm::get_resolution_height(RE::TESQuest*) {
         return fmt::format(FMT_STRING("{:.2f}"), ui::ui_renderer::get_resolution_height());

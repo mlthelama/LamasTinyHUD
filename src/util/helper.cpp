@@ -271,18 +271,18 @@ namespace util {
         return data;
     }
 
-    void helper::write_notification(const std::string a_string) {
+    void helper::write_notification(const std::string& a_string) {
         RE::DebugNotification(a_string.c_str());
     }
 
-    data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form, const handle::page_setting::position a_pos) {
+    data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form, const handle::position_setting::position a_pos) {
         //all kind of weapons and magic/spells
         const auto item = new data_helper();
         const auto type = get_type(a_form);
         const auto two_handed = is_two_handed(a_form);
         
         switch (a_pos) {
-            case handle::page_setting::position::top:
+            case handle::position_setting::position::top:
                 switch (type) {
                     case handle::slot_setting::slot_type::power:
                     case handle::slot_setting::slot_type::shout:
@@ -294,7 +294,7 @@ namespace util {
                         break;
                 }
                 break;
-            case handle::page_setting::position::right:
+            case handle::position_setting::position::right:
                 switch (type) {
                     case handle::slot_setting::slot_type::weapon:
                     case handle::slot_setting::slot_type::magic:
@@ -305,7 +305,7 @@ namespace util {
                         break;
                 }
                 break;
-            case handle::page_setting::position::bottom:
+            case handle::position_setting::position::bottom:
                 switch (type) {
                     case handle::slot_setting::slot_type::consumable:
                         item->form = a_form;
@@ -315,7 +315,7 @@ namespace util {
                         break;
                 }
                 break;
-            case handle::page_setting::position::left:
+            case handle::position_setting::position::left:
                 switch (type) {
                     case handle::slot_setting::slot_type::weapon:
                     case handle::slot_setting::slot_type::magic:

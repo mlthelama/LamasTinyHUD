@@ -1,8 +1,9 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
 #include "setting/custom_setting.h"
+#include "handle/data/data_helper.h"
+#include "handle/page/position_setting.h"
 #include "setting/mcm_setting.h"
-#include "util/constant.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -14,10 +15,10 @@ namespace handle {
     }
 
     void page_handle::init_page(uint32_t a_page,
-        const page_setting::position a_position,
+        const position_setting::position a_position,
         const std::vector<data_helper*>& data_helpers,
         const slot_setting::hand_equip a_hand,
-        key_position*& a_key_pos) {
+        key_position_handle*& a_key_pos) {
         logger::trace("init page {}, position {}, data_size for settings {}, hand {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -32,7 +33,7 @@ namespace handle {
         const auto slot_offset = mcm::get_hud_slot_position_offset();
         const auto key_offset = mcm::get_hud_key_position_offset();
 
-        auto* page = new page_setting();
+        auto* page = new position_setting();
         page->pos = a_position;
         page->page = a_page;
 
@@ -70,7 +71,7 @@ namespace handle {
 
         get_offset_values(a_position, slot_offset, offset_x, offset_y);
 
-        auto* offset = new offset_setting();
+        auto* offset = new hud_offset_setting();
         offset->offset_slot_x = offset_x;
         offset->offset_slot_y = offset_y;
 
@@ -123,7 +124,7 @@ namespace handle {
             static_cast<uint32_t>(a_position));
     }
 
-    void page_handle::init_actives(uint32_t a_page, page_setting::position a_position) {
+    void page_handle::init_actives(uint32_t a_page, position_setting::position a_position) {
         if (!this->data_) {
             this->data_ = new page_handle_data();
         }
@@ -142,7 +143,7 @@ namespace handle {
         data->active_page = a_page;
     }
 
-    void page_handle::set_active_page_position(const uint32_t a_page, page_setting::position a_pos) const {
+    void page_handle::set_active_page_position(const uint32_t a_page, position_setting::position a_pos) const {
         if (!this->data_) {
             return;
         }
@@ -150,8 +151,8 @@ namespace handle {
         logger::trace("set active page {} for postion {}"sv, a_page, static_cast<uint32_t>(a_pos));
         data->active_page_per_positions[a_pos] = a_page;
     }
-
-    page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
+    
+    position_setting* page_handle::get_page_setting(const uint32_t a_page,        const position_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
             at(a_page).contains(a_position)) {
@@ -160,7 +161,7 @@ namespace handle {
         return nullptr;
     }
 
-    std::map<page_setting::position, page_setting*> page_handle::get_page(const uint32_t a_page) const {
+    std::map<position_setting::position, position_setting*> page_handle::get_page(const uint32_t a_page) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(a_page)) {
             return data->page_settings.at(a_page);
@@ -168,25 +169,25 @@ namespace handle {
         return {};
     }
 
-    std::map<uint32_t, std::map<page_setting::position, page_setting*>> page_handle::get_pages() const {
+    std::map<uint32_t, std::map<position_setting::position, position_setting*>> page_handle::get_pages() const {
         if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
             return data->page_settings;
         }
         return {};
     }
-
-    std::map<page_setting::position, page_setting*> page_handle::get_active_page() const {
+    
+    std::map<position_setting::position, position_setting*> page_handle::get_active_page() const {
         if (config::mcm_setting::get_elder_demon_souls()) {
-            std::map<page_setting::position, page_setting*> a_active;
-            for (auto i = 0; i < static_cast<int>(page_setting::position::total); ++i) {
-                const auto pos = static_cast<page_setting::position>(i);
+            std::map<position_setting::position, position_setting*> a_active;
+            for (auto i = 0; i < static_cast<int>(position_setting::position::total); ++i) {
+                const auto pos = static_cast<position_setting::position>(i);
                 const auto page = get_active_page_id_position(pos);
                 auto page_setting = get_page_setting(page, pos);
                 a_active.insert({ pos, page_setting });
             }
             return a_active;
         }
-
+        
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(data->active_page)) {
             return data->page_settings.at(data->active_page);
@@ -216,9 +217,9 @@ namespace handle {
         }
         return {};
     }
-
-    std::map<page_setting::position, page_setting*> page_handle::get_active_page_position(
-        const page_setting::position a_position) const {
+    
+    std::map<position_setting::position, position_setting*> page_handle::get_active_page_position(
+        const position_setting::position a_position) const {
         if (const page_handle_data* data = this->data_; data) {
             if (const auto page = get_active_page_id_position(a_position);
                 !data->page_settings.empty() && data->page_settings.contains(page)) {
@@ -228,7 +229,7 @@ namespace handle {
         return {};
     }
 
-    uint32_t page_handle::get_active_page_id_position(const page_setting::position a_position) const {
+    uint32_t page_handle::get_active_page_id_position(const position_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
             data && !data->active_page_per_positions.empty() && data->active_page_per_positions.contains(a_position)) {
             return data->active_page_per_positions.at(a_position);
@@ -236,7 +237,7 @@ namespace handle {
         return 0;
     }
 
-    uint32_t page_handle::get_next_page_id_position(const page_setting::position a_position) const {
+    uint32_t page_handle::get_next_page_id_position(const position_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
             data && !data->active_page_per_positions.empty() && data->active_page_per_positions.contains(a_position)) {
             if (const auto current = data->active_page_per_positions.at(a_position);
@@ -249,7 +250,7 @@ namespace handle {
     }
 
     //could return the page as well here
-    uint32_t page_handle::get_next_non_empty_setting_for_position(const page_setting::position a_position) const {
+    uint32_t page_handle::get_next_non_empty_setting_for_position(const position_setting::position a_position) const {
         //if non found it will be 0
         auto next = 0;
         const auto max = static_cast<int>(mcm::get_max_page_count() - 1);
@@ -266,7 +267,7 @@ namespace handle {
         }
         
         logger::trace("checking up from next {} to max"sv, next, max);
-        const page_setting* page_setting = nullptr;
+        const position_setting* page_setting = nullptr;
         /*for (auto i = next; i <= max; ++i) {
             page_setting = get_page_setting(i, a_position);
             if (page_setting && page_setting->type != slot_setting::slot_type::empty) {
@@ -301,7 +302,8 @@ namespace handle {
     }
 
 
-    void page_handle::get_offset_values(const page_setting::position a_position,
+
+    void page_handle::get_offset_values(const position_setting::position a_position,
         const float a_setting,
         float& offset_x,
         float& offset_y) {
@@ -310,16 +312,16 @@ namespace handle {
         // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
         // ReSharper disable once CppIncompleteSwitchStatement
         switch (a_position) {
-            case page_setting::position::top:
+            case position_setting::position::top:
                 offset_y = -a_setting;
                 break;
-            case page_setting::position::right:
+            case position_setting::position::right:
                 offset_x = a_setting;
                 break;
-            case page_setting::position::bottom:
+            case position_setting::position::bottom:
                 offset_y = a_setting;
                 break;
-            case page_setting::position::left:
+            case position_setting::position::left:
                 offset_x = -a_setting;
                 break;
         }

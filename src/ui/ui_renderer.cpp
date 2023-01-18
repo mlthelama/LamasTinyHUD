@@ -13,10 +13,9 @@
 #include "key_path.h"
 #include "event/key_manager.h"
 #include "event/sink_event.h"
-#include "handle/key_position.h"
-#include "handle/name_handle.h"
-#include "handle/page_handle.h"
-#include "handle/set_data.h"
+#include "handle/handle/name_handle.h"
+#include "handle/handle/page_handle.h"
+#include "handle/setting/set_setting_data.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 
@@ -413,9 +412,7 @@ namespace ui {
 
         ImGui::Begin(hud_name, nullptr, window_flag);
 
-        const auto settings = handle::page_handle::get_singleton()->get_active_page();
-
-        if (!settings.empty()) {
+        if (const auto settings = handle::page_handle::get_singleton()->get_active_page(); !settings.empty()) {
             auto x = settings.begin()->second->draw_setting->width_setting;
             auto y = settings.begin()->second->draw_setting->height_setting;
             const auto scale_x = settings.begin()->second->draw_setting->hud_image_scale_width;
@@ -473,7 +470,7 @@ namespace ui {
                 break;
             case SKSE::MessagingInterface::kPostLoadGame:
             case SKSE::MessagingInterface::kNewGame:
-                handle::set_data::read_and_set_data();
+                handle::set_setting_data::read_and_set_data();
                 break;
         }
     }
