@@ -102,7 +102,7 @@ namespace item {
             const auto args = RE::MakeFunctionArguments(std::move(a_spell), std::move(slot));
             vm->DispatchMethodCall2(handle, "Actor", "UnequipSpell", args, callback);
         }*/
-        
+
         unequip_spell(nullptr, 0, a_actor, a_spell, slot);
     }
 
