@@ -155,6 +155,7 @@ namespace magic {
 
         if (obj == nullptr || left == 0) {
             logger::warn("could not find selected scroll, maybe it all have been consumed"sv);
+            return;
         }
 
         if (a_action == action_type::instant) {
