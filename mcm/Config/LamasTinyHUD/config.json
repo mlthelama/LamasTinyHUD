@@ -86,7 +86,7 @@
                     "type": "slider",
                     "help": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_InfoText",
                     "valueOptions": {
-                        "min": 3.0,
+                        "min": 1.0,
                         "max": 35.0,
                         "step": 1.0,
                         "formatString": "{0}",
@@ -776,6 +776,19 @@
                     "help": "$LamasTinyHUD_ElderDemonSouls_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "uMaxPageCount:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_MaxPageCount_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_MiscSetting_MaxPageCount_InfoText",
+                    "valueOptions": {
+                        "min": 2,
+                        "max": 4,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
                     }
                 }
             ]

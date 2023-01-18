@@ -21,8 +21,16 @@ namespace handle {
 
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
+        //we start at 0 so it is max count -1
+        if (const auto page_handle = page_handle::get_singleton();
+            mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
+            logger::warn("active page count is smaller than max count, set active to 0");
+            page_handle->set_active_page(0);
+        }
+
         //set empty for each position, it will be overwritten if it is configured
-        for (auto i = 0; i <= util::page_count; ++i) {
+        const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
+        for (auto i = 0; i < max; ++i) {
             for (auto j = 0; j < static_cast<int>(page_setting::position::total); ++j) {
                 set_empty_slot(i, j, key_pos);
             }
@@ -104,8 +112,10 @@ namespace handle {
         auto pos = static_cast<uint32_t>(a_pos);
         auto key_pos = key_position::get_singleton();
         const auto page_handle = page_handle::get_singleton();
+        auto page = 0;
         for (auto item : a_data) {
-            const auto page = page_handle->get_next_page_id_for_position(a_pos, false);
+            //const auto page = page_handle->get_next_page_id_position(a_pos);
+            ++page;
             auto hand = item->two_handed ? slot_setting::hand_equip::both : slot_setting::hand_equip::single;
             logger::trace("working page {}, pos {}"sv, page, pos);
             //for now make a vector with one item...
@@ -117,7 +127,6 @@ namespace handle {
                 hand,
                 key_pos);
 
-            page_handle->set_highest_page_for_position(page, a_pos);
             logger::debug("calling helper to write to file, page {}, pos {}"sv, page, pos);
             util::helper::write_setting_helper(page,
                 pos,
@@ -249,10 +258,6 @@ namespace handle {
                 data,
                 hand,
                 a_key_pos);
-
-            if (mcm::get_elder_demon_souls()) {
-                page_handle->set_highest_page_for_position(a_page, a_pos);
-            }
         }
     }
 

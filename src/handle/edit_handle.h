@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "page_handle.h"
+#include "setting/mcm_setting.h"
 #include "util/constant.h"
 
 namespace handle {
@@ -27,7 +28,7 @@ namespace handle {
         ~edit_handle() = default;
 
         struct edit_handle_data {
-            uint32_t page = util::page_count;
+            uint32_t page = config::mcm_setting::get_max_page_count();
             page_setting::position position = page_setting::position::total;
 
             std::vector<data_helper*> data_hold;
