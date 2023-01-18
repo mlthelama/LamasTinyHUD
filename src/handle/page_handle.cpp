@@ -147,9 +147,8 @@ namespace handle {
     }
 
     page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
-        if (const page_handle_data* data = this->data_;
-            data && !data->page_settings.empty() && !data->page_settings.at(a_page).empty() && data->page_settings.
-            contains(a_page) && data->page_settings.at(a_page).contains(a_position)) {
+        if (const page_handle_data* data = this->data_;            data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
+            at(a_page).contains(a_position)) {
             return data->page_settings.at(a_page).at(a_position);
         }
         return nullptr;
@@ -272,8 +271,7 @@ namespace handle {
         const bool a_left) {
         a_slot = nullptr;
         if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) && a_hand
-            ==
-            slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
+            == slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
             a_slot = a_left ? item::equip_slot::get_left_hand_slot() : item::equip_slot::get_right_hand_slot();
         }
     }
