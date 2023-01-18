@@ -1,6 +1,7 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
 #include "setting/mcm_setting.h"
+#include "util/constant.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -124,7 +125,6 @@ namespace handle {
         page_handle_data* data = this->data_;
 
         logger::trace("set active page to {}"sv, a_page);
-
         data->active_page = a_page;
     }
 
@@ -168,8 +168,9 @@ namespace handle {
     uint32_t page_handle::get_next_page_id() const {
         if (const page_handle_data* data = this->data_; data) {
             //lets make it easy for now
-            if (data->active_page == 0) {
-                return 1;
+            //we start at 0 so it is max count -1
+            if ( data->active_page < config::mcm_setting::get_max_page_count() -1 ) {
+                return data->active_page + 1;
             }
             return 0;
         }

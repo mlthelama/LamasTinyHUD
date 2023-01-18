@@ -47,6 +47,7 @@ namespace config {
     static bool empty_hand_setting;
     static bool hide_outside_combat;
     static bool disable_input_quick_loot;
+    static uint32_t max_page_count;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -114,6 +115,7 @@ namespace config {
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
             hide_outside_combat = mcm.GetBoolValue("MiscSetting", "bHideOutsideCombat", false);
             disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
+            max_page_count = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxPageCount", 2));
         };
 
         read_mcm(mcm_default_setting);
@@ -164,4 +166,5 @@ namespace config {
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }
     bool mcm_setting::get_hide_outside_combat() { return hide_outside_combat; }
     bool mcm_setting::get_disable_input_quick_loot() { return disable_input_quick_loot; }
+    uint32_t mcm_setting::get_max_page_count() { return max_page_count; }
 }

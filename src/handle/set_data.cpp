@@ -21,8 +21,16 @@ namespace handle {
 
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
+        //we start at 0 so it is max count -1
+        if (const auto page_handle = page_handle::get_singleton();
+            mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
+            logger::warn("active page count is smaller than max count, set active to 0");
+            page_handle->set_active_page(0);
+        }
+
         //set empty for each position, it will be overwritten if it is configured
-        for (auto i = 0; i < util::page_count; ++i) {
+        const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
+        for (auto i = 0; i < max; ++i) {
             for (auto j = 0; j < static_cast<int>(page_setting::position::total); ++j) {
                 set_empty_slot(i, j, key_pos);
             }
