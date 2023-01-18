@@ -785,7 +785,7 @@
                     "help": "$LamasTinyHUD_MiscSetting_MaxPageCount_InfoText",
                     "valueOptions": {
                         "min": 2,
-                        "max": 4,
+                        "max": 6,
                         "step": 1,
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"

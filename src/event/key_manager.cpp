@@ -135,22 +135,22 @@ namespace event {
                 page_setting->button_press_modify = ui::draw_full;
             }
 
-            if ( key_ == key_toggle_ && button->IsUp() && !is_toggle_down_) {
+            if (key_ == key_toggle_ && button->IsUp() && !is_toggle_down_) {
                 is_toggle_down_ = false;
             }
-            
-            if ( key_ == key_toggle_ && button->IsDown()) {
+
+            if (key_ == key_toggle_ && button->IsDown()) {
                 is_toggle_down_ = true;
             }
-            
+
             if (!button->IsDown()) {
                 continue;
             }
 
             if (button->IsPressed() && is_key_valid(key_toggle_) && key_ == key_toggle_) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
-                const auto handler = handle::page_handle::get_singleton();
                 if (!config::mcm_setting::get_elder_demon_souls()) {
+                    const auto handler = handle::page_handle::get_singleton();
                     handler->set_active_page(handler->get_next_page_id());
                 }
 
@@ -158,11 +158,13 @@ namespace event {
             }
 
             //TODO move into separate function
-            if (is_toggle_down_ && key_ == key_bottom_action_ && button->IsPressed() && is_key_valid(key_bottom_action_)) {
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                handle::page_handle::get_singleton()->set_next_active_for_position(page_setting->pos);
+            if (is_toggle_down_ && key_ == key_bottom_action_ && button->IsPressed() &&
+                is_key_valid(key_bottom_action_)) {
+                const auto position = handle::key_position::get_singleton()->get_position_for_key(key_);
+                const auto handler = handle::page_handle::get_singleton();
+                handler->set_active_page_position(handler->get_next_page_id_position(position), position);
             }
-            
+
             if (is_position_button(key_)) {
                 if (button->IsPressed()) {
                     do_button_press(key_);
@@ -269,13 +271,13 @@ namespace event {
                 edit_data.size());
 
             if (config::mcm_setting::get_elder_demon_souls()) {
-                handle::set_data::set_queue_slot(edit_position, edit_data);   
+                handle::set_data::set_queue_slot(edit_position, edit_data);
             } else {
                 handle::set_data::set_single_slot(edit_page,
                     edit_position,
                     edit_data);
             }
-            
+
             //remove everything
             reset_edit();
             return;
@@ -292,7 +294,9 @@ namespace event {
             //handler->set_active_page(handler->get_next_page_id());
             //TODO for now, trigger it with toggle button and its key
             if (page_setting->pos != handle::page_setting::position::bottom) {
-                handle::page_handle::get_singleton()->set_next_active_for_position(page_setting->pos);
+                const auto handler = handle::page_handle::get_singleton();
+                handler->set_active_page_position(handler->get_next_page_id_position(page_setting->pos),
+                    page_setting->pos);
             }
         }
     }

@@ -47,12 +47,12 @@ namespace event {
             }
 
             //check how many we already have
-            if (data_.size() == util::page_count) {
+            if (data_.size() == config::mcm_setting::get_max_page_count()) {
                 edit_handle->set_hold_data(data_);
                 util::helper::write_notification(fmt::format("Max Amount of {} Reached, rest will be Ignored",
-                    util::page_count));
+                    config::mcm_setting::get_max_page_count()));
             }
-            if (data_.size() > util::page_count) {
+            if (data_.size() > config::mcm_setting::get_max_page_count()) {
                 util::helper::write_notification(fmt::format("Ignored Item {}", form ? form->GetName() : "null"));
             }
             edit_handle->set_hold_data(data_);

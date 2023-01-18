@@ -52,9 +52,10 @@ namespace handle {
 
         const auto page_handle = page_handle::get_singleton();
         page_setting* page_setting;
-        uint32_t page = 0;
+        uint32_t page;
         if (mcm::get_elder_demon_souls()) {
-            page_setting = page_handle->get_active_position(position);
+            page = page_handle->get_active_page_id_position(position);
+            page_setting = page_handle->get_page_setting(page, position);
         } else {
             page = page_handle->get_active_page_id();
             page_setting = page_handle->get_page_setting(page, position);

@@ -12,11 +12,12 @@ namespace config {
 
     void custom_setting::read_setting() {
         custom_ini.SetUnicode();
-        if (mcm_setting::get_elder_demon_souls()) {
-            custom_ini.LoadFile(ini_path_elden);
-        } else {
-            custom_ini.LoadFile(ini_path);
-        }
+        //if (mcm_setting::get_elder_demon_souls()) {
+        //    custom_ini.LoadFile(ini_path_elden);
+        //} else {
+        //    custom_ini.LoadFile(ini_path);
+        //}
+        custom_ini.LoadFile(ini_path);
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {
