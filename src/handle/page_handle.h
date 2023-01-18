@@ -28,6 +28,7 @@ namespace handle {
         [[nodiscard]] std::map<page_setting::position, page_setting*> get_active_page_position(page_setting::position a_position) const;
         [[nodiscard]] uint32_t get_active_page_id_position(page_setting::position a_position) const;
         [[nodiscard]] uint32_t get_next_page_id_position(page_setting::position a_position) const;
+        [[nodiscard]] uint32_t get_next_non_empty_setting_for_position(page_setting::position a_position) const;
         
         
         page_handle(const page_handle&) = delete;

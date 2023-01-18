@@ -103,7 +103,7 @@ namespace util {
 
     std::vector<std::string> helper::get_configured_section_page_names() {
         std::vector<std::string> names;
-        for (const auto entries = config::custom_setting::get_sections(); auto entry : entries) {
+        for (const auto entries = config::custom_setting::get_sections(); const auto& entry : entries) {
             names.emplace_back(entry.pItem);
         }
         logger::trace("got {} sections"sv, names.size());
@@ -286,6 +286,7 @@ namespace util {
                 switch (type) {
                     case handle::slot_setting::slot_type::power:
                     case handle::slot_setting::slot_type::shout:
+                    case handle::slot_setting::slot_type::scroll:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
@@ -307,7 +308,6 @@ namespace util {
             case handle::page_setting::position::bottom:
                 switch (type) {
                     case handle::slot_setting::slot_type::consumable:
-                    case handle::slot_setting::slot_type::scroll:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;

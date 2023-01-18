@@ -17,7 +17,7 @@ namespace config {
         //} else {
         //    custom_ini.LoadFile(ini_path);
         //}
-        custom_ini.LoadFile(ini_path);
+        custom_ini.LoadFile(ini_path_elden);
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {
@@ -68,7 +68,7 @@ namespace config {
         logger::trace("resetting section {}"sv, a_section);
         custom_ini.Delete(a_section.c_str(), nullptr);
 
-        (void)custom_ini.SaveFile(ini_path);
+        (void)custom_ini.SaveFile(ini_path_elden);
         read_setting();
     }
 
@@ -76,7 +76,7 @@ namespace config {
         read_setting();
         custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", a_action);
 
-        (void)custom_ini.SaveFile(ini_path);
+        (void)custom_ini.SaveFile(ini_path_elden);
         read_setting();
     }
 
@@ -84,7 +84,7 @@ namespace config {
         read_setting();
         custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", a_action);
 
-        (void)custom_ini.SaveFile(ini_path);
+        (void)custom_ini.SaveFile(ini_path_elden);
         read_setting();
     }
 
@@ -125,7 +125,7 @@ namespace config {
         custom_ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
         custom_ini.SetLongValue(section, "uSlotActionLeft", a_action_left);
 
-        (void)custom_ini.SaveFile(ini_path);
+        (void)custom_ini.SaveFile(ini_path_elden);
         read_setting();
     }
 }

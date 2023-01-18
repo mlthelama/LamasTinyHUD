@@ -115,7 +115,6 @@ namespace handle {
         auto page = 0;
         for (auto item : a_data) {
             //const auto page = page_handle->get_next_page_id_position(a_pos);
-            ++page;
             auto hand = item->two_handed ? slot_setting::hand_equip::both : slot_setting::hand_equip::single;
             logger::trace("working page {}, pos {}"sv, page, pos);
             //for now make a vector with one item...
@@ -132,6 +131,8 @@ namespace handle {
                 pos,
                 a_data,
                 static_cast<uint32_t>(hand));
+            
+            ++page;
         }
         logger::trace("done with data items"sv);
     }

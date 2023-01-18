@@ -34,6 +34,7 @@ namespace handle {
 
         auto* page = new page_setting();
         page->pos = a_position;
+        page->page = a_page;
 
         /*auto* fade = new fade_setting();
         fade->action = fade_setting::action::unset;
@@ -112,6 +113,10 @@ namespace handle {
         page->key = a_key_pos->get_key_for_position(a_position);
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
+        if (mcm::get_elder_demon_souls()) {
+            //page->type = slots->front()->type;
+        }
+
         data->page_settings[a_page][a_position] = page;
         logger::trace("done setting page {}, position {}."sv,
             a_page,
@@ -147,7 +152,8 @@ namespace handle {
     }
 
     page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
-        if (const page_handle_data* data = this->data_;            data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
+        if (const page_handle_data* data = this->data_;
+            data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
             at(a_page).contains(a_position)) {
             return data->page_settings.at(a_page).at(a_position);
         }
@@ -155,7 +161,8 @@ namespace handle {
     }
 
     std::map<page_setting::position, page_setting*> page_handle::get_page(const uint32_t a_page) const {
-        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty() && data->page_settings.contains(a_page)) {
+        if (const page_handle_data* data = this->data_;
+            data && !data->page_settings.empty() && data->page_settings.contains(a_page)) {
             return data->page_settings.at(a_page);
         }
         return {};
@@ -180,7 +187,8 @@ namespace handle {
             return a_active;
         }
 
-        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty() && data->page_settings.contains(data->active_page)) {
+        if (const page_handle_data* data = this->data_;
+            data && !data->page_settings.empty() && data->page_settings.contains(data->active_page)) {
             return data->page_settings.at(data->active_page);
         }
 
@@ -236,6 +244,58 @@ namespace handle {
                 return current + 1;
             }
             return 0;
+        }
+        return 0;
+    }
+
+    //could return the page as well here
+    uint32_t page_handle::get_next_non_empty_setting_for_position(const page_setting::position a_position) const {
+        //if non found it will be 0
+        auto next = 0;
+        const auto max = static_cast<int>(mcm::get_max_page_count() - 1);
+        if (const page_handle_data* data = this->data_;
+            data && !data->active_page_per_positions.empty() && data->active_page_per_positions.contains(a_position)) {
+            const auto current = static_cast<int>(data->active_page_per_positions.at(a_position));
+            logger::trace("current page is {}, max is {}"sv, current, max);
+            if (current < max) {
+                next = current + 1;
+            } else {
+                logger::trace("Returning next {}"sv, next);
+                return next;
+            }
+        }
+        
+        logger::trace("checking up from next {} to max"sv, next, max);
+        const page_setting* page_setting = nullptr;
+        /*for (auto i = next; i <= max; ++i) {
+            page_setting = get_page_setting(i, a_position);
+            if (page_setting && page_setting->type != slot_setting::slot_type::empty) {
+                break;
+            }
+        }
+        if (page_setting) {
+            logger::trace("Returning next {}"sv, page_setting->page);
+            return page_setting->page;
+        }
+
+        logger::trace("checking up from 0 to next {}"sv, next);
+        for (auto i = 0; i <= next; ++i) {
+            page_setting = get_page_setting(i, a_position);
+            if (page_setting && page_setting->type != slot_setting::slot_type::empty) {
+                break;
+            }
+        }
+        */
+        if (page_setting) {
+            logger::trace("Returning next {}"sv, page_setting->page);
+            return page_setting->page;
+        }
+
+        //still nothing, just get the first one
+        page_setting = get_page_setting(0, a_position);
+        if (page_setting) {
+            logger::trace("Returning next {}"sv, page_setting->page);
+            return page_setting->page;
         }
         return 0;
     }

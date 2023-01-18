@@ -158,11 +158,10 @@ namespace event {
             }
 
             //TODO move into separate function
-            if (is_toggle_down_ && key_ == key_bottom_action_ && button->IsPressed() &&
+            if (is_toggle_down_ && scroll_position(key_) && button->IsPressed() &&
                 is_key_valid(key_bottom_action_)) {
-                const auto position = handle::key_position::get_singleton()->get_position_for_key(key_);
-                const auto handler = handle::page_handle::get_singleton();
-                handler->set_active_page_position(handler->get_next_page_id_position(position), position);
+                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                handle::setting_execute::execute_settings(page_setting->slot_settings);
             }
 
             if (is_position_button(key_)) {
@@ -254,7 +253,7 @@ namespace event {
         logger::debug("configured Key ({}) pressed"sv, a_key);
 
         const auto edit_handle = handle::edit_handle::get_singleton();
-        const auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
+        auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
         auto edit_page = edit_handle->get_page();
         auto edit_position = edit_handle->get_position();
 
@@ -288,16 +287,22 @@ namespace event {
         }
 
 
-        handle::setting_execute::execute_settings(page_setting->slot_settings);
         if (config::mcm_setting::get_elder_demon_souls()) {
             //show next position for that
             //handler->set_active_page(handler->get_next_page_id());
             //TODO for now, trigger it with toggle button and its key
-            if (page_setting->pos != handle::page_setting::position::bottom) {
-                const auto handler = handle::page_handle::get_singleton();
-                handler->set_active_page_position(handler->get_next_page_id_position(page_setting->pos),
-                    page_setting->pos);
+
+            const auto handler = handle::page_handle::get_singleton();
+            handler->set_active_page_position(handler->get_next_page_id_position(page_setting->pos),
+                page_setting->pos);
+            /*handler->set_active_page_position(handler->get_next_non_empty_setting_for_position(page_setting->pos),
+                page_setting->pos);*/
+            if (!scroll_position(a_key)) {
+                page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
+                handle::setting_execute::execute_settings(page_setting->slot_settings);
             }
+        } else {
+            handle::setting_execute::execute_settings(page_setting->slot_settings);
         }
     }
 
@@ -323,6 +328,13 @@ namespace event {
     bool key_manager::is_position_button(const uint32_t a_key) const {
         if (a_key == key_top_action_ || a_key == key_right_action_ || a_key == key_bottom_action_
             || a_key == key_left_action_) {
+            return true;
+        }
+        return false;
+    }
+
+    bool key_manager::scroll_position(const uint32_t a_key) const {
+        if (a_key == key_bottom_action_ || a_key == key_top_action_) {
             return true;
         }
         return false;

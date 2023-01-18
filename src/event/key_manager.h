@@ -51,5 +51,6 @@ namespace event {
         void do_button_press(uint32_t a_key);
         void do_button_hold(uint32_t a_key);
         [[nodiscard]] bool is_position_button(uint32_t a_key) const;
+        [[nodiscard]] bool scroll_position(uint32_t a_key) const;
     };
 }
