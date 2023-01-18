@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "key_position.h"
-#include "data/data_helper.h"
-#include "page/page_setting.h"
+#include "key_position_handle.h"
+#include "handle/data/data_helper.h"
+#include "handle/page/position_setting.h"
 #include "ui/image_path.h"
 
 namespace handle {
@@ -9,17 +9,17 @@ namespace handle {
     public:
         static page_handle* get_singleton();
         void init_page(uint32_t a_page,
-            page_setting::position a_position,
+            position_setting::position a_position,
             const std::vector<data_helper*>& data_helpers,
             slot_setting::hand_equip a_hand,
-            key_position*& a_key_pos);
+            key_position_handle*& a_key_pos);
 
         void set_active_page(uint32_t a_page) const;
 
-        [[nodiscard]] page_setting* get_page_setting(uint32_t a_page, page_setting::position a_position) const;
-        [[nodiscard]] std::map<page_setting::position, page_setting*> get_page(uint32_t a_page) const;
-        [[nodiscard]] std::map<uint32_t, std::map<page_setting::position, page_setting*>> get_pages() const;
-        [[nodiscard]] std::map<page_setting::position, page_setting*> get_active_page() const;
+        [[nodiscard]] position_setting* get_page_setting(uint32_t a_page, position_setting::position a_position) const;
+        [[nodiscard]] std::map<position_setting::position, position_setting*> get_page(uint32_t a_page) const;
+        [[nodiscard]] std::map<uint32_t, std::map<position_setting::position, position_setting*>> get_pages() const;
+        [[nodiscard]] std::map<position_setting::position, position_setting*> get_active_page() const;
         [[nodiscard]] uint32_t get_active_page_id() const;
         [[nodiscard]] uint32_t get_next_page_id() const;
 
@@ -35,7 +35,7 @@ namespace handle {
 
         ~page_handle() = default;
 
-        static void get_offset_values(page_setting::position a_position,
+        static void get_offset_values(position_setting::position a_position,
             float a_setting,
             float& offset_x,
             float& offset_y);
@@ -53,7 +53,7 @@ namespace handle {
         static void get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
 
         struct page_handle_data {
-            std::map<uint32_t, std::map<page_setting::position, page_setting*>> page_settings;
+            std::map<uint32_t, std::map<position_setting::position, position_setting*>> page_settings;
             uint32_t active_page = 0;
         };
 

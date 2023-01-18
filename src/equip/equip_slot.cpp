@@ -1,7 +1,6 @@
 ﻿#include "equip_slot.h"
 #include "item/inventory.h"
 #include "magic/spell.h"
-#include "util/helper.h"
 #include "util/offset.h"
 
 namespace item {

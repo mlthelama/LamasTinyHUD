@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "image_path.h"
-#include "handle/page/page_setting.h"
+#include "handle/page/position_setting.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -11,8 +11,8 @@ namespace ui {
     struct image;
 
     class ui_renderer {
-        using position = handle::page_setting::position;
-        using page_setting = handle::page_setting;
+        using position = handle::position_setting::position;
+        using page_setting = handle::position_setting;
 
         struct wnd_proc_hook {
             static LRESULT thunk(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param);

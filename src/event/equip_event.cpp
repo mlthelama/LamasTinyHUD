@@ -1,6 +1,6 @@
 ﻿#include "equip_event.h"
-#include "handle/edit_handle.h"
-#include "handle/name_handle.h"
+#include "handle/handle/edit_handle.h"
+#include "handle/handle/name_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
@@ -26,7 +26,7 @@ namespace event {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
 
-        if (handle::edit_handle::get_singleton()->get_position() == handle::page_setting::position::total) {
+        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position::total) {
             return event_result::kContinue;
         }
 
@@ -37,7 +37,7 @@ namespace event {
         }
 
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::page_setting::position::total) {
+            edit_handle->get_position() != handle::position_setting::position::total) {
             data_.clear();
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always

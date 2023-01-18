@@ -103,7 +103,7 @@ namespace util {
 
     std::vector<std::string> helper::get_configured_section_page_names() {
         std::vector<std::string> names;
-        for (const auto entries = config::custom_setting::get_sections(); auto entry : entries) {
+        for (const auto entries = config::custom_setting::get_sections(); const auto& entry : entries) {
             names.emplace_back(entry.pItem);
         }
         logger::trace("got {} sections"sv, names.size());
@@ -271,7 +271,7 @@ namespace util {
         return data;
     }
 
-    void helper::write_notification(const std::string a_string) {
+    void helper::write_notification(const std::string& a_string) {
         RE::DebugNotification(a_string.c_str());
     }
 

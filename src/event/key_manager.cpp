@@ -1,8 +1,8 @@
 ﻿#include "key_manager.h"
-#include "handle/edit_handle.h"
-#include "handle/page_handle.h"
-#include "handle/setting_execute.h"
-#include "handle/set_data.h"
+#include "handle/handle/edit_handle.h"
+#include "handle/handle/page_handle.h"
+#include "handle/setting/setting_execute.h"
+#include "handle/setting/set_setting_data.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
 
@@ -227,7 +227,7 @@ namespace event {
         if (edit_active_ != k_invalid) {
             //remove everything
             edit_active_ = k_invalid;
-            handle::edit_handle::get_singleton()->init_edit(handle::page_setting::position::total);
+            handle::edit_handle::get_singleton()->init_edit(handle::position_setting::position::total);
         }
     }
 
@@ -251,7 +251,7 @@ namespace event {
                 static_cast<uint32_t>(edit_position),
                 edit_data.size());
 
-            handle::set_data::set_single_slot(edit_page,
+            handle::set_setting_data::set_single_slot(edit_page,
                 edit_position,
                 edit_data);
 
@@ -276,7 +276,7 @@ namespace event {
 
         const auto edit_handle = handle::edit_handle::get_singleton();
         const auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
-        if (edit_handle->get_position() == handle::page_setting::position::total && edit_active_ ==
+        if (edit_handle->get_position() == handle::position_setting::position::total && edit_active_ ==
             k_invalid) {
             logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
             edit_handle->init_edit(page_setting->pos);

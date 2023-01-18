@@ -1,11 +1,8 @@
-﻿#include "set_data.h"
-#include "key_position.h"
-#include "name_handle.h"
-#include "page_handle.h"
-#include "data/data_helper.h"
+﻿#include "set_setting_data.h"
+#include "handle/handle/name_handle.h"
+#include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
-#include "util/constant.h"
 #include "util/helper.h"
 #include "util/string_util.h"
 
@@ -13,10 +10,10 @@ namespace handle {
     using mcm = config::mcm_setting;
     using custom = config::custom_setting;
 
-    void set_data::read_and_set_data() {
+    void set_setting_data::read_and_set_data() {
         logger::trace("Setting handlers ..."sv);
 
-        auto key_pos = key_position::get_singleton();
+        auto key_pos = key_position_handle::get_singleton();
         key_pos->init_key_position_map();
 
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
@@ -31,7 +28,7 @@ namespace handle {
         //set empty for each position, it will be overwritten if it is configured
         const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
-            for (auto j = 0; j < static_cast<int>(page_setting::position::total); ++j) {
+            for (auto j = 0; j < static_cast<int>(position_setting::position::total); ++j) {
                 set_empty_slot(i, j, key_pos);
             }
         }
@@ -41,7 +38,7 @@ namespace handle {
 
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             set_slot(custom::get_page_by_section(section),
-                static_cast<page_setting::position>(custom::get_position_by_section(section)),
+                static_cast<position_setting::position>(custom::get_position_by_section(section)),
                 custom::get_item_form_by_section(section),
                 custom::get_type_by_section(section),
                 custom::get_hand_selection_by_section(section),
@@ -54,15 +51,15 @@ namespace handle {
         logger::trace("done setting. return."sv);
     }
 
-    void set_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, const int32_t a_count) {
+    void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, const int32_t a_count) {
         set_new_item_count(a_obj->GetFormID(), a_obj->GetName(), a_count);
     }
 
-    void set_data::set_single_slot(const uint32_t a_page,
-        const page_setting::position a_pos,
+    void set_setting_data::set_single_slot(const uint32_t a_page,
+        const position_setting::position a_pos,
         const std::vector<data_helper*>& a_data) {
         //well for now we have to match
-        auto key_pos = key_position::get_singleton();
+        auto key_pos = key_position_handle::get_singleton();
         auto hand_equip = slot_setting::hand_equip::total;
         if (const auto hand = a_data.size(); hand == 1) {
             hand_equip = slot_setting::hand_equip::both;
@@ -95,7 +92,7 @@ namespace handle {
             static_cast<uint32_t>(hand_equip));
     }
 
-    void set_data::set_empty_slot(const int a_page, int a_pos, key_position*& a_key_pos) {
+    void set_setting_data::set_empty_slot(const int a_page, int a_pos, key_position_handle*& a_key_pos) {
         logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;
         const auto item = new data_helper();
@@ -105,14 +102,14 @@ namespace handle {
         data.push_back(item);
 
         page_handle::get_singleton()->init_page(a_page,
-            static_cast<page_setting::position>(a_pos),
+            static_cast<position_setting::position>(a_pos),
             data,
             slot_setting::hand_equip::total,
             a_key_pos);
     }
 
-    void set_data::set_slot(const uint32_t a_page,
-        page_setting::position a_pos,
+    void set_setting_data::set_slot(const uint32_t a_page,
+        position_setting::position a_pos,
         const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
@@ -120,7 +117,7 @@ namespace handle {
         const std::string& a_form_left,
         uint32_t a_type_left,
         const uint32_t a_action_left,
-        key_position*& a_key_pos) {
+        key_position_handle*& a_key_pos) {
         const auto form = util::helper::get_form_from_mod_id_string(a_form);
         const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
@@ -219,7 +216,7 @@ namespace handle {
         }
     }
 
-    void set_data::set_new_item_count(const RE::FormID a_form_id, const char* a_name, int32_t a_count) {
+    void set_setting_data::set_new_item_count(const RE::FormID a_form_id, const char* a_name, int32_t a_count) {
         //just consider magic items for now, that includes 
         const auto page_handle = page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto [page, page_settings] : pages) {

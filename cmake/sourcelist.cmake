@@ -21,24 +21,24 @@ set(sources ${sources}
 	src/event/sink_event.cpp
 	src/event/sink_event.h
 	src/handle/data/data_helper.h
-	src/handle/edit_handle.cpp
-	src/handle/edit_handle.h
-	src/handle/key_position.cpp
-	src/handle/key_position.h
-	src/handle/name_handle.cpp
-	src/handle/name_handle.h
+	src/handle/handle/edit_handle.cpp
+	src/handle/handle/edit_handle.h
+	src/handle/handle/key_position_handle.cpp
+	src/handle/handle/key_position_handle.h
+	src/handle/handle/name_handle.cpp
+	src/handle/handle/name_handle.h
+	src/handle/handle/page_handle.cpp
+	src/handle/handle/page_handle.h
 	src/handle/page/draw_setting.h
 	src/handle/page/fade_setting.h
 	src/handle/page/hud_offset_setting.h
-	src/handle/page/page_setting.h
+	src/handle/page/position_setting.h
 	src/handle/page/slot_setting.h
 	src/handle/page/transparency_setting.h
-	src/handle/page_handle.cpp
-	src/handle/page_handle.h
-	src/handle/set_data.cpp
-	src/handle/set_data.h
-	src/handle/setting_execute.cpp
-	src/handle/setting_execute.h
+	src/handle/setting/set_setting_data.cpp
+	src/handle/setting/set_setting_data.h
+	src/handle/setting/setting_execute.cpp
+	src/handle/setting/setting_execute.h
 	src/hook/hook.cpp
 	src/hook/hook.h
 	src/main.cpp
