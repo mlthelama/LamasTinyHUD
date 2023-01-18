@@ -130,15 +130,16 @@ namespace handle {
 
     page_setting* page_handle::get_page_setting(const uint32_t a_page, const page_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
-            data && !data->page_settings.empty() && !data->page_settings.at(a_page).empty() && data->page_settings.
-            at(a_page).at(a_position)) {
+            data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
+            at(a_page).contains(a_position)) {
             return data->page_settings.at(a_page).at(a_position);
         }
         return nullptr;
     }
 
     std::map<page_setting::position, page_setting*> page_handle::get_page(const uint32_t a_page) const {
-        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
+        if (const page_handle_data* data = this->data_;
+            data && !data->page_settings.empty() && data->page_settings.contains(a_page)) {
             return data->page_settings.at(a_page);
         }
         return {};
@@ -152,7 +153,8 @@ namespace handle {
     }
 
     std::map<page_setting::position, page_setting*> page_handle::get_active_page() const {
-        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
+        if (const page_handle_data* data = this->data_;
+            data && !data->page_settings.empty() && data->page_settings.contains(data->active_page)) {
             return data->page_settings.at(data->active_page);
         }
         return {};
@@ -169,7 +171,7 @@ namespace handle {
         if (const page_handle_data* data = this->data_; data) {
             //lets make it easy for now
             //we start at 0 so it is max count -1
-            if ( data->active_page < config::mcm_setting::get_max_page_count() -1 ) {
+            if (data->active_page < config::mcm_setting::get_max_page_count() - 1) {
                 return data->active_page + 1;
             }
             return 0;
@@ -207,8 +209,7 @@ namespace handle {
         const bool a_left) {
         a_slot = nullptr;
         if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) && a_hand
-            ==
-            slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
+            == slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
             a_slot = a_left ? item::equip_slot::get_left_hand_slot() : item::equip_slot::get_right_hand_slot();
         }
     }
