@@ -66,7 +66,6 @@ namespace event {
         if (const auto edit_handle = handle::edit_handle::get_singleton();
             edit_handle->get_position() != handle::position_setting::position::total && !
             config::mcm_setting::get_elder_demon_souls()) {
-
             data_.clear();
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always

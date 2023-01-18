@@ -45,7 +45,7 @@ namespace event {
         uint32_t edit_active_ = k_invalid;
 
         bool is_toggle_down_ = false;
-        
+
         void reset_edit();
 
         void do_button_press(uint32_t a_key);

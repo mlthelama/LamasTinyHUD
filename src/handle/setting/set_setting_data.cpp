@@ -129,12 +129,12 @@ namespace handle {
                 pos,
                 a_data,
                 static_cast<uint32_t>(hand));
-            
+
             ++page;
         }
         logger::trace("done with data items"sv);
     }
-    
+
     void set_setting_data::set_empty_slot(const int a_page, int a_pos, key_position_handle*& a_key_pos) {
         logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;

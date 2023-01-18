@@ -275,12 +275,13 @@ namespace util {
         RE::DebugNotification(a_string.c_str());
     }
 
-    data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form, const handle::position_setting::position a_pos) {
+    data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form,
+        const handle::position_setting::position a_pos) {
         //all kind of weapons and magic/spells
         const auto item = new data_helper();
         const auto type = get_type(a_form);
         const auto two_handed = is_two_handed(a_form);
-        
+
         switch (a_pos) {
             case handle::position_setting::position::top:
                 switch (type) {
@@ -330,7 +331,7 @@ namespace util {
                 }
                 break;
         }
-        
+
         return item;
     }
 

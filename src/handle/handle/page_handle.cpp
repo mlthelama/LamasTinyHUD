@@ -151,8 +151,9 @@ namespace handle {
         logger::trace("set active page {} for postion {}"sv, a_page, static_cast<uint32_t>(a_pos));
         data->active_page_per_positions[a_pos] = a_page;
     }
-    
-    position_setting* page_handle::get_page_setting(const uint32_t a_page,        const position_setting::position a_position) const {
+
+    position_setting* page_handle::get_page_setting(const uint32_t a_page,
+        const position_setting::position a_position) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
             at(a_page).contains(a_position)) {
@@ -175,7 +176,7 @@ namespace handle {
         }
         return {};
     }
-    
+
     std::map<position_setting::position, position_setting*> page_handle::get_active_page() const {
         if (config::mcm_setting::get_elder_demon_souls()) {
             std::map<position_setting::position, position_setting*> a_active;
@@ -187,7 +188,7 @@ namespace handle {
             }
             return a_active;
         }
-        
+
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(data->active_page)) {
             return data->page_settings.at(data->active_page);
@@ -217,7 +218,7 @@ namespace handle {
         }
         return {};
     }
-    
+
     std::map<position_setting::position, position_setting*> page_handle::get_active_page_position(
         const position_setting::position a_position) const {
         if (const page_handle_data* data = this->data_; data) {
@@ -265,7 +266,7 @@ namespace handle {
                 return next;
             }
         }
-        
+
         logger::trace("checking up from next {} to max"sv, next, max);
         const position_setting* page_setting = nullptr;
         /*for (auto i = next; i <= max; ++i) {
@@ -300,7 +301,6 @@ namespace handle {
         }
         return 0;
     }
-
 
 
     void page_handle::get_offset_values(const position_setting::position a_position,

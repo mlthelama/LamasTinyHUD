@@ -268,7 +268,7 @@ namespace event {
                 edit_page,
                 static_cast<uint32_t>(edit_position),
                 edit_data.size());
-            
+
             if (config::mcm_setting::get_elder_demon_souls()) {
                 handle::set_setting_data::set_queue_slot(edit_position, edit_data);
             } else {
@@ -276,7 +276,7 @@ namespace event {
                     edit_position,
                     edit_data);
             }
-            
+
             //remove everything
             reset_edit();
             return;

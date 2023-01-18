@@ -123,7 +123,7 @@ namespace magic {
                     spell->GetName());
                 return;
             }
-            
+
             //other slot options like i thought did not work, so i get it like this now
             const auto equip_manager = RE::ActorEquipManager::GetSingleton();
             equip_manager->EquipSpell(a_player, spell, a_slot);

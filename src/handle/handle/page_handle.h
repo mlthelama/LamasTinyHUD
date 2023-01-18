@@ -15,22 +15,23 @@ namespace handle {
             key_position_handle*& a_key_pos);
 
         void init_actives(uint32_t a_page, position_setting::position a_position);
-        
+
         void set_active_page(uint32_t a_page) const;
         void set_active_page_position(uint32_t a_page, position_setting::position a_pos) const;
-        
+
         [[nodiscard]] position_setting* get_page_setting(uint32_t a_page, position_setting::position a_position) const;
         [[nodiscard]] std::map<position_setting::position, position_setting*> get_page(uint32_t a_page) const;
         [[nodiscard]] std::map<uint32_t, std::map<position_setting::position, position_setting*>> get_pages() const;
         [[nodiscard]] std::map<position_setting::position, position_setting*> get_active_page() const;
         [[nodiscard]] uint32_t get_active_page_id() const;
         [[nodiscard]] uint32_t get_next_page_id() const;
-        [[nodiscard]] std::map<position_setting::position, position_setting*> get_active_page_position(position_setting::position a_position) const;
+        [[nodiscard]] std::map<position_setting::position, position_setting*> get_active_page_position(
+            position_setting::position a_position) const;
         [[nodiscard]] uint32_t get_active_page_id_position(position_setting::position a_position) const;
         [[nodiscard]] uint32_t get_next_page_id_position(position_setting::position a_position) const;
         [[nodiscard]] uint32_t get_next_non_empty_setting_for_position(position_setting::position a_position) const;
-        
-        
+
+
         page_handle(const page_handle&) = delete;
         page_handle(page_handle&&) = delete;
 
