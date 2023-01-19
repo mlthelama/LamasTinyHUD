@@ -44,7 +44,7 @@ namespace handle {
         }
     }
 
-    position_setting* setting_execute::get_page_setting_for_key(const uint32_t a_key) {
+    position_setting* setting_execute::get_position_setting_for_key(const uint32_t a_key) {
         const auto position = key_position_handle::get_singleton()->get_position_for_key(a_key);
         if (position == position_setting::position::total) {
             logger::warn("nothing to do, nothing set. return."sv);
@@ -53,16 +53,16 @@ namespace handle {
 
         const auto page_handle = page_handle::get_singleton();
         auto page = page_handle->get_active_page_id();
-        const auto page_setting = page_handle->get_page_setting(page, position);
-        if (page_setting == nullptr) {
+        const auto position_setting = page_handle->get_page_setting(page, position);
+        if (position_setting == nullptr) {
             logger::warn("nothing to do, nothing set. return."sv);
         }
         logger::debug("page {}, position is {}, setting count {}"sv,
             page,
             static_cast<uint32_t>(position),
-            page_setting->slot_settings.size());
+            position_setting->slot_settings.size());
 
-        return page_setting;
+        return position_setting;
     }
 
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
@@ -71,7 +71,7 @@ namespace handle {
                 logger::warn("nothing to do, nothing set"sv);
                 break;
             case slot_setting::slot_type::consumable:
-                item::potion::consume_potion(a_slot, a_player);
+                item::potion::consume_potion(a_slot->form, a_player);
                 break;
             case slot_setting::slot_type::magic:
                 magic::spell::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot, a_player);
