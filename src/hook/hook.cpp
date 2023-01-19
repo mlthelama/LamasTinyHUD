@@ -22,7 +22,6 @@ namespace hook {
 
         if (a_object->GetPlayable()) {
             if (a_object->IsMagicItem()) {
-                logger::trace("added object {}, count {}"sv, a_object->GetName(), a_count);
                 handle::set_setting_data::set_new_item_count_if_needed(a_object, a_count);
             }
         }
@@ -37,7 +36,6 @@ namespace hook {
 
         if (a_object->GetPlayable()) {
             if (const auto obj = a_object->GetBaseObject(); obj->IsMagicItem()) {
-                logger::trace("picked up object {}, count {}"sv, obj->GetName(), a_count);
                 handle::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
             }
         }
@@ -53,7 +51,6 @@ namespace hook {
         const RE::NiPoint3* a_rotate) {
         if (a_item->GetPlayable()) {
             if (a_item->IsMagicItem()) {
-                logger::trace("removed item {}, count {}"sv, a_item->GetName(), a_count);
                 handle::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
             }
         }

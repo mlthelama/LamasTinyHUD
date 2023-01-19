@@ -58,7 +58,7 @@ namespace handle {
     }
 
     void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, const int32_t a_count) {
-        set_new_item_count(a_obj->GetFormID(), a_obj->GetName(), a_count);
+        set_new_item_count(a_obj->GetFormID(), a_count);
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,
@@ -260,7 +260,7 @@ namespace handle {
         }
     }
 
-    void set_setting_data::set_new_item_count(const RE::FormID a_form_id, const char* a_name, int32_t a_count) {
+    void set_setting_data::set_new_item_count(const RE::FormID a_form_id, int32_t a_count) {
         //just consider magic items for now, that includes 
         const auto page_handle = page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto [page, page_settings] : pages) {
@@ -269,7 +269,7 @@ namespace handle {
                     if (setting->type == slot_setting::slot_type::consumable && setting->form->formID ==
                         a_form_id) {
                         setting->item_count = setting->item_count + a_count;
-                        logger::trace("Name {}, new count {}, change count {}"sv, a_name, setting->item_count, a_count);
+                        logger::trace("FormId {}, new count {}, change count {}"sv, util::string_util::int_to_hex(a_form_id), setting->item_count, a_count);
 
                         //TODO maybe add indicator to ui that the items are gone
                     }

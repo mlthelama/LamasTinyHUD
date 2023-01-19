@@ -29,6 +29,6 @@ namespace handle {
             uint32_t a_action_left,
             key_position_handle*& a_key_pos);
 
-        static void set_new_item_count(RE::FormID a_form_id, const char* a_name, int32_t a_count);
+        static void set_new_item_count(RE::FormID a_form_id, int32_t a_count);
     };
 }

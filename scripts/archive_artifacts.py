@@ -13,7 +13,7 @@ def make_rel_archive(a_args):
     archive.write(a_args.pdb, "SKSE/Plugins/{}".format(os.path.basename(a_args.pdb)))
     archive.write(os.path.join(a_args.src_dir, "LamasTinyHUD.ini"), "SKSE/Plugins/LamasTinyHUD.ini")
 
-    v_path: str = os.path.join(a_args.src_dir, "resources")
+    v_path: str = os.path.join(a_args.src_dir, "extern", "resources")
     for path in Path(v_path).rglob('*.png'):
         archive.write(path, os.path.join("SKSE/Plugins/resources/", path.parent.name, path.name))
 
