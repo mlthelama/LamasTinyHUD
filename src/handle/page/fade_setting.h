@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "ui/image_path.h"
 
 namespace handle {
     class fade_setting {
@@ -9,6 +10,6 @@ namespace handle {
 
         action action = action::unset;
         alpha alpha = alpha::min;
-        uint32_t current_alpha = 255;
+        uint32_t current_alpha = ui::draw_full;
     };
 }

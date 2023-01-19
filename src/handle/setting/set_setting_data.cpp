@@ -57,12 +57,12 @@ namespace handle {
         }
     }
 
-    void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_obj, const int32_t a_count) {
-        set_new_item_count(a_obj->GetFormID(), a_count);
+    void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_object, const int32_t a_count) {
+        set_new_item_count(a_object->GetFormID(), a_count);
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,
-        const position_setting::position a_pos,
+        const position_setting::position a_position,
         const std::vector<data_helper*>& a_data) {
         //well for now we have to match
         auto key_pos = key_position_handle::get_singleton();
@@ -72,7 +72,7 @@ namespace handle {
         } else if (hand == 2) {
             hand_equip = slot_setting::hand_equip::single;
         }
-        logger::trace("calling init page for page {}, position {} ..."sv, a_page, static_cast<uint32_t>(a_pos));
+        logger::trace("calling init page for page {}, position {} ..."sv, a_page, static_cast<uint32_t>(a_position));
 
         std::vector<data_helper*> data;
         if (a_data.empty()) {
@@ -86,14 +86,14 @@ namespace handle {
         }
 
         page_handle::get_singleton()->init_page(a_page,
-            a_pos,
+            a_position,
             a_data.empty() ? data : a_data,
             hand_equip,
             key_pos);
 
         logger::debug("calling helper to write to file"sv);
         util::helper::write_setting_helper(a_page,
-            static_cast<uint32_t>(a_pos),
+            static_cast<uint32_t>(a_position),
             a_data,
             static_cast<uint32_t>(hand_equip));
     }
@@ -152,7 +152,7 @@ namespace handle {
     }
 
     void set_setting_data::set_slot(const uint32_t a_page,
-        position_setting::position a_pos,
+        position_setting::position a_position,
         const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
@@ -172,7 +172,7 @@ namespace handle {
         auto action_check = config::mcm_setting::get_action_check();
         logger::trace("page {}, pos {}, start working data hands {}, action_check {} ..."sv,
             a_page,
-            static_cast<uint32_t>(a_pos),
+            static_cast<uint32_t>(a_position),
             a_hand,
             action_check);
 
@@ -205,7 +205,7 @@ namespace handle {
         }
 
         logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
-            static_cast<uint32_t>(a_pos),
+            static_cast<uint32_t>(a_position),
             form ? util::string_util::int_to_hex(form->GetFormID()) : "null",
             static_cast<int>(type),
             static_cast<uint32_t>(action),
@@ -229,7 +229,7 @@ namespace handle {
             const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
             action = static_cast<slot_setting::acton_type>(a_action_left);
             logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
-                static_cast<uint32_t>(a_pos),
+                static_cast<uint32_t>(a_position),
                 form_left ? util::string_util::int_to_hex(form_left->GetFormID()) : "null",
                 static_cast<int>(type_left),
                 static_cast<uint32_t>(action),
@@ -251,9 +251,8 @@ namespace handle {
         logger::trace("build data, calling handler, data size {}"sv, data.size());
 
         if (!data.empty()) {
-            const auto page_handle = page_handle::get_singleton();
-            page_handle->init_page(a_page,
-                a_pos,
+            page_handle::get_singleton()->init_page(a_page,
+                a_position,
                 data,
                 hand,
                 a_key_pos);
@@ -263,13 +262,16 @@ namespace handle {
     void set_setting_data::set_new_item_count(const RE::FormID a_form_id, int32_t a_count) {
         //just consider magic items for now, that includes 
         const auto page_handle = page_handle::get_singleton();
-        for (auto pages = page_handle->get_pages(); auto [page, page_settings] : pages) {
+        for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
                 for (const auto setting : page_setting->slot_settings) {
                     if (setting->type == slot_setting::slot_type::consumable && setting->form->formID ==
                         a_form_id) {
                         setting->item_count = setting->item_count + a_count;
-                        logger::trace("FormId {}, new count {}, change count {}"sv, util::string_util::int_to_hex(a_form_id), setting->item_count, a_count);
+                        logger::trace("FormId {}, new count {}, change count {}"sv,
+                            util::string_util::int_to_hex(a_form_id),
+                            setting->item_count,
+                            a_count);
 
                         //TODO maybe add indicator to ui that the items are gone
                     }

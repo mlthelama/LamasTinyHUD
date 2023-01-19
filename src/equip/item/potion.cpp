@@ -2,15 +2,15 @@
 #include "inventory.h"
 
 namespace item {
-    void potion::consume_potion(handle::slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
-        logger::trace("try to consume {}"sv, a_slot->form->GetName());
+    void potion::consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
+        logger::trace("try to consume {}"sv, a_form->GetName());
 
 
         RE::TESBoundObject* obj = nullptr;
         uint32_t left = 0;
         for (auto potential_items = inventory::get_inventory(a_player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {
-            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_slot->form->formID) {
+            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
                 left = inv_data.first;
                 break;

@@ -116,23 +116,23 @@ namespace event {
             if (button->IsDown() && is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
                 //set slot to a different color
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                if (page_setting == nullptr) {
+                const auto position_setting = handle::setting_execute::get_position_setting_for_key(key_);
+                if (position_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
-                page_setting->button_press_modify = button_press_modify_;
+                position_setting->button_press_modify = button_press_modify_;
             }
 
             if (button->IsUp() && is_position_button(key_)) {
                 logger::debug("configured Key ({}) is up"sv, key_);
                 //set slot back to normal color
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
-                if (page_setting == nullptr) {
+                const auto position_setting = handle::setting_execute::get_position_setting_for_key(key_);
+                if (position_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
-                page_setting->button_press_modify = ui::draw_full;
+                position_setting->button_press_modify = ui::draw_full;
             }
 
             if (key_ == key_toggle_ && button->IsUp() && !is_toggle_down_) {
@@ -160,7 +160,7 @@ namespace event {
             //TODO move into separate function
             if (is_toggle_down_ && scroll_position(key_) && button->IsPressed() &&
                 is_key_valid(key_bottom_action_)) {
-                const auto page_setting = handle::setting_execute::get_page_setting_for_key(key_);
+                const auto page_setting = handle::setting_execute::get_position_setting_for_key(key_);
                 handle::setting_execute::execute_settings(page_setting->slot_settings);
             }
 
@@ -253,15 +253,15 @@ namespace event {
         logger::debug("configured Key ({}) pressed"sv, a_key);
 
         const auto edit_handle = handle::edit_handle::get_singleton();
-        auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
+        auto position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
         auto edit_page = edit_handle->get_page();
         auto edit_position = edit_handle->get_position();
 
         if (const auto page_handle = handle::page_handle::get_singleton();
-            edit_position == page_setting->pos && edit_page == page_handle->
+            edit_position == position_setting->pos && edit_page == page_handle->
             get_active_page_id() && a_key == edit_active_) {
             util::helper::write_notification(fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
-                static_cast<uint32_t>(page_setting->pos)));
+                static_cast<uint32_t>(position_setting->pos)));
 
             const auto edit_data = edit_handle->get_hold_data();
             logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
@@ -282,27 +282,27 @@ namespace event {
             return;
         }
 
-        if (page_setting == nullptr) {
+        if (position_setting == nullptr) {
             logger::trace("setting for key {} is null. return."sv, a_key);
         }
 
-
+        
         if (config::mcm_setting::get_elder_demon_souls()) {
             //show next position for that
             //handler->set_active_page(handler->get_next_page_id());
             //TODO for now, trigger it with toggle button and its key
 
             const auto handler = handle::page_handle::get_singleton();
-            handler->set_active_page_position(handler->get_next_page_id_position(page_setting->pos),
-                page_setting->pos);
+            handler->set_active_page_position(handler->get_next_page_id_position(position_setting->pos),
+                position_setting->pos);
             /*handler->set_active_page_position(handler->get_next_non_empty_setting_for_position(page_setting->pos),
                 page_setting->pos);*/
             if (!scroll_position(a_key)) {
-                page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
-                handle::setting_execute::execute_settings(page_setting->slot_settings);
+                position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
+                handle::setting_execute::execute_settings(position_setting->slot_settings);
             }
         } else {
-            handle::setting_execute::execute_settings(page_setting->slot_settings);
+            handle::setting_execute::execute_settings(position_setting->slot_settings);
         }
     }
 
@@ -313,7 +313,7 @@ namespace event {
         }
 
         const auto edit_handle = handle::edit_handle::get_singleton();
-        const auto page_setting = handle::setting_execute::get_page_setting_for_key(a_key);
+        const auto page_setting = handle::setting_execute::get_position_setting_for_key(a_key);
         if (edit_handle->get_position() == handle::position_setting::position::total && edit_active_ ==
             k_invalid) {
             logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
