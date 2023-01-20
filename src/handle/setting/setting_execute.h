@@ -5,7 +5,7 @@
 namespace handle {
     class setting_execute {
     public:
-        static bool execute_settings(const std::vector<slot_setting*>& a_slots, position_setting::position a_position);
+        static void execute_settings(const std::vector<slot_setting*>& a_slots);
         static position_setting* get_position_setting_for_key(uint32_t a_key);
 
     private:

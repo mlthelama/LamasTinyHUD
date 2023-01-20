@@ -1,5 +1,6 @@
 ﻿#include "equip_event.h"
 #include "handle/handle/edit_handle.h"
+#include "handle/handle/key_position_handle.h"
 #include "handle/handle/name_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
@@ -26,9 +27,6 @@ namespace event {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
 
-        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position::total) {
-            return event_result::kContinue;
-        }
 
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
 
@@ -36,6 +34,17 @@ namespace event {
             return event_result::kContinue;
         }
 
+        //add check if we need to block left
+        if (config::mcm_setting::get_elder_demon_souls() && util::helper::is_two_handed(form)) {
+            //is two handed, if equipped
+            //hardcode left for now, cause we just need it there
+            const auto key_handle = handle::key_position_handle::get_singleton();
+            key_handle->set_position_lock(handle::position_setting::position::left, a_event->equipped ? 1 : 0);
+        }
+
+        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position::total) {
+            return event_result::kContinue;
+        }
 
         if (const auto edit_handle = handle::edit_handle::get_singleton();
             edit_handle->get_position() != handle::position_setting::position::total &&
