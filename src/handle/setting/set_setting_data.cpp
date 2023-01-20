@@ -127,7 +127,7 @@ namespace handle {
             logger::debug("calling helper to write to file, page {}, pos {}"sv, page, pos);
             util::helper::write_setting_helper(page,
                 pos,
-                a_data,
+                data,
                 static_cast<uint32_t>(hand));
 
             ++page;

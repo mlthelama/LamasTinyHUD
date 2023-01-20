@@ -161,7 +161,7 @@ namespace event {
             if (is_toggle_down_ && scroll_position(key_) && button->IsPressed() &&
                 is_key_valid(key_bottom_action_)) {
                 const auto page_setting = handle::setting_execute::get_position_setting_for_key(key_);
-                handle::setting_execute::execute_settings(page_setting->slot_settings);
+                handle::setting_execute::execute_settings(page_setting->slot_settings, page_setting->pos);
             }
 
             if (is_position_button(key_)) {
@@ -286,23 +286,25 @@ namespace event {
             logger::trace("setting for key {} is null. return."sv, a_key);
         }
 
-        
+
         if (config::mcm_setting::get_elder_demon_souls()) {
             //show next position for that
             //handler->set_active_page(handler->get_next_page_id());
             //TODO for now, trigger it with toggle button and its key
 
             const auto handler = handle::page_handle::get_singleton();
-            handler->set_active_page_position(handler->get_next_page_id_position(position_setting->pos),
-                position_setting->pos);
-            /*handler->set_active_page_position(handler->get_next_non_empty_setting_for_position(page_setting->pos),
-                page_setting->pos);*/
+            const auto next_page = handler->get_next_page_id_position(position_setting->pos);
             if (!scroll_position(a_key)) {
-                position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
-                handle::setting_execute::execute_settings(position_setting->slot_settings);
+                if (const auto next_position_setting = handler->get_page_setting(next_page, position_setting->pos);
+                    handle::setting_execute::execute_settings(next_position_setting->slot_settings,
+                        next_position_setting->pos)) {
+                    handler->set_active_page_position(next_page, position_setting->pos);
+                }
+            } else {
+                handler->set_active_page_position(next_page, position_setting->pos);
             }
         } else {
-            handle::setting_execute::execute_settings(position_setting->slot_settings);
+            handle::setting_execute::execute_settings(position_setting->slot_settings, position_setting->pos);
         }
     }
 

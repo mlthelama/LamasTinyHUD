@@ -9,13 +9,30 @@
 #include "handle/handle/page_handle.h"
 #include "handle/page/position_setting.h"
 #include "setting/mcm_setting.h"
+#include "util/helper.h"
 #include "util/string_util.h"
 
 namespace handle {
     using mcm = config::mcm_setting;
 
-    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
+    bool setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots, const position_setting::position a_position) {
         logger::trace("got {} settings execute"sv, a_slots.size());
+
+        if (mcm::get_elder_demon_souls() && a_position == position_setting::position::left) {
+            const auto key_handle = key_position_handle::get_singleton()->get_key_for_position(position_setting::position::right);
+            const auto right_setting = get_position_setting_for_key(key_handle);
+            auto form = right_setting->slot_settings.front()->form;
+            const auto type = right_setting->slot_settings.front()->type;
+            //elden always got just one entry
+            if ( form && util::helper::is_two_handed(form) && (type == slot_setting::slot_type::magic || type == slot_setting::slot_type::weapon)) {
+                //not allowed to execute
+                //update ui would be nice until right is not two handed any mor
+                //could check every swap for right if left is "locked"
+                logger::debug("not allowed to swap because right. form {} is two handed", util::string_util::int_to_hex(form->formID));
+                return false;
+            }
+        }
+        
         std::vector<RE::BGSEquipSlot*> unequip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
@@ -42,6 +59,7 @@ namespace handle {
                 item::equip_slot::unequip_hand(slot, player, slot_setting::acton_type::unequip);
             }
         }
+        return true;
     }
 
     position_setting* setting_execute::get_position_setting_for_key(const uint32_t a_key) {
