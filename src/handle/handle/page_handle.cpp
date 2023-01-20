@@ -253,22 +253,10 @@ namespace handle {
     //could return the page as well here
     uint32_t page_handle::get_next_non_empty_setting_for_position(const position_setting::position a_position) const {
         //if non found it will be 0
-        auto next = 0;
-        const auto max = static_cast<int>(mcm::get_max_page_count() - 1);
-        if (const page_handle_data* data = this->data_;
-            data && !data->active_page_per_positions.empty() && data->active_page_per_positions.contains(a_position)) {
-            const auto current = static_cast<int>(data->active_page_per_positions.at(a_position));
-            logger::trace("current page is {}, max is {}"sv, current, max);
-            if (current < max) {
-                next = current + 1;
-            } else {
-                logger::trace("Returning next {}"sv, next);
-                return next;
-            }
-        }
-
+        auto next = get_next_page_id_position(a_position);
+        auto max = mcm::get_max_page_count() - 1;
         logger::trace("checking up from next {} to max"sv, next, max);
-        const position_setting* page_setting = nullptr;
+        //const position_setting* page_setting = nullptr;
         /*for (auto i = next; i <= max; ++i) {
             page_setting = get_page_setting(i, a_position);
             if (page_setting && page_setting->type != slot_setting::slot_type::empty) {
@@ -287,7 +275,7 @@ namespace handle {
                 break;
             }
         }
-        */
+        
         if (page_setting) {
             logger::trace("Returning next {}"sv, page_setting->page);
             return page_setting->page;
@@ -298,7 +286,7 @@ namespace handle {
         if (page_setting) {
             logger::trace("Returning next {}"sv, page_setting->page);
             return page_setting->page;
-        }
+        }*/
         return 0;
     }
 
@@ -376,11 +364,13 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form->IsWeapon()) {
+        if (!a_form || !a_form->IsWeapon()) {
+            a_icon = ui::icon_image_type::icon_default;
             return;
         }
         switch (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
             case RE::WEAPON_TYPE::kHandToHandMelee:
+                a_icon = ui::icon_image_type::icon_default;
                 break;
             case RE::WEAPON_TYPE::kOneHandSword:
                 a_icon = ui::icon_image_type::sword_one_handed;

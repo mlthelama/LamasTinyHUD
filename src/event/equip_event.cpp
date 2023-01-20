@@ -49,6 +49,7 @@ namespace event {
         if (const auto edit_handle = handle::edit_handle::get_singleton();
             edit_handle->get_position() != handle::position_setting::position::total &&
             config::mcm_setting::get_elder_demon_souls() && a_event->equipped) {
+            data_ = edit_handle->get_hold_data();
             const auto item = util::helper::is_suitable_for_position(form, edit_handle->get_position());
             if (item->form) {
                 data_.push_back(item);
@@ -66,6 +67,7 @@ namespace event {
             }
             edit_handle->set_hold_data(data_);
             logger::trace("Size is {}"sv, data_.size());
+            data_.clear();
         }
 
         //edit for elder demon souls

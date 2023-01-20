@@ -48,38 +48,60 @@ namespace util {
         const std::vector<data_helper*>& a_data,
         const uint32_t a_hand) {
         const auto section = get_section_name_for_page_position(a_page, a_position);
-        uint32_t type = 0;
+        auto type = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
         std::string form_string;
         uint32_t action = 0;
 
-        uint32_t type_left = 0;
+        auto type_left = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
         std::string form_string_left;
         uint32_t action_left = 0;
 
         if (a_data.empty()) {
             return;
         }
-        if (!a_data.empty()) {
-            type = static_cast<uint32_t>(a_data[0]->type);
-            if (a_data[0]->form) {
-                form_string = get_mod_and_form(a_data[0]->form->formID);
-            } else {
-                form_string = "";
+
+        if (config::mcm_setting::get_elder_demon_souls()) {
+            if (!a_data.empty()) {
+                if (a_data[0]->left) {
+                    type_left = static_cast<uint32_t>(a_data[0]->type);
+                    if (a_data[0]->form) {
+                        form_string_left = get_mod_and_form(a_data[0]->form->formID);
+                    } else {
+                        form_string_left = "";
+                    }
+                    action_left = static_cast<uint32_t>(a_data[0]->action_type);
+                } else {
+                    type = static_cast<uint32_t>(a_data[0]->type);
+                    if (a_data[0]->form) {
+                        form_string = get_mod_and_form(a_data[0]->form->formID);
+                    } else {
+                        form_string = "";
+                    }
+                    action = static_cast<uint32_t>(a_data[0]->action_type);
+                }
             }
-            action = static_cast<uint32_t>(a_data[0]->action_type);
-        }
-
-
-        if (a_data.size() == 2) {
-            type_left = static_cast<uint32_t>(a_data[1]->type);
-            if (a_data[1]->form) {
-                form_string_left = get_mod_and_form(a_data[1]->form->formID);
-            } else {
-                form_string_left = "";
+        } else {
+            if (!a_data.empty()) {
+                type = static_cast<uint32_t>(a_data[0]->type);
+                if (a_data[0]->form) {
+                    form_string = get_mod_and_form(a_data[0]->form->formID);
+                } else {
+                    form_string = "";
+                }
+                action = static_cast<uint32_t>(a_data[0]->action_type);
             }
-            action_left = static_cast<uint32_t>(a_data[1]->action_type);
-        }
 
+
+            if (a_data.size() == 2) {
+                type_left = static_cast<uint32_t>(a_data[1]->type);
+                if (a_data[1]->form) {
+                    form_string_left = get_mod_and_form(a_data[1]->form->formID);
+                } else {
+                    form_string_left = "";
+                }
+                action_left = static_cast<uint32_t>(a_data[1]->action_type);
+            }
+        }
         config::mcm_setting::read_setting();
 
         config::custom_setting::write_section_setting(section,
@@ -326,6 +348,7 @@ namespace util {
                             item->type = type;
                             item->two_handed = two_handed;
                             item->left = true;
+                            break;
                         }
                         break;
                 }

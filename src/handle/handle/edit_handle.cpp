@@ -24,11 +24,10 @@ namespace handle {
         }
         logger::trace("init edit for page {}, position {}"sv, page, static_cast<uint32_t>(a_position));
 
-        std::vector<data_helper*> data_helpers;
         edit_handle_data* data = this->data_;
         data->page = page;
         data->position = a_position;
-        data->data_hold = data_helpers;
+        data->data_hold = {};
     }
 
     void edit_handle::set_hold_data(std::vector<data_helper*> a_data) const {

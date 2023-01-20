@@ -21,5 +21,6 @@ namespace handle {
         transparency_setting* transparency_setting = nullptr;
         draw_setting* draw_setting = nullptr;
         float font_size = 0.f;
+        //slot_setting::slot_type slot_type = slot_setting::slot_type::empty;
     };
 }
