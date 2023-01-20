@@ -19,6 +19,12 @@ namespace handle {
         std::vector<RE::BGSEquipSlot*> unequip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
+
+            if(mcm::get_elder_demon_souls() && slot->form == nullptr ) {
+                logger::debug("form is null and I am in elden mode, skipping."sv);
+                continue;
+            }
+            
             if (!slot->form && slot->type != slot_setting::slot_type::empty) {
                 logger::warn("form is null and not type empty, skipping."sv);
                 continue;

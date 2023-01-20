@@ -60,7 +60,7 @@ namespace handle {
             get_equip_slots(element->type, a_hand, equip_slot, element->left);
             get_item_count(element->form, slot->item_count, element->type);
             slot->equip_slot = equip_slot;
-
+            
             slots->push_back(slot);
         }
 
@@ -114,9 +114,7 @@ namespace handle {
         page->key = a_key_pos->get_key_for_position(a_position);
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
-        if (mcm::get_elder_demon_souls()) {
-            //page->type = slots->front()->type;
-        }
+
 
         data->page_settings[a_page][a_position] = page;
         logger::trace("done setting page {}, position {}."sv,
@@ -253,9 +251,47 @@ namespace handle {
     //could return the page as well here
     uint32_t page_handle::get_next_non_empty_setting_for_position(const position_setting::position a_position) const {
         //if non found it will be 0
-        auto next = get_next_page_id_position(a_position);
-        auto max = mcm::get_max_page_count() - 1;
+        auto next = static_cast<int>(get_next_page_id_position(a_position));
+        auto max = static_cast<int>(mcm::get_max_page_count() - 1);
         logger::trace("checking up from next {} to max"sv, next, max);
+
+        //if pos left check entry 2
+        const position_setting* page_setting = nullptr;
+        for (auto i = next; i <= max; ++i) {
+            page_setting = get_page_setting(i, a_position);
+            if (!page_setting->slot_settings.empty() && page_setting->slot_settings[0]->type != slot_setting::slot_type::empty) {
+                logger::trace("found setting at page {}, form is {}"sv, i, util::string_util::int_to_hex(page_setting->slot_settings[0]->form->formID));
+                break;
+            }
+            if(page_setting->slot_settings.size() == 2 && !page_setting->slot_settings.empty() && page_setting->slot_settings[1]->type != slot_setting::slot_type::empty) {
+                logger::trace("found (left) setting at page {}, form is {}"sv, i, util::string_util::int_to_hex(page_setting->slot_settings[1]->form->formID));
+                break;
+            }
+            page_setting = nullptr;
+        }
+        if (page_setting) {
+            logger::trace("Returning next {}"sv, page_setting->page);
+            return page_setting->page;
+        }
+
+        for (auto i = 0; i < next; ++i) {
+            page_setting = get_page_setting(i, a_position);
+            if (!page_setting->slot_settings.empty() && page_setting->slot_settings[0]->type != slot_setting::slot_type::empty) {
+                logger::trace("found setting at page {}, form is {}"sv, i, util::string_util::int_to_hex(page_setting->slot_settings[0]->form->formID));
+                break;
+            }
+            if(page_setting->slot_settings.size() == 2 && !page_setting->slot_settings.empty() && page_setting->slot_settings[1]->type != slot_setting::slot_type::empty) {
+                logger::trace("found (left) setting at page {}, form is {}"sv, i, util::string_util::int_to_hex(page_setting->slot_settings[1]->form->formID));
+                break;
+            }
+            page_setting = nullptr;
+        }
+        if (page_setting) {
+            logger::trace("Returning next {}"sv, page_setting->page);
+            return page_setting->page;
+        }
+
+        return 0;
         //const position_setting* page_setting = nullptr;
         /*for (auto i = next; i <= max; ++i) {
             page_setting = get_page_setting(i, a_position);

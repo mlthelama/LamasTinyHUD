@@ -135,7 +135,7 @@ namespace event {
                 position_setting->button_press_modify = ui::draw_full;
             }
 
-            if (key_ == key_toggle_ && button->IsUp() && !is_toggle_down_) {
+            if (key_ == key_toggle_ && button->IsUp() && is_toggle_down_) {
                 is_toggle_down_ = false;
             }
 
@@ -295,8 +295,13 @@ namespace event {
             const auto key_handler = handle::key_position_handle::get_singleton();
             const auto handler = handle::page_handle::get_singleton();
             if (!key_handler->is_position_locked(position_setting->pos)) {
-                handler->set_active_page_position(handler->get_next_page_id_position(position_setting->pos),
-                    position_setting->pos);
+                /*handler->set_active_page_position(handler->get_next_page_id_position(position_setting->pos),
+                    position_setting->pos);*/
+                if ((scroll_position(a_key) && !is_toggle_down_) || !scroll_position(a_key)) {
+                    handler->set_active_page_position(
+                        handler->get_next_non_empty_setting_for_position(position_setting->pos),
+                        position_setting->pos);
+                }
                 if (!scroll_position(a_key)) {
                     position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
                     handle::setting_execute::execute_settings(position_setting->slot_settings);
