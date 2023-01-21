@@ -111,5 +111,8 @@ namespace ui {
 
         static float get_resolution_width();
         static float get_resolution_height();
+
+        static void set_fade(bool a_in, float a_value);
+        static bool get_fade();
     };
 }

@@ -35,6 +35,10 @@ namespace ui {
     static std::map<uint32_t, image> ps_key_struct;
     static std::map<uint32_t, image> xbox_key_struct;
 
+    float fade = 1.0f;
+    bool fade_in = true;
+    float fade_out_timer = mcm::get_fade_timer_outside_combat();
+
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
         const UINT u_msg,
         const WPARAM w_param,
@@ -395,8 +399,12 @@ namespace ui {
             return;
         }
 
-        if (mcm::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
-            return;
+        if (mcm::get_hide_outside_combat()) {
+            if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
+                fade_in = false;
+            } else {
+                fade_in = true;
+            }
         }
 
 
@@ -409,6 +417,10 @@ namespace ui {
 
         ImGui::SetNextWindowSize(ImVec2(screen_size_x, screen_size_y));
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
+
+
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.Alpha = fade;
 
         ImGui::Begin(hud_name, nullptr, window_flag);
 
@@ -443,6 +455,19 @@ namespace ui {
         }
 
         ImGui::End();
+        if (fade_in) {
+            fade_out_timer = mcm::get_fade_timer_outside_combat();
+
+            fade += 0.01f;
+            if (fade < 1.0f) fade = 1.0f;
+        } else {
+            if (fade_out_timer > 0.0f) {
+                fade_out_timer -= ImGui::GetIO().DeltaTime;
+            } else {
+                fade -= 0.01f;
+                if (fade < 0.0f) fade = 0.0f;
+            }
+        }
     }
 
 
@@ -534,4 +559,16 @@ namespace ui {
     float ui_renderer::get_resolution_width() { return ImGui::GetIO().DisplaySize.x; }
 
     float ui_renderer::get_resolution_height() { return ImGui::GetIO().DisplaySize.y; }
+
+    void ui_renderer::set_fade(const bool a_in, const float a_value) {
+        fade_in = a_in;
+        fade = a_value;
+        if (a_in) {
+            fade_out_timer = mcm::get_fade_timer_outside_combat();
+        }
+    }
+
+    bool ui_renderer::get_fade() {
+        return fade_in;
+    }
 }

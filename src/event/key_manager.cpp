@@ -4,6 +4,7 @@
 #include "handle/setting/setting_execute.h"
 #include "handle/setting/set_setting_data.h"
 #include "setting/mcm_setting.h"
+#include "ui/ui_renderer.h"
 #include "util/helper.h"
 
 namespace event {
@@ -102,9 +103,12 @@ namespace event {
                 continue;
             }
 
-            if (config::mcm_setting::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
-                continue;
+            if (config::mcm_setting::get_hide_outside_combat() && !ui::ui_renderer::get_fade()) {
+                if ((is_position_button(key_) || key_ == key_toggle_) && (button->IsDown() || button->IsPressed())) {
+                    ui::ui_renderer::set_fade(true, 1.f);
+                }
             }
+
 
             if (is_position_button(key_)) {
                 if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time()) {

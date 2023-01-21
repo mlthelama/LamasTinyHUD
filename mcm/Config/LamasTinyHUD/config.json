@@ -761,6 +761,19 @@
                     }
                 },
                 {
+                    "id": "fFadeTimerOutsideCombat:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_FadeTimerOutsideCombat_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_MiscSetting_FadeTimerOutsideCombat_InfoText",
+                    "valueOptions": {
+                        "min": 1.0,
+                        "max": 30.0,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
                     "id": "bDisableInputQuickLoot:MiscSetting",
                     "text": "$LamasTinyHUD_DisableInputQuickLoot_OptionText",
                     "type": "toggle",
