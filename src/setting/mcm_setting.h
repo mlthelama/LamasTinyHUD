@@ -39,6 +39,7 @@ namespace config {
         static uint32_t get_icon_transparency();
         static uint32_t get_key_transparency();
         static uint32_t get_text_transparency();
+        static uint32_t get_icon_transparency_blocked();
         static uint32_t get_current_items_red();
         static uint32_t get_current_items_green();
         static uint32_t get_current_items_blue();

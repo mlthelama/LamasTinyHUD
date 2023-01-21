@@ -41,6 +41,13 @@ namespace event {
             //hardcode left for now, cause we just need it there
             const auto key_handle = handle::key_position_handle::get_singleton();
             key_handle->set_position_lock(handle::position_setting::position_type::left, a_event->equipped ? 1 : 0);
+            const auto page_handle = handle::page_handle::get_singleton();
+            const auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
+            const auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
+            //use settings here
+            setting->draw_setting->icon_transparency = a_event->equipped ?
+                                                           config::mcm_setting::get_icon_transparency_blocked() :
+                                                           config::mcm_setting::get_background_icon_transparency();
         }
 
         if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {

@@ -315,7 +315,6 @@ namespace util {
                 switch (type) {
                     case handle::slot_setting::slot_type::power:
                     case handle::slot_setting::slot_type::shout:
-                    case handle::slot_setting::slot_type::scroll:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
@@ -341,6 +340,13 @@ namespace util {
                         item->type = type;
                         item->two_handed = two_handed;
                         item->left = false;
+                        break;
+                    case handle::slot_setting::slot_type::scroll:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        item->action_type = handle::slot_setting::acton_type::instant;
                         break;
                 }
                 break;
@@ -395,7 +401,7 @@ namespace util {
         }
 
         logger::trace("start writing config, got {} items"sv, configs.size());
-        
+
         for (auto const config : configs) {
             config::custom_setting::reset_section(config->section);
             const auto section = get_section_name_for_page_position(config->page, config->position);

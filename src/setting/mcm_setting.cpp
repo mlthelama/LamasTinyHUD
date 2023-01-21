@@ -39,6 +39,7 @@ namespace config {
     static uint32_t icon_transparency;
     static uint32_t key_transparency;
     static uint32_t text_transparency;
+    static uint32_t icon_transparency_blocked;
     static uint32_t current_items_red;
     static uint32_t current_items_green;
     static uint32_t current_items_blue;
@@ -81,7 +82,7 @@ namespace config {
             hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 38));
             icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth", 0.10));
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.10));
-            slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uSlotButtonFeedback", 200));
+            slot_button_feedback = static_cast<uint32_t>(mcm.GetLongValue("HudSetting", "uSlotButtonFeedback", 175));
             key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth", 0.38));
             key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight", 0.38));
             slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 10));
@@ -108,6 +109,9 @@ namespace config {
             icon_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparency", 125));
             key_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uKeyTransparency", 255));
             text_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uTextTransparency", 255));
+            icon_transparency_blocked = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting",
+                "uIconTransparencyBlocked",
+                50));
 
             current_items_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsRed", 255));
             current_items_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsGreen", 255));
@@ -164,6 +168,7 @@ namespace config {
     uint32_t mcm_setting::get_icon_transparency() { return icon_transparency; }
     uint32_t mcm_setting::get_key_transparency() { return key_transparency; }
     uint32_t mcm_setting::get_text_transparency() { return text_transparency; }
+    uint32_t mcm_setting::get_icon_transparency_blocked() { return icon_transparency_blocked; }
     uint32_t mcm_setting::get_current_items_red() { return current_items_red; }
     uint32_t mcm_setting::get_current_items_green() { return current_items_green; }
     uint32_t mcm_setting::get_current_items_blue() { return current_items_blue; }

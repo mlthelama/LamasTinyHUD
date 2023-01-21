@@ -681,6 +681,19 @@
                     }
                 },
                 {
+                    "id": "uIconTransparencyBlocked:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_IconTransparencyBlocked_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_IconTransparencyBlocked_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Color",
                     "type": "header",
                     "position": 1
