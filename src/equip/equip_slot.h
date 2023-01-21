@@ -17,9 +17,11 @@ namespace item {
             RE::PlayerCharacter*& a_player,
             RE::ActorEquipManager*& a_actor_equip_manager);
 
-        //if I need them, I have them
+        //not used
         static void equip_unarmed(RE::PlayerCharacter*& a_player);
+        //not used
         static void unequip_spell_by_slot(RE::Actor* a_actor, RE::SpellItem* a_spell, const RE::BGSEquipSlot* a_slot);
+        //not used
         // 0 - Left hand,  1 - Right hand
         static void unequip_spell(RE::BSScript::IVirtualMachine* a_vm,
             RE::VMStackID a_stack_id,
