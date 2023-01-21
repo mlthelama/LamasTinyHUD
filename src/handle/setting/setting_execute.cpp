@@ -67,9 +67,6 @@ namespace handle {
 
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
-            case slot_setting::slot_type::unset:
-                logger::warn("nothing to do, nothing set"sv);
-                break;
             case slot_setting::slot_type::consumable:
                 item::potion::consume_potion(a_slot->form, a_player);
                 break;

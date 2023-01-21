@@ -185,7 +185,7 @@ namespace handle {
         if (hand == slot_setting::hand_equip::single) {
             const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
             action = static_cast<slot_setting::acton_type>(a_action_left);
-            logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
+            logger::trace("start building second set data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_position),
                 form_left ? util::string_util::int_to_hex(form_left->GetFormID()) : "null",
                 static_cast<int>(type_left),

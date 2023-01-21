@@ -234,7 +234,6 @@ namespace handle {
             case slot_setting::slot_type::scroll:
                 icon = ui::icon_image_type::scroll;
                 break;
-            case slot_setting::slot_type::unset:
             case slot_setting::slot_type::misc:
             case slot_setting::slot_type::empty:
                 icon = ui::icon_image_type::icon_default;
@@ -357,7 +356,7 @@ namespace handle {
     void page_handle::get_item_count(RE::TESForm*& a_form,
         int32_t& a_count,
         const slot_setting::slot_type a_type) {
-        if (a_type == slot_setting::slot_type::unset || !a_form) {
+        if (a_type == slot_setting::slot_type::empty || !a_form) {
             a_count = 0;
             return;
         }

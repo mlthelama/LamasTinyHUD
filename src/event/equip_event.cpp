@@ -42,7 +42,7 @@ namespace event {
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always
             const auto type = util::helper::get_type(form);
-            if (type == handle::slot_setting::slot_type::unset || type ==
+            if (type == handle::slot_setting::slot_type::empty || type ==
                 handle::slot_setting::slot_type::weapon || type ==
                 handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
                 data_ = util::helper::get_hand_assignment(form);
@@ -52,7 +52,6 @@ namespace event {
                 const auto item = new data_helper();
                 //magic, weapon, shield handled outside
                 switch (type) {
-                    case handle::slot_setting::slot_type::unset:
                     case handle::slot_setting::slot_type::empty:
                         item->form = nullptr;
                         item->type = type;

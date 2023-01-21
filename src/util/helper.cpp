@@ -1,6 +1,7 @@
 ﻿#include "helper.h"
 #include "constant.h"
 #include "string_util.h"
+#include "handle/data/page/position_setting.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
@@ -48,11 +49,11 @@ namespace util {
         const std::vector<data_helper*>& a_data,
         const uint32_t a_hand) {
         const auto section = get_section_name_for_page_position(a_page, a_position);
-        uint32_t type = 0;
+        auto type = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
         std::string form_string;
         uint32_t action = 0;
 
-        uint32_t type_left = 0;
+        auto type_left = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
         std::string form_string_left;
         uint32_t action_left = 0;
 
@@ -162,6 +163,10 @@ namespace util {
     }
 
     handle::slot_setting::slot_type helper::get_type(RE::TESForm*& a_form) {
+        if (!a_form) {
+            return handle::slot_setting::slot_type::empty;
+        }
+
         if (a_form->IsWeapon()) {
             if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); !weapon->IsBound()) {
                 return handle::slot_setting::slot_type::weapon;

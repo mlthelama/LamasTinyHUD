@@ -8,8 +8,7 @@ namespace handle {
 
         enum class hand_equip : std::uint32_t { single = 0, both = 1, total = 2 };
 
-        enum class slot_type {
-            unset = -1,
+        enum class slot_type : std::uint32_t {
             weapon = 0,
             magic = 1,
             shield = 2,
