@@ -12,6 +12,7 @@ namespace papyrus {
 
     void hud_mcm::on_config_close(RE::TESQuest*) {
         logger::info("on config close"sv);
+        util::helper::rewrite_settings();
         config::mcm_setting::read_setting();
         handle::set_setting_data::read_and_set_data();
 

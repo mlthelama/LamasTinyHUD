@@ -1,6 +1,7 @@
 ﻿#include "helper.h"
 #include "constant.h"
 #include "string_util.h"
+#include "data/config_writer_helper.h"
 #include "handle/data/page/position_setting.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
@@ -361,6 +362,58 @@ namespace util {
         }
 
         return item;
+    }
+
+    void helper::rewrite_settings() {
+        logger::trace("rewriting config ..."sv);
+        std::map<uint32_t, uint32_t> next_page_for_position;
+
+        for (auto i = 0; i < static_cast<int>(handle::position_setting::position_type::total); ++i) {
+            next_page_for_position[i] = 0;
+        }
+        std::vector<config_writer_helper*> configs;
+        const auto sections = get_configured_section_page_names();
+        logger::trace("got {} sections, rewrite that they are in consecutive pages"sv, sections.size());
+        for (const auto& section : sections) {
+            auto position = config::custom_setting::get_position_by_section(section);
+            const auto next_page = next_page_for_position[position];
+
+            auto* config = new config_writer_helper();
+            config->section = section;
+            config->page = next_page;
+            config->position = position;
+            config->form = config::custom_setting::get_item_form_by_section(section);
+            config->type = config::custom_setting::get_type_by_section(section);
+            config->hand = config::custom_setting::get_hand_selection_by_section(section);
+            config->action = config::custom_setting::get_slot_action_by_section(section);
+            config->form_left = config::custom_setting::get_item_form_left_by_section(section);
+            config->type_left = config::custom_setting::get_type_left_by_section(section);
+            config->action_left = config::custom_setting::get_slot_action_left_by_section(section);
+
+            configs.push_back(config);
+            next_page_for_position[position] = next_page + 1;
+        }
+
+        logger::trace("start writing config, got {} items"sv, configs.size());
+        
+        for (auto const config : configs) {
+            config::custom_setting::reset_section(config->section);
+            const auto section = get_section_name_for_page_position(config->page, config->position);
+
+            config::custom_setting::write_section_setting(section,
+                config->page,
+                config->position,
+                config->type,
+                config->form,
+                config->action,
+                config->hand,
+                config->type_left,
+                config->form_left,
+                config->action_left);
+        }
+
+
+        logger::trace("done rewriting."sv);
     }
 
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {

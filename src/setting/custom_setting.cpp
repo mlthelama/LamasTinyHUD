@@ -21,6 +21,8 @@ namespace config {
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {
+        //just to be sure, after the reorder feature
+        read_setting();
         CSimpleIniA::TNamesDepend sections;
         custom_ini.GetAllSections(sections);
 
