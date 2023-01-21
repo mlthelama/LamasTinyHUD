@@ -17,8 +17,7 @@ namespace item {
             }
         }
 
-
-        if (obj == nullptr || left == 0) {
+        if (!obj || left == 0) {
             logger::warn("could not find selected potion, maybe it all have been consumed"sv);
             //TODO update ui in this case
             return;

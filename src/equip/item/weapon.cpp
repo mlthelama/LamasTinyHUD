@@ -52,7 +52,6 @@ namespace item {
             return;
         }
 
-
         auto equipped_count = 0;
         if (obj_right && obj_right->formID == obj->formID) {
             equipped_count++;
@@ -98,15 +97,16 @@ namespace item {
             }
         }
 
-        if (obj == nullptr || item_count == 0) {
+        if (!obj || item_count == 0) {
             logger::warn("could not find selected armor, maybe it is gone"sv);
             //update ui in this case
             return;
         }
         logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
-        auto equip_manager = RE::ActorEquipManager::GetSingleton();
 
-        if (!equip_slot::unequip_if_equipped(obj, a_player, equip_manager)) {
+        if (auto equip_manager = RE::ActorEquipManager::GetSingleton(); !equip_slot::unequip_if_equipped(obj,
+            a_player,
+            equip_manager)) {
             equip_manager->EquipObject(a_player, obj);
             logger::trace("equipped armor {}. return."sv, a_form->GetName());
         }

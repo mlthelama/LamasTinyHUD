@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "handle/page/slot_setting.h"
+#include "handle/data/page/slot_setting.h"
 
 namespace magic {
     class power {

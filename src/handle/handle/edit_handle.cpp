@@ -1,7 +1,7 @@
 ﻿#include "edit_handle.h"
 #include "page_handle.h"
 #include "handle/data/data_helper.h"
-#include "handle/page/position_setting.h"
+#include "handle/data/page/position_setting.h"
 
 namespace handle {
     edit_handle* edit_handle::get_singleton() {
@@ -9,7 +9,7 @@ namespace handle {
         return std::addressof(singleton);
     }
 
-    void edit_handle::init_edit(const position_setting::position a_position) {
+    void edit_handle::init_edit(const position_setting::position_type a_position) {
         if (!this->data_) {
             this->data_ = new edit_handle_data();
         }
@@ -17,11 +17,10 @@ namespace handle {
         auto page = page_handle->get_active_page_id();
         logger::trace("init edit for page {}, position {}"sv, page, static_cast<uint32_t>(a_position));
 
-        std::vector<data_helper*> data_helpers;
         edit_handle_data* data = this->data_;
         data->page = page;
         data->position = a_position;
-        data->data_hold = data_helpers;
+        data->data_hold = {};
     }
 
     void edit_handle::set_hold_data(std::vector<data_helper*> a_data) const {
@@ -41,11 +40,11 @@ namespace handle {
         return {};
     }
 
-    position_setting::position edit_handle::get_position() const {
+    position_setting::position_type edit_handle::get_position() const {
         if (const edit_handle_data* data = this->data_; data) {
             return data->position;
         }
-        return position_setting::position::total;
+        return position_setting::position_type::total;
     }
 
     std::vector<data_helper*> edit_handle::get_hold_data() const {

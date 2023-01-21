@@ -227,7 +227,7 @@ namespace event {
         if (edit_active_ != k_invalid) {
             //remove everything
             edit_active_ = k_invalid;
-            handle::edit_handle::get_singleton()->init_edit(handle::position_setting::position::total);
+            handle::edit_handle::get_singleton()->init_edit(handle::position_setting::position_type::total);
         }
     }
 
@@ -240,10 +240,10 @@ namespace event {
         auto edit_position = edit_handle->get_position();
 
         if (const auto page_handle = handle::page_handle::get_singleton();
-            edit_position == position_setting->pos && edit_page == page_handle->
+            edit_position == position_setting->position && edit_page == page_handle->
             get_active_page_id() && a_key == edit_active_) {
             util::helper::write_notification(fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
-                static_cast<uint32_t>(position_setting->pos)));
+                static_cast<uint32_t>(position_setting->position)));
 
             const auto edit_data = edit_handle->get_hold_data();
             logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
@@ -276,13 +276,13 @@ namespace event {
 
         const auto edit_handle = handle::edit_handle::get_singleton();
         const auto page_setting = handle::setting_execute::get_position_setting_for_key(a_key);
-        if (edit_handle->get_position() == handle::position_setting::position::total && edit_active_ ==
+        if (edit_handle->get_position() == handle::position_setting::position_type::total && edit_active_ ==
             k_invalid) {
             logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
-            edit_handle->init_edit(page_setting->pos);
+            edit_handle->init_edit(page_setting->position);
 
             util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
-                static_cast<uint32_t>(page_setting->pos)));
+                static_cast<uint32_t>(page_setting->position)));
             edit_active_ = a_key;
         }
     }

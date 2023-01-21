@@ -251,36 +251,36 @@ namespace ui {
         const float a_y,
         const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
-            const auto offset_setting = page_setting->offset_setting;
+            const auto draw_setting = page_setting->draw_setting;
             draw_slot(a_x,
                 a_y,
-                page_setting->draw_setting->hud_image_scale_width,
-                page_setting->draw_setting->hud_image_scale_height,
-                offset_setting->offset_slot_x,
-                offset_setting->offset_slot_y,
+                draw_setting->hud_image_scale_width,
+                draw_setting->hud_image_scale_height,
+                draw_setting->offset_slot_x,
+                draw_setting->offset_slot_y,
                 page_setting->button_press_modify,
-                page_setting->transparency_setting->background_icon_transparency);
+                draw_setting->background_icon_transparency);
             draw_icon(a_x,
                 a_y,
                 page_setting->draw_setting->icon_scale_width,
                 page_setting->draw_setting->icon_scale_height,
-                offset_setting->offset_slot_x,
-                offset_setting->offset_slot_y,
+                draw_setting->offset_slot_x,
+                draw_setting->offset_slot_y,
                 page_setting->icon_type,
-                page_setting->transparency_setting->icon_transparency);
+                draw_setting->icon_transparency);
 
             if (auto slot_settings = page_setting->slot_settings;
                 !slot_settings.empty() && slot_settings.front()->item_count > 0) {
                 const ImU32 color = IM_COL32(draw_full,
                     draw_full,
                     draw_full,
-                    page_setting->transparency_setting->text_transparency);
-                draw_text(page_setting->draw_setting->width_setting,
-                    page_setting->draw_setting->height_setting,
-                    offset_setting->offset_slot_x,
-                    offset_setting->offset_slot_y,
-                    offset_setting->offset_text_x,
-                    offset_setting->offset_text_y,
+                    page_setting->draw_setting->text_transparency);
+                draw_text(draw_setting->width_setting,
+                    draw_setting->height_setting,
+                    draw_setting->offset_slot_x,
+                    draw_setting->offset_slot_y,
+                    draw_setting->offset_text_x,
+                    draw_setting->offset_text_y,
                     std::to_string(slot_settings.front()->item_count).c_str(),
                     color,
                     page_setting->font_size);
@@ -307,23 +307,23 @@ namespace ui {
 
     void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
-            const auto offset_setting = page_setting->offset_setting;
+            const auto draw_setting = page_setting->draw_setting;
             if (config::file_setting::get_draw_key_background()) {
                 draw_key(a_x,
                     a_y,
-                    page_setting->draw_setting->key_icon_scale_width,
-                    page_setting->draw_setting->key_icon_scale_height,
-                    offset_setting->offset_key_x,
-                    offset_setting->offset_key_y);
+                    draw_setting->key_icon_scale_width,
+                    draw_setting->key_icon_scale_height,
+                    draw_setting->offset_key_x,
+                    draw_setting->offset_key_y);
             }
             draw_key_icon(a_x,
                 a_y,
-                page_setting->draw_setting->key_icon_scale_width,
-                page_setting->draw_setting->key_icon_scale_height,
-                offset_setting->offset_key_x,
-                offset_setting->offset_key_y,
+                draw_setting->key_icon_scale_width,
+                draw_setting->key_icon_scale_height,
+                draw_setting->offset_key_x,
+                draw_setting->offset_key_y,
                 page_setting->key,
-                page_setting->transparency_setting->key_transparency);
+                draw_setting->key_transparency);
         }
 
         if (mcm::get_draw_toggle_button()) {
@@ -413,11 +413,11 @@ namespace ui {
         ImGui::Begin(hud_name, nullptr, window_flag);
 
         if (const auto settings = handle::page_handle::get_singleton()->get_active_page(); !settings.empty()) {
-            auto x = settings.begin()->second->draw_setting->width_setting;
-            auto y = settings.begin()->second->draw_setting->height_setting;
-            const auto scale_x = settings.begin()->second->draw_setting->hud_image_scale_width;
-            const auto scale_y = settings.begin()->second->draw_setting->hud_image_scale_height;
-            const auto alpha = settings.begin()->second->transparency_setting->background_transparency;
+            auto x = mcm::get_hud_image_position_width();
+            auto y = mcm::get_hud_image_position_height();
+            const auto scale_x = mcm::get_hud_image_scale_width();
+            const auto scale_y = mcm::get_hud_image_scale_height();
+            const auto alpha = mcm::get_background_transparency();
             if (screen_size_x < x || screen_size_y < y) {
                 x = 0.f;
                 y = 0.f;
@@ -429,7 +429,7 @@ namespace ui {
                 const ImU32 color = IM_COL32(mcm::get_current_items_red(),
                     mcm::get_current_items_green(),
                     mcm::get_current_items_blue(),
-                    settings.begin()->second->transparency_setting->text_transparency);
+                    mcm::get_text_transparency());
                 draw_text(x,
                     y,
                     mcm::get_current_items_offset_x(),

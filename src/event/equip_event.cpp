@@ -26,7 +26,7 @@ namespace event {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
 
-        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position::total) {
+        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
             return event_result::kContinue;
         }
 
@@ -37,7 +37,7 @@ namespace event {
         }
 
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position::total) {
+            edit_handle->get_position() != handle::position_setting::position_type::total) {
             data_.clear();
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always

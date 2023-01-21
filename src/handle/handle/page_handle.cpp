@@ -1,7 +1,7 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
 #include "handle/data/data_helper.h"
-#include "handle/page/position_setting.h"
+#include "handle/data/page/position_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
@@ -14,7 +14,7 @@ namespace handle {
     }
 
     void page_handle::init_page(uint32_t a_page,
-        const position_setting::position a_position,
+        const position_setting::position_type a_position,
         const std::vector<data_helper*>& data_helpers,
         const slot_setting::hand_equip a_hand,
         key_position_handle*& a_key_pos) {
@@ -33,15 +33,8 @@ namespace handle {
         const auto key_offset = mcm::get_hud_key_position_offset();
 
         auto* page = new position_setting();
-        page->pos = a_position;
+        page->position = a_position;
         page->page = a_page;
-
-        /*auto* fade = new fade_setting();
-        fade->action = fade_setting::action::unset;
-        fade->alpha = fade_setting::alpha::max;
-        fade->current_alpha = static_cast<uint32_t>(fade_setting::alpha::max);
-
-        page->fade_setting = fade;*/
 
         auto* slots = new std::vector<slot_setting*>;
         for (const auto element : data_helpers) {
@@ -65,24 +58,6 @@ namespace handle {
 
         page->slot_settings = *slots;
 
-        float offset_x = 0.f;
-        float offset_y = 0.f;
-
-        get_offset_values(a_position, slot_offset, offset_x, offset_y);
-
-        auto* offset = new hud_offset_setting();
-        offset->offset_slot_x = offset_x;
-        offset->offset_slot_y = offset_y;
-
-        get_offset_values(a_position, key_offset, offset_x, offset_y);
-        offset->offset_key_x = offset_x;
-        offset->offset_key_y = offset_y;
-
-        //same for now
-        offset->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
-        offset->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
-
-        page->offset_setting = offset;
 
         //TODO for now the right hand or the first setting defines the icon
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
@@ -91,23 +66,37 @@ namespace handle {
             page->icon_type = get_icon_type(slots->at(1)->type, slots->at(1)->form);
         }
 
-        auto* transparency = new transparency_setting();
-        transparency->background_transparency = mcm::get_background_transparency();
-        transparency->background_icon_transparency = mcm::get_background_icon_transparency();
-        transparency->icon_transparency = mcm::get_icon_transparency();
-        transparency->key_transparency = mcm::get_key_transparency();
-        transparency->text_transparency = mcm::get_text_transparency();
-        page->transparency_setting = transparency;
-
-        auto* draw = new draw_setting();
+        auto* draw = new position_draw_setting();
         draw->width_setting = mcm::get_hud_image_position_width();
         draw->height_setting = mcm::get_hud_image_position_height();
         draw->hud_image_scale_width = mcm::get_hud_image_scale_width();
         draw->hud_image_scale_height = mcm::get_hud_image_scale_height();
+        draw->background_transparency = mcm::get_background_transparency();
         draw->key_icon_scale_width = mcm::get_key_icon_scale_width();
         draw->key_icon_scale_height = mcm::get_key_icon_scale_height();
         draw->icon_scale_width = mcm::get_icon_scale_width();
         draw->icon_scale_height = mcm::get_icon_scale_height();
+        draw->background_icon_transparency = mcm::get_background_icon_transparency();
+        draw->icon_transparency = mcm::get_icon_transparency();
+        draw->key_transparency = mcm::get_key_transparency();
+        draw->text_transparency = mcm::get_text_transparency();
+
+        float offset_x = 0.f;
+        float offset_y = 0.f;
+
+        get_offset_values(a_position, slot_offset, offset_x, offset_y);
+
+        draw->offset_slot_x = offset_x;
+        draw->offset_slot_y = offset_y;
+
+        get_offset_values(a_position, key_offset, offset_x, offset_y);
+        draw->offset_key_x = offset_x;
+        draw->offset_key_y = offset_y;
+
+        //same for now
+        draw->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
+        draw->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
+
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
@@ -131,7 +120,7 @@ namespace handle {
     }
 
     position_setting* page_handle::get_page_setting(const uint32_t a_page,
-        const position_setting::position a_position) const {
+        const position_setting::position_type a_position) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
             at(a_page).contains(a_position)) {
@@ -140,7 +129,7 @@ namespace handle {
         return nullptr;
     }
 
-    std::map<position_setting::position, position_setting*> page_handle::get_page(const uint32_t a_page) const {
+    std::map<position_setting::position_type, position_setting*> page_handle::get_page(const uint32_t a_page) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(a_page)) {
             return data->page_settings.at(a_page);
@@ -148,14 +137,14 @@ namespace handle {
         return {};
     }
 
-    std::map<uint32_t, std::map<position_setting::position, position_setting*>> page_handle::get_pages() const {
+    std::map<uint32_t, std::map<position_setting::position_type, position_setting*>> page_handle::get_pages() const {
         if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
             return data->page_settings;
         }
         return {};
     }
 
-    std::map<position_setting::position, position_setting*> page_handle::get_active_page() const {
+    std::map<position_setting::position_type, position_setting*> page_handle::get_active_page() const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(data->active_page)) {
             return data->page_settings.at(data->active_page);
@@ -182,7 +171,7 @@ namespace handle {
         return {};
     }
 
-    void page_handle::get_offset_values(const position_setting::position a_position,
+    void page_handle::get_offset_values(const position_setting::position_type a_position,
         const float a_setting,
         float& offset_x,
         float& offset_y) {
@@ -191,16 +180,16 @@ namespace handle {
         // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
         // ReSharper disable once CppIncompleteSwitchStatement
         switch (a_position) {
-            case position_setting::position::top:
+            case position_setting::position_type::top:
                 offset_y = -a_setting;
                 break;
-            case position_setting::position::right:
+            case position_setting::position_type::right:
                 offset_x = a_setting;
                 break;
-            case position_setting::position::bottom:
+            case position_setting::position_type::bottom:
                 offset_y = a_setting;
                 break;
-            case position_setting::position::left:
+            case position_setting::position_type::left:
                 offset_x = -a_setting;
                 break;
         }
@@ -255,7 +244,7 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form->IsWeapon()) {
+        if (!a_form || !a_form->IsWeapon()) {
             return;
         }
         switch (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
@@ -292,7 +281,7 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form->Is(RE::FormType::Spell)) {
+        if (!a_form && !a_form->Is(RE::FormType::Spell)) {
             return;
         }
         const auto spell = a_form->As<RE::SpellItem>();
@@ -333,7 +322,7 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form->Is(RE::FormType::AlchemyItem)) {
+        if (!a_form && !a_form->Is(RE::FormType::AlchemyItem)) {
             return;
         }
         const auto alchemy_potion = a_form->As<RE::AlchemyItem>();
@@ -368,7 +357,7 @@ namespace handle {
     void page_handle::get_item_count(RE::TESForm*& a_form,
         int32_t& a_count,
         const slot_setting::slot_type a_type) {
-        if (a_type == slot_setting::slot_type::unset || a_form == nullptr) {
+        if (a_type == slot_setting::slot_type::unset || !a_form) {
             a_count = 0;
             return;
         }
@@ -387,7 +376,7 @@ namespace handle {
     }
 
     void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form->IsArmor()) {
+        if (!a_form && !a_form->IsArmor()) {
             return;
         }
         switch (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->GetArmorType()) {

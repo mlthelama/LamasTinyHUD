@@ -28,7 +28,7 @@ namespace handle {
         //set empty for each position, it will be overwritten if it is configured
         const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
-            for (auto j = 0; j < static_cast<int>(position_setting::position::total); ++j) {
+            for (auto j = 0; j < static_cast<int>(position_setting::position_type::total); ++j) {
                 set_empty_slot(i, j, key_pos);
             }
         }
@@ -38,7 +38,7 @@ namespace handle {
 
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             set_slot(custom::get_page_by_section(section),
-                static_cast<position_setting::position>(custom::get_position_by_section(section)),
+                static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
                 custom::get_item_form_by_section(section),
                 custom::get_type_by_section(section),
                 custom::get_hand_selection_by_section(section),
@@ -56,7 +56,7 @@ namespace handle {
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,
-        const position_setting::position a_position,
+        const position_setting::position_type a_position,
         const std::vector<data_helper*>& a_data) {
         //well for now we have to match
         auto key_pos = key_position_handle::get_singleton();
@@ -102,14 +102,14 @@ namespace handle {
         data.push_back(item);
 
         page_handle::get_singleton()->init_page(a_page,
-            static_cast<position_setting::position>(a_pos),
+            static_cast<position_setting::position_type>(a_pos),
             data,
             slot_setting::hand_equip::total,
             a_key_pos);
     }
 
     void set_setting_data::set_slot(const uint32_t a_page,
-        position_setting::position a_position,
+        position_setting::position_type a_position,
         const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
