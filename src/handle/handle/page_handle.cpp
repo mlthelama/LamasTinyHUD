@@ -98,11 +98,22 @@ namespace handle {
         draw->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
         draw->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
 
+        if (a_position == position_setting::position_type::bottom || a_position == position_setting::position_type::top) {
+            page->item_name = true;
+            //TODO add setting later
+            get_offset_values(a_position, 60, offset_x, offset_y);
+            draw->offset_name_text_x = offset_x;
+            draw->offset_name_text_y = offset_y;
+            /*
+            *         float offset_name_text_x = 0.f;
+        float offset_name_text_y = 0.f;
+             */
+        }
+        
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
-
 
         if (mcm::get_elder_demon_souls()) {
             if (slots->front()->type != slot_setting::slot_type::empty || slots->size() == 2 && slots->at(1)->type !=

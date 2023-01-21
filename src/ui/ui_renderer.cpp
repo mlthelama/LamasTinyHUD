@@ -192,8 +192,9 @@ namespace ui {
         const ImU32 a_color,
         const float a_font_size) {
         const ImFont* font = ImGui::GetFont();
-
-        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x, a_y + a_offset_y + a_offset_extra_y);
+        
+        const ImVec2 text_size = ImGui::CalcTextSize(a_text);
+        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x / 2.0f, a_y + a_offset_y + a_offset_extra_y - text_size.y / 2.0f);
 
         ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
@@ -212,7 +213,7 @@ namespace ui {
 
         };
         constexpr ImVec2 uvs[4] = { ImVec2(0.0f, 0.0f), ImVec2(1.0f, 0.0f), ImVec2(1.0f, 1.0f), ImVec2(0.0f, 1.0f) };
-        
+
         ImGui::GetWindowDrawList()
             ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], a_color);
     }
@@ -271,6 +272,21 @@ namespace ui {
                 draw_setting->offset_slot_y,
                 page_setting->icon_type,
                 draw_setting->icon_transparency);
+            if (page_setting->item_name && page_setting->slot_settings.front()->form) {
+                const ImU32 color = IM_COL32(draw_full,
+                    draw_full,
+                    draw_full,
+                    page_setting->draw_setting->text_transparency);
+                draw_text(draw_setting->width_setting,
+                    draw_setting->height_setting,
+                    0.f,//draw_setting->offset_slot_x,
+                    draw_setting->offset_slot_y,
+                    draw_setting->offset_name_text_x,
+                    draw_setting->offset_name_text_y,
+                    page_setting->slot_settings.front()->form->GetName(),
+                    color,
+                    page_setting->font_size);
+            }
 
             if (auto slot_settings = page_setting->slot_settings;
                 !slot_settings.empty() && slot_settings.front()->item_count > 0) {
@@ -358,8 +374,8 @@ namespace ui {
         const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
 
         const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
-        
-        
+
+
         draw_element(texture, center, size, angle, color);
     }
 

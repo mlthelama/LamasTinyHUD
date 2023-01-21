@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "position_draw_setting.h"
 #include "slot_setting.h"
+#include "setting/custom_setting.h"
 #include "ui/image_path.h"
 
 namespace handle {
@@ -16,5 +17,6 @@ namespace handle {
         uint32_t key = 0;
         position_draw_setting* draw_setting = nullptr;
         float font_size = 0.f;
+        bool item_name = false;
     };
 }

@@ -22,6 +22,9 @@ namespace handle {
         float offset_text_x = 0.f;
         float offset_text_y = 0.f;
 
+        float offset_name_text_x = 0.f;
+        float offset_name_text_y = 0.f;
+
         float width_setting = 0.f;
         float height_setting = 0.f;
 
