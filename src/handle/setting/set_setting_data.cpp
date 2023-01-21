@@ -1,4 +1,6 @@
 ﻿#include "set_setting_data.h"
+
+#include "setting_execute.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
@@ -36,6 +38,12 @@ namespace handle {
         logger::trace("continue with overwriting data from configuration ..."sv);
         custom::read_setting();
 
+        const auto handler = page_handle::get_singleton();
+        for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
+            //will do for now, items could have been removed what so ever
+            handler->set_highest_page_position(-1, static_cast<position_setting::position_type>(i));
+        }
+        
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             set_slot(custom::get_page_by_section(section),
                 static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
@@ -50,11 +58,19 @@ namespace handle {
         }
         logger::trace("done setting. return."sv);
 
-        const auto handler = page_handle::get_singleton();
         for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
             //will do for now, items could have been removed what so ever
             handler->init_actives(0, static_cast<position_setting::position_type>(i));
         }
+
+        //execute first setting for left, then right
+        logger::trace("execute first setting for left/right"sv);
+        auto position_setting = handler->get_page_setting(0, position_setting::position_type::left);
+        setting_execute::execute_settings(position_setting->slot_settings);
+        position_setting = handler->get_page_setting(0, position_setting::position_type::right);
+        setting_execute::execute_settings(position_setting->slot_settings);
+        logger::trace("done executing"sv);
+
     }
 
     void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_object, const int32_t a_count) {
@@ -110,7 +126,8 @@ namespace handle {
         auto pos = static_cast<uint32_t>(a_pos);
         auto key_pos = key_position_handle::get_singleton();
         const auto page_handle = page_handle::get_singleton();
-        auto page = 0;
+        //so we get the next we need, or we can use
+        auto page = page_handle->get_highest_page_id_position(a_pos) + 1;
         for (auto item : a_data) {
             //const auto page = page_handle->get_next_page_id_position(a_pos);
             auto hand = item->two_handed ? slot_setting::hand_equip::both : slot_setting::hand_equip::single;

@@ -2,6 +2,7 @@
 #include "handle/handle/edit_handle.h"
 #include "handle/handle/key_position_handle.h"
 #include "handle/handle/name_handle.h"
+#include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
@@ -26,7 +27,7 @@ namespace event {
         if (config::mcm_setting::get_draw_current_items_text()) {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
-        
+
 
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
 
@@ -46,7 +47,8 @@ namespace event {
             return event_result::kContinue;
         }
 
-        if (const auto edit_handle = handle::edit_handle::get_singleton(); edit_handle->get_position() != handle::position_setting::position_type::total &&
+        if (const auto edit_handle = handle::edit_handle::get_singleton();
+            edit_handle->get_position() != handle::position_setting::position_type::total &&
             config::mcm_setting::get_elder_demon_souls() && a_event->equipped) {
             data_ = edit_handle->get_hold_data();
             const auto item = util::helper::is_suitable_for_position(form, edit_handle->get_position());
@@ -55,13 +57,23 @@ namespace event {
                 util::helper::write_notification(fmt::format("Added Item {}", form ? form->GetName() : "null"));
             }
 
-            //check how many we already have
-            if (data_.size() == config::mcm_setting::get_max_page_count()) {
+            const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(
+                edit_handle->get_position());
+            auto max = config::mcm_setting::get_max_page_count() - 1; //we start at 0 so count -1
+            logger::trace("Max for Position {} is {}, already set before edit {}"sv,
+                static_cast<uint32_t>(edit_handle->get_position()),
+                max,
+                pos_max);
+            if (pos_max != -1) {
+                max = config::mcm_setting::get_max_page_count() - pos_max;
+            }
+
+            if (data_.size() == max || max == 0) {
                 edit_handle->set_hold_data(data_);
                 util::helper::write_notification(fmt::format("Max Amount of {} Reached, rest will be Ignored",
-                    config::mcm_setting::get_max_page_count()));
+                    max));
             }
-            if (data_.size() > config::mcm_setting::get_max_page_count()) {
+            if (data_.size() > max) {
                 util::helper::write_notification(fmt::format("Ignored Item {}", form ? form->GetName() : "null"));
             }
             edit_handle->set_hold_data(data_);

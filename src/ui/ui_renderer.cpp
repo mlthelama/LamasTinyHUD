@@ -212,8 +212,7 @@ namespace ui {
 
         };
         constexpr ImVec2 uvs[4] = { ImVec2(0.0f, 0.0f), ImVec2(1.0f, 0.0f), ImVec2(1.0f, 1.0f), ImVec2(0.0f, 1.0f) };
-
-
+        
         ImGui::GetWindowDrawList()
             ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], a_color);
     }
@@ -359,7 +358,8 @@ namespace ui {
         const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
 
         const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
-
+        
+        
         draw_element(texture, center, size, angle, color);
     }
 
@@ -406,7 +406,6 @@ namespace ui {
                 fade_in = true;
             }
         }
-
 
         static constexpr ImGuiWindowFlags window_flag =
             ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs;

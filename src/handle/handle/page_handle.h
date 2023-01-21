@@ -18,7 +18,8 @@ namespace handle {
 
         void set_active_page(uint32_t a_page) const;
         void set_active_page_position(uint32_t a_page, position_setting::position_type a_pos) const;
-
+        void set_highest_page_position(int a_page, position_setting::position_type a_pos) const;
+        
         [[nodiscard]] position_setting* get_page_setting(uint32_t a_page,
             position_setting::position_type a_position) const;
         [[nodiscard]] std::map<position_setting::position_type, position_setting*> get_page(uint32_t a_page) const;
@@ -32,6 +33,9 @@ namespace handle {
         [[nodiscard]] uint32_t get_active_page_id_position(position_setting::position_type a_position) const;
         [[nodiscard]] uint32_t get_next_page_id_position(position_setting::position_type a_position) const;
         [[nodiscard]] uint32_t get_next_non_empty_setting_for_position(position_setting::position_type a_position) const;
+        //int for now, because also 0 can be unset
+        [[nodiscard]] int get_highest_page_id_position(position_setting::position_type a_position) const;
+        
 
 
         page_handle(const page_handle&) = delete;
@@ -66,7 +70,8 @@ namespace handle {
         struct page_handle_data {
             std::map<uint32_t, std::map<position_setting::position_type, position_setting*>> page_settings;
             uint32_t active_page = 0;
-            std::map<position_setting::position_type, uint32_t> active_page_per_positions;
+            std::map<position_setting::position_type, uint32_t> active_page_per_position;
+            std::map<position_setting::position_type, int> highest_set_page_per_position;
         };
 
         page_handle_data* data_;
