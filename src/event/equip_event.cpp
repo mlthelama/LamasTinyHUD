@@ -26,7 +26,7 @@ namespace event {
         if (config::mcm_setting::get_draw_current_items_text()) {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
-
+        
 
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
 
@@ -39,15 +39,14 @@ namespace event {
             //is two handed, if equipped
             //hardcode left for now, cause we just need it there
             const auto key_handle = handle::key_position_handle::get_singleton();
-            key_handle->set_position_lock(handle::position_setting::position::left, a_event->equipped ? 1 : 0);
+            key_handle->set_position_lock(handle::position_setting::position_type::left, a_event->equipped ? 1 : 0);
         }
 
-        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position::total) {
+        if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
             return event_result::kContinue;
         }
 
-        if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position::total &&
+        if (const auto edit_handle = handle::edit_handle::get_singleton(); edit_handle->get_position() != handle::position_setting::position_type::total &&
             config::mcm_setting::get_elder_demon_souls() && a_event->equipped) {
             data_ = edit_handle->get_hold_data();
             const auto item = util::helper::is_suitable_for_position(form, edit_handle->get_position());
@@ -75,13 +74,13 @@ namespace event {
         //buttom consumables, scrolls, and such
         //top shouts, powers
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position::total && !
+            edit_handle->get_position() != handle::position_setting::position_type::total && !
             config::mcm_setting::get_elder_demon_souls()) {
             data_.clear();
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always
             const auto type = util::helper::get_type(form);
-            if (type == handle::slot_setting::slot_type::unset || type ==
+            if (type == handle::slot_setting::slot_type::empty || type ==
                 handle::slot_setting::slot_type::weapon || type ==
                 handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
                 data_ = util::helper::get_hand_assignment(form);
@@ -91,7 +90,6 @@ namespace event {
                 const auto item = new data_helper();
                 //magic, weapon, shield handled outside
                 switch (type) {
-                    case handle::slot_setting::slot_type::unset:
                     case handle::slot_setting::slot_type::empty:
                         item->form = nullptr;
                         item->type = type;

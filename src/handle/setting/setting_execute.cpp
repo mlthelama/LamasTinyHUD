@@ -7,7 +7,7 @@
 #include "equip/magic/spell.h"
 #include "handle/handle/key_position_handle.h"
 #include "handle/handle/page_handle.h"
-#include "handle/page/position_setting.h"
+#include "handle/data/page/position_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
@@ -52,7 +52,7 @@ namespace handle {
 
     position_setting* setting_execute::get_position_setting_for_key(const uint32_t a_key) {
         const auto position = key_position_handle::get_singleton()->get_position_for_key(a_key);
-        if (position == position_setting::position::total) {
+        if (position == position_setting::position_type::total) {
             logger::warn("nothing to do, nothing set. return."sv);
             return nullptr;
         }
@@ -80,9 +80,6 @@ namespace handle {
 
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
-            case slot_setting::slot_type::unset:
-                logger::warn("nothing to do, nothing set"sv);
-                break;
             case slot_setting::slot_type::consumable:
                 item::potion::consume_potion(a_slot->form, a_player);
                 break;

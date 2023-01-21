@@ -4,6 +4,7 @@
 #include "handle/setting/setting_execute.h"
 #include "handle/setting/set_setting_data.h"
 #include "setting/mcm_setting.h"
+#include "ui/ui_renderer.h"
 #include "util/helper.h"
 
 namespace event {
@@ -102,8 +103,10 @@ namespace event {
                 continue;
             }
 
-            if (config::mcm_setting::get_hide_outside_combat() && !RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
-                continue;
+            if (config::mcm_setting::get_hide_outside_combat() && !ui::ui_renderer::get_fade()) {
+                if ((is_position_button(key_) || key_ == key_toggle_) && (button->IsDown() || button->IsPressed())) {
+                    ui::ui_renderer::set_fade(true, 1.f);
+                }
             }
 
 
@@ -245,7 +248,7 @@ namespace event {
         if (edit_active_ != k_invalid) {
             //remove everything
             edit_active_ = k_invalid;
-            handle::edit_handle::get_singleton()->init_edit(handle::position_setting::position::total);
+            handle::edit_handle::get_singleton()->init_edit(handle::position_setting::position_type::total);
         }
     }
 
@@ -258,10 +261,10 @@ namespace event {
         auto edit_position = edit_handle->get_position();
 
         if (const auto page_handle = handle::page_handle::get_singleton();
-            edit_position == position_setting->pos && edit_page == page_handle->
+            edit_position == position_setting->position && edit_page == page_handle->
             get_active_page_id() && a_key == edit_active_) {
             util::helper::write_notification(fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
-                static_cast<uint32_t>(position_setting->pos)));
+                static_cast<uint32_t>(position_setting->position)));
 
             const auto edit_data = edit_handle->get_hold_data();
             logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
@@ -294,20 +297,20 @@ namespace event {
 
             const auto key_handler = handle::key_position_handle::get_singleton();
             const auto handler = handle::page_handle::get_singleton();
-            if (!key_handler->is_position_locked(position_setting->pos)) {
+            if (!key_handler->is_position_locked(position_setting->position)) {
                 /*handler->set_active_page_position(handler->get_next_page_id_position(position_setting->pos),
                     position_setting->pos);*/
                 if ((scroll_position(a_key) && !is_toggle_down_) || !scroll_position(a_key)) {
                     handler->set_active_page_position(
-                        handler->get_next_non_empty_setting_for_position(position_setting->pos),
-                        position_setting->pos);
+                        handler->get_next_non_empty_setting_for_position(position_setting->position),
+                        position_setting->position);
                 }
                 if (!scroll_position(a_key)) {
                     position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
                     handle::setting_execute::execute_settings(position_setting->slot_settings);
                 }
             } else {
-                logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->pos));
+                logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->position));
             }
         } else {
             handle::setting_execute::execute_settings(position_setting->slot_settings);
@@ -322,13 +325,13 @@ namespace event {
 
         const auto edit_handle = handle::edit_handle::get_singleton();
         const auto page_setting = handle::setting_execute::get_position_setting_for_key(a_key);
-        if (edit_handle->get_position() == handle::position_setting::position::total && edit_active_ ==
+        if (edit_handle->get_position() == handle::position_setting::position_type::total && edit_active_ ==
             k_invalid) {
             logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
-            edit_handle->init_edit(page_setting->pos);
+            edit_handle->init_edit(page_setting->position);
 
             util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
-                static_cast<uint32_t>(page_setting->pos)));
+                static_cast<uint32_t>(page_setting->position)));
             edit_active_ = a_key;
         }
     }

@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include "handle/page/position_setting.h"
-#include "handle/page/slot_setting.h"
+#include "handle/data/page/position_setting.h"
+#include "handle/data/page/slot_setting.h"
 
 namespace handle {
     class setting_execute {

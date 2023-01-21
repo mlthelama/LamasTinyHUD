@@ -1,6 +1,7 @@
 ﻿#include "helper.h"
 #include "constant.h"
 #include "string_util.h"
+#include "handle/data/page/position_setting.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
@@ -184,6 +185,10 @@ namespace util {
     }
 
     handle::slot_setting::slot_type helper::get_type(RE::TESForm*& a_form) {
+        if (!a_form) {
+            return handle::slot_setting::slot_type::empty;
+        }
+
         if (a_form->IsWeapon()) {
             if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); !weapon->IsBound()) {
                 return handle::slot_setting::slot_type::weapon;
@@ -298,14 +303,14 @@ namespace util {
     }
 
     data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form,
-        const handle::position_setting::position a_pos) {
+        const handle::position_setting::position_type a_pos) {
         //all kind of weapons and magic/spells
         const auto item = new data_helper();
         const auto type = get_type(a_form);
         const auto two_handed = is_two_handed(a_form);
 
         switch (a_pos) {
-            case handle::position_setting::position::top:
+            case handle::position_setting::position_type::top:
                 switch (type) {
                     case handle::slot_setting::slot_type::power:
                     case handle::slot_setting::slot_type::shout:
@@ -317,7 +322,7 @@ namespace util {
                         break;
                 }
                 break;
-            case handle::position_setting::position::right:
+            case handle::position_setting::position_type::right:
                 switch (type) {
                     case handle::slot_setting::slot_type::weapon:
                     case handle::slot_setting::slot_type::magic:
@@ -328,7 +333,7 @@ namespace util {
                         break;
                 }
                 break;
-            case handle::position_setting::position::bottom:
+            case handle::position_setting::position_type::bottom:
                 switch (type) {
                     case handle::slot_setting::slot_type::consumable:
                         item->form = a_form;
@@ -338,7 +343,7 @@ namespace util {
                         break;
                 }
                 break;
-            case handle::position_setting::position::left:
+            case handle::position_setting::position_type::left:
                 switch (type) {
                     case handle::slot_setting::slot_type::weapon:
                     case handle::slot_setting::slot_type::magic:

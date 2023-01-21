@@ -153,7 +153,7 @@ namespace magic {
             }
         }
 
-        if (obj == nullptr || left == 0) {
+        if (!obj || left == 0) {
             logger::warn("could not find selected scroll, maybe it all have been consumed"sv);
             return;
         }

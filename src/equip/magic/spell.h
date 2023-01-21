@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include "handle/page/slot_setting.h"
+#include "handle/data/page/slot_setting.h"
 
 namespace magic {
     class spell {
     public:
         using action_type = handle::slot_setting::acton_type;
 
-        //a_single sends is if the user selected both (= configure both hands)
+        //not used
         static std::vector<RE::TESForm*> get_spells(bool a_instant, bool a_single);
         static void cast_magic(RE::TESForm* a_form,
             action_type a_action,

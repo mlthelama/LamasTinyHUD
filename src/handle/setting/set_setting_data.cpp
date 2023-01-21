@@ -28,7 +28,7 @@ namespace handle {
         //set empty for each position, it will be overwritten if it is configured
         const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
-            for (auto j = 0; j < static_cast<int>(position_setting::position::total); ++j) {
+            for (auto j = 0; j < static_cast<int>(position_setting::position_type::total); ++j) {
                 set_empty_slot(i, j, key_pos);
             }
         }
@@ -38,7 +38,7 @@ namespace handle {
 
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             set_slot(custom::get_page_by_section(section),
-                static_cast<position_setting::position>(custom::get_position_by_section(section)),
+                static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
                 custom::get_item_form_by_section(section),
                 custom::get_type_by_section(section),
                 custom::get_hand_selection_by_section(section),
@@ -51,9 +51,9 @@ namespace handle {
         logger::trace("done setting. return."sv);
 
         const auto handler = page_handle::get_singleton();
-        for (auto i = 0; i < static_cast<int>(position_setting::position::total); ++i) {
+        for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
             //will do for now, items could have been removed what so ever
-            handler->init_actives(0, static_cast<position_setting::position>(i));
+            handler->init_actives(0, static_cast<position_setting::position_type>(i));
         }
     }
 
@@ -62,7 +62,7 @@ namespace handle {
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,
-        const position_setting::position a_position,
+        const position_setting::position_type a_position,
         const std::vector<data_helper*>& a_data) {
         //well for now we have to match
         auto key_pos = key_position_handle::get_singleton();
@@ -99,7 +99,7 @@ namespace handle {
     }
 
 
-    void set_setting_data::set_queue_slot(position_setting::position a_pos, const std::vector<data_helper*>& a_data) {
+    void set_setting_data::set_queue_slot(position_setting::position_type a_pos, const std::vector<data_helper*>& a_data) {
         //each data item will be a new page with this position
         //get_next_page_id_for_position
         logger::trace("Got {} items to process"sv, a_data.size());
@@ -145,14 +145,14 @@ namespace handle {
         data.push_back(item);
 
         page_handle::get_singleton()->init_page(a_page,
-            static_cast<position_setting::position>(a_pos),
+            static_cast<position_setting::position_type>(a_pos),
             data,
             slot_setting::hand_equip::total,
             a_key_pos);
     }
 
     void set_setting_data::set_slot(const uint32_t a_page,
-        position_setting::position a_position,
+        position_setting::position_type a_position,
         const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
@@ -228,7 +228,7 @@ namespace handle {
         if (hand == slot_setting::hand_equip::single) {
             const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
             action = static_cast<slot_setting::acton_type>(a_action_left);
-            logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
+            logger::trace("start building second set data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_position),
                 form_left ? util::string_util::int_to_hex(form_left->GetFormID()) : "null",
                 static_cast<int>(type_left),

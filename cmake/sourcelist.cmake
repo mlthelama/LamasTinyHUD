@@ -21,6 +21,9 @@ set(sources ${sources}
 	src/event/sink_event.cpp
 	src/event/sink_event.h
 	src/handle/data/data_helper.h
+	src/handle/data/page/position_draw_setting.h
+	src/handle/data/page/position_setting.h
+	src/handle/data/page/slot_setting.h
 	src/handle/handle/edit_handle.cpp
 	src/handle/handle/edit_handle.h
 	src/handle/handle/key_position_handle.cpp
@@ -29,12 +32,6 @@ set(sources ${sources}
 	src/handle/handle/name_handle.h
 	src/handle/handle/page_handle.cpp
 	src/handle/handle/page_handle.h
-	src/handle/page/draw_setting.h
-	src/handle/page/fade_setting.h
-	src/handle/page/hud_offset_setting.h
-	src/handle/page/position_setting.h
-	src/handle/page/slot_setting.h
-	src/handle/page/transparency_setting.h
 	src/handle/setting/set_setting_data.cpp
 	src/handle/setting/set_setting_data.h
 	src/handle/setting/setting_execute.cpp
