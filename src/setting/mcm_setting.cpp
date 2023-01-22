@@ -42,6 +42,9 @@ namespace config {
     static uint32_t current_items_red;
     static uint32_t current_items_green;
     static uint32_t current_items_blue;
+    static uint32_t slot_count_red;
+    static uint32_t slot_count_green;
+    static uint32_t slot_count_blue;
 
     static bool action_check;
     static bool empty_hand_setting;
@@ -111,6 +114,9 @@ namespace config {
             current_items_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsRed", 255));
             current_items_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsGreen", 255));
             current_items_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsBlue", 255));
+            slot_count_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountRed", 255));
+            slot_count_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountGreen", 255));
+            slot_count_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountBlue", 255));
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
@@ -165,6 +171,9 @@ namespace config {
     uint32_t mcm_setting::get_current_items_red() { return current_items_red; }
     uint32_t mcm_setting::get_current_items_green() { return current_items_green; }
     uint32_t mcm_setting::get_current_items_blue() { return current_items_blue; }
+    uint32_t mcm_setting::get_slot_count_red() { return slot_count_red; }
+    uint32_t mcm_setting::get_slot_count_green() { return slot_count_green; }
+    uint32_t mcm_setting::get_slot_count_blue() { return slot_count_blue; }
 
     bool mcm_setting::get_action_check() { return action_check; }
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }

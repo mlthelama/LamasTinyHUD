@@ -195,7 +195,8 @@ namespace ui {
 
         //it should center the text, it kind of does
         const ImVec2 text_size = ImGui::CalcTextSize(a_text);
-        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x / 2.0f, a_y + a_offset_y + a_offset_extra_y - text_size.y / 2.0f);
+        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x / 2.0f,
+            a_y + a_offset_y + a_offset_extra_y - text_size.y / 2.0f);
 
         ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
@@ -275,21 +276,46 @@ namespace ui {
                 page_setting->icon_type,
                 draw_setting->icon_transparency);
 
-            if (auto slot_settings = page_setting->slot_settings;
-                !slot_settings.empty() && slot_settings.front()->item_count > 0) {
-                const ImU32 color = IM_COL32(draw_full,
-                    draw_full,
-                    draw_full,
+            if (auto slot_settings = page_setting->slot_settings; !slot_settings.empty()) {
+                const auto first_type = slot_settings.front()->type;
+                const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
+                    mcm::get_slot_count_green(),
+                    mcm::get_slot_count_blue(),
                     page_setting->draw_setting->text_transparency);
-                draw_text(draw_setting->width_setting,
-                    draw_setting->height_setting,
-                    draw_setting->offset_slot_x,
-                    draw_setting->offset_slot_y,
-                    draw_setting->offset_text_x,
-                    draw_setting->offset_text_y,
-                    std::to_string(slot_settings.front()->item_count).c_str(),
-                    color,
-                    page_setting->font_size);
+                switch (first_type) {
+                    case handle::slot_setting::slot_type::weapon:
+                    case handle::slot_setting::slot_type::shield:
+                    case handle::slot_setting::slot_type::armor:
+                    case handle::slot_setting::slot_type::empty:
+                    case handle::slot_setting::slot_type::misc:
+                        //Nothing, for now
+                        break;
+                    case handle::slot_setting::slot_type::scroll:
+                    case handle::slot_setting::slot_type::consumable:
+                        draw_text(draw_setting->width_setting,
+                            draw_setting->height_setting,
+                            draw_setting->offset_slot_x,
+                            draw_setting->offset_slot_y,
+                            draw_setting->offset_text_x,
+                            draw_setting->offset_text_y,
+                            std::to_string(slot_settings.front()->item_count).c_str(),
+                            color,
+                            page_setting->font_size);
+                        break;
+                    case handle::slot_setting::slot_type::shout:
+                    case handle::slot_setting::slot_type::power:
+                    case handle::slot_setting::slot_type::magic:
+                        draw_text(draw_setting->width_setting,
+                            draw_setting->height_setting,
+                            draw_setting->offset_slot_x,
+                            draw_setting->offset_slot_y,
+                            draw_setting->offset_text_x,
+                            draw_setting->offset_text_y,
+                            slot_settings.front()->action == handle::slot_setting::acton_type::instant ? "I" : "E",
+                            color,
+                            page_setting->font_size);
+                        break;
+                }
             }
         }
     }
@@ -311,7 +337,9 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_keys(const float a_x,
+        const float a_y,
+        const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             const auto draw_setting = page_setting->draw_setting;
             if (config::file_setting::get_draw_key_background()) {
@@ -502,7 +530,11 @@ namespace ui {
         }
     }
 
-    template <typename T>
+    template
+    <
+        typename T>
+
+
     void ui_renderer::load_images(std::map<T, const char*>& a_map, std::map<uint32_t, image>& a_struct) {
         for (auto [type, path] : a_map) {
             const auto idx = static_cast<int32_t>(type);
@@ -554,13 +586,21 @@ namespace ui {
         return true;
     }
 
-    float ui_renderer::get_resolution_scale_width() { return ImGui::GetIO().DisplaySize.x / 1920.f; }
+    float ui_renderer::get_resolution_scale_width() {
+        return ImGui::GetIO().DisplaySize.x / 1920.f;
+    }
 
-    float ui_renderer::get_resolution_scale_height() { return ImGui::GetIO().DisplaySize.y / 1080.f; }
+    float ui_renderer::get_resolution_scale_height() {
+        return ImGui::GetIO().DisplaySize.y / 1080.f;
+    }
 
-    float ui_renderer::get_resolution_width() { return ImGui::GetIO().DisplaySize.x; }
+    float ui_renderer::get_resolution_width() {
+        return ImGui::GetIO().DisplaySize.x;
+    }
 
-    float ui_renderer::get_resolution_height() { return ImGui::GetIO().DisplaySize.y; }
+    float ui_renderer::get_resolution_height() {
+        return ImGui::GetIO().DisplaySize.y;
+    }
 
     void ui_renderer::set_fade(const bool a_in, const float a_value) {
         fade_in = a_in;

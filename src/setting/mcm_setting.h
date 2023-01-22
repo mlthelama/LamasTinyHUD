@@ -42,6 +42,9 @@ namespace config {
         static uint32_t get_current_items_red();
         static uint32_t get_current_items_green();
         static uint32_t get_current_items_blue();
+        static uint32_t get_slot_count_red();
+        static uint32_t get_slot_count_green();
+        static uint32_t get_slot_count_blue();
 
         static bool get_action_check();
         static bool get_empty_hand_setting();
