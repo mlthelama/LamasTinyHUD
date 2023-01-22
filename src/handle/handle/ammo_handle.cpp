@@ -50,4 +50,11 @@ namespace handle {
         }
         return nullptr;
     }
+
+    std::vector<ammo_data*> ammo_handle::get_all() const {
+        if (const ammo_handle_data* data = this->data_; data && !data->ammo_list.empty()) {
+            return data->ammo_list;
+        }
+        return {};
+    }
 }

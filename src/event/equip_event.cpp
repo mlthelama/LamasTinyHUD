@@ -136,6 +136,11 @@ namespace event {
                     a_form ? a_form->GetName() : "null"));
             }
 
+            if (a_form && a_form->Is(RE::FormType::AlchemyItem) ) {
+                const auto obj = a_form->As<RE::AlchemyItem>();
+                RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
+            }
+            
             const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(
                 edit_handle->get_position());
             auto max = config::mcm_setting::get_max_page_count() - 1; //we start at 0 so count -1

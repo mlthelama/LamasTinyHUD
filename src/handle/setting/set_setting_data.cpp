@@ -1,6 +1,7 @@
 ﻿#include "set_setting_data.h"
 
 #include "setting_execute.h"
+#include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
@@ -308,6 +309,16 @@ namespace handle {
 
                         //TODO maybe add indicator to ui that the items are gone
                     }
+                }
+            }
+        }
+        //TODO other way to keep track of it
+        //check if we have ammo to update
+        const auto ammo_handle = ammo_handle::get_singleton();
+        if (const auto ammo_list = ammo_handle->get_all(); !ammo_list.empty()) {
+            for (const auto ammo : ammo_list) {
+                if (a_form_id == ammo->form->formID) {
+                    ammo->item_count = ammo->item_count + a_count;
                 }
             }
         }

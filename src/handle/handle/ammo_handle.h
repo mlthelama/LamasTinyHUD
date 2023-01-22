@@ -12,6 +12,7 @@ namespace handle {
 
         [[nodiscard]] RE::TESForm* get_next_ammo() const;
         [[nodiscard]] ammo_data* get_current() const;
+        [[nodiscard]] std::vector<ammo_data*> get_all() const;
 
         ammo_handle(const ammo_handle&) = delete;
         ammo_handle(ammo_handle&&) = delete;
