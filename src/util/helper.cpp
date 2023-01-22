@@ -280,6 +280,34 @@ namespace util {
         RE::DebugNotification(a_string.c_str());
     }
 
+    bool helper::can_instant_cast(const RE::TESForm* a_form, const handle::slot_setting::slot_type a_type) {
+        if (a_type == handle::slot_setting::slot_type::magic) {
+            if (const auto spell = a_form->As<RE::SpellItem>();
+                spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell || spell->GetSpellType() ==
+                RE::MagicSystem::SpellType::kLeveledSpell) {
+                if (spell->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (a_type == handle::slot_setting::slot_type::power) {
+            if (const auto power = a_form->As<RE::SpellItem>();
+                power->GetSpellType() == RE::MagicSystem::SpellType::kPower || power->GetSpellType() ==
+                RE::MagicSystem::SpellType::kLesserPower) {
+                if (power->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (a_type == handle::slot_setting::slot_type::shout) {
+            return false;
+        }
+
+        return false;
+    }
+
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {
         //for now i will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);

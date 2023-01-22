@@ -173,6 +173,14 @@ namespace handle {
             logger::warn("set action to default, because form was not null but unequip was set");
         }
 
+        if (action == slot_setting::acton_type::instant && form) {
+            if (!util::helper::can_instant_cast(form, type)) {
+                logger::warn("form {} cannot be instant cast, set to default"sv,
+                    util::string_util::int_to_hex(form->GetFormID()));
+                action = slot_setting::acton_type::default_action;
+            }
+        }
+
         const auto item = new data_helper();
         item->form = form ? form : nullptr;
         item->type = type;
@@ -195,6 +203,14 @@ namespace handle {
             if (form_left && action == slot_setting::acton_type::unequip) {
                 action = slot_setting::acton_type::default_action;
                 logger::warn("set left action to default, because form was not null but unequip was set");
+            }
+
+            if (action == slot_setting::acton_type::instant && form_left) {
+                if (!util::helper::can_instant_cast(form_left, type)) {
+                    logger::warn("form {} cannot be instant cast, set to default"sv,
+                        util::string_util::int_to_hex(form_left->GetFormID()));
+                    action = slot_setting::acton_type::default_action;
+                }
             }
 
             const auto item_left = new data_helper();
