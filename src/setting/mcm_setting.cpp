@@ -43,6 +43,9 @@ namespace config {
     static uint32_t current_items_red;
     static uint32_t current_items_green;
     static uint32_t current_items_blue;
+    static uint32_t slot_count_red;
+    static uint32_t slot_count_green;
+    static uint32_t slot_count_blue;
     static uint32_t slot_button_feedback;
     static bool draw_current_items_text;
 
@@ -120,6 +123,9 @@ namespace config {
             current_items_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsRed", 255));
             current_items_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsGreen", 255));
             current_items_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsBlue", 255));
+            slot_count_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountRed", 255));
+            slot_count_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountGreen", 255));
+            slot_count_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountBlue", 255));
             slot_button_feedback = static_cast<uint32_t>(mcm.
                 GetLongValue("GraphicSetting", "uSlotButtonFeedback", 175));
             draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", false);
@@ -180,6 +186,9 @@ namespace config {
     uint32_t mcm_setting::get_current_items_red() { return current_items_red; }
     uint32_t mcm_setting::get_current_items_green() { return current_items_green; }
     uint32_t mcm_setting::get_current_items_blue() { return current_items_blue; }
+    uint32_t mcm_setting::get_slot_count_red() { return slot_count_red; }
+    uint32_t mcm_setting::get_slot_count_green() { return slot_count_green; }
+    uint32_t mcm_setting::get_slot_count_blue() { return slot_count_blue; }
     bool mcm_setting::get_draw_current_items_text() { return draw_current_items_text; }
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
 

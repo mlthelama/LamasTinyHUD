@@ -2,6 +2,7 @@
 #include "constant.h"
 #include "string_util.h"
 #include "data/config_writer_helper.h"
+#include "equip/magic/spell.h"
 #include "handle/data/page/position_setting.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
@@ -319,6 +320,18 @@ namespace util {
                         item->type = type;
                         item->two_handed = two_handed;
                         item->left = false;
+                        item->action_type = can_instant_cast(a_form, type) ?
+                                                handle::slot_setting::acton_type::instant :
+                                                handle::slot_setting::acton_type::default_action;
+                        break;
+                    case handle::slot_setting::slot_type::magic:
+                        if (can_instant_cast(a_form, type)) {
+                            item->form = a_form;
+                            item->type = type;
+                            item->two_handed = two_handed;
+                            item->left = false;
+                            item->action_type = handle::slot_setting::acton_type::instant;
+                        }
                         break;
                 }
                 break;
@@ -420,6 +433,34 @@ namespace util {
 
 
         logger::trace("done rewriting."sv);
+    }
+
+    bool helper::can_instant_cast(RE::TESForm*& a_form, handle::slot_setting::slot_type a_type) {
+        if (a_type == handle::slot_setting::slot_type::magic) {
+            const auto spell = a_form->As<RE::SpellItem>();
+            if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell || spell->GetSpellType() ==
+                RE::MagicSystem::SpellType::kLeveledSpell) {
+                if (spell->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (a_type == handle::slot_setting::slot_type::power) {
+            const auto power = a_form->As<RE::SpellItem>();
+            if (power->GetSpellType() == RE::MagicSystem::SpellType::kPower || power->GetSpellType() ==
+                RE::MagicSystem::SpellType::kLesserPower) {
+                if (power->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (a_type == handle::slot_setting::slot_type::shout) {
+            return false;
+        }
+
+        return false;
     }
 
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {

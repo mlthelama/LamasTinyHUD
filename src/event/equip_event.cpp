@@ -62,6 +62,9 @@ namespace event {
             if (item->form) {
                 data_.push_back(item);
                 util::helper::write_notification(fmt::format("Added Item {}", form ? form->GetName() : "null"));
+            } else {
+                util::helper::write_notification(fmt::format("Ignored Item {}, because it did not fit the requirement",
+                    form ? form->GetName() : "null"));
             }
 
             const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(

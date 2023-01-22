@@ -290,21 +290,35 @@ namespace ui {
                     page_setting->font_size);
             }
 
-            if (auto slot_settings = page_setting->slot_settings;
-                !slot_settings.empty() && slot_settings.front()->item_count > 0) {
-                const ImU32 color = IM_COL32(draw_full,
-                    draw_full,
-                    draw_full,
+            if (auto slot_settings = page_setting->slot_settings; !slot_settings.empty()) {
+                const auto first_type = slot_settings.front()->type;
+                const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
+                    mcm::get_slot_count_green(),
+                    mcm::get_slot_count_blue(),
                     page_setting->draw_setting->text_transparency);
-                draw_text(draw_setting->width_setting,
-                    draw_setting->height_setting,
-                    draw_setting->offset_slot_x,
-                    draw_setting->offset_slot_y,
-                    draw_setting->offset_text_x,
-                    draw_setting->offset_text_y,
-                    std::to_string(slot_settings.front()->item_count).c_str(),
-                    color,
-                    page_setting->font_size);
+                if (first_type == handle::slot_setting::slot_type::scroll || first_type ==
+                    handle::slot_setting::slot_type::consumable) {
+                    draw_text(draw_setting->width_setting,
+                        draw_setting->height_setting,
+                        draw_setting->offset_slot_x,
+                        draw_setting->offset_slot_y,
+                        draw_setting->offset_text_x,
+                        draw_setting->offset_text_y,
+                        std::to_string(slot_settings.front()->item_count).c_str(),
+                        color,
+                        page_setting->font_size);
+                }
+                if (position == handle::position_setting::position_type::top) {
+                    draw_text(draw_setting->width_setting,
+                        draw_setting->height_setting,
+                        draw_setting->offset_slot_x,
+                        draw_setting->offset_slot_y,
+                        draw_setting->offset_text_x,
+                        draw_setting->offset_text_y,
+                        slot_settings.front()->action == handle::slot_setting::acton_type::instant ? "I" : "E",
+                        color,
+                        page_setting->font_size);
+                }
             }
         }
     }

@@ -742,6 +742,45 @@
                     }
                 },
                 {
+                    "id": "uSlotCountRed:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotCountRed_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotCountRed_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotCountGreen:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotCountGreen_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotCountGreen_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotCountBlue:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotCountBlue_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotCountBlue_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Misc",
                     "type": "header"
                 },

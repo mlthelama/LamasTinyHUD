@@ -43,6 +43,9 @@ namespace config {
         static uint32_t get_current_items_red();
         static uint32_t get_current_items_green();
         static uint32_t get_current_items_blue();
+        static uint32_t get_slot_count_red();
+        static uint32_t get_slot_count_green();
+        static uint32_t get_slot_count_blue();
         static uint32_t get_slot_button_feedback();
         static bool get_draw_current_items_text();
 
