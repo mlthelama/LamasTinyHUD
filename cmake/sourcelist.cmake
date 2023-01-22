@@ -2,18 +2,10 @@ set(sources ${sources}
 	src/PCH.h
 	src/equip/equip_slot.cpp
 	src/equip/equip_slot.h
-	src/equip/item/inventory.cpp
-	src/equip/item/inventory.h
-	src/equip/item/potion.cpp
-	src/equip/item/potion.h
-	src/equip/item/weapon.cpp
-	src/equip/item/weapon.h
-	src/equip/magic/power.cpp
-	src/equip/magic/power.h
-	src/equip/magic/shout.cpp
-	src/equip/magic/shout.h
-	src/equip/magic/spell.cpp
-	src/equip/magic/spell.h
+	src/equip/item.cpp
+	src/equip/item.h
+	src/equip/magic.cpp
+	src/equip/magic.h
 	src/event/equip_event.cpp
 	src/event/equip_event.h
 	src/event/key_manager.cpp

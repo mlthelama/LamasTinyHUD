@@ -1,12 +1,41 @@
-﻿#include "weapon.h"
-#include "inventory.h"
+﻿#include "item.h"
 #include "equip/equip_slot.h"
 
-namespace item {
-    void weapon::equip_weapon_or_shield(const RE::TESForm* a_form,
+namespace equip {
+    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
+        item::get_inventory_weapon_items(RE::PlayerCharacter*& a_player) {
+        return a_player->GetInventory(
+            [](const RE::TESBoundObject& a_object) { return a_object.IsWeapon(); });
+    }
+
+    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
+        item::get_inventory_armor_items(RE::PlayerCharacter*& a_player) {
+        return a_player->GetInventory(
+            [](const RE::TESBoundObject& a_object) { return a_object.IsArmor(); });
+    }
+
+    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>> item::get_inventory(
+        RE::PlayerCharacter*& a_player,
+        RE::FormType a_type) {
+        return a_player->GetInventory(
+            [a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
+    }
+
+    bool item::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
+        auto worn = false;
+        for (const auto& [item, inv_data] : get_inventory_armor_items(a_player)) {
+            if (const auto& [count, entry] = inv_data; entry->object->formID == a_obj->formID && entry->IsWorn()) {
+                worn = true;
+                break;
+            }
+        }
+        return worn;
+    }
+
+    void item::equip_weapon_or_shield(const RE::TESForm* a_form,
         const RE::BGSEquipSlot* a_slot,
         RE::PlayerCharacter*& a_player,
-        const bool a_weapon) {
+        bool a_weapon) {
         auto left = a_slot == equip_slot::get_left_hand_slot();
         logger::trace("try to equip {}, left {}"sv, a_form->GetName(), left);
 
@@ -18,13 +47,13 @@ namespace item {
                 logger::warn("object {} is not a weapon. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = inventory::get_inventory_weapon_items(a_player);
+            potential_items = get_inventory_weapon_items(a_player);
         } else {
             if (!a_form->Is(RE::FormType::Armor)) {
                 logger::warn("object {} is not an armor. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = inventory::get_inventory_armor_items(a_player);
+            potential_items = get_inventory_armor_items(a_player);
         }
 
         auto item_count = 0;
@@ -84,12 +113,12 @@ namespace item {
         logger::trace("equipped weapon/shield {}, left {}. return."sv, a_form->GetName(), left);
     }
 
-    void weapon::equip_armor(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
+    void item::equip_armor(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
         logger::trace("try to equip {}"sv, a_form->GetName());
 
         RE::TESBoundObject* obj = nullptr;
         auto item_count = 0;
-        for (const auto& [item, inv_data] : inventory::get_inventory_armor_items(a_player)) {
+        for (const auto& [item, inv_data] : get_inventory_armor_items(a_player)) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = inv_data.second->object;
                 item_count = num_items;
@@ -110,5 +139,38 @@ namespace item {
             equip_manager->EquipObject(a_player, obj);
             logger::trace("equipped armor {}. return."sv, a_form->GetName());
         }
+    }
+
+    void item::consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
+        logger::trace("try to consume {}"sv, a_form->GetName());
+
+
+        RE::TESBoundObject* obj = nullptr;
+        uint32_t left = 0;
+        for (auto potential_items = get_inventory(a_player, RE::FormType::AlchemyItem);
+             const auto& [item, inv_data] : potential_items) {
+            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
+                obj = item;
+                left = inv_data.first;
+                break;
+            }
+        }
+
+        if (!obj || left == 0) {
+            logger::warn("could not find selected potion, maybe it all have been consumed"sv);
+            //TODO update ui in this case
+            return;
+        }
+
+        if (!obj->Is(RE::FormType::AlchemyItem)) {
+            logger::warn("object {} is not an alchemy item. return."sv, obj->GetName());
+            return;
+        }
+
+        logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
+
+        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        equip_manager->EquipObject(a_player, obj);
+        logger::trace("drank/ate potion/food {}. return."sv, obj->GetName());
     }
 }
