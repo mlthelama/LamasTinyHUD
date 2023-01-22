@@ -435,7 +435,7 @@ namespace util {
         logger::trace("done rewriting."sv);
     }
 
-    bool helper::can_instant_cast(RE::TESForm*& a_form, handle::slot_setting::slot_type a_type) {
+    bool helper::can_instant_cast(RE::TESForm* a_form, const handle::slot_setting::slot_type a_type) {
         if (a_type == handle::slot_setting::slot_type::magic) {
             const auto spell = a_form->As<RE::SpellItem>();
             if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell || spell->GetSpellType() ==

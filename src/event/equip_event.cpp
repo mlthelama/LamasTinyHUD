@@ -48,6 +48,13 @@ namespace event {
             setting->draw_setting->icon_transparency = a_event->equipped ?
                                                            config::mcm_setting::get_icon_transparency_blocked() :
                                                            config::mcm_setting::get_icon_transparency();
+            //check if bow or crossbow, now we look for ammo that is in the favor list
+            /*if(form->Is(RE::FormType::Weapon)) {
+                const auto weapon = form->As<RE::TESObjectWEAP>();
+                if (weapon->IsBow() || weapon->IsCrossbow()) {
+                    
+                }
+            }*/
         }
 
         if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
