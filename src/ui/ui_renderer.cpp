@@ -194,7 +194,8 @@ namespace ui {
         const ImFont* font = ImGui::GetFont();
 
         const ImVec2 text_size = ImGui::CalcTextSize(a_text);
-        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x / 2.0f, a_y + a_offset_y + a_offset_extra_y - text_size.y / 2.0f);
+        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x / 2.0f,
+            a_y + a_offset_y + a_offset_extra_y - text_size.y / 2.0f);
 
         ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
@@ -279,7 +280,8 @@ namespace ui {
                     page_setting->draw_setting->text_transparency);
                 draw_text(draw_setting->width_setting,
                     draw_setting->height_setting,
-                    0.f,//draw_setting->offset_slot_x,
+                    0.f,
+                    //draw_setting->offset_slot_x,
                     draw_setting->offset_slot_y,
                     draw_setting->offset_name_text_x,
                     draw_setting->offset_name_text_y,

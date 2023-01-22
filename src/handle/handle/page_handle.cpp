@@ -98,18 +98,15 @@ namespace handle {
         draw->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
         draw->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
 
-        if (a_position == position_setting::position_type::bottom || a_position == position_setting::position_type::top) {
+        if (a_position == position_setting::position_type::bottom || a_position ==
+            position_setting::position_type::top) {
             page->item_name = true;
-            //TODO add setting later
-            get_offset_values(a_position, 60, offset_x, offset_y);
-            draw->offset_name_text_x = offset_x;
+            //TODO fix or not
+            get_offset_values(a_position, mcm::get_slot_item_name_offset_y(), offset_x, offset_y);
+            draw->offset_name_text_x = offset_x + mcm::get_slot_item_name_offset_x();
             draw->offset_name_text_y = offset_y;
-            /*
-            *         float offset_name_text_x = 0.f;
-        float offset_name_text_y = 0.f;
-             */
         }
-        
+
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
@@ -119,7 +116,8 @@ namespace handle {
             if (slots->front()->type != slot_setting::slot_type::empty || slots->size() == 2 && slots->at(1)->type !=
                 slot_setting::slot_type::empty) {
                 const auto config_page = static_cast<int>(a_page);
-                if (const auto current_highest = get_highest_page_id_position(a_position); current_highest < config_page) {
+                if (const auto current_highest = get_highest_page_id_position(a_position);
+                    current_highest < config_page) {
                     set_highest_page_position(config_page, a_position);
                 }
             }

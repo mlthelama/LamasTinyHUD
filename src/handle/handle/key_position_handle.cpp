@@ -29,8 +29,9 @@ namespace handle {
 
         logger::trace("done with init of position key map."sv);
     }
-    
-    void key_position_handle::set_position_lock(const position_setting::position_type a_position, const uint32_t a_locked) {
+
+    void key_position_handle::set_position_lock(const position_setting::position_type a_position,
+        const uint32_t a_locked) {
         if (!this->data_) {
             this->data_ = new key_position_handle_data();
         }
@@ -38,7 +39,7 @@ namespace handle {
         logger::trace("init lock for postion {}, lock {}"sv, static_cast<uint32_t>(a_position), a_locked);
         data->position_lock_map[a_position] = a_locked;
     }
-    
+
     position_setting::position_type key_position_handle::get_position_for_key(const uint32_t a_key) const {
         if (const key_position_handle_data* data = this->data_;
             data && !data->key_position_map.empty() && data->key_position_map.contains(a_key)) {

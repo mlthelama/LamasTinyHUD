@@ -402,7 +402,7 @@ namespace util {
 
         logger::trace("start writing config, got {} items"sv, configs.size());
 
-        for (auto const config : configs) {
+        for (const auto config : configs) {
             config::custom_setting::reset_section(config->section);
             const auto section = get_section_name_for_page_position(config->page, config->position);
 

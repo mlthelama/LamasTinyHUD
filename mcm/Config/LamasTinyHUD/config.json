@@ -555,55 +555,29 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Misc",
-                    "type": "header"
-                },
-                {
-                    "id": "uSlotButtonFeedback:HudSetting",
-                    "text": "$LamasTinyHUD_HudSetting_SlotButtonFeedback_OptionText",
+                    "id": "fSlotItemNameOffsetX:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetX_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_SlotButtonFeedback_InfoText",
+                    "help": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetX_InfoText",
                     "valueOptions": {
-                        "min": 0,
-                        "max": 255,
-                        "step": 1,
-                        "formatString": "{0}",
-                        "sourceType": "ModSettingInt"
-                    }
-                },
-                {
-                    "id": "fSlotCountTextFontSize:HudSetting",
-                    "text": "$LamasTinyHUD_HudSetting_SlotCountTextFontSize_OptionText",
-                    "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_SlotCountTextFontSize_InfoText",
-                    "valueOptions": {
-                        "min": 10.0,
-                        "max": 35.0,
+                        "min": -500.0,
+                        "max": 500.0,
                         "step": 1.0,
                         "formatString": "{0}",
                         "sourceType": "ModSettingFloat"
                     }
                 },
                 {
-                    "id": "fCurrentItemsFontSize:HudSetting",
-                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsFontSize_OptionText",
+                    "id": "fSlotItemNameOffsetY:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetY_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsFontSize_InfoText",
+                    "help": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetY_InfoText",
                     "valueOptions": {
-                        "min": 10.0,
-                        "max": 35.0,
+                        "min": -500.0,
+                        "max": 500.0,
                         "step": 1.0,
                         "formatString": "{0}",
                         "sourceType": "ModSettingFloat"
-                    }
-                },
-                {
-                    "id": "bDrawCurrentItemsText:HudSetting",
-                    "text": "$LamasTinyHUD_DrawCurrentItemsText_OptionText",
-                    "type": "toggle",
-                    "help": "$LamasTinyHUD_DrawCurrentItemsText_InfoText",
-                    "valueOptions": {
-                        "sourceType": "ModSettingBool"
                     }
                 }
             ]
@@ -694,15 +668,45 @@
                     }
                 },
                 {
+                    "text": "$LamasTinyHUD_GraphicSetting_Font_Color",
+                    "type": "header"
+                },
+                {
+                    "id": "fSlotCountTextFontSize:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotCountTextFontSize_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotCountTextFontSize_InfoText",
+                    "valueOptions": {
+                        "min": 10.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fCurrentItemsFontSize:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_CurrentItemsFontSize_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_CurrentItemsFontSize_InfoText",
+                    "valueOptions": {
+                        "min": 10.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Color",
                     "type": "header",
                     "position": 1
                 },
                 {
                     "id": "uCurrentItemsRed:GraphicSetting",
-                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsRed_OptionText",
+                    "text": "$LamasTinyHUD_GraphicSetting_CurrentItemsRed_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsRed_InfoText",
+                    "help": "$LamasTinyHUD_GraphicSetting_CurrentItemsRed_InfoText",
                     "valueOptions": {
                         "min": 0,
                         "max": 255,
@@ -713,9 +717,9 @@
                 },
                 {
                     "id": "uCurrentItemsGreen:GraphicSetting",
-                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsGreen_OptionText",
+                    "text": "$LamasTinyHUD_GraphicSetting_CurrentItemsGreen_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsGreen_InfoText",
+                    "help": "$LamasTinyHUD_GraphicSetting_CurrentItemsGreen_InfoText",
                     "valueOptions": {
                         "min": 0,
                         "max": 255,
@@ -726,15 +730,41 @@
                 },
                 {
                     "id": "uCurrentItemsBlue:GraphicSetting",
-                    "text": "$LamasTinyHUD_HudSetting_CurrentItemsBlue_OptionText",
+                    "text": "$LamasTinyHUD_GraphicSetting_CurrentItemsBlue_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_CurrentItemsBlue_InfoText",
+                    "help": "$LamasTinyHUD_GraphicSetting_CurrentItemsBlue_InfoText",
                     "valueOptions": {
                         "min": 0,
                         "max": 255,
                         "step": 1,
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Misc",
+                    "type": "header"
+                },
+                {
+                    "id": "uSlotButtonFeedback:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotButtonFeedback_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotButtonFeedback_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "bDrawCurrentItemsText:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_DrawCurrentItemsText_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_GraphicSetting_DrawCurrentItemsText_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
                     }
                 }
             ]

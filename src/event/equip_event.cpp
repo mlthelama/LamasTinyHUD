@@ -47,7 +47,7 @@ namespace event {
             //use settings here
             setting->draw_setting->icon_transparency = a_event->equipped ?
                                                            config::mcm_setting::get_icon_transparency_blocked() :
-                                                           config::mcm_setting::get_background_icon_transparency();
+                                                           config::mcm_setting::get_icon_transparency();
         }
 
         if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {

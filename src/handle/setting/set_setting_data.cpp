@@ -43,7 +43,7 @@ namespace handle {
             //will do for now, items could have been removed what so ever
             handler->set_highest_page_position(-1, static_cast<position_setting::position_type>(i));
         }
-        
+
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             set_slot(custom::get_page_by_section(section),
                 static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
@@ -70,7 +70,6 @@ namespace handle {
         position_setting = handler->get_page_setting(0, position_setting::position_type::right);
         setting_execute::execute_settings(position_setting->slot_settings);
         logger::trace("done executing"sv);
-
     }
 
     void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_object, const int32_t a_count) {
@@ -115,7 +114,8 @@ namespace handle {
     }
 
 
-    void set_setting_data::set_queue_slot(position_setting::position_type a_pos, const std::vector<data_helper*>& a_data) {
+    void set_setting_data::set_queue_slot(position_setting::position_type a_pos,
+        const std::vector<data_helper*>& a_data) {
         //each data item will be a new page with this position
         //get_next_page_id_for_position
         logger::trace("Got {} items to process"sv, a_data.size());
