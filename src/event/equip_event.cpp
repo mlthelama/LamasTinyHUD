@@ -37,7 +37,7 @@ namespace event {
         }
 
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position_type::total) {
+            edit_handle->get_position() != handle::position_setting::position_type::total && a_event->equipped) {
             data_.clear();
             logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
             //always
@@ -74,6 +74,19 @@ namespace event {
                     RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
                 }
             }
+
+
+            for (const auto item : data_) {
+                util::helper::write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
+                    item->form ? item->form->GetName() : "null",
+                    static_cast<uint32_t>(item->type),
+                    static_cast<uint32_t>(item->action_type),
+                    item->left));
+            }
+            util::helper::write_notification(fmt::format(
+                "Got {} Setting for Position {}. Is valid until next Change."sv,
+                data_.size(),
+                static_cast<uint32_t>(edit_handle->get_position())));
             edit_handle->set_hold_data(data_);
             data_.clear();
         }
