@@ -14,6 +14,8 @@ namespace papyrus {
         logger::info("on config close"sv);
         config::mcm_setting::read_setting();
         handle::set_setting_data::read_and_set_data();
+        //In case the setting was changed
+        ui::ui_renderer::set_fade(true, 1.f);
 
         logger::debug("on config close done. return."sv);
     }

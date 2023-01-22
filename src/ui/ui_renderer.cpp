@@ -485,17 +485,19 @@ namespace ui {
         }
 
         ImGui::End();
-        if (fade_in) {
-            fade_out_timer = mcm::get_fade_timer_outside_combat();
+        if (mcm::get_hide_outside_combat()) {
+            if (fade_in) {
+                fade_out_timer = mcm::get_fade_timer_outside_combat();
 
-            fade += 0.01f;
-            if (fade < 1.0f) fade = 1.0f;
-        } else {
-            if (fade_out_timer > 0.0f) {
-                fade_out_timer -= ImGui::GetIO().DeltaTime;
+                fade += 0.01f;
+                if (fade < 1.0f) fade = 1.0f;
             } else {
-                fade -= 0.01f;
-                if (fade < 0.0f) fade = 0.0f;
+                if (fade_out_timer > 0.0f) {
+                    fade_out_timer -= ImGui::GetIO().DeltaTime;
+                } else {
+                    fade -= 0.01f;
+                    if (fade < 0.0f) fade = 0.0f;
+                }
             }
         }
     }
@@ -530,11 +532,7 @@ namespace ui {
         }
     }
 
-    template
-    <
-        typename T>
-
-
+    template <typename T>
     void ui_renderer::load_images(std::map<T, const char*>& a_map, std::map<uint32_t, image>& a_struct) {
         for (auto [type, path] : a_map) {
             const auto idx = static_cast<int32_t>(type);

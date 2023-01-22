@@ -7,7 +7,7 @@ namespace handle {
         static key_position_handle* get_singleton();
         void init_key_position_map();
         [[nodiscard]] position_setting::position_type get_position_for_key(uint32_t a_key) const;
-        [[nodiscard]] uint32_t get_key_for_position(position_setting::position_type a_pos) const;
+        [[nodiscard]] uint32_t get_key_for_position(position_setting::position_type a_position) const;
 
 
         key_position_handle(const key_position_handle&) = delete;
