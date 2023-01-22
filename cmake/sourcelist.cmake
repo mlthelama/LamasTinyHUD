@@ -12,10 +12,13 @@ set(sources ${sources}
 	src/event/key_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
+	src/handle/data/ammo_data.h
 	src/handle/data/data_helper.h
 	src/handle/data/page/position_draw_setting.h
 	src/handle/data/page/position_setting.h
 	src/handle/data/page/slot_setting.h
+	src/handle/handle/ammo_handle.cpp
+	src/handle/handle/ammo_handle.h
 	src/handle/handle/edit_handle.cpp
 	src/handle/handle/edit_handle.h
 	src/handle/handle/key_position_handle.cpp
@@ -44,6 +47,7 @@ set(sources ${sources}
 	src/ui/ui_renderer.cpp
 	src/ui/ui_renderer.h
 	src/util/constant.h
+	src/util/data/config_writer_helper.h
 	src/util/helper.cpp
 	src/util/helper.h
 	src/util/offset.h

@@ -41,6 +41,7 @@ namespace ui {
         armor_heavy = 24,
         armor_clothing = 25,
         scroll = 26,
+        arrow = 27,
         total
     };
 
@@ -72,6 +73,7 @@ namespace ui {
         { icon_image_type::armor_light, R"(.\Data\SKSE\Plugins\resources\icons\armor_light.png)" },
         { icon_image_type::armor_heavy, R"(.\Data\SKSE\Plugins\resources\icons\armor_heavy.png)" },
         { icon_image_type::armor_clothing, R"(.\Data\SKSE\Plugins\resources\icons\armor_clothing.png)" },
-        { icon_image_type::scroll, R"(.\Data\SKSE\Plugins\resources\icons\scroll.png)" }
+        { icon_image_type::scroll, R"(.\Data\SKSE\Plugins\resources\icons\scroll.png)" },
+        { icon_image_type::arrow, R"(.\Data\SKSE\Plugins\resources\icons\arrow.png)" }
     };
 }

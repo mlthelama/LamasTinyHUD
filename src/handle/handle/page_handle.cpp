@@ -98,7 +98,7 @@ namespace handle {
         draw->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
         draw->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
 
-        if (a_position == position_setting::position_type::bottom || a_position ==
+        if (mcm::get_elden_demon_souls() && a_position == position_setting::position_type::bottom || a_position ==
             position_setting::position_type::top) {
             page->item_name = true;
             //TODO fix or not
@@ -112,7 +112,7 @@ namespace handle {
         page->key = a_key_pos->get_key_for_position(a_position);
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
-        if (mcm::get_elder_demon_souls()) {
+        if (mcm::get_elden_demon_souls()) {
             if (slots->front()->type != slot_setting::slot_type::empty || slots->size() == 2 && slots->at(1)->type !=
                 slot_setting::slot_type::empty) {
                 const auto config_page = static_cast<int>(a_page);
@@ -192,7 +192,7 @@ namespace handle {
     }
 
     std::map<position_setting::position_type, position_setting*> page_handle::get_active_page() const {
-        if (config::mcm_setting::get_elder_demon_souls()) {
+        if (config::mcm_setting::get_elden_demon_souls()) {
             std::map<position_setting::position_type, position_setting*> a_active;
             for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
                 const auto pos = static_cast<position_setting::position_type>(i);
@@ -212,7 +212,7 @@ namespace handle {
     }
 
     uint32_t page_handle::get_active_page_id() const {
-        if (config::mcm_setting::get_elder_demon_souls()) {
+        if (config::mcm_setting::get_elden_demon_souls()) {
             return 0;
         }
         if (const page_handle_data* data = this->data_; data) {
@@ -264,8 +264,6 @@ namespace handle {
         return 0;
     }
 
-    //could return the page as well here
-    //use highest_page_id_position
     //since we reorder 0 to highest is always set
     uint32_t page_handle::get_next_non_empty_setting_for_position(
         const position_setting::position_type a_position) const {
@@ -276,92 +274,6 @@ namespace handle {
             return 0;
         }
         return next;
-
-        /*auto next = static_cast<int>(get_next_page_id_position(a_position));
-        auto max = static_cast<int>(mcm::get_max_page_count() - 1);
-        logger::trace("checking up from next {} to max"sv, next, max);
-
-        //if pos left check entry 2
-        const position_setting* page_setting = nullptr;
-        for (auto i = next; i <= max; ++i) {
-            page_setting = get_page_setting(i, a_position);
-            if (!page_setting->slot_settings.empty() && page_setting->slot_settings[0]->type !=
-                slot_setting::slot_type::empty) {
-                logger::trace("found setting at page {}, form is {}"sv,
-                    i,
-                    util::string_util::int_to_hex(page_setting->slot_settings[0]->form->formID));
-                break;
-            }
-            if (page_setting->slot_settings.size() == 2 && !page_setting->slot_settings.empty() && page_setting->
-                slot_settings[1]->type != slot_setting::slot_type::empty) {
-                logger::trace("found (left) setting at page {}, form is {}"sv,
-                    i,
-                    util::string_util::int_to_hex(page_setting->slot_settings[1]->form->formID));
-                break;
-            }
-            page_setting = nullptr;
-        }
-        if (page_setting) {
-            logger::trace("Returning next {}"sv, page_setting->page);
-            return page_setting->page;
-        }
-
-        for (auto i = 0; i < next; ++i) {
-            page_setting = get_page_setting(i, a_position);
-            if (!page_setting->slot_settings.empty() && page_setting->slot_settings[0]->type !=
-                slot_setting::slot_type::empty) {
-                logger::trace("found setting at page {}, form is {}"sv,
-                    i,
-                    util::string_util::int_to_hex(page_setting->slot_settings[0]->form->formID));
-                break;
-            }
-            if (page_setting->slot_settings.size() == 2 && !page_setting->slot_settings.empty() && page_setting->
-                slot_settings[1]->type != slot_setting::slot_type::empty) {
-                logger::trace("found (left) setting at page {}, form is {}"sv,
-                    i,
-                    util::string_util::int_to_hex(page_setting->slot_settings[1]->form->formID));
-                break;
-            }
-            page_setting = nullptr;
-        }
-        if (page_setting) {
-            logger::trace("Returning next {}"sv, page_setting->page);
-            return page_setting->page;
-        }
-
-        return 0;*/
-        //const position_setting* page_setting = nullptr;
-        /*for (auto i = next; i <= max; ++i) {
-            page_setting = get_page_setting(i, a_position);
-            if (page_setting && page_setting->type != slot_setting::slot_type::empty) {
-                break;
-            }
-        }
-        if (page_setting) {
-            logger::trace("Returning next {}"sv, page_setting->page);
-            return page_setting->page;
-        }
-
-        logger::trace("checking up from 0 to next {}"sv, next);
-        for (auto i = 0; i <= next; ++i) {
-            page_setting = get_page_setting(i, a_position);
-            if (page_setting && page_setting->type != slot_setting::slot_type::empty) {
-                break;
-            }
-        }
-        
-        if (page_setting) {
-            logger::trace("Returning next {}"sv, page_setting->page);
-            return page_setting->page;
-        }
-
-        //still nothing, just get the first one
-        page_setting = get_page_setting(0, a_position);
-        if (page_setting) {
-            logger::trace("Returning next {}"sv, page_setting->page);
-            return page_setting->page;
-        }
-        return 0;*/
     }
 
     int page_handle::get_highest_page_id_position(const position_setting::position_type a_position) const {

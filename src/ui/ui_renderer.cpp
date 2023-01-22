@@ -13,6 +13,7 @@
 #include "key_path.h"
 #include "event/key_manager.h"
 #include "event/sink_event.h"
+#include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
 #include "handle/setting/set_setting_data.h"
@@ -332,6 +333,47 @@ namespace ui {
                         break;
                 }
             }
+        }
+        const auto ammo_handle = handle::ammo_handle::get_singleton();
+        if (const auto current_ammo = ammo_handle->get_current()) {
+            const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
+                mcm::get_slot_count_green(),
+                mcm::get_slot_count_blue(),
+                mcm::get_text_transparency());
+            draw_slot(a_x,
+                a_y,
+                mcm::get_hud_image_scale_width() / 1.6f,
+                mcm::get_hud_image_scale_height() / 1.6f,
+                -mcm::get_toggle_key_offset_x(),
+                mcm::get_toggle_key_offset_y(),
+                current_ammo->button_press_modify,
+                mcm::get_key_transparency());
+            draw_icon(a_x,
+                a_y,
+                mcm::get_icon_scale_width() / 1.8f,
+                mcm::get_icon_scale_height() / 1.8f,
+                -mcm::get_toggle_key_offset_x(),
+                mcm::get_toggle_key_offset_y(),
+                icon_image_type::arrow,
+                mcm::get_icon_transparency());
+            draw_text(a_x,
+                a_y,
+                -mcm::get_toggle_key_offset_x(),
+                mcm::get_toggle_key_offset_y(),
+                mcm::get_slot_count_text_offset() / 1.8f,
+                mcm::get_slot_count_text_offset() / 1.8f,
+                std::to_string(current_ammo->item_count ? current_ammo->item_count : 0).c_str(),
+                color,
+                mcm::get_slot_count_text_font_size());
+            /*draw_text(a_x,
+                a_y,
+                -mcm::get_toggle_key_offset_x(),
+                mcm::get_toggle_key_offset_y(),
+                mcm::get_slot_count_text_offset() / 2.0f,
+                mcm::get_slot_count_text_offset() / 2.0f,
+                std::to_string(current_ammo->item_count).c_str(),
+                color,
+                mcm::get_slot_count_text_font_size() / 2.0f);*/
         }
     }
 

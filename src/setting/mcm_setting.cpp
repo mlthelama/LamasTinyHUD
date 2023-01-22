@@ -197,6 +197,6 @@ namespace config {
     bool mcm_setting::get_hide_outside_combat() { return hide_outside_combat; }
     float mcm_setting::get_fade_timer_outside_combat() { return fade_timer_outside_combat; }
     bool mcm_setting::get_disable_input_quick_loot() { return disable_input_quick_loot; }
-    bool mcm_setting::get_elder_demon_souls() { return elder_demon_souls; }
+    bool mcm_setting::get_elden_demon_souls() { return elder_demon_souls; }
     uint32_t mcm_setting::get_max_page_count() { return max_page_count; }
 }

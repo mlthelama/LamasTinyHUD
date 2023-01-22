@@ -1,4 +1,6 @@
 ﻿#include "key_manager.h"
+
+#include "handle/handle/ammo_handle.h"
 #include "handle/handle/edit_handle.h"
 #include "handle/handle/page_handle.h"
 #include "handle/setting/setting_execute.h"
@@ -124,7 +126,15 @@ namespace event {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
-                position_setting->button_press_modify = button_press_modify_;
+                if (!handle::key_position_handle::get_singleton()->is_position_locked(position_setting->position)) {
+                    position_setting->button_press_modify = button_press_modify_;
+                } else {
+                    if (position_setting->position == handle::position_setting::position_type::left) {
+                        if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
+                            current_ammo->button_press_modify = button_press_modify_;
+                        }
+                    }
+                }
             }
 
             if (button->IsUp() && is_position_button(key_)) {
@@ -136,6 +146,11 @@ namespace event {
                     break;
                 }
                 position_setting->button_press_modify = ui::draw_full;
+                if (position_setting->position == handle::position_setting::position_type::left) {
+                    if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
+                        current_ammo->button_press_modify = ui::draw_full;
+                    }
+                }
             }
 
             if (key_ == key_toggle_ && button->IsUp() && is_toggle_down_) {
@@ -152,7 +167,7 @@ namespace event {
 
             if (button->IsPressed() && is_key_valid(key_toggle_) && key_ == key_toggle_) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
-                if (!config::mcm_setting::get_elder_demon_souls()) {
+                if (!config::mcm_setting::get_elden_demon_souls()) {
                     const auto handler = handle::page_handle::get_singleton();
                     handler->set_active_page(handler->get_next_page_id());
                 }
@@ -272,7 +287,7 @@ namespace event {
                 static_cast<uint32_t>(edit_position),
                 edit_data.size());
 
-            if (config::mcm_setting::get_elder_demon_souls()) {
+            if (config::mcm_setting::get_elden_demon_souls()) {
                 handle::set_setting_data::set_queue_slot(edit_position, edit_data);
             } else {
                 handle::set_setting_data::set_single_slot(edit_page,
@@ -290,7 +305,7 @@ namespace event {
         }
 
 
-        if (config::mcm_setting::get_elder_demon_souls()) {
+        if (config::mcm_setting::get_elden_demon_souls()) {
             //show next position for that
             //handler->set_active_page(handler->get_next_page_id());
             //check if it is locked
@@ -311,6 +326,11 @@ namespace event {
                 }
             } else {
                 logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->position));
+                //check ammo is set, might be a bow or crossbow present
+                const auto ammo_handle = handle::ammo_handle::get_singleton();
+                if (const auto next_ammo = ammo_handle->get_next_ammo()) {
+                    handle::setting_execute::execute_ammo(next_ammo);
+                }
             }
         } else {
             handle::setting_execute::execute_settings(position_setting->slot_settings);

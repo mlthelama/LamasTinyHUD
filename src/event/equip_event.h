@@ -24,5 +24,9 @@ namespace event {
         ~equip_event() override = default;
 
         std::vector<data_helper*> data_;
+
+        void work_default(RE::TESForm*& a_form, bool a_equipped);
+        void work_elden_demon_souls(RE::TESForm*& a_form, bool a_equipped);
+        static void look_for_ammo(bool a_crossbow);
     };
 }

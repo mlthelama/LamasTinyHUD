@@ -16,7 +16,7 @@ namespace handle {
         std::vector<RE::BGSEquipSlot*> unequip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
-            if (mcm::get_elder_demon_souls() && slot->form == nullptr) {
+            if (mcm::get_elden_demon_souls() && slot->form == nullptr) {
                 logger::debug("form is null and I am in elden mode, skipping."sv);
                 continue;
             }
@@ -56,7 +56,7 @@ namespace handle {
         const auto page_handle = page_handle::get_singleton();
         position_setting* position_setting;
         uint32_t page;
-        if (mcm::get_elder_demon_souls()) {
+        if (mcm::get_elden_demon_souls()) {
             page = page_handle->get_active_page_id_position(position);
             position_setting = page_handle->get_page_setting(page, position);
         } else {
@@ -72,6 +72,13 @@ namespace handle {
             position_setting->slot_settings.size());
 
         return position_setting;
+    }
+
+    void setting_execute::execute_ammo(const RE::TESForm* a_form) {
+        if (a_form) {
+            auto player = RE::PlayerCharacter::GetSingleton();
+            equip::item::equip_ammo(a_form, player);
+        }
     }
 
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {

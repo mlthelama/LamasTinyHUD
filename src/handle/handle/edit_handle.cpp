@@ -18,7 +18,7 @@ namespace handle {
         }
         const auto page_handle = page_handle::get_singleton();
         uint32_t page = 0;
-        if (!config::mcm_setting::get_elder_demon_souls()) {
+        if (!config::mcm_setting::get_elden_demon_souls()) {
             //page does not matter for that setting, it will be a queue
             page = page_handle->get_active_page_id();
         }

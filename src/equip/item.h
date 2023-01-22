@@ -22,5 +22,7 @@ namespace equip {
         static void equip_armor(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
 
         static void consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
+
+        static void equip_ammo(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
     };
 }

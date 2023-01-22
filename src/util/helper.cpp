@@ -2,7 +2,6 @@
 #include "constant.h"
 #include "string_util.h"
 #include "data/config_writer_helper.h"
-#include "equip/magic/spell.h"
 #include "handle/data/page/position_setting.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
@@ -63,7 +62,7 @@ namespace util {
             return;
         }
 
-        if (config::mcm_setting::get_elder_demon_souls()) {
+        if (config::mcm_setting::get_elden_demon_souls()) {
             if (!a_data.empty()) {
                 if (a_data[0]->left) {
                     type_left = static_cast<uint32_t>(a_data[0]->type);

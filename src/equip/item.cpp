@@ -173,4 +173,29 @@ namespace equip {
         equip_manager->EquipObject(a_player, obj);
         logger::trace("drank/ate potion/food {}. return."sv, obj->GetName());
     }
+
+    void item::equip_ammo(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
+        logger::trace("try to equip {}"sv, a_form->GetName());
+
+
+        RE::TESBoundObject* obj = nullptr;
+        uint32_t left = 0;
+        for (auto potential_items = get_inventory(a_player, RE::FormType::Ammo);
+             const auto& [item, inv_data] : potential_items) {
+            if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
+                obj = item;
+                left = inv_data.first;
+                break;
+            }
+        }
+
+        if (!obj || left == 0) {
+            logger::warn("could not find selected ammo, maybe all have been used"sv);
+            return;
+        }
+
+        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        equip_manager->EquipObject(a_player, obj);
+        logger::trace("equipped {}. return."sv, obj->GetName());
+    }
 }

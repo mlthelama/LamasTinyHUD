@@ -1,8 +1,13 @@
 ﻿#include "equip_event.h"
+
+#include "equip/item.h"
+#include "handle/data/ammo_data.h"
+#include "handle/handle/ammo_handle.h"
 #include "handle/handle/edit_handle.h"
 #include "handle/handle/key_position_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
+#include "handle/setting/setting_execute.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
@@ -24,19 +29,18 @@ namespace event {
             return event_result::kContinue;
         }
 
-        if (config::mcm_setting::get_draw_current_items_text()) {
-            handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
-        }
-
-
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
 
         if (!form) {
             return event_result::kContinue;
         }
 
+        if (config::mcm_setting::get_draw_current_items_text() && (form->IsWeapon() || form->Is(RE::FormType::Spell))) {
+            handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
+        }
+
         //add check if we need to block left
-        if (config::mcm_setting::get_elder_demon_souls() && util::helper::is_two_handed(form)) {
+        if (config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
             //is two handed, if equipped
             //hardcode left for now, cause we just need it there
             const auto key_handle = handle::key_position_handle::get_singleton();
@@ -49,29 +53,87 @@ namespace event {
                                                            config::mcm_setting::get_icon_transparency_blocked() :
                                                            config::mcm_setting::get_icon_transparency();
             //check if bow or crossbow, now we look for ammo that is in the favor list
-            /*if(form->Is(RE::FormType::Weapon)) {
-                const auto weapon = form->As<RE::TESObjectWEAP>();
-                if (weapon->IsBow() || weapon->IsCrossbow()) {
-                    
+            if (a_event->equipped && form->Is(RE::FormType::Weapon)) {
+                if (const auto weapon = form->As<RE::TESObjectWEAP>(); weapon->IsBow() || weapon->IsCrossbow()) {
+                    look_for_ammo(weapon->IsCrossbow());
+                    if (const auto next_ammo = handle::ammo_handle::get_singleton()->get_next_ammo()) {
+                        handle::setting_execute::execute_ammo(next_ammo);
+                    }
                 }
-            }*/
+            } else {
+                handle::ammo_handle::get_singleton()->clear_ammo();
+            }
         }
 
         if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
             return event_result::kContinue;
         }
 
+
+        if (config::mcm_setting::get_elden_demon_souls()) {
+            work_elden_demon_souls(form, a_event->equipped);
+        } else {
+            work_default(form, a_event->equipped);
+        }
+
+        return event_result::kContinue;
+    }
+
+    void equip_event::work_default(RE::TESForm*& a_form, const bool a_equipped) {
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position_type::total &&
-            config::mcm_setting::get_elder_demon_souls() && a_event->equipped) {
+            edit_handle->get_position() != handle::position_setting::position_type::total) {
+            data_.clear();
+            logger::trace("Player {} {}"sv, a_equipped ? "equipped" : "unequipped", a_form->GetName());
+            //always
+            const auto type = util::helper::get_type(a_form);
+            if (type == handle::slot_setting::slot_type::empty || type ==
+                handle::slot_setting::slot_type::weapon || type ==
+                handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
+                data_ = util::helper::get_hand_assignment(a_form);
+            }
+            //just if equipped
+            if (a_equipped) {
+                const auto item = new data_helper();
+                //magic, weapon, shield handled outside
+                switch (type) {
+                    case handle::slot_setting::slot_type::empty:
+                        item->form = nullptr;
+                        item->type = type;
+                        data_.push_back(item);
+                        break;
+                    case handle::slot_setting::slot_type::shout:
+                    case handle::slot_setting::slot_type::power:
+                    case handle::slot_setting::slot_type::consumable:
+                    case handle::slot_setting::slot_type::armor:
+                    case handle::slot_setting::slot_type::scroll:
+                    case handle::slot_setting::slot_type::misc:
+                        item->form = a_form;
+                        item->type = type;
+                        data_.push_back(item);
+                        break;
+                }
+
+                if (type == handle::slot_setting::slot_type::consumable) {
+                    const auto obj = a_form->As<RE::AlchemyItem>();
+                    RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
+                }
+            }
+            edit_handle->set_hold_data(data_);
+            data_.clear();
+        }
+    }
+
+    void equip_event::work_elden_demon_souls(RE::TESForm*& a_form, const bool a_equipped) {
+        if (const auto edit_handle = handle::edit_handle::get_singleton();
+            edit_handle->get_position() != handle::position_setting::position_type::total && a_equipped) {
             data_ = edit_handle->get_hold_data();
-            const auto item = util::helper::is_suitable_for_position(form, edit_handle->get_position());
+            const auto item = util::helper::is_suitable_for_position(a_form, edit_handle->get_position());
             if (item->form) {
                 data_.push_back(item);
-                util::helper::write_notification(fmt::format("Added Item {}", form ? form->GetName() : "null"));
+                util::helper::write_notification(fmt::format("Added Item {}", a_form ? a_form->GetName() : "null"));
             } else {
                 util::helper::write_notification(fmt::format("Ignored Item {}, because it did not fit the requirement",
-                    form ? form->GetName() : "null"));
+                    a_form ? a_form->GetName() : "null"));
             }
 
             const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(
@@ -91,60 +153,55 @@ namespace event {
                     max));
             }
             if (data_.size() > max) {
-                util::helper::write_notification(fmt::format("Ignored Item {}", form ? form->GetName() : "null"));
+                util::helper::write_notification(fmt::format("Ignored Item {}", a_form ? a_form->GetName() : "null"));
             }
             edit_handle->set_hold_data(data_);
             logger::trace("Size is {}"sv, data_.size());
             data_.clear();
         }
+    }
 
-        //edit for elder demon souls
-        //right and left just weapons, left only one handed, right both
-        //buttom consumables, scrolls, and such
-        //top shouts, powers
-        if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position_type::total && !
-            config::mcm_setting::get_elder_demon_souls()) {
-            data_.clear();
-            logger::trace("Player {} {}"sv, a_event->equipped ? "equipped" : "unequipped", form->GetName());
-            //always
-            const auto type = util::helper::get_type(form);
-            if (type == handle::slot_setting::slot_type::empty || type ==
-                handle::slot_setting::slot_type::weapon || type ==
-                handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
-                data_ = util::helper::get_hand_assignment(form);
+    void equip_event::look_for_ammo(const bool a_crossbow) {
+        auto max_items = 3;
+        auto player = RE::PlayerCharacter::GetSingleton();
+        const auto inv = equip::item::get_inventory(player, RE::FormType::Ammo);
+        std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
+        for (const auto& [item, inv_data] : inv) {
+            const auto& [num_items, entry] = inv_data;
+            const auto ammo = item->As<RE::TESAmmo>();
+            if (!ammo->GetPlayable()) {
+                continue;
             }
-            //just if equipped
-            if (a_event->equipped) {
-                const auto item = new data_helper();
-                //magic, weapon, shield handled outside
-                switch (type) {
-                    case handle::slot_setting::slot_type::empty:
-                        item->form = nullptr;
-                        item->type = type;
-                        data_.push_back(item);
-                        break;
-                    case handle::slot_setting::slot_type::shout:
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::consumable:
-                    case handle::slot_setting::slot_type::armor:
-                    case handle::slot_setting::slot_type::scroll:
-                    case handle::slot_setting::slot_type::misc:
-                        item->form = form;
-                        item->type = type;
-                        data_.push_back(item);
-                        break;
-                }
-
-                if (type == handle::slot_setting::slot_type::consumable) {
-                    const auto obj = form->As<RE::AlchemyItem>();
-                    RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
-                }
+            if (a_crossbow && ammo->IsBolt() && num_items != 0) {
+                logger::trace("found bolt {}, damage {}, count {}"sv,
+                    ammo->GetName(),
+                    ammo->GetRuntimeData().data.damage,
+                    num_items);
+                auto* ammo_data = new handle::ammo_data();
+                ammo_data->form = ammo;
+                ammo_data->item_count = num_items;
+                ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+            } else if (num_items != 0) {
+                logger::trace("found arrow {}, damage {}, count {}"sv,
+                    ammo->GetName(),
+                    ammo->GetRuntimeData().data.damage,
+                    num_items);
+                auto* ammo_data = new handle::ammo_data();
+                ammo_data->form = ammo;
+                ammo_data->item_count = num_items;
+                ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
             }
-            edit_handle->set_hold_data(data_);
-            data_.clear();
+            if (ammo_list.size() == max_items) {
+                break;
+            }
         }
-
-        return event_result::kContinue;
+        std::vector<handle::ammo_data*> sorted_ammo;
+        const auto ammo_handle = handle::ammo_handle::get_singleton();
+        for (auto [dmg, data] : ammo_list) {
+            sorted_ammo.push_back(data);
+            logger::trace("got {} count {}"sv, data->form->GetName(), data->item_count);
+        }
+        ammo_list.clear();
+        ammo_handle->init_ammo(sorted_ammo);
     }
 }
