@@ -404,7 +404,7 @@ namespace handle {
         a_slot = nullptr;
         if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) && a_hand
             == slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
-            a_slot = a_left ? item::equip_slot::get_left_hand_slot() : item::equip_slot::get_right_hand_slot();
+            a_slot = a_left ? equip::equip_slot::get_left_hand_slot() : equip::equip_slot::get_right_hand_slot();
         }
     }
 
