@@ -1,5 +1,6 @@
 ﻿#include "papyrus.h"
 
+#include "event/key_manager.h"
 #include "handle/setting/set_setting_data.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
@@ -15,6 +16,8 @@ namespace papyrus {
         util::helper::rewrite_settings();
         config::mcm_setting::read_setting();
         handle::set_setting_data::read_and_set_data();
+        //In case the setting was changed
+        ui::ui_renderer::set_fade(true, 1.f);
 
         logger::debug("on config close done. return."sv);
     }
@@ -140,6 +143,13 @@ namespace papyrus {
         }
     }
 
+    void hud_mcm::init_config_for_position(RE::TESQuest*, uint32_t a_position) {
+        logger::trace("Got config Triggered for Position {}"sv, a_position);
+        const auto key_manager = event::key_manager::get_singleton();
+        key_manager->reset_edit();
+        key_manager->init_edit(a_position);
+    }
+
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("OnConfigClose", mcm_name, on_config_close);
         a_vm->RegisterFunction("GetResolutionWidth", mcm_name, get_resolution_width);
@@ -155,6 +165,7 @@ namespace papyrus {
         a_vm->RegisterFunction("GetFormName", mcm_name, get_form_name);
         a_vm->RegisterFunction("ResetSection", mcm_name, reset_section);
         a_vm->RegisterFunction("SetActionValue", mcm_name, set_action_value);
+        a_vm->RegisterFunction("InitConfigForPosition", mcm_name, init_config_for_position);
 
         logger::info("Registered {} class. return."sv, mcm_name);
         return true;

@@ -9,7 +9,7 @@ namespace handle {
         void set_position_lock(position_setting::position_type a_position, uint32_t a_locked);
 
         [[nodiscard]] position_setting::position_type get_position_for_key(uint32_t a_key) const;
-        [[nodiscard]] uint32_t get_key_for_position(position_setting::position_type a_pos) const;
+        [[nodiscard]] uint32_t get_key_for_position(position_setting::position_type a_position) const;
         [[nodiscard]] bool is_position_locked(position_setting::position_type a_position) const;
 
 

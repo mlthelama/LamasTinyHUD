@@ -81,7 +81,7 @@ namespace event {
 
     void equip_event::work_default(RE::TESForm*& a_form, const bool a_equipped) {
         if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position_type::total) {
+            edit_handle->get_position() != handle::position_setting::position_type::total && a_equipped) {
             data_.clear();
             logger::trace("Player {} {}"sv, a_equipped ? "equipped" : "unequipped", a_form->GetName());
             //always
@@ -92,32 +92,44 @@ namespace event {
                 data_ = util::helper::get_hand_assignment(a_form);
             }
             //just if equipped
-            if (a_equipped) {
-                const auto item = new data_helper();
-                //magic, weapon, shield handled outside
-                switch (type) {
-                    case handle::slot_setting::slot_type::empty:
-                        item->form = nullptr;
-                        item->type = type;
-                        data_.push_back(item);
-                        break;
-                    case handle::slot_setting::slot_type::shout:
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::consumable:
-                    case handle::slot_setting::slot_type::armor:
-                    case handle::slot_setting::slot_type::scroll:
-                    case handle::slot_setting::slot_type::misc:
-                        item->form = a_form;
-                        item->type = type;
-                        data_.push_back(item);
-                        break;
-                }
 
-                if (type == handle::slot_setting::slot_type::consumable) {
-                    const auto obj = a_form->As<RE::AlchemyItem>();
-                    RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
-                }
+            const auto item = new data_helper();
+            //magic, weapon, shield handled outside
+            switch (type) {
+                case handle::slot_setting::slot_type::empty:
+                    item->form = nullptr;
+                    item->type = type;
+                    data_.push_back(item);
+                    break;
+                case handle::slot_setting::slot_type::shout:
+                case handle::slot_setting::slot_type::power:
+                case handle::slot_setting::slot_type::consumable:
+                case handle::slot_setting::slot_type::armor:
+                case handle::slot_setting::slot_type::scroll:
+                case handle::slot_setting::slot_type::misc:
+                    item->form = a_form;
+                    item->type = type;
+                    data_.push_back(item);
+                    break;
             }
+
+            if (type == handle::slot_setting::slot_type::consumable) {
+                const auto obj = a_form->As<RE::AlchemyItem>();
+                RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
+            }
+
+
+            for (const auto item_data : data_) {
+                util::helper::write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
+                    item_data->form ? item_data->form->GetName() : "null",
+                    static_cast<uint32_t>(item_data->type),
+                    static_cast<uint32_t>(item_data->action_type),
+                    item_data->left));
+            }
+            util::helper::write_notification(fmt::format(
+                "Got {} Setting for Position {}. Is valid until next Change."sv,
+                data_.size(),
+                static_cast<uint32_t>(edit_handle->get_position())));
             edit_handle->set_hold_data(data_);
             data_.clear();
         }
@@ -136,11 +148,11 @@ namespace event {
                     a_form ? a_form->GetName() : "null"));
             }
 
-            if (a_form && a_form->Is(RE::FormType::AlchemyItem) ) {
+            if (a_form && a_form->Is(RE::FormType::AlchemyItem)) {
                 const auto obj = a_form->As<RE::AlchemyItem>();
                 RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
             }
-            
+
             const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(
                 edit_handle->get_position());
             auto max = config::mcm_setting::get_max_page_count() - 1; //we start at 0 so count -1

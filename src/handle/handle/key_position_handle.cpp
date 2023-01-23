@@ -50,11 +50,11 @@ namespace handle {
         return position::total;
     }
 
-    uint32_t key_position_handle::get_key_for_position(const position_setting::position_type a_pos) const {
+    uint32_t key_position_handle::get_key_for_position(const position_setting::position_type a_position) const {
         if (const key_position_handle_data* data = this->data_;
-            data && !data->position_key_map.empty() && data->position_key_map.contains(a_pos)) {
-            const auto key = data->position_key_map.at(a_pos);
-            logger::trace("got key {} for position {}"sv, key, static_cast<uint32_t>(a_pos));
+            data && !data->position_key_map.empty() && data->position_key_map.contains(a_position)) {
+            const auto key = data->position_key_map.at(a_position);
+            logger::trace("got key {} for position {}"sv, key, static_cast<uint32_t>(a_position));
             return key;
         }
         return 0;

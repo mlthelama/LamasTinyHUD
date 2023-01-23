@@ -257,6 +257,9 @@ namespace ui {
         const float a_y,
         const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
+            if (!page_setting) {
+                continue;
+            }
             const auto draw_setting = page_setting->draw_setting;
             draw_slot(a_x,
                 a_y,
@@ -398,6 +401,9 @@ namespace ui {
         const float a_y,
         const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
+            if (!page_setting) {
+                continue;
+            }
             const auto draw_setting = page_setting->draw_setting;
             if (config::file_setting::get_draw_key_background()) {
                 draw_key(a_x,
@@ -542,17 +548,19 @@ namespace ui {
         }
 
         ImGui::End();
-        if (fade_in) {
-            fade_out_timer = mcm::get_fade_timer_outside_combat();
+        if (mcm::get_hide_outside_combat()) {
+            if (fade_in) {
+                fade_out_timer = mcm::get_fade_timer_outside_combat();
 
-            fade += 0.01f;
-            if (fade < 1.0f) fade = 1.0f;
-        } else {
-            if (fade_out_timer > 0.0f) {
-                fade_out_timer -= ImGui::GetIO().DeltaTime;
+                fade += 0.01f;
+                if (fade < 1.0f) fade = 1.0f;
             } else {
-                fade -= 0.01f;
-                if (fade < 0.0f) fade = 0.0f;
+                if (fade_out_timer > 0.0f) {
+                    fade_out_timer -= ImGui::GetIO().DeltaTime;
+                } else {
+                    fade -= 0.01f;
+                    if (fade < 0.0f) fade = 0.0f;
+                }
             }
         }
     }

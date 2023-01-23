@@ -137,7 +137,7 @@ namespace config {
                 "fFadeTimerOutsideCombat",
                 5));
             disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
-            elder_demon_souls = mcm.GetBoolValue("MiscSetting", "bElderDemonSouls", false);
+            elder_demon_souls = mcm.GetBoolValue("MiscSetting", "bElderDemonSouls", true);
             max_page_count = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxPageCount", 2));
         };
 
