@@ -68,8 +68,8 @@ namespace event {
                 continue;
             }
 
+
             switch (button->device.get()) {
-                // NOLINT(clang-diagnostic-switch-enum)
                 case device_type::kMouse:
                     key_ += k_mouse_offset;
                     break;
@@ -79,7 +79,11 @@ namespace event {
                 case device_type::kGamepad:
                     key_ = get_gamepad_index(static_cast<RE::BSWin32GamepadDevice::Key>(key_));
                     break;
-                default:
+                case RE::INPUT_DEVICE::kNone:
+                case RE::INPUT_DEVICE::kVirtualKeyboard:
+                case RE::INPUT_DEVICE::kVRRight:
+                case RE::INPUT_DEVICE::kVRLeft:
+                case RE::INPUT_DEVICE::kTotal:
                     continue;
             }
 
@@ -307,7 +311,8 @@ namespace event {
     void key_manager::init_edit(handle::position_setting::position_type a_position, const uint32_t a_key) {
         const auto edit_handle = handle::edit_handle::get_singleton();
         edit_handle->init_edit(a_position);
-        util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv, static_cast<uint32_t>(a_position)));
+        util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
+            static_cast<uint32_t>(a_position)));
         edit_active_ = a_key;
     }
 }

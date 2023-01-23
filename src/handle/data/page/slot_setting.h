@@ -3,8 +3,8 @@
 namespace handle {
     class slot_setting {
     public:
-        //unequip just makes sense with form == nullptr
-        enum class acton_type : std::uint32_t { default_action = 0, instant = 1, unequip = 2 };
+        //un equip just makes sense with form == nullptr
+        enum class acton_type : std::uint32_t { default_action = 0, instant = 1, un_equip = 2 };
 
         enum class hand_equip : std::uint32_t { single = 0, both = 1, total = 2 };
 

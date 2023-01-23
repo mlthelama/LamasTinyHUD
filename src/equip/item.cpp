@@ -35,7 +35,7 @@ namespace equip {
     void item::equip_weapon_or_shield(const RE::TESForm* a_form,
         const RE::BGSEquipSlot* a_slot,
         RE::PlayerCharacter*& a_player,
-        bool a_weapon) {
+        const bool a_weapon) {
         auto left = a_slot == equip_slot::get_left_hand_slot();
         logger::trace("try to equip {}, left {}"sv, a_form->GetName(), left);
 
@@ -100,7 +100,7 @@ namespace equip {
             //all we have are already equipped
             logger::warn("All Items we have of {} are equipped, return."sv, obj->GetName());
             //try to prevent the game to equip something else
-            equip_slot::unequip_hand(a_slot, a_player, handle::slot_setting::acton_type::unequip);
+            equip_slot::un_equip_hand(a_slot, a_player, handle::slot_setting::acton_type::un_equip);
             return;
         }
 
@@ -133,7 +133,7 @@ namespace equip {
         }
         logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
 
-        if (auto equip_manager = RE::ActorEquipManager::GetSingleton(); !equip_slot::unequip_if_equipped(obj,
+        if (auto equip_manager = RE::ActorEquipManager::GetSingleton(); !equip_slot::un_equip_if_equipped(obj,
             a_player,
             equip_manager)) {
             equip_manager->EquipObject(a_player, obj);

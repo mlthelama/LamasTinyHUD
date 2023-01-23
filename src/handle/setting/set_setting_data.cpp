@@ -168,9 +168,9 @@ namespace handle {
             static_cast<uint32_t>(action),
             static_cast<uint32_t>(hand));
 
-        if (form && action == slot_setting::acton_type::unequip) {
+        if (form && action == slot_setting::acton_type::un_equip) {
             action = slot_setting::acton_type::default_action;
-            logger::warn("set action to default, because form was not null but unequip was set");
+            logger::warn("set action to default, because form was not null but un equip was set");
         }
 
         if (action == slot_setting::acton_type::instant && form) {
@@ -200,9 +200,9 @@ namespace handle {
                 static_cast<uint32_t>(action),
                 static_cast<uint32_t>(hand));
 
-            if (form_left && action == slot_setting::acton_type::unequip) {
+            if (form_left && action == slot_setting::acton_type::un_equip) {
                 action = slot_setting::acton_type::default_action;
-                logger::warn("set left action to default, because form was not null but unequip was set");
+                logger::warn("set left action to default, because form was not null but un equip was set");
             }
 
             if (action == slot_setting::acton_type::instant && form_left) {

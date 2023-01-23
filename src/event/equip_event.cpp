@@ -48,40 +48,46 @@ namespace event {
                 data_ = util::helper::get_hand_assignment(form);
             }
             //just if equipped
-            if (a_event->equipped) {
-                const auto item = new data_helper();
-                //magic, weapon, shield handled outside
-                switch (type) {
-                    case handle::slot_setting::slot_type::empty:
-                        item->form = nullptr;
-                        item->type = type;
-                        data_.push_back(item);
-                        break;
-                    case handle::slot_setting::slot_type::shout:
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::consumable:
-                    case handle::slot_setting::slot_type::armor:
-                    case handle::slot_setting::slot_type::scroll:
-                    case handle::slot_setting::slot_type::misc:
-                        item->form = form;
-                        item->type = type;
-                        data_.push_back(item);
-                        break;
-                }
 
-                if (type == handle::slot_setting::slot_type::consumable) {
-                    const auto obj = form->As<RE::AlchemyItem>();
-                    RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
-                }
+            const auto item = new data_helper();
+            //magic, weapon, shield handled outside
+            // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
+            // ReSharper disable once CppIncompleteSwitchStatement
+            switch (type) {
+                case handle::slot_setting::slot_type::empty:
+                    item->form = nullptr;
+                    item->type = type;
+                    data_.push_back(item);
+                    break;
+                case handle::slot_setting::slot_type::shout:
+                case handle::slot_setting::slot_type::power:
+                case handle::slot_setting::slot_type::consumable:
+                case handle::slot_setting::slot_type::armor:
+                case handle::slot_setting::slot_type::scroll:
+                case handle::slot_setting::slot_type::misc:
+                    item->form = form;
+                    item->type = type;
+                    data_.push_back(item);
+                    break;
+                case handle::slot_setting::slot_type::weapon:
+                case handle::slot_setting::slot_type::magic:
+                case handle::slot_setting::slot_type::shield:
+                    //not handled here
+                    break;
+            }
+
+            if (type == handle::slot_setting::slot_type::consumable) {
+                const auto obj = form->As<RE::AlchemyItem>();
+                RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
             }
 
 
-            for (const auto item : data_) {
+            for (const auto data_item : data_) {
                 util::helper::write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
-                    item->form ? item->form->GetName() : "null",
-                    static_cast<uint32_t>(item->type),
-                    static_cast<uint32_t>(item->action_type),
-                    item->left));
+                    data_item->form ? data_item->form->GetName() : "null",
+                    static_cast<uint32_t>(data_item->type),
+                    static_cast<uint32_t>(data_item->action_type),
+                    data_item->left));
             }
             util::helper::write_notification(fmt::format(
                 "Got {} Setting for Position {}. Is valid until next Change."sv,

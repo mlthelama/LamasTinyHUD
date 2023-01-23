@@ -225,7 +225,7 @@ namespace util {
         item->left = false;
         item->type = handle::slot_setting::slot_type::empty;
         item->action_type = empty_handle ?
-                                handle::slot_setting::acton_type::unequip :
+                                handle::slot_setting::acton_type::un_equip :
                                 handle::slot_setting::acton_type::default_action;
         data.push_back(item);
 
@@ -234,7 +234,7 @@ namespace util {
         item2->left = true;
         item2->type = handle::slot_setting::slot_type::empty;
         item2->action_type = empty_handle ?
-                                 handle::slot_setting::acton_type::unequip :
+                                 handle::slot_setting::acton_type::un_equip :
                                  handle::slot_setting::acton_type::default_action;
         data.push_back(item2);
 
