@@ -17,6 +17,7 @@ namespace papyrus {
         static RE::BSFixedString get_form_name(RE::TESQuest*, uint32_t a_index, bool a_left);
         static void reset_section(RE::TESQuest*, uint32_t a_index);
         static void set_action_value(RE::TESQuest*, uint32_t a_index, bool a_left, uint32_t a_value);
+        static void init_config_for_position(RE::TESQuest*, uint32_t a_position);
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);
 

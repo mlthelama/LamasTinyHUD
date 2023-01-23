@@ -235,6 +235,14 @@ namespace event {
         }
     }
 
+    void key_manager::init_edit(uint32_t a_position, uint32_t a_key) {
+        const auto position = static_cast<handle::position_setting::position_type>(a_position);
+        if (a_key == k_invalid) {
+            a_key = handle::key_position_handle::get_singleton()->get_key_for_position(position);
+        }
+        init_edit(position, a_key);
+    }
+
     void key_manager::do_button_press(uint32_t a_key) {
         logger::debug("configured Key ({}) pressed"sv, a_key);
 
@@ -283,11 +291,8 @@ namespace event {
         if (edit_handle->get_position() == handle::position_setting::position_type::total && edit_active_ ==
             k_invalid) {
             logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
-            edit_handle->init_edit(page_setting->position);
 
-            util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
-                static_cast<uint32_t>(page_setting->position)));
-            edit_active_ = a_key;
+            init_edit(page_setting->position, a_key);
         }
     }
 
@@ -297,5 +302,12 @@ namespace event {
             return true;
         }
         return false;
+    }
+
+    void key_manager::init_edit(handle::position_setting::position_type a_position, const uint32_t a_key) {
+        const auto edit_handle = handle::edit_handle::get_singleton();
+        edit_handle->init_edit(a_position);
+        util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv, static_cast<uint32_t>(a_position)));
+        edit_active_ = a_key;
     }
 }

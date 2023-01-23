@@ -101,6 +101,34 @@
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
+                },
+                {
+                    "text": "$LamasTinyHUD_Controls_AlternativeConfig",
+                    "type": "header"
+                },
+                {
+                    "id": "uConfigPosition:Controls",
+                    "text": "$LamasTinyHUD_Controls_ConfigPosition_OptionText",
+                    "type": "enum",
+                    "help": "$LamasTinyHUD_Controls_ConfigPosition_InfoText",
+                    "valueOptions": {
+                        "options": ["$LamasTinyHUD_Controls_Config_Top", "$LamasTinyHUD_Controls_Config_Right", "$LamasTinyHUD_Controls_Config_Bottom", "$LamasTinyHUD_Controls_Config_Left"],
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "sTriggerConfig:Controls",
+                    "type": "text",
+                    "text": "$LamasTinyHUD_Controls_TriggerConfig_OptionText",
+                    "help": "$LamasTinyHUD_Controls_TriggerConfig_InfoText",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "action": {
+                        "type": "CallFunction",
+                        "function": "TriggerConfig"
+                    }
                 }
             ]
         },

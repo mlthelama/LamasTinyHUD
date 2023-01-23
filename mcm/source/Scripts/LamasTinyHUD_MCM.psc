@@ -18,12 +18,18 @@ int function GetHandSelection(int a_index) native
 string function GetFormName(int a_index, bool a_left) native
 function ResetSection(int a_index) native
 function SetActionValue(int a_index, bool a_left, int a_value) native
+function InitConfigForPosition(int a_position) native
 
 function ResetSlot()
     ResetSection(GetModSettingInt("uPageList:Page"))
     string[] menu_list = GetSectionNames()
     SetMenuOptions("uPageList:Page", menu_list, menu_list)
     SetModSettingInt("uPageList:Page", 0)
+    RefreshMenu()
+endfunction
+
+function TriggerConfig()
+    InitConfigForPosition(GetModSettingInt("uConfigPosition:Controls"))
     RefreshMenu()
 endfunction
 
