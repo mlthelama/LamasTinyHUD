@@ -569,6 +569,7 @@ namespace ui {
     void ui_renderer::message_callback(SKSE::MessagingInterface::Message* msg)
     //CallBack & LoadTextureFromFile should called after resource loaded.
     {
+        // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
         switch (msg->type) {
             case SKSE::MessagingInterface::kDataLoaded:
                 if (d_3d_init_hook::initialized) {

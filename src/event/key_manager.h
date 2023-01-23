@@ -18,8 +18,8 @@ namespace event {
         };
 
         void reset_edit();
-        void init_edit(uint32_t a_position, uint32_t a_key = k_invalid );
-        
+        void init_edit(uint32_t a_position, uint32_t a_key = k_invalid);
+
         key_manager(const key_manager&) = delete;
         key_manager(key_manager&&) = delete;
 

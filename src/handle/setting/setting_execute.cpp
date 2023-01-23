@@ -13,7 +13,7 @@ namespace handle {
 
     void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
         logger::trace("got {} settings execute"sv, a_slots.size());
-        std::vector<RE::BGSEquipSlot*> unequip;
+        std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
             if (mcm::get_elden_demon_souls() && slot->form == nullptr) {
@@ -27,8 +27,8 @@ namespace handle {
             }
 
             if (slot->form == nullptr && slot->type == slot_setting::slot_type::empty && slot->action ==
-                slot_setting::acton_type::unequip) {
-                unequip.push_back(slot->equip_slot);
+                slot_setting::acton_type::un_equip) {
+                un_equip.push_back(slot->equip_slot);
             }
 
             logger::trace("executing setting for type {}, action {}, form {}, left {} ..."sv,
@@ -39,9 +39,9 @@ namespace handle {
             execute_setting(slot, player);
         }
 
-        if (!unequip.empty()) {
-            for (const auto slot : unequip) {
-                equip::equip_slot::unequip_hand(slot, player, slot_setting::acton_type::unequip);
+        if (!un_equip.empty()) {
+            for (const auto slot : un_equip) {
+                equip::equip_slot::un_equip_hand(slot, player, slot_setting::acton_type::un_equip);
             }
         }
     }
@@ -112,7 +112,7 @@ namespace handle {
                 logger::warn("ignoring miscitem."sv);
                 break;
             case slot_setting::slot_type::empty:
-                equip::equip_slot::unequip_hand(a_slot->equip_slot, a_player, a_slot->action);
+                equip::equip_slot::un_equip_hand(a_slot->equip_slot, a_player, a_slot->action);
                 break;
         }
     }

@@ -15,7 +15,7 @@ namespace equip {
         return func();
     }
 
-    bool equip_slot::unequip_if_equipped(RE::TESBoundObject*& a_obj,
+    bool equip_slot::un_equip_if_equipped(RE::TESBoundObject*& a_obj,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
         const auto is_worn = item::is_item_worn(a_obj, a_player);
@@ -26,10 +26,10 @@ namespace equip {
         return is_worn;
     }
 
-    void equip_slot::unequip_hand(const RE::BGSEquipSlot* a_slot,
+    void equip_slot::un_equip_hand(const RE::BGSEquipSlot* a_slot,
         RE::PlayerCharacter*& a_player,
         const action_type a_action) {
-        if (a_action != handle::slot_setting::acton_type::unequip) {
+        if (a_action != handle::slot_setting::acton_type::un_equip) {
             return;
         }
         RE::TESForm* equipped_object = nullptr;
@@ -58,7 +58,7 @@ namespace equip {
                 }
             }
             if (equipped_object->Is(RE::FormType::Spell)) {
-                unequip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
+                un_equip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
                 did_call = true;
             }
             logger::trace("called unequip for {}, left {}, did call {}"sv,
@@ -68,7 +68,7 @@ namespace equip {
         }
     }
 
-    void equip_slot::unequip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
+    void equip_slot::un_equip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
         const auto dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
@@ -84,7 +84,9 @@ namespace equip {
         equip_manager->EquipObject(a_player, hand, nullptr, 1, get_left_hand_slot());
     }
 
-    void equip_slot::unequip_spell_by_slot(RE::Actor* a_actor, RE::SpellItem* a_spell, const RE::BGSEquipSlot* a_slot) {
+    void equip_slot::un_equip_spell_by_slot(RE::Actor* a_actor,
+        RE::SpellItem* a_spell,
+        const RE::BGSEquipSlot* a_slot) {
         int slot = 2;
         if (a_slot == get_left_hand_slot()) {
             slot = 1;
@@ -101,15 +103,15 @@ namespace equip {
             vm->DispatchMethodCall2(handle, "Actor", "UnequipSpell", args, callback);
         }*/
 
-        unequip_spell(nullptr, 0, a_actor, a_spell, slot);
+        un_equip_spell(nullptr, 0, a_actor, a_spell, slot);
     }
 
-    void equip_slot::unequip_spell(RE::BSScript::IVirtualMachine* a_vm,
+    void equip_slot::un_equip_spell(RE::BSScript::IVirtualMachine* a_vm,
         RE::VMStackID a_stack_id,
         RE::Actor* a_actor,
         RE::SpellItem* a_spell,
         uint32_t a_slot) {
-        using func_t = decltype(&unequip_spell);
+        using func_t = decltype(&un_equip_spell);
         const REL::Relocation<func_t> func{ RELOCATION_ID(227784, 54669) };
         func(a_vm, a_stack_id, a_actor, a_spell, a_slot);
     }

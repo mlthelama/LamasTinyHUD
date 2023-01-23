@@ -95,6 +95,8 @@ namespace event {
 
             const auto item = new data_helper();
             //magic, weapon, shield handled outside
+            // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
+            // ReSharper disable once CppIncompleteSwitchStatement
             switch (type) {
                 case handle::slot_setting::slot_type::empty:
                     item->form = nullptr;
@@ -111,6 +113,11 @@ namespace event {
                     item->type = type;
                     data_.push_back(item);
                     break;
+                case handle::slot_setting::slot_type::weapon:
+                case handle::slot_setting::slot_type::magic:
+                case handle::slot_setting::slot_type::shield:
+                    //not handled here
+                    break;
             }
 
             if (type == handle::slot_setting::slot_type::consumable) {
@@ -118,13 +125,13 @@ namespace event {
                 RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
             }
 
-
-            for (const auto item_data : data_) {
+            
+            for (const auto data_item : data_) {
                 util::helper::write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
-                    item_data->form ? item_data->form->GetName() : "null",
-                    static_cast<uint32_t>(item_data->type),
-                    static_cast<uint32_t>(item_data->action_type),
-                    item_data->left));
+                    data_item->form ? data_item->form->GetName() : "null",
+                    static_cast<uint32_t>(data_item->type),
+                    static_cast<uint32_t>(data_item->action_type),
+                    data_item->left));
             }
             util::helper::write_notification(fmt::format(
                 "Got {} Setting for Position {}. Is valid until next Change."sv,
