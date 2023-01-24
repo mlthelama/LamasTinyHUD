@@ -21,9 +21,12 @@ namespace util {
         static std::vector<data_helper*> get_hand_assignment(bool a_two_handed = false);
         static void write_notification(const std::string& a_string);
         static data_helper* is_suitable_for_position(RE::TESForm*& a_form,
-            handle::position_setting::position_type a_pos);
+            handle::position_setting::position_type a_position);
         static void rewrite_settings();
         static bool can_instant_cast(RE::TESForm* a_form, handle::slot_setting::slot_type a_type);
+        static bool already_used(const RE::TESForm* a_form,
+            handle::position_setting::position_type a_position,
+            const std::vector<data_helper*>& a_config_data);
 
     private:
         static std::string get_section_name_for_page_position(uint32_t a_page, uint32_t a_position);

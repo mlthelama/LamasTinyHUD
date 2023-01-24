@@ -203,4 +203,32 @@ namespace equip {
         equip_manager->EquipObject(a_player, obj);
         logger::trace("equipped {}. return."sv, obj->GetName());
     }
+
+    uint32_t item::get_inventory_count(const RE::TESForm* a_form) {
+        uint32_t count = 0;
+        if (!a_form) {
+            return count;
+        }
+        auto player = RE::PlayerCharacter::GetSingleton();
+        if (a_form->IsWeapon()) {
+            auto weapons = get_inventory(player, RE::FormType::Weapon);
+            for (const auto& [item, inv_data] : weapons) {
+                if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
+                    count = num_items;
+                    break;
+                }
+            }
+        } else if (a_form->IsArmor()) {
+            auto armor = get_inventory(player, RE::FormType::Armor);
+            for (const auto& [item, inv_data] : armor) {
+                if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
+                    count = num_items;
+                    break;
+                }
+            }
+        }
+        logger::trace("got {} in inventory for item {}"sv, count, a_form->GetName());
+
+        return count;
+    }
 }

@@ -24,5 +24,7 @@ namespace equip {
         static void consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
 
         static void equip_ammo(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
+
+        static uint32_t get_inventory_count(const RE::TESForm* a_form);
     };
 }

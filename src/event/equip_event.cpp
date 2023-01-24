@@ -123,12 +123,19 @@ namespace event {
     }
 
     void equip_event::work_elden_demon_souls(RE::TESForm*& a_form, const bool a_equipped) {
-        if (const auto edit_handle = handle::edit_handle::get_singleton();
-            edit_handle->get_position() != handle::position_setting::position_type::total && a_equipped) {
+        const auto edit_handle = handle::edit_handle::get_singleton();
+        const auto check_duplicates = config::mcm_setting::get_check_duplicate_items();
+        if (const auto position = edit_handle->get_position();
+            position != handle::position_setting::position_type::total && a_equipped) {
             data_ = edit_handle->get_hold_data();
-            const auto item = util::helper::is_suitable_for_position(a_form, edit_handle->get_position());
+            const auto item = util::helper::is_suitable_for_position(a_form, position);
             if (item->form) {
-                data_.push_back(item);
+                if (check_duplicates && util::helper::already_used(a_form, position, data_)) {
+                    util::helper::write_notification(fmt::format("Item {} already used in that position",
+                        a_form ? a_form->GetName() : "null"));
+                } else {
+                    data_.push_back(item);
+                }
                 util::helper::write_notification(fmt::format("Added Item {}", a_form ? a_form->GetName() : "null"));
             } else {
                 util::helper::write_notification(fmt::format("Ignored Item {}, because it did not fit the requirement",
@@ -140,11 +147,10 @@ namespace event {
                 RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
             }
 
-            const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(
-                edit_handle->get_position());
+            const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(position);
             auto max = config::mcm_setting::get_max_page_count() - 1; //we start at 0 so count -1
             logger::trace("Max for Position {} is {}, already set before edit {}"sv,
-                static_cast<uint32_t>(edit_handle->get_position()),
+                static_cast<uint32_t>(position),
                 max,
                 pos_max);
             if (pos_max != -1) {

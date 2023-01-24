@@ -2,7 +2,9 @@
 #include "constant.h"
 #include "string_util.h"
 #include "data/config_writer_helper.h"
+#include "equip/item.h"
 #include "handle/data/page/position_setting.h"
+#include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
@@ -307,13 +309,13 @@ namespace util {
     }
 
     data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form,
-        const handle::position_setting::position_type a_pos) {
+        const handle::position_setting::position_type a_position) {
         //all kind of weapons and magic/spells
         const auto item = new data_helper();
         const auto type = get_type(a_form);
         const auto two_handed = is_two_handed(a_form);
 
-        switch (a_pos) {
+        switch (a_position) {
             case handle::position_setting::position_type::top:
                 switch (type) {
                     case handle::slot_setting::slot_type::power:
@@ -433,7 +435,8 @@ namespace util {
                 config->action_left);
         }
 
-
+        next_page_for_position.clear();
+        configs.clear();
         logger::trace("done rewriting."sv);
     }
 
@@ -462,6 +465,53 @@ namespace util {
             return false;
         }
 
+        return false;
+    }
+
+    bool helper::already_used(const RE::TESForm* a_form,
+        const handle::position_setting::position_type a_position,
+        const std::vector<data_helper*>& a_config_data) {
+        //get pages and check for the form id in the position we are editing
+        const auto page_handle = handle::page_handle::get_singleton();
+
+        uint32_t max_count = 1;
+        uint32_t count = 0;
+        if (!a_form && (a_form->IsWeapon() || a_form->Is(RE::FormType::Armor))) {
+            //check item count in inventory
+            max_count = equip::item::get_inventory_count(a_form);
+        }
+
+        auto pages = page_handle->get_pages();
+        if (!pages.empty()) {
+            for (auto& [page, page_settings] : pages) {
+                for (auto [position, page_setting] : page_settings) {
+                    if (position == a_position) {
+                        for (const auto setting : page_setting->slot_settings) {
+                            if (setting && setting->form && setting->form->formID == a_form->formID) {
+                                //return true;
+                                count++;
+                                if (max_count == count) {
+                                    logger::trace("Item already {} time(s) used. return."sv, count);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!a_config_data.empty()) {
+            for (const auto data_item : a_config_data) {
+                if (data_item->form && data_item->form->formID == a_form->formID) {
+                    count++;
+                    if (max_count == count) {
+                        logger::trace("Item already {} time(s) used. return."sv, count);
+                        return true;
+                    }
+                }
+            }
+        }
         return false;
     }
 

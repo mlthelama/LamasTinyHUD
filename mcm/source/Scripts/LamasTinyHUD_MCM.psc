@@ -3,6 +3,7 @@ ScriptName LamasTinyHUD_MCM Extends MCM_ConfigBase
 bool property bChangeable Auto
 bool property bSpell Auto
 bool property bSpellLeft Auto
+bool property bElden Auto
 
 Event OnConfigClose() native
 string function GetResolutionWidth() native
@@ -75,6 +76,9 @@ Event OnSettingChange(String a_ID)
         int value = GetModSettingInt(a_ID)
         SetActionValue(GetModSettingInt("uPageList:Page"), True, value)
         RefreshMenu()
+    elseif (a_ID == "bEldenDemonSouls:MiscSetting")
+        bElden = GetModSettingBool(a_ID)
+        RefreshMenu()
     endif
 EndEvent
 
@@ -88,4 +92,8 @@ Event OnPageSelect(string a_page)
         SetModSettingString("sDisplayResolutionHeight:HudSetting",GetResolutionHeight())
         RefreshMenu()
     endIf
+EndEvent
+
+Event OnConfigOpen()
+    bElden = GetModSettingBool("bEldenDemonSouls:MiscSetting")
 EndEvent

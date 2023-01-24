@@ -504,8 +504,7 @@ namespace ui {
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
 
 
-        ImGuiStyle& style = ImGui::GetStyle();
-        style.Alpha = fade;
+        ImGui::GetStyle().Alpha = fade;
 
         ImGui::Begin(hud_name, nullptr, window_flag);
 
@@ -540,13 +539,13 @@ namespace ui {
         }
 
         ImGui::End();
-        if (mcm::get_hide_outside_combat()) {
-            if (fade_in) {
-                fade_out_timer = mcm::get_fade_timer_outside_combat();
 
+        if (mcm::get_hide_outside_combat()) {
+            if (fade_in && fade != 1.0f) {
+                fade_out_timer = mcm::get_fade_timer_outside_combat();
                 fade += 0.01f;
                 if (fade < 1.0f) fade = 1.0f;
-            } else {
+            } else if (!fade_in && fade != 0.0f) {
                 if (fade_out_timer > 0.0f) {
                     fade_out_timer -= ImGui::GetIO().DeltaTime;
                 } else {

@@ -371,6 +371,14 @@
                     "type": "header"
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 5,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bElden"
+                    }
+                },
+                {
                     "id": "sDisplayResolutionWidth:HudSetting",
                     "valueOptions": {
                         "value": "",
@@ -508,6 +516,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowHudImageScaleWidth_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowHudImageScaleWidth_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 0.02,
                         "max": 5.0,
@@ -521,6 +531,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowHudImageScaleHeight_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowHudImageScaleHeight_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 0.02,
                         "max": 5.0,
@@ -534,6 +546,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowIconScaleWidth_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowIconScaleWidth_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 0.01,
                         "max": 2.0,
@@ -547,6 +561,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowIconScaleHeight_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowIconScaleHeight_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 0.01,
                         "max": 2.0,
@@ -656,6 +672,8 @@
                     "text": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetX_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetX_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": -500.0,
                         "max": 500.0,
@@ -669,6 +687,8 @@
                     "text": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetY_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetY_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": -500.0,
                         "max": 500.0,
@@ -682,6 +702,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowSlotOffsetX_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowSlotOffsetX_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": -500.0,
                         "max": 500.0,
@@ -695,6 +717,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowSlotOffsetY_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowSlotOffsetY_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": -500.0,
                         "max": 500.0,
@@ -708,6 +732,8 @@
                     "text": "$LamasTinyHUD_HudSetting_ArrowSlotCountTextOffset_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_ArrowSlotCountTextOffset_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 0.0,
                         "max": 10.0,
@@ -724,6 +750,14 @@
             "content": [{
                     "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Transparency",
                     "type": "header"
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 5,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bElden"
+                    }
                 },
                 {
                     "id": "uBackgroundTransparency:GraphicSetting",
@@ -795,6 +829,8 @@
                     "text": "$LamasTinyHUD_GraphicSetting_IconTransparencyBlocked_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_GraphicSetting_IconTransparencyBlocked_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 0,
                         "max": 255,
@@ -838,6 +874,8 @@
                     "text": "$LamasTinyHUD_GraphicSetting_ArrowCountFontSize_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_GraphicSetting_ArrowCountFontSize_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 10.0,
                         "max": 35.0,
@@ -965,6 +1003,14 @@
                     "type": "header"
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 5,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bElden"
+                    }
+                },
+                {
                     "id": "bActionCheck:MiscSetting",
                     "text": "$LamasTinyHUD_MiscSetting_OptionText",
                     "type": "toggle",
@@ -1040,12 +1086,25 @@
                     "text": "$LamasTinyHUD_MiscSetting_MaxAmmunitionType_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_MiscSetting_MaxAmmunitionType_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 2,
                         "max": 6,
                         "step": 1,
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "bCheckDuplicateItems:MiscSetting",
+                    "text": "$LamasTinyHUD_CheckDuplicateItems_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CheckDuplicateItems_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
                     }
                 }
             ]
