@@ -1014,10 +1014,10 @@
                     }
                 },
                 {
-                    "id": "bElderDemonSouls:MiscSetting",
-                    "text": "$LamasTinyHUD_ElderDemonSouls_OptionText",
+                    "id": "bEldenDemonSouls:MiscSetting",
+                    "text": "$LamasTinyHUD_EldenDemonSouls_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_ElderDemonSouls_InfoText",
+                    "help": "$LamasTinyHUD_EldenDemonSouls_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
