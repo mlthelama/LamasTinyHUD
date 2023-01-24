@@ -302,13 +302,6 @@ namespace ui {
                     mcm::get_slot_count_blue(),
                     page_setting->draw_setting->text_transparency);
                 switch (first_type) {
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::shield:
-                    case handle::slot_setting::slot_type::armor:
-                    case handle::slot_setting::slot_type::empty:
-                    case handle::slot_setting::slot_type::misc:
-                        //Nothing, for now
-                        break;
                     case handle::slot_setting::slot_type::scroll:
                     case handle::slot_setting::slot_type::consumable:
                         draw_text(draw_setting->width_setting,
@@ -334,6 +327,13 @@ namespace ui {
                             color,
                             page_setting->font_size);
                         break;
+                    case handle::slot_setting::slot_type::weapon:
+                    case handle::slot_setting::slot_type::shield:
+                    case handle::slot_setting::slot_type::armor:
+                    case handle::slot_setting::slot_type::empty:
+                    case handle::slot_setting::slot_type::misc:
+                        //Nothing, for now
+                        break;
                 }
             }
         }
@@ -345,38 +345,29 @@ namespace ui {
                 mcm::get_text_transparency());
             draw_slot(a_x,
                 a_y,
-                mcm::get_hud_image_scale_width() / 1.6f,
-                mcm::get_hud_image_scale_height() / 1.6f,
-                -mcm::get_toggle_key_offset_x(),
-                mcm::get_toggle_key_offset_y(),
+                mcm::get_hud_arrow_image_scale_width(),
+                mcm::get_hud_arrow_image_scale_height(),
+                mcm::get_arrow_slot_offset_x(),
+                mcm::get_arrow_slot_offset_y(),
                 current_ammo->button_press_modify,
                 mcm::get_key_transparency());
             draw_icon(a_x,
                 a_y,
-                mcm::get_icon_scale_width() / 1.8f,
-                mcm::get_icon_scale_height() / 1.8f,
-                -mcm::get_toggle_key_offset_x(),
-                mcm::get_toggle_key_offset_y(),
+                mcm::get_arrow_icon_scale_width(),
+                mcm::get_arrow_icon_scale_height(),
+                mcm::get_arrow_slot_offset_x(),
+                mcm::get_arrow_slot_offset_y(),
                 icon_image_type::arrow,
                 mcm::get_icon_transparency());
             draw_text(a_x,
                 a_y,
-                -mcm::get_toggle_key_offset_x(),
-                mcm::get_toggle_key_offset_y(),
-                mcm::get_slot_count_text_offset() / 1.8f,
-                mcm::get_slot_count_text_offset() / 1.8f,
+                mcm::get_arrow_slot_offset_x(),
+                mcm::get_arrow_slot_offset_y(),
+                mcm::get_arrow_slot_count_text_offset(),
+                mcm::get_arrow_slot_count_text_offset(),
                 std::to_string(current_ammo->item_count ? current_ammo->item_count : 0).c_str(),
                 color,
-                mcm::get_slot_count_text_font_size());
-            /*draw_text(a_x,
-                a_y,
-                -mcm::get_toggle_key_offset_x(),
-                mcm::get_toggle_key_offset_y(),
-                mcm::get_slot_count_text_offset() / 2.0f,
-                mcm::get_slot_count_text_offset() / 2.0f,
-                std::to_string(current_ammo->item_count).c_str(),
-                color,
-                mcm::get_slot_count_text_font_size() / 2.0f);*/
+                mcm::get_arrow_count_font_size());
         }
     }
 

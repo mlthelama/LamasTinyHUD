@@ -221,6 +221,9 @@ namespace util {
         if (a_form->Is(RE::FormType::Scroll)) {
             return handle::slot_setting::slot_type::scroll;
         }
+        if (a_form->Is(RE::FormType::Ammo)) {
+            return handle::slot_setting::slot_type::misc;
+        }
 
         return handle::slot_setting::slot_type::misc;
     }

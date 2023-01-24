@@ -15,7 +15,7 @@ namespace equip {
         static bool is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player);
 
         static void equip_weapon_or_shield(const RE::TESForm* a_form,
-            const RE::BGSEquipSlot* a_slot,
+            RE::BGSEquipSlot*& a_slot,
             RE::PlayerCharacter*& a_player,
             bool a_weapon = true);
 

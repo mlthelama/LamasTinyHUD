@@ -13,8 +13,8 @@ namespace equip {
             RE::PlayerCharacter*& a_player,
             RE::ActorEquipManager*& a_actor_equip_manager);
 
-        static void un_equip_hand(const RE::BGSEquipSlot* a_slot, RE::PlayerCharacter*& a_player, action_type a_action);
-        static void un_equip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
+        static void un_equip_hand(RE::BGSEquipSlot*& a_slot, RE::PlayerCharacter*& a_player, action_type a_action);
+        static void un_equip_object_ft_dummy_dagger(RE::BGSEquipSlot*& a_slot,
             RE::PlayerCharacter*& a_player,
             RE::ActorEquipManager*& a_actor_equip_manager);
 

@@ -35,34 +35,14 @@ namespace event {
             return event_result::kContinue;
         }
 
-        if (config::mcm_setting::get_draw_current_items_text() && (form->IsWeapon() || form->Is(RE::FormType::Spell))) {
+        if (config::mcm_setting::get_draw_current_items_text() && (
+                form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo())) {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
 
         //add check if we need to block left
         if (config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
-            //is two handed, if equipped
-            //hardcode left for now, cause we just need it there
-            const auto key_handle = handle::key_position_handle::get_singleton();
-            key_handle->set_position_lock(handle::position_setting::position_type::left, a_event->equipped ? 1 : 0);
-            const auto page_handle = handle::page_handle::get_singleton();
-            const auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
-            const auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
-            //use settings here
-            setting->draw_setting->icon_transparency = a_event->equipped ?
-                                                           config::mcm_setting::get_icon_transparency_blocked() :
-                                                           config::mcm_setting::get_icon_transparency();
-            //check if bow or crossbow, now we look for ammo that is in the favor list
-            if (a_event->equipped && form->Is(RE::FormType::Weapon)) {
-                if (const auto weapon = form->As<RE::TESObjectWEAP>(); weapon->IsBow() || weapon->IsCrossbow()) {
-                    look_for_ammo(weapon->IsCrossbow());
-                    if (const auto next_ammo = handle::ammo_handle::get_singleton()->get_next_ammo()) {
-                        handle::setting_execute::execute_ammo(next_ammo);
-                    }
-                }
-            } else {
-                handle::ammo_handle::get_singleton()->clear_ammo();
-            }
+            check_if_location_needs_block(form, a_event->equipped);
         }
 
         if (handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
@@ -125,7 +105,7 @@ namespace event {
                 RE::PlayerCharacter::GetSingleton()->AddObjectToContainer(obj, nullptr, 1, nullptr);
             }
 
-            
+
             for (const auto data_item : data_) {
                 util::helper::write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
                     data_item->form ? data_item->form->GetName() : "null",
@@ -186,17 +166,17 @@ namespace event {
     }
 
     void equip_event::look_for_ammo(const bool a_crossbow) {
-        auto max_items = 3;
+        const auto max_items = config::mcm_setting::get_max_ammunition_type();
         auto player = RE::PlayerCharacter::GetSingleton();
         const auto inv = equip::item::get_inventory(player, RE::FormType::Ammo);
         std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
         for (const auto& [item, inv_data] : inv) {
             const auto& [num_items, entry] = inv_data;
             const auto ammo = item->As<RE::TESAmmo>();
-            if (!ammo->GetPlayable()) {
+            if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
                 continue;
             }
-            if (a_crossbow && ammo->IsBolt() && num_items != 0) {
+            if (a_crossbow && ammo->GetRuntimeData().data.flags.none(RE::AMMO_DATA::Flag::kNonBolt) && num_items != 0) {
                 logger::trace("found bolt {}, damage {}, count {}"sv,
                     ammo->GetName(),
                     ammo->GetRuntimeData().data.damage,
@@ -205,7 +185,8 @@ namespace event {
                 ammo_data->form = ammo;
                 ammo_data->item_count = num_items;
                 ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
-            } else if (num_items != 0) {
+            } else if (!a_crossbow && num_items != 0 && ammo->GetRuntimeData().data.flags.all(
+                           RE::AMMO_DATA::Flag::kNonBolt)) {
                 logger::trace("found arrow {}, damage {}, count {}"sv,
                     ammo->GetName(),
                     ammo->GetRuntimeData().data.damage,
@@ -227,5 +208,32 @@ namespace event {
         }
         ammo_list.clear();
         ammo_handle->init_ammo(sorted_ammo);
+    }
+
+    void equip_event::check_if_location_needs_block(RE::TESForm*& a_form, const bool a_equipped) {
+        //is two handed, if equipped
+        //hardcode left for now, cause we just need it there
+        const auto key_handle = handle::key_position_handle::get_singleton();
+        key_handle->set_position_lock(handle::position_setting::position_type::left, a_equipped ? 1 : 0);
+        const auto page_handle = handle::page_handle::get_singleton();
+        const auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
+        const auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
+        //use settings here
+        if (setting && setting->draw_setting && setting->draw_setting->icon_transparency) {
+            setting->draw_setting->icon_transparency = a_equipped ?
+                                                           config::mcm_setting::get_icon_transparency_blocked() :
+                                                           config::mcm_setting::get_icon_transparency();
+        }
+        //check if bow or crossbow, now we look for ammo that is in the favor list
+        if (a_equipped && a_form->Is(RE::FormType::Weapon)) {
+            if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->IsBow() || weapon->IsCrossbow()) {
+                look_for_ammo(weapon->IsCrossbow());
+                if (const auto next_ammo = handle::ammo_handle::get_singleton()->get_next_ammo()) {
+                    handle::setting_execute::execute_ammo(next_ammo);
+                }
+            }
+        } else {
+            handle::ammo_handle::get_singleton()->clear_ammo();
+        }
     }
 }

@@ -40,7 +40,7 @@ namespace handle {
         }
 
         if (!un_equip.empty()) {
-            for (const auto slot : un_equip) {
+            for (RE::BGSEquipSlot*& slot : un_equip) {
                 equip::equip_slot::un_equip_hand(slot, player, slot_setting::acton_type::un_equip);
             }
         }

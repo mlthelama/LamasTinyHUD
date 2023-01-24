@@ -10,6 +10,7 @@ namespace config {
     static uint32_t bottom_action_key;
     static uint32_t left_action_key;
     static uint32_t toggle_key;
+    static bool draw_toggle_button;
     static uint32_t controller_set;
     static float config_button_hold_time;
 
@@ -23,14 +24,20 @@ namespace config {
     static float icon_scale_height;
     static float key_icon_scale_width;
     static float key_icon_scale_height;
+    static float hud_arrow_image_scale_width;
+    static float hud_arrow_image_scale_height;
+    static float arrow_icon_scale_width;
+    static float arrow_icon_scale_height;
     static float slot_count_text_offset;
-    static bool draw_toggle_button;
     static float toggle_key_offset_x;
     static float toggle_key_offset_y;
     static float current_items_offset_x;
     static float current_items_offset_y;
     static float slot_item_name_offset_x;
     static float slot_item_name_offset_y;
+    static float arrow_slot_offset_x;
+    static float arrow_slot_offset_y;
+    static float arrow_slot_count_text_offset;
 
     static uint32_t background_transparency;
     static uint32_t background_icon_transparency;
@@ -40,6 +47,7 @@ namespace config {
     static uint32_t icon_transparency_blocked;
     static float slot_count_text_font_size;
     static float current_items_font_size;
+    static float arrow_count_font_size;
     static uint32_t current_items_red;
     static uint32_t current_items_green;
     static uint32_t current_items_blue;
@@ -56,6 +64,7 @@ namespace config {
     static bool disable_input_quick_loot;
     static bool elder_demon_souls;
     static uint32_t max_page_count;
+    static uint32_t max_ammunition_type;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -78,10 +87,10 @@ namespace config {
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
             hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fHudImagePositionWidth",
-                140));
+                200));
             hud_image_position_height = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fHudImagePositionHeight",
-                140));
+                775));
             hud_slot_position_offset = static_cast<float>(mcm.
                 GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 105));
             hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 38));
@@ -89,17 +98,31 @@ namespace config {
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.10));
             key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth", 0.38));
             key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight", 0.38));
+            hud_arrow_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fHudArrowImageScaleWidth",
+                0.13));
+            hud_arrow_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fHudArrowImageScaleHeight",
+                0.13));
+            arrow_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowIconScaleWidth", 0.05));
+            arrow_icon_scale_height = static_cast<float>(mcm.
+                GetDoubleValue("HudSetting", "fArrowIconScaleHeight", 0.05));
             toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetX",
                 115));
             toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting",
                 "fToggleKeyOffsetY",
                 115));
-            current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -400));
-            current_items_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetY", 130));
+            current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -45));
+            current_items_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetY", 200));
             slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 20));
-            slot_item_name_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetX", -65));
+            slot_item_name_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetX", -45));
             slot_item_name_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetY", 65));
+            arrow_slot_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetX", -115));
+            arrow_slot_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetY", 115));
+            arrow_slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting",
+                "fArrowSlotCountTextOffset",
+                12));
 
             background_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting",
                 "uBackgroundTransparency",
@@ -119,7 +142,7 @@ namespace config {
             current_items_font_size = static_cast<float>(mcm.GetDoubleValue("GraphicSetting",
                 "fCurrentItemsFontSize",
                 20));
-
+            arrow_count_font_size = static_cast<float>(mcm.GetDoubleValue("GraphicSetting", "fArrowCountFontSize", 20));
             current_items_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsRed", 255));
             current_items_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsGreen", 255));
             current_items_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsBlue", 255));
@@ -128,10 +151,10 @@ namespace config {
             slot_count_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountBlue", 255));
             slot_button_feedback = static_cast<uint32_t>(mcm.
                 GetLongValue("GraphicSetting", "uSlotButtonFeedback", 175));
-            draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", false);
+            draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", true);
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
-            empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", true);
+            empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", false);
             hide_outside_combat = mcm.GetBoolValue("MiscSetting", "bHideOutsideCombat", false);
             fade_timer_outside_combat = static_cast<float>(mcm.GetDoubleValue("MiscSetting",
                 "fFadeTimerOutsideCombat",
@@ -139,6 +162,7 @@ namespace config {
             disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
             elder_demon_souls = mcm.GetBoolValue("MiscSetting", "bElderDemonSouls", true);
             max_page_count = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxPageCount", 2));
+            max_ammunition_type = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxAmmunitionType", 3));
         };
 
         read_mcm(mcm_default_setting);
@@ -154,6 +178,7 @@ namespace config {
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
     uint32_t mcm_setting::get_toggle_key() { return toggle_key; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
+    bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
@@ -166,14 +191,20 @@ namespace config {
     float mcm_setting::get_icon_scale_height() { return icon_scale_height; }
     float mcm_setting::get_key_icon_scale_width() { return key_icon_scale_width; }
     float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
+    float mcm_setting::get_hud_arrow_image_scale_width() { return hud_arrow_image_scale_width; }
+    float mcm_setting::get_hud_arrow_image_scale_height() { return hud_arrow_image_scale_height; }
+    float mcm_setting::get_arrow_icon_scale_width() { return arrow_icon_scale_width; }
+    float mcm_setting::get_arrow_icon_scale_height() { return arrow_icon_scale_height; }
     float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset; }
-    bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x; }
     float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y; }
     float mcm_setting::get_current_items_offset_x() { return current_items_offset_x; }
     float mcm_setting::get_current_items_offset_y() { return current_items_offset_y; }
     float mcm_setting::get_slot_item_name_offset_x() { return slot_item_name_offset_x; }
     float mcm_setting::get_slot_item_name_offset_y() { return slot_item_name_offset_y; }
+    float mcm_setting::get_arrow_slot_offset_x() { return arrow_slot_offset_x; }
+    float mcm_setting::get_arrow_slot_offset_y() { return arrow_slot_offset_y; }
+    float mcm_setting::get_arrow_slot_count_text_offset() { return arrow_slot_count_text_offset; }
 
     uint32_t mcm_setting::get_background_transparency() { return background_transparency; }
     uint32_t mcm_setting::get_background_icon_transparency() { return background_icon_transparency; }
@@ -183,6 +214,7 @@ namespace config {
     uint32_t mcm_setting::get_icon_transparency_blocked() { return icon_transparency_blocked; }
     float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size; }
     float mcm_setting::get_current_items_font_size() { return current_items_font_size; }
+    float mcm_setting::get_arrow_count_font_size() { return arrow_count_font_size; }
     uint32_t mcm_setting::get_current_items_red() { return current_items_red; }
     uint32_t mcm_setting::get_current_items_green() { return current_items_green; }
     uint32_t mcm_setting::get_current_items_blue() { return current_items_blue; }
@@ -199,4 +231,5 @@ namespace config {
     bool mcm_setting::get_disable_input_quick_loot() { return disable_input_quick_loot; }
     bool mcm_setting::get_elden_demon_souls() { return elder_demon_souls; }
     uint32_t mcm_setting::get_max_page_count() { return max_page_count; }
+    uint32_t mcm_setting::get_max_ammunition_type() { return max_ammunition_type; }
 }

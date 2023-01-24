@@ -33,7 +33,7 @@ namespace equip {
     }
 
     void item::equip_weapon_or_shield(const RE::TESForm* a_form,
-        const RE::BGSEquipSlot* a_slot,
+        RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         const bool a_weapon) {
         auto left = a_slot == equip_slot::get_left_hand_slot();
@@ -191,6 +191,11 @@ namespace equip {
 
         if (!obj || left == 0) {
             logger::warn("could not find selected ammo, maybe all have been used"sv);
+            return;
+        }
+
+        if (const auto current_ammo = a_player->GetCurrentAmmo(); current_ammo && current_ammo->formID == obj->formID) {
+            logger::debug("Ammo {} already equipped, return."sv, obj->GetName());
             return;
         }
 

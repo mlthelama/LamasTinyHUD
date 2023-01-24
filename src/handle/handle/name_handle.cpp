@@ -1,5 +1,6 @@
 ﻿#include "name_handle.h"
 #include "handle/data/data_helper.h"
+#include "setting/custom_setting.h"
 #include "util/constant.h"
 #include "util/string_util.h"
 
@@ -19,12 +20,27 @@ namespace handle {
 
         data->name = "<Empty>";
 
+        auto check_ammo = false;
         std::string name_right = "<Empty>";
         if (!data_helpers.empty()) {
             if (data_helpers[0]->form) {
                 name_right = data_helpers[0]->form->GetName();
+                if (data_helpers[0]->form->IsWeapon()) {
+                    //check_ammo
+                    if (const auto weapon = data_helpers[0]->form->As<RE::TESObjectWEAP>();
+                        (weapon->IsBow() || weapon->IsCrossbow()) && !weapon->IsBound()) {
+                        check_ammo = true;
+                    }
+                }
             }
             data->name = name_right;
+        }
+
+        if (check_ammo && data_helpers.size() != 2) {
+            const auto player = RE::PlayerCharacter::GetSingleton();
+            if (const auto ammo = player->GetCurrentAmmo(); ammo && (ammo->IsBolt() || ammo->IsAmmo())) {
+                data->name = fmt::format("{} {} {}", ammo->GetName(), util::delimiter, name_right);
+            }
         }
 
         if (data_helpers.size() == 2) {

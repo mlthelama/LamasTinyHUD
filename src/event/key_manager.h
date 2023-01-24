@@ -47,7 +47,7 @@ namespace event {
 
         uint32_t button_press_modify_ = ui::draw_full;
         uint32_t edit_active_ = k_invalid;
-        
+
         bool is_toggle_down_ = false;
 
         void do_button_press(uint32_t a_key);
@@ -55,5 +55,6 @@ namespace event {
         [[nodiscard]] bool is_position_button(uint32_t a_key) const;
         [[nodiscard]] bool scroll_position(uint32_t a_key) const;
         void init_edit(handle::position_setting::position_type a_position, uint32_t a_key);
+        void do_button_down(handle::position_setting*& a_position_setting) const;
     };
 }

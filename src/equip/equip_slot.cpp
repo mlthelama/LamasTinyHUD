@@ -26,7 +26,7 @@ namespace equip {
         return is_worn;
     }
 
-    void equip_slot::un_equip_hand(const RE::BGSEquipSlot* a_slot,
+    void equip_slot::un_equip_hand(RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         const action_type a_action) {
         if (a_action != handle::slot_setting::acton_type::un_equip) {
@@ -68,7 +68,7 @@ namespace equip {
         }
     }
 
-    void equip_slot::un_equip_object_ft_dummy_dagger(const RE::BGSEquipSlot*& a_slot,
+    void equip_slot::un_equip_object_ft_dummy_dagger(RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
         const auto dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();

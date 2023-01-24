@@ -115,7 +115,6 @@ namespace event {
                 }
             }
 
-
             if (is_position_button(key_)) {
                 if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time()) {
                     do_button_hold(key_);
@@ -124,21 +123,12 @@ namespace event {
 
             if (button->IsDown() && is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
-                //set slot to a different color
-                const auto position_setting = handle::setting_execute::get_position_setting_for_key(key_);
+                auto position_setting = handle::setting_execute::get_position_setting_for_key(key_);
                 if (position_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
-                if (!handle::key_position_handle::get_singleton()->is_position_locked(position_setting->position)) {
-                    position_setting->button_press_modify = button_press_modify_;
-                } else {
-                    if (position_setting->position == handle::position_setting::position_type::left) {
-                        if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
-                            current_ammo->button_press_modify = button_press_modify_;
-                        }
-                    }
-                }
+                do_button_down(position_setting);
             }
 
             if (button->IsUp() && is_position_button(key_)) {
@@ -318,15 +308,9 @@ namespace event {
 
 
         if (config::mcm_setting::get_elden_demon_souls()) {
-            //show next position for that
-            //handler->set_active_page(handler->get_next_page_id());
-            //check if it is locked
-
             const auto key_handler = handle::key_position_handle::get_singleton();
             const auto handler = handle::page_handle::get_singleton();
             if (!key_handler->is_position_locked(position_setting->position)) {
-                /*handler->set_active_page_position(handler->get_next_page_id_position(position_setting->pos),
-                    position_setting->pos);*/
                 if ((scroll_position(a_key) && !is_toggle_down_) || !scroll_position(a_key)) {
                     handler->set_active_page_position(
                         handler->get_next_non_empty_setting_for_position(position_setting->position),
@@ -380,12 +364,24 @@ namespace event {
         }
         return false;
     }
-    
+
     void key_manager::init_edit(handle::position_setting::position_type a_position, const uint32_t a_key) {
         const auto edit_handle = handle::edit_handle::get_singleton();
         edit_handle->init_edit(a_position);
         util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
             static_cast<uint32_t>(a_position)));
         edit_active_ = a_key;
+    }
+
+    void key_manager::do_button_down(handle::position_setting*& a_position_setting) const {
+        if (!handle::key_position_handle::get_singleton()->is_position_locked(a_position_setting->position)) {
+            a_position_setting->button_press_modify = button_press_modify_;
+        } else {
+            if (a_position_setting->position == handle::position_setting::position_type::left) {
+                if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
+                    current_ammo->button_press_modify = button_press_modify_;
+                }
+            }
+        }
     }
 }

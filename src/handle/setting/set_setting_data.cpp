@@ -1,6 +1,7 @@
 ﻿#include "set_setting_data.h"
 
 #include "setting_execute.h"
+#include "equip/equip_slot.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
@@ -22,10 +23,12 @@ namespace handle {
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
         //we start at 0 so it is max count -1
-        if (const auto page_handle = page_handle::get_singleton();
-            mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
-            logger::warn("active page count is smaller than max count, set active to 0");
-            page_handle->set_active_page(0);
+        if (!mcm::get_elden_demon_souls()) {
+            if (const auto page_handle = page_handle::get_singleton();
+                mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
+                logger::warn("active page count is smaller than max count, set active to 0");
+                page_handle->set_active_page(0);
+            }
         }
 
         //set empty for each position, it will be overwritten if it is configured
@@ -40,9 +43,11 @@ namespace handle {
         custom::read_setting();
 
         const auto handler = page_handle::get_singleton();
-        for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
-            //will do for now, items could have been removed what so ever
-            handler->set_highest_page_position(-1, static_cast<position_setting::position_type>(i));
+        if (mcm::get_elden_demon_souls()) {
+            for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
+                //will do for now, items could have been removed what so ever
+                handler->set_highest_page_position(-1, static_cast<position_setting::position_type>(i));
+            }
         }
 
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
@@ -59,17 +64,25 @@ namespace handle {
         }
         logger::trace("done setting. return."sv);
 
-        for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
-            //will do for now, items could have been removed what so ever
-            handler->init_actives(0, static_cast<position_setting::position_type>(i));
-        }
+        if (mcm::get_elden_demon_souls()) {
+            for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
+                //will do for now, items could have been removed what so ever
+                handler->init_actives(0, static_cast<position_setting::position_type>(i));
+            }
+            auto player = RE::PlayerCharacter::GetSingleton();
+            auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            auto right = equip::equip_slot::get_right_hand_slot();
+            auto left = equip::equip_slot::get_left_hand_slot();
 
-        //execute first setting for left, then right
-        logger::trace("execute first setting for left/right"sv);
-        auto position_setting = handler->get_page_setting(0, position_setting::position_type::left);
-        setting_execute::execute_settings(position_setting->slot_settings);
-        position_setting = handler->get_page_setting(0, position_setting::position_type::right);
-        setting_execute::execute_settings(position_setting->slot_settings);
+            //execute first setting for left, then right
+            equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
+            equip::equip_slot::un_equip_object_ft_dummy_dagger(left, player, equip_manager);
+            logger::trace("execute first setting for left/right"sv);
+            auto position_setting = handler->get_page_setting(0, position_setting::position_type::left);
+            setting_execute::execute_settings(position_setting->slot_settings);
+            position_setting = handler->get_page_setting(0, position_setting::position_type::right);
+            setting_execute::execute_settings(position_setting->slot_settings);
+        }
         logger::trace("done executing"sv);
     }
 
@@ -312,13 +325,15 @@ namespace handle {
                 }
             }
         }
-        //TODO other way to keep track of it
-        //check if we have ammo to update
-        const auto ammo_handle = ammo_handle::get_singleton();
-        if (const auto ammo_list = ammo_handle->get_all(); !ammo_list.empty()) {
-            for (const auto ammo : ammo_list) {
-                if (a_form_id == ammo->form->formID) {
-                    ammo->item_count = ammo->item_count + a_count;
+
+        if (mcm::get_elden_demon_souls()) {
+            //check if we have ammo to update
+            const auto ammo_handle = ammo_handle::get_singleton();
+            if (const auto ammo_list = ammo_handle->get_all(); !ammo_list.empty()) {
+                for (const auto ammo : ammo_list) {
+                    if (a_form_id == ammo->form->formID) {
+                        ammo->item_count = ammo->item_count + a_count;
+                    }
                 }
             }
         }
