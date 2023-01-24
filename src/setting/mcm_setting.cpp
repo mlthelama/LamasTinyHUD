@@ -13,6 +13,7 @@ namespace config {
     static bool draw_toggle_button;
     static uint32_t controller_set;
     static float config_button_hold_time;
+    static float master_scale;
 
     static float hud_image_scale_width;
     static float hud_image_scale_height;
@@ -82,6 +83,7 @@ namespace config {
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
             config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
             draw_toggle_button = mcm.GetBoolValue("Controls", "bDrawToggleButton", true);
+            master_scale = static_cast<float>(mcm.GetDoubleValue("Controls", "fMasterScale", 1));
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.23));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
@@ -180,31 +182,32 @@ namespace config {
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }
+    float mcm_setting::get_master_scale() { return master_scale; }
 
-    float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width; }
-    float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height; }
+    float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width * master_scale; }
+    float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height * master_scale; }
     float mcm_setting::get_hud_image_position_width() { return hud_image_position_width; }
     float mcm_setting::get_hud_image_position_height() { return hud_image_position_height; }
-    float mcm_setting::get_hud_slot_position_offset() { return hud_slot_position_offset; }
-    float mcm_setting::get_hud_key_position_offset() { return hud_key_position_offset; }
-    float mcm_setting::get_icon_scale_width() { return icon_scale_width; }
-    float mcm_setting::get_icon_scale_height() { return icon_scale_height; }
-    float mcm_setting::get_key_icon_scale_width() { return key_icon_scale_width; }
-    float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height; }
-    float mcm_setting::get_hud_arrow_image_scale_width() { return hud_arrow_image_scale_width; }
-    float mcm_setting::get_hud_arrow_image_scale_height() { return hud_arrow_image_scale_height; }
-    float mcm_setting::get_arrow_icon_scale_width() { return arrow_icon_scale_width; }
-    float mcm_setting::get_arrow_icon_scale_height() { return arrow_icon_scale_height; }
-    float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset; }
-    float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x; }
-    float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y; }
-    float mcm_setting::get_current_items_offset_x() { return current_items_offset_x; }
-    float mcm_setting::get_current_items_offset_y() { return current_items_offset_y; }
-    float mcm_setting::get_slot_item_name_offset_x() { return slot_item_name_offset_x; }
-    float mcm_setting::get_slot_item_name_offset_y() { return slot_item_name_offset_y; }
-    float mcm_setting::get_arrow_slot_offset_x() { return arrow_slot_offset_x; }
-    float mcm_setting::get_arrow_slot_offset_y() { return arrow_slot_offset_y; }
-    float mcm_setting::get_arrow_slot_count_text_offset() { return arrow_slot_count_text_offset; }
+    float mcm_setting::get_hud_slot_position_offset() { return hud_slot_position_offset * master_scale; }
+    float mcm_setting::get_hud_key_position_offset() { return hud_key_position_offset * master_scale; }
+    float mcm_setting::get_icon_scale_width() { return icon_scale_width * master_scale; }
+    float mcm_setting::get_icon_scale_height() { return icon_scale_height * master_scale; }
+    float mcm_setting::get_key_icon_scale_width() { return key_icon_scale_width * master_scale; }
+    float mcm_setting::get_key_icon_scale_height() { return key_icon_scale_height * master_scale; }
+    float mcm_setting::get_hud_arrow_image_scale_width() { return hud_arrow_image_scale_width * master_scale; }
+    float mcm_setting::get_hud_arrow_image_scale_height() { return hud_arrow_image_scale_height * master_scale; }
+    float mcm_setting::get_arrow_icon_scale_width() { return arrow_icon_scale_width * master_scale; }
+    float mcm_setting::get_arrow_icon_scale_height() { return arrow_icon_scale_height * master_scale; }
+    float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset * master_scale; }
+    float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x * master_scale; }
+    float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y * master_scale; }
+    float mcm_setting::get_current_items_offset_x() { return current_items_offset_x * master_scale; }
+    float mcm_setting::get_current_items_offset_y() { return current_items_offset_y * master_scale; }
+    float mcm_setting::get_slot_item_name_offset_x() { return slot_item_name_offset_x * master_scale; }
+    float mcm_setting::get_slot_item_name_offset_y() { return slot_item_name_offset_y * master_scale; }
+    float mcm_setting::get_arrow_slot_offset_x() { return arrow_slot_offset_x * master_scale; }
+    float mcm_setting::get_arrow_slot_offset_y() { return arrow_slot_offset_y * master_scale; }
+    float mcm_setting::get_arrow_slot_count_text_offset() { return arrow_slot_count_text_offset * master_scale; }
 
     uint32_t mcm_setting::get_background_transparency() { return background_transparency; }
     uint32_t mcm_setting::get_background_icon_transparency() { return background_icon_transparency; }
@@ -212,9 +215,9 @@ namespace config {
     uint32_t mcm_setting::get_key_transparency() { return key_transparency; }
     uint32_t mcm_setting::get_text_transparency() { return text_transparency; }
     uint32_t mcm_setting::get_icon_transparency_blocked() { return icon_transparency_blocked; }
-    float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size; }
-    float mcm_setting::get_current_items_font_size() { return current_items_font_size; }
-    float mcm_setting::get_arrow_count_font_size() { return arrow_count_font_size; }
+    float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size * master_scale; }
+    float mcm_setting::get_current_items_font_size() { return current_items_font_size * master_scale; }
+    float mcm_setting::get_arrow_count_font_size() { return arrow_count_font_size * master_scale; }
     uint32_t mcm_setting::get_current_items_red() { return current_items_red; }
     uint32_t mcm_setting::get_current_items_green() { return current_items_green; }
     uint32_t mcm_setting::get_current_items_blue() { return current_items_blue; }

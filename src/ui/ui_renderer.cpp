@@ -194,9 +194,10 @@ namespace ui {
         const float a_font_size) {
         const ImFont* font = ImGui::GetFont();
 
+        //it should center the text, it kind of does
         const ImVec2 text_size = ImGui::CalcTextSize(a_text);
-        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x / 2.0f,
-            a_y + a_offset_y + a_offset_extra_y - text_size.y / 2.0f);
+        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x * 0.5f,
+            a_y + a_offset_y + a_offset_extra_y - text_size.y * 0.5f);
 
         ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
