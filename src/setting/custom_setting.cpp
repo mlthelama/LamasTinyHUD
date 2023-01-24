@@ -12,12 +12,7 @@ namespace config {
 
     void custom_setting::read_setting() {
         custom_ini.SetUnicode();
-        //if (mcm_setting::get_elder_demon_souls()) {
-        //    custom_ini.LoadFile(ini_path_elden);
-        //} else {
-        //    custom_ini.LoadFile(ini_path);
-        //}
-        custom_ini.LoadFile(ini_path_elden);
+        custom_ini.LoadFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {
@@ -70,7 +65,7 @@ namespace config {
         logger::trace("resetting section {}"sv, a_section);
         custom_ini.Delete(a_section.c_str(), nullptr);
 
-        (void)custom_ini.SaveFile(ini_path_elden);
+        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
         read_setting();
     }
 
@@ -78,7 +73,7 @@ namespace config {
         read_setting();
         custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", a_action);
 
-        (void)custom_ini.SaveFile(ini_path_elden);
+        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
         read_setting();
     }
 
@@ -86,7 +81,7 @@ namespace config {
         read_setting();
         custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", a_action);
 
-        (void)custom_ini.SaveFile(ini_path_elden);
+        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
         read_setting();
     }
 
@@ -127,7 +122,7 @@ namespace config {
         custom_ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
         custom_ini.SetLongValue(section, "uSlotActionLeft", a_action_left);
 
-        (void)custom_ini.SaveFile(ini_path_elden);
+        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
         read_setting();
     }
 }

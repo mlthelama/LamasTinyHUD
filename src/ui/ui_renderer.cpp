@@ -339,7 +339,7 @@ namespace ui {
             }
         }
         const auto ammo_handle = handle::ammo_handle::get_singleton();
-        if (const auto current_ammo = ammo_handle->get_current()) {
+        if (const auto current_ammo = ammo_handle->get_current(); current_ammo && mcm::get_elden_demon_souls()) {
             const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
                 mcm::get_slot_count_green(),
                 mcm::get_slot_count_blue(),

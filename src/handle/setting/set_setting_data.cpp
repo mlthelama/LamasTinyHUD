@@ -15,7 +15,7 @@ namespace handle {
     using custom = config::custom_setting;
 
     void set_setting_data::read_and_set_data() {
-        logger::trace("Setting handlers ..."sv);
+        logger::trace("Setting handlers, elden demon souls {} ..."sv, mcm::get_elden_demon_souls());
 
         auto key_pos = key_position_handle::get_singleton();
         key_pos->init_key_position_map();
@@ -131,7 +131,6 @@ namespace handle {
     void set_setting_data::set_queue_slot(position_setting::position_type a_pos,
         const std::vector<data_helper*>& a_data) {
         //each data item will be a new page with this position
-        //get_next_page_id_for_position
         logger::trace("Got {} items to process"sv, a_data.size());
         if (a_data.empty()) {
             return;
@@ -143,7 +142,6 @@ namespace handle {
         //so we get the next we need, or we can use
         auto page = page_handle->get_highest_page_id_position(a_pos) + 1;
         for (auto item : a_data) {
-            //const auto page = page_handle->get_next_page_id_position(a_pos);
             auto hand = item->two_handed ? slot_setting::hand_equip::both : slot_setting::hand_equip::single;
             logger::trace("working page {}, pos {}"sv, page, pos);
             //for now make a vector with one item...
@@ -319,8 +317,6 @@ namespace handle {
                             util::string_util::int_to_hex(a_form_id),
                             setting->item_count,
                             a_count);
-
-                        //TODO maybe add indicator to ui that the items are gone
                     }
                 }
             }
