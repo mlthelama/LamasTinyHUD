@@ -1,7 +1,5 @@
 ﻿#include "custom_setting.h"
-
 #include "mcm_setting.h"
-
 #include <SimpleIni.h>
 
 namespace config {
@@ -12,7 +10,11 @@ namespace config {
 
     void custom_setting::read_setting() {
         custom_ini.SetUnicode();
-        custom_ini.LoadFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
+        if (config::mcm_setting::get_elden_demon_souls()) {
+            custom_ini.LoadFile(ini_path_elden);
+        } else {
+            custom_ini.LoadFile(ini_path);
+        }
     }
 
     CSimpleIniA::TNamesDepend custom_setting::get_sections() {
@@ -65,24 +67,21 @@ namespace config {
         logger::trace("resetting section {}"sv, a_section);
         custom_ini.Delete(a_section.c_str(), nullptr);
 
-        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
-        read_setting();
+        save_setting();
     }
 
     void custom_setting::write_slot_action_by_section(const std::string& a_section, const uint32_t a_action) {
         read_setting();
         custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", a_action);
 
-        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
-        read_setting();
+        save_setting();
     }
 
     void custom_setting::write_slot_action_left_by_section(const std::string& a_section, const uint32_t a_action) {
         read_setting();
         custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", a_action);
 
-        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
-        read_setting();
+        save_setting();
     }
 
     void custom_setting::write_section_setting(const std::string& a_section,
@@ -122,7 +121,15 @@ namespace config {
         custom_ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
         custom_ini.SetLongValue(section, "uSlotActionLeft", a_action_left);
 
-        (void)custom_ini.SaveFile(mcm_setting::get_elden_demon_souls() ? ini_path_elden : ini_path);
+        save_setting();
+    }
+
+    void custom_setting::save_setting() {
+        if (config::mcm_setting::get_elden_demon_souls()) {
+            (void)custom_ini.SaveFile(ini_path_elden);
+        } else {
+            (void)custom_ini.SaveFile(ini_path);
+        }
         read_setting();
     }
 }

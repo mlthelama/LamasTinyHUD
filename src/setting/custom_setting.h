@@ -33,5 +33,7 @@ namespace config {
             uint32_t a_type_left,
             const std::string& a_form_left,
             uint32_t a_action_left);
+
+        static void save_setting();
     };
 }

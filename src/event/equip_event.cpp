@@ -236,6 +236,10 @@ namespace event {
             }
         } else {
             handle::ammo_handle::get_singleton()->clear_ammo();
+            //un equip armor here
+            if (config::mcm_setting::get_un_equip_ammo()) {
+                equip::item::un_equip_ammo();
+            }
         }
     }
 }

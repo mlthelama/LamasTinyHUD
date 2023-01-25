@@ -25,6 +25,8 @@ namespace equip {
 
         static void equip_ammo(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
 
+        static void un_equip_ammo();
+
         static uint32_t get_inventory_count(const RE::TESForm* a_form);
     };
 }

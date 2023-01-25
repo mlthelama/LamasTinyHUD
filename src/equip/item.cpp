@@ -226,4 +226,21 @@ namespace equip {
 
         return count;
     }
+    void item::un_equip_ammo() {
+        logger::debug("check if we need to un equip ammo"sv);
+        auto player = RE::PlayerCharacter::GetSingleton();
+        auto obj = player->GetCurrentAmmo();
+        if (!obj || !obj->IsAmmo()) {
+            return;
+        }
+
+        auto ammo = obj->As<RE::TESAmmo>();
+        if (ammo->GetRuntimeData().data.flags.all(RE::AMMO_DATA::Flag::kNonBolt) ||
+            ammo->GetRuntimeData().data.flags.none(RE::AMMO_DATA::Flag::kNonBolt)) {
+            auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            equip_manager->UnequipObject(player, ammo);
+            logger::trace("Called to un equip {}"sv, ammo->GetName());
+        }
+        logger::trace("Done work. return"sv);
+    }
 }

@@ -67,5 +67,6 @@ namespace config {
         static uint32_t get_max_page_count();
         static uint32_t get_max_ammunition_type();
         static bool get_check_duplicate_items();
+        static bool get_un_equip_ammo();
     };
 }

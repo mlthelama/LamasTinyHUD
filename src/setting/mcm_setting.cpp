@@ -67,6 +67,7 @@ namespace config {
     static uint32_t max_page_count;
     static uint32_t max_ammunition_type;
     static bool check_duplicate_items;
+    static bool un_equip_ammo;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -152,6 +153,7 @@ namespace config {
             max_page_count = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxPageCount", 2));
             max_ammunition_type = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxAmmunitionType", 3));
             check_duplicate_items = mcm.GetBoolValue("MiscSetting", "bCheckDuplicateItems", true);
+            un_equip_ammo = mcm.GetBoolValue("MiscSetting", "bUnEquipAmmo", false);
         };
 
         read_mcm(mcm_default_setting);
@@ -223,4 +225,5 @@ namespace config {
     uint32_t mcm_setting::get_max_page_count() { return max_page_count; }
     uint32_t mcm_setting::get_max_ammunition_type() { return max_ammunition_type; }
     bool mcm_setting::get_check_duplicate_items() { return check_duplicate_items; }
+    bool mcm_setting::get_un_equip_ammo() { return un_equip_ammo; }
 }
