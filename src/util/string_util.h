@@ -15,11 +15,7 @@ namespace util {
         }
 
         static void ltrim(std::string& s) {
-            s.erase(s.begin(),
-                std::ranges::find_if(s,
-                    [](const unsigned char ch) {
-                        return !std::isspace(ch);
-                    }));
+            s.erase(s.begin(), std::ranges::find_if(s, [](const unsigned char ch) { return !std::isspace(ch); }));
         }
 
         static std::string ltrim_copy(std::string s) {

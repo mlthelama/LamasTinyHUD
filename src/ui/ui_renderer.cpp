@@ -1,22 +1,22 @@
 ﻿#include "ui_renderer.h"
 #include <d3d11.h>
+#include <dxgi.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
-#include <dxgi.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "image_path.h"
-#include "imgui_internal.h"
-#include "key_path.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "event/key_manager.h"
 #include "event/sink_event.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
 #include "handle/setting/set_setting_data.h"
+#include "imgui_internal.h"
+#include "key_path.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 
@@ -210,9 +210,9 @@ namespace ui {
         const float cos_a = cosf(a_angle);
         const float sin_a = sinf(a_angle);
         const ImVec2 pos[4] = { a_center + ImRotate(ImVec2(-a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
-                                a_center + ImRotate(ImVec2(+a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
-                                a_center + ImRotate(ImVec2(+a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a),
-                                a_center + ImRotate(ImVec2(-a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a)
+            a_center + ImRotate(ImVec2(+a_size.x * 0.5f, -a_size.y * 0.5f), cos_a, sin_a),
+            a_center + ImRotate(ImVec2(+a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a),
+            a_center + ImRotate(ImVec2(-a_size.x * 0.5f, +a_size.y * 0.5f), cos_a, sin_a)
 
         };
         constexpr ImVec2 uvs[4] = { ImVec2(0.0f, 0.0f), ImVec2(1.0f, 0.0f), ImVec2(1.0f, 1.0f), ImVec2(0.0f, 1.0f) };
@@ -254,9 +254,8 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_slots(const float a_x,
-        const float a_y,
-        const std::map<position, page_setting*>& a_settings) {
+    void
+        ui_renderer::draw_slots(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -280,10 +279,8 @@ namespace ui {
                 draw_setting->icon_transparency);
 
             if (page_setting->item_name && page_setting->slot_settings.front()->form) {
-                const ImU32 color = IM_COL32(draw_full,
-                    draw_full,
-                    draw_full,
-                    page_setting->draw_setting->text_transparency);
+                const ImU32 color =
+                    IM_COL32(draw_full, draw_full, draw_full, page_setting->draw_setting->text_transparency);
                 draw_text(draw_setting->width_setting,
                     draw_setting->height_setting,
                     draw_setting->offset_slot_x,
@@ -389,9 +386,7 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_keys(const float a_x,
-        const float a_y,
-        const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -544,13 +539,15 @@ namespace ui {
             if (fade_in && fade != 1.0f) {
                 fade_out_timer = mcm::get_fade_timer_outside_combat();
                 fade += 0.01f;
-                if (fade < 1.0f) fade = 1.0f;
+                if (fade < 1.0f)
+                    fade = 1.0f;
             } else if (!fade_in && fade != 0.0f) {
                 if (fade_out_timer > 0.0f) {
                     fade_out_timer -= ImGui::GetIO().DeltaTime;
                 } else {
                     fade -= 0.01f;
-                    if (fade < 0.0f) fade = 0.0f;
+                    if (fade < 0.0f)
+                        fade = 0.0f;
                 }
             }
         }
@@ -558,7 +555,7 @@ namespace ui {
 
 
     void ui_renderer::message_callback(SKSE::MessagingInterface::Message* msg)
-    //CallBack & LoadTextureFromFile should called after resource loaded.
+    //CallBack & LoadTextureFromFile should call after resource loaded.
     {
         // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
         switch (msg->type) {
@@ -591,10 +588,7 @@ namespace ui {
     void ui_renderer::load_images(std::map<T, const char*>& a_map, std::map<uint32_t, image>& a_struct) {
         for (auto [type, path] : a_map) {
             const auto idx = static_cast<int32_t>(type);
-            if (load_texture_from_file(path,
-                &a_struct[idx].texture,
-                a_struct[idx].width,
-                a_struct[idx].height)) {
+            if (load_texture_from_file(path, &a_struct[idx].texture, a_struct[idx].width, a_struct[idx].height)) {
                 logger::info("loaded texture {}"sv, path);
             } else {
                 logger::error("failed to load texture {}"sv, path);
@@ -639,21 +633,13 @@ namespace ui {
         return true;
     }
 
-    float ui_renderer::get_resolution_scale_width() {
-        return ImGui::GetIO().DisplaySize.x / 1920.f;
-    }
+    float ui_renderer::get_resolution_scale_width() { return ImGui::GetIO().DisplaySize.x / 1920.f; }
 
-    float ui_renderer::get_resolution_scale_height() {
-        return ImGui::GetIO().DisplaySize.y / 1080.f;
-    }
+    float ui_renderer::get_resolution_scale_height() { return ImGui::GetIO().DisplaySize.y / 1080.f; }
 
-    float ui_renderer::get_resolution_width() {
-        return ImGui::GetIO().DisplaySize.x;
-    }
+    float ui_renderer::get_resolution_width() { return ImGui::GetIO().DisplaySize.x; }
 
-    float ui_renderer::get_resolution_height() {
-        return ImGui::GetIO().DisplaySize.y;
-    }
+    float ui_renderer::get_resolution_height() { return ImGui::GetIO().DisplaySize.y; }
 
     void ui_renderer::set_fade(const bool a_in, const float a_value) {
         fade_in = a_in;
@@ -663,7 +649,5 @@ namespace ui {
         }
     }
 
-    bool ui_renderer::get_fade() {
-        return fade_in;
-    }
+    bool ui_renderer::get_fade() { return fade_in; }
 }

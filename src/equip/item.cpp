@@ -4,21 +4,17 @@
 namespace equip {
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
         item::get_inventory_weapon_items(RE::PlayerCharacter*& a_player) {
-        return a_player->GetInventory(
-            [](const RE::TESBoundObject& a_object) { return a_object.IsWeapon(); });
+        return a_player->GetInventory([](const RE::TESBoundObject& a_object) { return a_object.IsWeapon(); });
     }
 
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
         item::get_inventory_armor_items(RE::PlayerCharacter*& a_player) {
-        return a_player->GetInventory(
-            [](const RE::TESBoundObject& a_object) { return a_object.IsArmor(); });
+        return a_player->GetInventory([](const RE::TESBoundObject& a_object) { return a_object.IsArmor(); });
     }
 
-    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>> item::get_inventory(
-        RE::PlayerCharacter*& a_player,
-        RE::FormType a_type) {
-        return a_player->GetInventory(
-            [a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
+    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
+        item::get_inventory(RE::PlayerCharacter*& a_player, RE::FormType a_type) {
+        return a_player->GetInventory([a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
     }
 
     bool item::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
@@ -133,9 +129,8 @@ namespace equip {
         }
         logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
 
-        if (auto equip_manager = RE::ActorEquipManager::GetSingleton(); !equip_slot::un_equip_if_equipped(obj,
-            a_player,
-            equip_manager)) {
+        if (auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            !equip_slot::un_equip_if_equipped(obj, a_player, equip_manager)) {
             equip_manager->EquipObject(a_player, obj);
             logger::trace("equipped armor {}. return."sv, a_form->GetName());
         }
@@ -179,7 +174,7 @@ namespace equip {
 
 
         RE::TESBoundObject* obj = nullptr;
-        uint32_t left = 0;
+        auto left = 0;
         for (auto potential_items = get_inventory(a_player, RE::FormType::Ammo);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {

@@ -1,14 +1,10 @@
 ﻿#pragma once
 
 namespace ui {
-    enum class default_keys : uint32_t {
-        key = 0,
-        total
-    };
+    enum class default_keys : uint32_t { key = 0, total };
 
-    inline static std::map<default_keys, const char*> default_key_icon_path_map = {
-        { default_keys::key, R"(.\Data\SKSE\Plugins\resources\key\Blank_Black_Normal.png)" }
-    };
+    inline static std::map<default_keys, const char*> default_key_icon_path_map = { { default_keys::key,
+        R"(.\Data\SKSE\Plugins\resources\key\Blank_Black_Normal.png)" } };
 
     //scancodes (a selection)
     enum class key_values : uint32_t {
@@ -204,6 +200,7 @@ namespace ui {
         { key_values::next, R"(.\Data\SKSE\Plugins\resources\key\Page_Down_Key_Dark.png)" },
         { key_values::prior, R"(.\Data\SKSE\Plugins\resources\key\Page_Up_Key_Dark.png)" },
         { key_values::add, R"(.\Data\SKSE\Plugins\resources\key\Plus_Key_Dark.png)" },
+        { key_values::q, R"(.\Data\SKSE\Plugins\resources\key\Q_Key_Dark.png)" },
         { key_values::r, R"(.\Data\SKSE\Plugins\resources\key\R_Key_Dark.png)" },
         { key_values::s, R"(.\Data\SKSE\Plugins\resources\key\S_Key_Dark.png)" },
         { key_values::semicolon, R"(.\Data\SKSE\Plugins\resources\key\Semicolon_Key_Dark.png)" },
@@ -282,8 +279,5 @@ namespace ui {
         { gamepad_values::right_trigger, R"(.\Data\SKSE\Plugins\resources\key\XboxSeriesX_RT.png)" }
     };
 
-    enum class controller_set:uint32_t {
-        playstation = 0,
-        xbox = 1
-    };
+    enum class controller_set : uint32_t { playstation = 0, xbox = 1 };
 }

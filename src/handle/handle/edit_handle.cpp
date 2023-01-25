@@ -1,7 +1,7 @@
 ﻿#include "edit_handle.h"
-#include "page_handle.h"
 #include "handle/data/data_helper.h"
 #include "handle/data/page/position_setting.h"
+#include "page_handle.h"
 
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"

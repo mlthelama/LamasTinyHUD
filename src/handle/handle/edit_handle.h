@@ -22,8 +22,7 @@ namespace handle {
         edit_handle& operator=(edit_handle&&) const = delete;
 
     private:
-        edit_handle()
-            : data_(nullptr) {}
+        edit_handle() : data_(nullptr) {}
 
         ~edit_handle() = default;
 

@@ -31,6 +31,6 @@ namespace handle {
         float hud_image_scale_width = 0.f;
         float hud_image_scale_height = 0.f;
 
-        uint32_t background_transparency = ui::draw_full;
+        [[maybe_unused]] uint32_t background_transparency = ui::draw_full;
     };
 }

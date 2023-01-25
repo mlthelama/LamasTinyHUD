@@ -36,7 +36,7 @@ namespace handle {
             this->data_ = new key_position_handle_data();
         }
         key_position_handle_data* data = this->data_;
-        logger::trace("init lock for postion {}, lock {}"sv, static_cast<uint32_t>(a_position), a_locked);
+        logger::trace("init lock for position {}, lock {}"sv, static_cast<uint32_t>(a_position), a_locked);
         data->position_lock_map[a_position] = a_locked;
     }
 

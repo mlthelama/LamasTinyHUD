@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "key_position_handle.h"
 #include "handle/data/data_helper.h"
 #include "handle/data/page/position_setting.h"
+#include "key_position_handle.h"
 #include "ui/image_path.h"
 
 namespace handle {
@@ -22,18 +22,19 @@ namespace handle {
 
         [[nodiscard]] position_setting* get_page_setting(uint32_t a_page,
             position_setting::position_type a_position) const;
-        [[nodiscard]] std::map<position_setting::position_type, position_setting*> get_page(uint32_t a_page) const;
+        [[maybe_unused]] [[nodiscard]] std::map<position_setting::position_type, position_setting*> get_page(
+            uint32_t a_page) const;
         [[nodiscard]] std::map<uint32_t, std::map<position_setting::position_type, position_setting*>>
             get_pages() const;
         [[nodiscard]] std::map<position_setting::position_type, position_setting*> get_active_page() const;
         [[nodiscard]] uint32_t get_active_page_id() const;
         [[nodiscard]] uint32_t get_next_page_id() const;
-        [[nodiscard]] std::map<position_setting::position_type, position_setting*> get_active_page_position(
-            position_setting::position_type a_position) const;
+        [[maybe_unused]] [[nodiscard]] std::map<position_setting::position_type, position_setting*>
+            get_active_page_position(position_setting::position_type a_position) const;
         [[nodiscard]] uint32_t get_active_page_id_position(position_setting::position_type a_position) const;
         [[nodiscard]] uint32_t get_next_page_id_position(position_setting::position_type a_position) const;
-        [[nodiscard]] uint32_t
-            get_next_non_empty_setting_for_position(position_setting::position_type a_position) const;
+        [[nodiscard]] uint32_t get_next_non_empty_setting_for_position(
+            position_setting::position_type a_position) const;
         //int for now, because also 0 can be unset
         [[nodiscard]] int get_highest_page_id_position(position_setting::position_type a_position) const;
 
@@ -45,8 +46,7 @@ namespace handle {
         page_handle& operator=(page_handle&&) const = delete;
 
     private:
-        page_handle()
-            : data_(nullptr) {}
+        page_handle() : data_(nullptr) {}
 
         ~page_handle() = default;
 

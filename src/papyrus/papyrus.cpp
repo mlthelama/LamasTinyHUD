@@ -13,10 +13,10 @@ namespace papyrus {
 
     void hud_mcm::on_config_close(RE::TESQuest*) {
         logger::info("on config close"sv);
+        config::mcm_setting::read_setting();
         if (config::mcm_setting::get_elden_demon_souls()) {
             util::helper::rewrite_settings();
         }
-        config::mcm_setting::read_setting();
         handle::set_setting_data::read_and_set_data();
         //In case the setting was changed
         ui::ui_renderer::set_fade(true, 1.f);
@@ -43,7 +43,7 @@ namespace papyrus {
     }
 
     RE::BSFixedString hud_mcm::get_page(RE::TESQuest*, const uint32_t a_index) {
-        logger::trace("page was requsted for index {}"sv, a_index);
+        logger::trace("page was requested for index {}"sv, a_index);
         if (const auto section = get_section_by_index(a_index); !section.empty()) {
             return std::to_string(config::custom_setting::get_page_by_section(section));
         }
@@ -51,7 +51,7 @@ namespace papyrus {
     }
 
     RE::BSFixedString hud_mcm::get_position(RE::TESQuest*, const uint32_t a_index) {
-        logger::trace("position was requsted for index {}"sv, a_index);
+        logger::trace("position was requested for index {}"sv, a_index);
         if (const auto section = get_section_by_index(a_index); !section.empty()) {
             return std::to_string(config::custom_setting::get_position_by_section(section));
         }
@@ -183,9 +183,8 @@ namespace papyrus {
 
     std::string hud_mcm::get_section_by_index(const uint32_t a_index) {
         std::string section;
-        if (const auto sections = util::helper::get_configured_section_page_names(); !sections.empty() && is_size_ok(
-            a_index,
-            sections.size())) {
+        if (const auto sections = util::helper::get_configured_section_page_names();
+            !sections.empty() && is_size_ok(a_index, sections.size())) {
             section = sections.at(a_index);
         }
         logger::trace("got section {} for index {}"sv, section, a_index);

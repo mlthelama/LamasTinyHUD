@@ -19,9 +19,7 @@ namespace event {
         return std::addressof(singleton);
     }
 
-    void equip_event::sink() {
-        RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(get_singleton());
-    }
+    void equip_event::sink() { RE::ScriptEventSourceHolder::GetSingleton()->AddEventSink(get_singleton()); }
 
     equip_event::event_result equip_event::ProcessEvent(const RE::TESEquipEvent* a_event,
         [[maybe_unused]] RE::BSTEventSource<RE::TESEquipEvent>* a_event_source) {
@@ -35,8 +33,8 @@ namespace event {
             return event_result::kContinue;
         }
 
-        if (config::mcm_setting::get_draw_current_items_text() && (
-                form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo())) {
+        if (config::mcm_setting::get_draw_current_items_text() &&
+            (form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo())) {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
 
@@ -63,12 +61,11 @@ namespace event {
         if (const auto edit_handle = handle::edit_handle::get_singleton();
             edit_handle->get_position() != handle::position_setting::position_type::total && a_equipped) {
             data_.clear();
-            logger::trace("Player {} {}"sv, a_equipped ? "equipped" : "unequipped", a_form->GetName());
+            logger::trace("Player equipped {}"sv, a_form->GetName());
             //always
             const auto type = util::helper::get_type(a_form);
-            if (type == handle::slot_setting::slot_type::empty || type ==
-                handle::slot_setting::slot_type::weapon || type ==
-                handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
+            if (type == handle::slot_setting::slot_type::empty || type == handle::slot_setting::slot_type::weapon ||
+                type == handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
                 data_ = util::helper::get_hand_assignment(a_form);
             }
             //just if equipped
@@ -113,10 +110,10 @@ namespace event {
                     static_cast<uint32_t>(data_item->action_type),
                     data_item->left));
             }
-            util::helper::write_notification(fmt::format(
-                "Got {} Setting for Position {}. Is valid until next Change."sv,
-                data_.size(),
-                static_cast<uint32_t>(edit_handle->get_position())));
+            util::helper::write_notification(
+                fmt::format("Got {} Setting for Position {}. Is valid until next Change."sv,
+                    data_.size(),
+                    static_cast<uint32_t>(edit_handle->get_position())));
             edit_handle->set_hold_data(data_);
             data_.clear();
         }
@@ -131,12 +128,12 @@ namespace event {
             const auto item = util::helper::is_suitable_for_position(a_form, position);
             if (item->form) {
                 if (check_duplicates && util::helper::already_used(a_form, position, data_)) {
-                    util::helper::write_notification(fmt::format("Item {} already used in that position",
-                        a_form ? a_form->GetName() : "null"));
+                    util::helper::write_notification(
+                        fmt::format("Item {} already used in that position", a_form ? a_form->GetName() : "null"));
                 } else {
+                    util::helper::write_notification(fmt::format("Added Item {}", a_form ? a_form->GetName() : "null"));
                     data_.push_back(item);
                 }
-                util::helper::write_notification(fmt::format("Added Item {}", a_form ? a_form->GetName() : "null"));
             } else {
                 util::helper::write_notification(fmt::format("Ignored Item {}, because it did not fit the requirement",
                     a_form ? a_form->GetName() : "null"));
@@ -148,7 +145,7 @@ namespace event {
             }
 
             const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(position);
-            auto max = config::mcm_setting::get_max_page_count() - 1; //we start at 0 so count -1
+            auto max = config::mcm_setting::get_max_page_count() - 1;  //we start at 0 so count -1
             logger::trace("Max for Position {} is {}, already set before edit {}"sv,
                 static_cast<uint32_t>(position),
                 max,
@@ -159,8 +156,7 @@ namespace event {
 
             if (data_.size() == max || max == 0) {
                 edit_handle->set_hold_data(data_);
-                util::helper::write_notification(fmt::format("Max Amount of {} Reached, rest will be Ignored",
-                    max));
+                util::helper::write_notification(fmt::format("Max Amount of {} Reached, rest will be Ignored", max));
             }
             if (data_.size() > max) {
                 util::helper::write_notification(fmt::format("Ignored Item {}", a_form ? a_form->GetName() : "null"));
@@ -191,8 +187,8 @@ namespace event {
                 ammo_data->form = ammo;
                 ammo_data->item_count = num_items;
                 ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
-            } else if (!a_crossbow && num_items != 0 && ammo->GetRuntimeData().data.flags.all(
-                           RE::AMMO_DATA::Flag::kNonBolt)) {
+            } else if (!a_crossbow && num_items != 0 &&
+                       ammo->GetRuntimeData().data.flags.all(RE::AMMO_DATA::Flag::kNonBolt)) {
                 logger::trace("found arrow {}, damage {}, count {}"sv,
                     ammo->GetName(),
                     ammo->GetRuntimeData().data.damage,
@@ -217,8 +213,8 @@ namespace event {
     }
 
     void equip_event::check_if_location_needs_block(RE::TESForm*& a_form, const bool a_equipped) {
-        //is two handed, if equipped
-        //hardcode left for now, cause we just need it there
+        //is two-handed, if equipped
+        //hardcode left for now, because we just need it there
         const auto key_handle = handle::key_position_handle::get_singleton();
         key_handle->set_position_lock(handle::position_setting::position_type::left, a_equipped ? 1 : 0);
         const auto page_handle = handle::page_handle::get_singleton();

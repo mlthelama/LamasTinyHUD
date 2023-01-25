@@ -3,8 +3,8 @@
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/edit_handle.h"
 #include "handle/handle/page_handle.h"
-#include "handle/setting/setting_execute.h"
 #include "handle/setting/set_setting_data.h"
+#include "handle/setting/setting_execute.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/helper.h"
@@ -36,8 +36,8 @@ namespace event {
         button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
 
 
-        if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) || !
-            is_key_valid(key_left_action_)) {
+        if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) ||
+            !is_key_valid(key_left_action_)) {
             return event_result::kContinue;
         }
 
@@ -61,9 +61,8 @@ namespace event {
             }
 
             //this stays static_cast
-            const auto button = static_cast<RE::ButtonEvent*>(event);
-            // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
-
+            const auto button =
+                static_cast<RE::ButtonEvent*>(event);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
 
             key_ = button->idCode;
             if (key_ == k_invalid) {
@@ -94,8 +93,8 @@ namespace event {
             }
 
             /*if the game is not paused with the menu, it triggers the menu always in the background*/
-            if (ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
-                !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>()) {
+            if (ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() || !ui->IsShowingMenus() ||
+                !ui->GetMenu<RE::HUDMenu>()) {
                 continue;
             }
 
@@ -170,8 +169,7 @@ namespace event {
             }
 
             //TODO move into separate function
-            if (is_toggle_down_ && scroll_position(key_) && button->IsPressed() &&
-                is_key_valid(key_bottom_action_)) {
+            if (is_toggle_down_ && scroll_position(key_) && button->IsPressed() && is_key_valid(key_bottom_action_)) {
                 const auto page_setting = handle::setting_execute::get_position_setting_for_key(key_);
                 handle::setting_execute::execute_settings(page_setting->slot_settings);
             }
@@ -238,7 +236,7 @@ namespace event {
             case key::kRightTrigger:
                 index = 15;
                 break;
-            default: // NOLINT(clang-diagnostic-covered-switch-default)
+            default:  // NOLINT(clang-diagnostic-covered-switch-default)
                 index = k_invalid;
                 break;
         }
@@ -278,8 +276,8 @@ namespace event {
         auto edit_position = edit_handle->get_position();
 
         if (const auto page_handle = handle::page_handle::get_singleton();
-            edit_position == position_setting->position && edit_page == page_handle->
-            get_active_page_id() && a_key == edit_active_) {
+            edit_position == position_setting->position && edit_page == page_handle->get_active_page_id() &&
+            a_key == edit_active_) {
             util::helper::write_notification(fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
                 static_cast<uint32_t>(position_setting->position)));
 
@@ -292,18 +290,12 @@ namespace event {
             if (config::mcm_setting::get_elden_demon_souls()) {
                 handle::set_setting_data::set_queue_slot(edit_position, edit_data);
             } else {
-                handle::set_setting_data::set_single_slot(edit_page,
-                    edit_position,
-                    edit_data);
+                handle::set_setting_data::set_single_slot(edit_page, edit_position, edit_data);
             }
 
             //remove everything
             reset_edit();
             return;
-        }
-
-        if (position_setting == nullptr) {
-            logger::trace("setting for key {} is null. return."sv, a_key);
         }
 
 
@@ -341,8 +333,8 @@ namespace event {
 
         const auto edit_handle = handle::edit_handle::get_singleton();
         const auto page_setting = handle::setting_execute::get_position_setting_for_key(a_key);
-        if (edit_handle->get_position() == handle::position_setting::position_type::total && edit_active_ ==
-            k_invalid) {
+        if (edit_handle->get_position() == handle::position_setting::position_type::total &&
+            edit_active_ == k_invalid) {
             logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
 
             init_edit(page_setting->position, a_key);
@@ -350,8 +342,8 @@ namespace event {
     }
 
     bool key_manager::is_position_button(const uint32_t a_key) const {
-        if (a_key == key_top_action_ || a_key == key_right_action_ || a_key == key_bottom_action_
-            || a_key == key_left_action_) {
+        if (a_key == key_top_action_ || a_key == key_right_action_ || a_key == key_bottom_action_ ||
+            a_key == key_left_action_) {
             return true;
         }
         return false;
@@ -368,8 +360,8 @@ namespace event {
     void key_manager::init_edit(handle::position_setting::position_type a_position, const uint32_t a_key) {
         const auto edit_handle = handle::edit_handle::get_singleton();
         edit_handle->init_edit(a_position);
-        util::helper::write_notification(fmt::format("Entered Edit Mode for Position {}"sv,
-            static_cast<uint32_t>(a_position)));
+        util::helper::write_notification(
+            fmt::format("Entered Edit Mode for Position {}"sv, static_cast<uint32_t>(a_position)));
         edit_active_ = a_key;
     }
 

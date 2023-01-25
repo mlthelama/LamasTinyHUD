@@ -397,4 +397,5 @@ swf/*/*.swf
 fomod/*.zip
 fomod/ShowStats/gui
 fomod/ShowStats/main
+cmake-build-debug
 

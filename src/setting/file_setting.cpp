@@ -24,4 +24,4 @@ namespace config {
 
     int file_setting::get_log_level() { return log_level; }
     bool file_setting::get_draw_key_background() { return draw_key_background; }
-};
+}

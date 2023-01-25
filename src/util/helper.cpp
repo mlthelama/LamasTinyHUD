@@ -1,6 +1,5 @@
 ﻿#include "helper.h"
 #include "constant.h"
-#include "string_util.h"
 #include "data/config_writer_helper.h"
 #include "equip/item.h"
 #include "handle/data/page/position_setting.h"
@@ -8,6 +7,7 @@
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
+#include "string_util.h"
 
 namespace util {
     std::string helper::get_mod_and_form(const RE::FormID& a_form_id) {
@@ -24,10 +24,7 @@ namespace util {
 
 
         if (form->IsDynamicForm()) {
-            form_string = fmt::format("{}{}{}",
-                dynamic_name,
-                delimiter,
-                string_util::int_to_hex(form->GetFormID()));
+            form_string = fmt::format("{}{}{}", dynamic_name, delimiter, string_util::int_to_hex(form->GetFormID()));
         } else {
             //it is not, search for the file it is from
             auto source_file = form->sourceFiles.array->front()->fileName;
@@ -38,10 +35,7 @@ namespace util {
                 local_form,
                 string_util::int_to_hex(local_form));
 
-            form_string = fmt::format("{}{}{}",
-                source_file,
-                delimiter,
-                string_util::int_to_hex(local_form));
+            form_string = fmt::format("{}{}{}", source_file, delimiter, string_util::int_to_hex(local_form));
         }
 
         return form_string;
@@ -171,7 +165,7 @@ namespace util {
     }
 
     bool helper::is_two_handed(RE::TESForm*& a_form) {
-        //check if two handed
+        //check if two-handed
         if (a_form->Is(RE::FormType::Spell)) {
             if (const auto spell = a_form->As<RE::SpellItem>(); spell->IsTwoHanded()) {
                 return true;
@@ -205,12 +199,12 @@ namespace util {
         }
         if (a_form->Is(RE::FormType::Spell)) {
             const auto spell_type = a_form->As<RE::SpellItem>()->GetSpellType();
-            if (spell_type == RE::MagicSystem::SpellType::kSpell || spell_type ==
-                RE::MagicSystem::SpellType::kLeveledSpell) {
+            if (spell_type == RE::MagicSystem::SpellType::kSpell ||
+                spell_type == RE::MagicSystem::SpellType::kLeveledSpell) {
                 return handle::slot_setting::slot_type::magic;
             }
-            if (spell_type == RE::MagicSystem::SpellType::kLesserPower || spell_type ==
-                RE::MagicSystem::SpellType::kPower) {
+            if (spell_type == RE::MagicSystem::SpellType::kLesserPower ||
+                spell_type == RE::MagicSystem::SpellType::kPower) {
                 return handle::slot_setting::slot_type::power;
             }
         }
@@ -252,22 +246,20 @@ namespace util {
         item->form = nullptr;
         item->left = false;
         item->type = handle::slot_setting::slot_type::empty;
-        item->action_type = empty_handle ?
-                                handle::slot_setting::acton_type::un_equip :
-                                handle::slot_setting::acton_type::default_action;
+        item->action_type = empty_handle ? handle::slot_setting::acton_type::un_equip :
+                                           handle::slot_setting::acton_type::default_action;
         data.push_back(item);
 
         const auto item2 = new data_helper();
         item2->form = nullptr;
         item2->left = true;
         item2->type = handle::slot_setting::slot_type::empty;
-        item2->action_type = empty_handle ?
-                                 handle::slot_setting::acton_type::un_equip :
-                                 handle::slot_setting::acton_type::default_action;
+        item2->action_type = empty_handle ? handle::slot_setting::acton_type::un_equip :
+                                            handle::slot_setting::acton_type::default_action;
         data.push_back(item2);
 
         if (!a_two_handed) {
-            a_two_handed = right_obj ? is_two_handed(right_obj) : false;
+            a_two_handed = right_obj && is_two_handed(right_obj);
         }
 
         logger::trace("got form {}, name {} on both/right hand"sv,
@@ -304,9 +296,7 @@ namespace util {
         return data;
     }
 
-    void helper::write_notification(const std::string& a_string) {
-        RE::DebugNotification(a_string.c_str());
-    }
+    void helper::write_notification(const std::string& a_string) { RE::DebugNotification(a_string.c_str()); }
 
     data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form,
         const handle::position_setting::position_type a_position) {
@@ -443,8 +433,8 @@ namespace util {
     bool helper::can_instant_cast(RE::TESForm* a_form, const handle::slot_setting::slot_type a_type) {
         if (a_type == handle::slot_setting::slot_type::magic) {
             const auto spell = a_form->As<RE::SpellItem>();
-            if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell || spell->GetSpellType() ==
-                RE::MagicSystem::SpellType::kLeveledSpell) {
+            if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell ||
+                spell->GetSpellType() == RE::MagicSystem::SpellType::kLeveledSpell) {
                 if (spell->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
                     return true;
                 }
@@ -453,8 +443,8 @@ namespace util {
         }
         if (a_type == handle::slot_setting::slot_type::power) {
             const auto power = a_form->As<RE::SpellItem>();
-            if (power->GetSpellType() == RE::MagicSystem::SpellType::kPower || power->GetSpellType() ==
-                RE::MagicSystem::SpellType::kLesserPower) {
+            if (power->GetSpellType() == RE::MagicSystem::SpellType::kPower ||
+                power->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
                 if (power->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
                     return true;
                 }
@@ -471,12 +461,15 @@ namespace util {
     bool helper::already_used(const RE::TESForm* a_form,
         const handle::position_setting::position_type a_position,
         const std::vector<data_helper*>& a_config_data) {
+        if (!a_form) {
+            return false;
+        }
         //get pages and check for the form id in the position we are editing
         const auto page_handle = handle::page_handle::get_singleton();
 
         uint32_t max_count = 1;
         uint32_t count = 0;
-        if (!a_form && (a_form->IsWeapon() || a_form->Is(RE::FormType::Armor))) {
+        if (a_form->IsWeapon() || a_form->Is(RE::FormType::Armor)) {
             //check item count in inventory
             max_count = equip::item::get_inventory_count(a_form);
         }
@@ -516,7 +509,7 @@ namespace util {
     }
 
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {
-        //for now i will just generate it
+        //for now, I will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);
     }
 }

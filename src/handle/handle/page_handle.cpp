@@ -1,8 +1,8 @@
 ﻿#include "page_handle.h"
 #include "equip/equip_slot.h"
-#include "setting/custom_setting.h"
 #include "handle/data/data_helper.h"
 #include "handle/data/page/position_setting.h"
+#include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
@@ -98,8 +98,8 @@ namespace handle {
         draw->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
         draw->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
 
-        if (mcm::get_elden_demon_souls() && a_position == position_setting::position_type::bottom || a_position ==
-            position_setting::position_type::top) {
+        if (mcm::get_elden_demon_souls() && a_position == position_setting::position_type::bottom ||
+            a_position == position_setting::position_type::top) {
             page->item_name = true;
             //TODO fix or not
             get_offset_values(a_position, mcm::get_slot_item_name_offset_y(), offset_x, offset_y);
@@ -113,8 +113,8 @@ namespace handle {
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
         if (mcm::get_elden_demon_souls()) {
-            if (slots->front()->type != slot_setting::slot_type::empty || slots->size() == 2 && slots->at(1)->type !=
-                slot_setting::slot_type::empty) {
+            if (slots->front()->type != slot_setting::slot_type::empty ||
+                slots->size() == 2 && slots->at(1)->type != slot_setting::slot_type::empty) {
                 const auto config_page = static_cast<int>(a_page);
                 if (const auto current_highest = get_highest_page_id_position(a_position);
                     current_highest < config_page) {
@@ -124,9 +124,7 @@ namespace handle {
         }
 
         data->page_settings[a_page][a_position] = page;
-        logger::trace("done setting page {}, position {}."sv,
-            a_page,
-            static_cast<uint32_t>(a_position));
+        logger::trace("done setting page {}, position {}."sv, a_page, static_cast<uint32_t>(a_position));
     }
 
     void page_handle::init_actives(uint32_t a_page, position_setting::position_type a_position) {
@@ -134,7 +132,7 @@ namespace handle {
             this->data_ = new page_handle_data();
         }
         page_handle_data* data = this->data_;
-        logger::trace("init active page {} for postion {}"sv, a_page, static_cast<uint32_t>(a_position));
+        logger::trace("init active page {} for position {}"sv, a_page, static_cast<uint32_t>(a_position));
         data->active_page_per_position[a_position] = a_page;
     }
 
@@ -153,7 +151,7 @@ namespace handle {
             return;
         }
         page_handle_data* data = this->data_;
-        logger::trace("set active page {} for postion {}"sv, a_page, static_cast<uint32_t>(a_pos));
+        logger::trace("set active page {} for position {}"sv, a_page, static_cast<uint32_t>(a_pos));
         data->active_page_per_position[a_pos] = a_page;
     }
 
@@ -162,21 +160,22 @@ namespace handle {
             return;
         }
         page_handle_data* data = this->data_;
-        logger::trace("set highest page {} for postion {}"sv, a_page, static_cast<uint32_t>(a_pos));
+        logger::trace("set highest page {} for position {}"sv, a_page, static_cast<uint32_t>(a_pos));
         data->highest_set_page_per_position[a_pos] = a_page;
     }
 
     position_setting* page_handle::get_page_setting(const uint32_t a_page,
         const position_setting::position_type a_position) const {
-        if (const page_handle_data* data = this->data_;
-            data && !data->page_settings.empty() && data->page_settings.contains(a_page) && data->page_settings.
-            at(a_page).contains(a_position)) {
+        if (const page_handle_data* data = this->data_; data && !data->page_settings.empty() &&
+                                                        data->page_settings.contains(a_page) &&
+                                                        data->page_settings.at(a_page).contains(a_position)) {
             return data->page_settings.at(a_page).at(a_position);
         }
         return nullptr;
     }
 
-    std::map<position_setting::position_type, position_setting*> page_handle::get_page(const uint32_t a_page) const {
+    [[maybe_unused]] std::map<position_setting::position_type, position_setting*> page_handle::get_page(
+        const uint32_t a_page) const {
         if (const page_handle_data* data = this->data_;
             data && !data->page_settings.empty() && data->page_settings.contains(a_page)) {
             return data->page_settings.at(a_page);
@@ -223,8 +222,8 @@ namespace handle {
 
     uint32_t page_handle::get_next_page_id() const {
         if (const page_handle_data* data = this->data_; data) {
-            //lets make it easy for now
-            //we start at 0 so it is max count -1
+            //let's make it easy for now
+            //we start at 0, so it is max count -1
             if (data->active_page < config::mcm_setting::get_max_page_count() - 1) {
                 return data->active_page + 1;
             }
@@ -233,7 +232,7 @@ namespace handle {
         return {};
     }
 
-    std::map<position_setting::position_type, position_setting*> page_handle::get_active_page_position(
+    [[maybe_unused]] std::map<position_setting::position_type, position_setting*> page_handle::get_active_page_position(
         const position_setting::position_type a_position) const {
         if (const page_handle_data* data = this->data_; data) {
             if (const auto page = get_active_page_id_position(a_position);
@@ -277,9 +276,8 @@ namespace handle {
     }
 
     int page_handle::get_highest_page_id_position(const position_setting::position_type a_position) const {
-        if (const page_handle_data* data = this->data_;
-            data && !data->highest_set_page_per_position.empty() && data->highest_set_page_per_position.contains(
-                a_position)) {
+        if (const page_handle_data* data = this->data_; data && !data->highest_set_page_per_position.empty() &&
+                                                        data->highest_set_page_per_position.contains(a_position)) {
             return data->highest_set_page_per_position.at(a_position);
         }
         return -1;
@@ -291,8 +289,6 @@ namespace handle {
         float& offset_y) {
         offset_x = 0.f;
         offset_y = 0.f;
-        // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
-        // ReSharper disable once CppIncompleteSwitchStatement
         switch (a_position) {
             case position_setting::position_type::top:
                 offset_y = -a_setting;
@@ -306,6 +302,8 @@ namespace handle {
             case position_setting::position_type::left:
                 offset_x = -a_setting;
                 break;
+            case position_setting::position_type::total:
+                break;
         }
     }
 
@@ -314,8 +312,9 @@ namespace handle {
         RE::BGSEquipSlot*& a_slot,
         const bool a_left) {
         a_slot = nullptr;
-        if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) && a_hand
-            == slot_setting::hand_equip::single || a_type == slot_setting::slot_type::empty) {
+        if ((a_type == slot_setting::slot_type::magic || a_type == slot_setting::slot_type::weapon) &&
+                a_hand == slot_setting::hand_equip::single ||
+            a_type == slot_setting::slot_type::empty) {
             a_slot = a_left ? equip::equip_slot::get_left_hand_slot() : equip::equip_slot::get_right_hand_slot();
         }
     }
@@ -469,9 +468,7 @@ namespace handle {
         }
     }
 
-    void page_handle::get_item_count(RE::TESForm*& a_form,
-        int32_t& a_count,
-        const slot_setting::slot_type a_type) {
+    void page_handle::get_item_count(RE::TESForm*& a_form, int32_t& a_count, const slot_setting::slot_type a_type) {
         if (a_type == slot_setting::slot_type::empty || !a_form) {
             a_count = 0;
             return;

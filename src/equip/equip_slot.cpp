@@ -61,7 +61,7 @@ namespace equip {
                 un_equip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
                 did_call = true;
             }
-            logger::trace("called unequip for {}, left {}, did call {}"sv,
+            logger::trace("called un equip for {}, left {}, did call {}"sv,
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot(),
                 did_call);
@@ -84,9 +84,8 @@ namespace equip {
         equip_manager->EquipObject(a_player, hand, nullptr, 1, get_left_hand_slot());
     }
 
-    void equip_slot::un_equip_spell_by_slot(RE::Actor* a_actor,
-        RE::SpellItem* a_spell,
-        const RE::BGSEquipSlot* a_slot) {
+    void
+        equip_slot::un_equip_spell_by_slot(RE::Actor* a_actor, RE::SpellItem* a_spell, const RE::BGSEquipSlot* a_slot) {
         int slot = 2;
         if (a_slot == get_left_hand_slot()) {
             slot = 1;

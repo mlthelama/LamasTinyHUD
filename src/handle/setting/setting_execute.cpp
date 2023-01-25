@@ -2,9 +2,9 @@
 #include "equip/equip_slot.h"
 #include "equip/item.h"
 #include "equip/magic.h"
+#include "handle/data/page/position_setting.h"
 #include "handle/handle/key_position_handle.h"
 #include "handle/handle/page_handle.h"
-#include "handle/data/page/position_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"
 
@@ -26,8 +26,8 @@ namespace handle {
                 continue;
             }
 
-            if (slot->form == nullptr && slot->type == slot_setting::slot_type::empty && slot->action ==
-                slot_setting::acton_type::un_equip) {
+            if (slot->form == nullptr && slot->type == slot_setting::slot_type::empty &&
+                slot->action == slot_setting::acton_type::un_equip) {
                 un_equip.push_back(slot->equip_slot);
             }
 
@@ -109,7 +109,7 @@ namespace handle {
                 break;
             case slot_setting::slot_type::misc:
                 //TODO
-                logger::warn("ignoring miscitem."sv);
+                logger::warn("ignoring misc-item."sv);
                 break;
             case slot_setting::slot_type::empty:
                 equip::equip_slot::un_equip_hand(a_slot->equip_slot, a_player, a_slot->action);

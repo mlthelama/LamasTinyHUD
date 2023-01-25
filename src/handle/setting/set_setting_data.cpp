@@ -1,12 +1,12 @@
 ﻿#include "set_setting_data.h"
 
-#include "setting_execute.h"
 #include "equip/equip_slot.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
+#include "setting_execute.h"
 #include "util/helper.h"
 #include "util/string_util.h"
 
@@ -17,73 +17,18 @@ namespace handle {
     void set_setting_data::read_and_set_data() {
         logger::trace("Setting handlers, elden demon souls {} ..."sv, mcm::get_elden_demon_souls());
 
-        auto key_pos = key_position_handle::get_singleton();
-        key_pos->init_key_position_map();
+        auto key_position = key_position_handle::get_singleton();
+        key_position->init_key_position_map();
 
         name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
 
-        //we start at 0 so it is max count -1
-        if (!mcm::get_elden_demon_souls()) {
-            if (const auto page_handle = page_handle::get_singleton();
-                mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
-                logger::warn("active page count is smaller than max count, set active to 0");
-                page_handle->set_active_page(0);
-            }
-        }
-
-        //set empty for each position, it will be overwritten if it is configured
-        const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
-        for (auto i = 0; i < max; ++i) {
-            for (auto j = 0; j < static_cast<int>(position_setting::position_type::total); ++j) {
-                set_empty_slot(i, j, key_pos);
-            }
-        }
+        write_empty_config_and_init_active(key_position);
 
         logger::trace("continue with overwriting data from configuration ..."sv);
-        custom::read_setting();
 
-        const auto handler = page_handle::get_singleton();
-        if (mcm::get_elden_demon_souls()) {
-            for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
-                //will do for now, items could have been removed what so ever
-                handler->set_highest_page_position(-1, static_cast<position_setting::position_type>(i));
-            }
-        }
+        process_config_data(key_position);
 
-        for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
-            set_slot(custom::get_page_by_section(section),
-                static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
-                custom::get_item_form_by_section(section),
-                custom::get_type_by_section(section),
-                custom::get_hand_selection_by_section(section),
-                custom::get_slot_action_by_section(section),
-                custom::get_item_form_left_by_section(section),
-                custom::get_type_left_by_section(section),
-                custom::get_slot_action_left_by_section(section),
-                key_pos);
-        }
-        logger::trace("done setting. return."sv);
-
-        if (mcm::get_elden_demon_souls()) {
-            for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
-                //will do for now, items could have been removed what so ever
-                handler->init_actives(0, static_cast<position_setting::position_type>(i));
-            }
-            auto player = RE::PlayerCharacter::GetSingleton();
-            auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            auto right = equip::equip_slot::get_right_hand_slot();
-            auto left = equip::equip_slot::get_left_hand_slot();
-
-            //execute first setting for left, then right
-            equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
-            equip::equip_slot::un_equip_object_ft_dummy_dagger(left, player, equip_manager);
-            logger::trace("execute first setting for left/right"sv);
-            auto position_setting = handler->get_page_setting(0, position_setting::position_type::left);
-            setting_execute::execute_settings(position_setting->slot_settings);
-            position_setting = handler->get_page_setting(0, position_setting::position_type::right);
-            setting_execute::execute_settings(position_setting->slot_settings);
-        }
-        logger::trace("done executing"sv);
+        logger::trace("done executing. return."sv);
     }
 
     void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_object, const int32_t a_count) {
@@ -147,17 +92,10 @@ namespace handle {
             //for now make a vector with one item...
             std::vector<data_helper*> data;
             data.push_back(item);
-            page_handle->init_page(page,
-                a_pos,
-                data,
-                hand,
-                key_pos);
+            page_handle->init_page(page, a_pos, data, hand, key_pos);
 
             logger::debug("calling helper to write to file, page {}, pos {}"sv, page, pos);
-            util::helper::write_setting_helper(page,
-                pos,
-                data,
-                static_cast<uint32_t>(hand));
+            util::helper::write_setting_helper(page, pos, data, static_cast<uint32_t>(hand));
 
             ++page;
         }
@@ -193,7 +131,8 @@ namespace handle {
         const auto form = util::helper::get_form_from_mod_id_string(a_form);
         const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
-        if (form == nullptr && form_left == nullptr) return;
+        if (form == nullptr && form_left == nullptr)
+            return;
 
         auto hand = static_cast<slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
@@ -224,8 +163,8 @@ namespace handle {
 
         const auto type = static_cast<slot_setting::slot_type>(a_type);
 
-        if (type != slot_setting::slot_type::magic && type != slot_setting::slot_type::weapon && type !=
-            slot_setting::slot_type::shield && type != slot_setting::slot_type::empty) {
+        if (type != slot_setting::slot_type::magic && type != slot_setting::slot_type::weapon &&
+            type != slot_setting::slot_type::shield && type != slot_setting::slot_type::empty) {
             hand = slot_setting::hand_equip::total;
         }
 
@@ -296,22 +235,17 @@ namespace handle {
         logger::trace("build data, calling handler, data size {}"sv, data.size());
 
         if (!data.empty()) {
-            page_handle::get_singleton()->init_page(a_page,
-                a_position,
-                data,
-                hand,
-                a_key_pos);
+            page_handle::get_singleton()->init_page(a_page, a_position, data, hand, a_key_pos);
         }
     }
 
     void set_setting_data::set_new_item_count(const RE::FormID a_form_id, int32_t a_count) {
-        //just consider magic items for now, that includes 
+        //just consider magic items for now, that includes
         const auto page_handle = page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
                 for (const auto setting : page_setting->slot_settings) {
-                    if (setting->type == slot_setting::slot_type::consumable && setting->form->formID ==
-                        a_form_id) {
+                    if (setting->type == slot_setting::slot_type::consumable && setting->form->formID == a_form_id) {
                         setting->item_count = setting->item_count + a_count;
                         logger::trace("FormId {}, new count {}, change count {}"sv,
                             util::string_util::int_to_hex(a_form_id),
@@ -333,5 +267,74 @@ namespace handle {
                 }
             }
         }
+    }
+    void set_setting_data::set_active_and_equip(handle::page_handle*& a_page_handle) {
+        for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
+            //will do for now, items could have been removed whatsoever
+            a_page_handle->init_actives(0, static_cast<position_setting::position_type>(i));
+        }
+        auto player = RE::PlayerCharacter::GetSingleton();
+        auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto right = equip::equip_slot::get_right_hand_slot();
+        auto left = equip::equip_slot::get_left_hand_slot();
+
+        //execute first setting for left, then right
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(left, player, equip_manager);
+        logger::trace("execute first setting for left/right"sv);
+        auto position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::left);
+        setting_execute::execute_settings(position_setting->slot_settings);
+        position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::right);
+        setting_execute::execute_settings(position_setting->slot_settings);
+        logger::trace("done equip for fist set"sv);
+    }
+
+    void set_setting_data::process_config_data(key_position_handle*& a_key_position) {
+        custom::read_setting();
+
+        auto handler = page_handle::get_singleton();
+        if (mcm::get_elden_demon_souls()) {
+            for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
+                //will do for now, items could have been removed whatsoever
+                handler->set_highest_page_position(-1, static_cast<position_setting::position_type>(i));
+            }
+        }
+
+        for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
+            set_slot(custom::get_page_by_section(section),
+                static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
+                custom::get_item_form_by_section(section),
+                custom::get_type_by_section(section),
+                custom::get_hand_selection_by_section(section),
+                custom::get_slot_action_by_section(section),
+                custom::get_item_form_left_by_section(section),
+                custom::get_type_left_by_section(section),
+                custom::get_slot_action_left_by_section(section),
+                a_key_position);
+        }
+
+        if (mcm::get_elden_demon_souls()) {
+            set_active_and_equip(handler);
+        }
+        logger::trace("processed config data"sv);
+    }
+    void set_setting_data::write_empty_config_and_init_active(key_position_handle*& a_key_position) {
+        //we start at 0, so it is max count -1
+        if (!mcm::get_elden_demon_souls()) {
+            if (const auto page_handle = page_handle::get_singleton();
+                mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
+                logger::warn("active page count is smaller than max count, set active to 0");
+                page_handle->set_active_page(0);
+            }
+        }
+
+        //set empty for each position, it will be overwritten if it is configured
+        const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
+        for (auto i = 0; i < max; ++i) {
+            for (auto j = 0; j < static_cast<int>(position_setting::position_type::total); ++j) {
+                set_empty_slot(i, j, a_key_position);
+            }
+        }
+        logger::trace("processed empty data"sv);
     }
 }

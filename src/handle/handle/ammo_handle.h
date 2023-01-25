@@ -21,8 +21,7 @@ namespace handle {
         ammo_handle& operator=(ammo_handle&&) const = delete;
 
     private:
-        ammo_handle()
-            : data_(nullptr) {}
+        ammo_handle() : data_(nullptr) {}
 
         ~ammo_handle() = default;
 

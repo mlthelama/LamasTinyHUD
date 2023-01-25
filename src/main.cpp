@@ -100,7 +100,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) constinit auto SKSEPlugin_Versio
 }();
 
 EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI
-SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* pluginInfo) {
+    SKSEPlugin_Query(const SKSE::QueryInterface* a_skse, SKSE::PluginInfo* pluginInfo) {
     pluginInfo->name = SKSEPlugin_Version.pluginName;
     pluginInfo->infoVersion = SKSE::PluginInfo::kVersion;
     pluginInfo->version = SKSEPlugin_Version.pluginVersion;

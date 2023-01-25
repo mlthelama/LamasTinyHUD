@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "image_path.h"
 #include "handle/data/page/position_setting.h"
+#include "image_path.h"
 
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <WinUser.h>
 #include <imgui.h>
+#include <windows.h>
+#include <winuser.h>
 
 namespace ui {
     struct image;
@@ -24,7 +24,7 @@ namespace ui {
             static inline REL::Relocation<decltype(thunk)> func;
 
             static constexpr auto id = REL::RelocationID(75595, 77226);
-            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00); // VR unknown
+            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00);  // VR unknown
 
             static inline std::atomic<bool> initialized = false;
         };

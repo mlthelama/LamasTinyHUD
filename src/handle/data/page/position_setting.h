@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "position_draw_setting.h"
-#include "slot_setting.h"
 #include "setting/custom_setting.h"
+#include "slot_setting.h"
 #include "ui/image_path.h"
 
 namespace handle {

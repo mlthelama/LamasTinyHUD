@@ -16,8 +16,7 @@ namespace handle {
         name_handle& operator=(name_handle&&) const = delete;
 
     private:
-        name_handle()
-            : data_(nullptr) {}
+        name_handle() : data_(nullptr) {}
 
         ~name_handle() = default;
 

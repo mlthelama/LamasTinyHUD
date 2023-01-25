@@ -20,8 +20,7 @@ namespace handle {
         key_position_handle& operator=(key_position_handle&&) const = delete;
 
     private:
-        key_position_handle()
-            : data_(nullptr) {}
+        key_position_handle() : data_(nullptr) {}
 
         ~key_position_handle() = default;
 

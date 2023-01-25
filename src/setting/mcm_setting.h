@@ -12,7 +12,7 @@ namespace config {
         static uint32_t get_toggle_key();
         static uint32_t get_controller_set();
         static float get_config_button_hold_time();
-        static float get_master_scale();
+        [[maybe_unused]] static float get_master_scale();
 
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();

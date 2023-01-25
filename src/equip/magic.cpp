@@ -1,6 +1,6 @@
 ﻿#include "magic.h"
-#include "item.h"
 #include "equip/equip_slot.h"
+#include "item.h"
 #include "util/offset.h"
 
 namespace equip {
@@ -103,13 +103,8 @@ namespace equip {
             //might need to set some things
             //TODO make an animation to play here
             //a_player->NotifyAnimationGraph("RightCastSelf");
-            actor->GetMagicCaster(get_casting_source(a_slot))->CastSpellImmediate(spell,
-                false,
-                actor,
-                1.0f,
-                false,
-                0.0f,
-                nullptr);
+            actor->GetMagicCaster(get_casting_source(a_slot))
+                ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
         } else {
             const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
@@ -124,7 +119,7 @@ namespace equip {
                 return;
             }
 
-            //other slot options like i thought did not work, so i get it like this now
+            //other slot options like I thought did not work, so I get it like this now
             const auto equip_manager = RE::ActorEquipManager::GetSingleton();
             equip_manager->EquipSpell(a_player, spell, a_slot);
         }
@@ -133,9 +128,7 @@ namespace equip {
     }
 
     void magic::cast_scroll(const RE::TESForm* a_form, action_type a_action, RE::PlayerCharacter*& a_player) {
-        logger::trace("try to work scroll {}, action {}"sv,
-            a_form->GetName(),
-            static_cast<uint32_t>(a_action));
+        logger::trace("try to work scroll {}, action {}"sv, a_form->GetName(), static_cast<uint32_t>(a_action));
 
         if (!a_form->Is(RE::FormType::Scroll)) {
             logger::warn("object {} is not a scroll. return."sv, a_form->GetName());
@@ -143,7 +136,7 @@ namespace equip {
         }
 
         RE::TESBoundObject* obj = nullptr;
-        uint32_t left = 0;
+        auto left = 0;
         for (auto potential_items = item::get_inventory(a_player, RE::FormType::Scroll);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
@@ -161,13 +154,8 @@ namespace equip {
         if (a_action == action_type::instant) {
             const auto actor = a_player->As<RE::Actor>();
             const auto scroll = obj->As<RE::ScrollItem>();
-            actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)->CastSpellImmediate(scroll,
-                false,
-                actor,
-                1.0f,
-                false,
-                0.0f,
-                nullptr);
+            actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
+                ->CastSpellImmediate(scroll, false, actor, 1.0f, false, 0.0f, nullptr);
             actor->RemoveItem(scroll, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
         } else {
             const auto equip_manager = RE::ActorEquipManager::GetSingleton();
@@ -236,7 +224,7 @@ namespace equip {
             //might not consider daily cool downs
             const auto actor = a_player->As<RE::Actor>();
             actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
-                 ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
+                ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
         } else {
             RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell);
         }
@@ -266,8 +254,7 @@ namespace equip {
             return;
         }
 
-        if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
-            selected_power) {
+        if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower; selected_power) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
                 selected_power->Is(RE::FormType::Shout),

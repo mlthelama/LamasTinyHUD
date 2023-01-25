@@ -88,34 +88,26 @@ namespace config {
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.23));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
-            hud_image_position_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fHudImagePositionWidth",
-                200));
-            hud_image_position_height = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fHudImagePositionHeight",
-                775));
-            hud_slot_position_offset = static_cast<float>(mcm.
-                GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 105));
+            hud_image_position_width =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionWidth", 200));
+            hud_image_position_height =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionHeight", 775));
+            hud_slot_position_offset =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 105));
             hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 38));
             icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth", 0.10));
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.10));
             key_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleWidth", 0.38));
             key_icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fKeyIconScaleHeight", 0.38));
-            hud_arrow_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fHudArrowImageScaleWidth",
-                0.13));
-            hud_arrow_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fHudArrowImageScaleHeight",
-                0.13));
+            hud_arrow_image_scale_width =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudArrowImageScaleWidth", 0.13));
+            hud_arrow_image_scale_height =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudArrowImageScaleHeight", 0.13));
             arrow_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowIconScaleWidth", 0.05));
-            arrow_icon_scale_height = static_cast<float>(mcm.
-                GetDoubleValue("HudSetting", "fArrowIconScaleHeight", 0.05));
-            toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fToggleKeyOffsetX",
-                115));
-            toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fToggleKeyOffsetY",
-                115));
+            arrow_icon_scale_height =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowIconScaleHeight", 0.05));
+            toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fToggleKeyOffsetX", 115));
+            toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fToggleKeyOffsetY", 115));
             current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -45));
             current_items_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetY", 200));
             slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 20));
@@ -123,28 +115,22 @@ namespace config {
             slot_item_name_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetY", 65));
             arrow_slot_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetX", -115));
             arrow_slot_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetY", 115));
-            arrow_slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting",
-                "fArrowSlotCountTextOffset",
-                12));
+            arrow_slot_count_text_offset =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotCountTextOffset", 12));
 
-            background_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting",
-                "uBackgroundTransparency",
-                255));
-            background_icon_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting",
-                "uBackgroundIconTransparency",
-                255));
+            background_transparency =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundTransparency", 255));
+            background_icon_transparency =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundIconTransparency", 255));
             icon_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparency", 125));
             key_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uKeyTransparency", 255));
             text_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uTextTransparency", 255));
-            icon_transparency_blocked = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting",
-                "uIconTransparencyBlocked",
-                50));
-            slot_count_text_font_size = static_cast<float>(mcm.GetDoubleValue("GraphicSetting",
-                "fSlotCountTextFontSize",
-                20));
-            current_items_font_size = static_cast<float>(mcm.GetDoubleValue("GraphicSetting",
-                "fCurrentItemsFontSize",
-                20));
+            icon_transparency_blocked =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparencyBlocked", 50));
+            slot_count_text_font_size =
+                static_cast<float>(mcm.GetDoubleValue("GraphicSetting", "fSlotCountTextFontSize", 20));
+            current_items_font_size =
+                static_cast<float>(mcm.GetDoubleValue("GraphicSetting", "fCurrentItemsFontSize", 20));
             arrow_count_font_size = static_cast<float>(mcm.GetDoubleValue("GraphicSetting", "fArrowCountFontSize", 20));
             current_items_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsRed", 255));
             current_items_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsGreen", 255));
@@ -152,16 +138,15 @@ namespace config {
             slot_count_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountRed", 255));
             slot_count_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountGreen", 255));
             slot_count_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountBlue", 255));
-            slot_button_feedback = static_cast<uint32_t>(mcm.
-                GetLongValue("GraphicSetting", "uSlotButtonFeedback", 175));
+            slot_button_feedback =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotButtonFeedback", 175));
             draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", true);
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", false);
             hide_outside_combat = mcm.GetBoolValue("MiscSetting", "bHideOutsideCombat", false);
-            fade_timer_outside_combat = static_cast<float>(mcm.GetDoubleValue("MiscSetting",
-                "fFadeTimerOutsideCombat",
-                5));
+            fade_timer_outside_combat =
+                static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fFadeTimerOutsideCombat", 5));
             disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
             elder_demon_souls = mcm.GetBoolValue("MiscSetting", "bEldenDemonSouls", true);
             max_page_count = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxPageCount", 2));
@@ -184,7 +169,7 @@ namespace config {
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }
-    float mcm_setting::get_master_scale() { return master_scale; }
+    [[maybe_unused]] float mcm_setting::get_master_scale() { return master_scale; }
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width * master_scale; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height * master_scale; }
