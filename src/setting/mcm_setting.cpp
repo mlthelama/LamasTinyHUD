@@ -150,7 +150,7 @@ namespace config {
             fade_timer_outside_combat =
                 static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fFadeTimerOutsideCombat", 5));
             disable_input_quick_loot = mcm.GetBoolValue("MiscSetting", "bDisableInputQuickLoot", false);
-            elder_demon_souls = mcm.GetBoolValue("MiscSetting", "bEldenDemonSouls", true);
+            elder_demon_souls = mcm.GetBoolValue("MiscSetting", "bEldenDemonSouls", false);
             max_page_count = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxPageCount", 2));
             max_ammunition_type = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uMaxAmmunitionType", 3));
             check_duplicate_items = mcm.GetBoolValue("MiscSetting", "bCheckDuplicateItems", true);
