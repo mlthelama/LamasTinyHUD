@@ -168,6 +168,7 @@ namespace event {
     }
 
     void equip_event::look_for_ammo(const bool a_crossbow) {
+        bool only_favorite = config::mcm_setting::get_only_favorite_ammo();
         const auto max_items = config::mcm_setting::get_max_ammunition_type();
         auto player = RE::PlayerCharacter::GetSingleton();
         const auto inv = equip::item::get_inventory(player, RE::FormType::Ammo);
@@ -178,6 +179,11 @@ namespace event {
             if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
                 continue;
             }
+            
+            if(only_favorite && !entry->IsFavorited()) {
+                continue ;
+            }
+            
             if (a_crossbow && ammo->GetRuntimeData().data.flags.none(RE::AMMO_DATA::Flag::kNonBolt) && num_items != 0) {
                 logger::trace("found bolt {}, damage {}, count {}"sv,
                     ammo->GetName(),

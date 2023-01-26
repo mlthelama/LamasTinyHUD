@@ -1107,17 +1107,28 @@
                         "sourceType": "ModSettingBool"
                     }
                 },
-              {
-                "id": "bUnEquipAmmo:MiscSetting",
-                "text": "$LamasTinyHUD_UnEquipAmmo_OptionText",
-                "type": "toggle",
-                "help": "$LamasTinyHUD_UnEquipAmmo_InfoText",
-                "groupCondition": 5,
-                "groupBehavior": "disable",
-                "valueOptions": {
-                  "sourceType": "ModSettingBool"
+                {
+                    "id": "bUnEquipAmmo:MiscSetting",
+                    "text": "$LamasTinyHUD_UnEquipAmmo_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_UnEquipAmmo_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bOnlyFavoriteAmmo:MiscSetting",
+                    "text": "$LamasTinyHUD_OnlyFavoriteAmmo_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_OnlyFavoriteAmmo_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
                 }
-              }
             ]
         }
     ]
