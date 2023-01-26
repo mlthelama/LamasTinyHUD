@@ -1,4 +1,5 @@
 ﻿#include "key_manager.h"
+#include <equip/equip_slot.h>
 
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/edit_handle.h"
@@ -148,10 +149,30 @@ namespace event {
 
             if (key_ == key_toggle_ && button->IsUp() && is_toggle_down_) {
                 is_toggle_down_ = false;
+
+                /*const auto player = RE::PlayerCharacter::GetSingleton();
+                const auto actor = player->As<RE::Actor>();
+                auto spell = RE::TESForm::LookupByID(0x00012fcd);
+                if (spell->Is(RE::FormType::Spell)) {
+                    auto spell_item = spell->As<RE::SpellItem>();
+                    if (player->IsCasting(spell_item)) {
+                        logger::trace("Casting flames"sv);
+                        actor->InterruptCast(false);
+                    }
+                }*/
             }
 
             if (key_ == key_toggle_ && button->IsDown()) {
                 is_toggle_down_ = true;
+                //SpellCast
+                /*const auto player = RE::PlayerCharacter::GetSingleton();
+                const auto actor = player->As<RE::Actor>();
+                auto spell = RE::TESForm::LookupByID(0x00012fcd);
+                if (spell->Is(RE::FormType::Spell)) {
+                    auto spell_item = spell->As<RE::SpellItem>();
+                    actor->GetMagicCaster(RE::MagicSystem::CastingSource::kRightHand)
+                        ->CastSpellImmediate(spell_item, false, actor, 1.0f, false, 0.0f, nullptr);
+                }*/
             }
 
             if (!button->IsDown()) {

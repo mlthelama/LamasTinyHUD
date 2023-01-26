@@ -6,9 +6,10 @@ namespace config {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom.ini)";
     static const char* ini_path_elden = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom_Elden.ini)";
 
-    static CSimpleIniA custom_ini;
+    CSimpleIniA custom_ini;
 
     void custom_setting::read_setting() {
+        custom_ini.Reset();
         custom_ini.SetUnicode();
         if (config::mcm_setting::get_elden_demon_souls()) {
             custom_ini.LoadFile(ini_path_elden);
