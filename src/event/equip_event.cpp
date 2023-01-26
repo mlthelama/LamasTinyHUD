@@ -1,4 +1,5 @@
 ﻿#include "equip_event.h"
+#include <equip/equip_slot.h>
 
 #include "equip/item.h"
 #include "handle/data/ammo_data.h"
@@ -224,8 +225,8 @@ namespace event {
         const auto key_handle = handle::key_position_handle::get_singleton();
         key_handle->set_position_lock(handle::position_setting::position_type::left, a_equipped ? 1 : 0);
         const auto page_handle = handle::page_handle::get_singleton();
-        const auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
-        const auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
+        auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
+        auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
         //use settings here
         if (setting && setting->draw_setting && setting->draw_setting->icon_transparency) {
             setting->draw_setting->icon_transparency = a_equipped ?
@@ -245,6 +246,18 @@ namespace event {
             //un equip armor here
             if (config::mcm_setting::get_un_equip_ammo()) {
                 equip::item::un_equip_ammo();
+            }
+        }
+
+        auto obj_right =
+            RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+        if (!a_equipped && obj_right && !util::helper::is_two_handed(obj_right)) {
+            auto left_slot = equip::equip_slot::get_left_hand_slot();
+            auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            auto player = RE::PlayerCharacter::GetSingleton();
+            equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
+            if (setting && !setting->slot_settings.empty()) {
+                handle::setting_execute::execute_settings(setting->slot_settings);
             }
         }
     }
