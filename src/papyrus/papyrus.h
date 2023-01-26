@@ -16,7 +16,8 @@ namespace papyrus {
         static uint32_t get_hand_selection(RE::TESQuest*, uint32_t a_index, uint32_t a_position);
         static RE::BSFixedString get_form_name(RE::TESQuest*, uint32_t a_index, bool a_left, uint32_t a_position);
         static void reset_section(RE::TESQuest*, uint32_t a_index, uint32_t a_position);
-        static void set_action_value(RE::TESQuest*, uint32_t a_index, bool a_left, uint32_t a_value, uint32_t a_position);
+        static void
+            set_action_value(RE::TESQuest*, uint32_t a_index, bool a_left, uint32_t a_value, uint32_t a_position);
         static void init_config_for_position(RE::TESQuest*, uint32_t a_position);
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);

@@ -278,7 +278,7 @@ namespace ui {
                 page_setting->icon_type,
                 draw_setting->icon_transparency);
 
-            if (page_setting->item_name && page_setting->slot_settings.front()->form) {
+            if (mcm::get_elden_demon_souls() && page_setting->item_name && page_setting->slot_settings.front()->form) {
                 const ImU32 color =
                     IM_COL32(draw_full, draw_full, draw_full, page_setting->draw_setting->text_transparency);
                 draw_text(draw_setting->width_setting,
@@ -486,6 +486,8 @@ namespace ui {
             } else {
                 fade_in = true;
             }
+        } else {
+            fade_in = true;
         }
 
         static constexpr ImGuiWindowFlags window_flag =
@@ -539,15 +541,17 @@ namespace ui {
             if (fade_in && fade != 1.0f) {
                 fade_out_timer = mcm::get_fade_timer_outside_combat();
                 fade += 0.01f;
-                if (fade < 1.0f)
+                if (fade > 1.0f) {
                     fade = 1.0f;
+                }
             } else if (!fade_in && fade != 0.0f) {
                 if (fade_out_timer > 0.0f) {
                     fade_out_timer -= ImGui::GetIO().DeltaTime;
                 } else {
                     fade -= 0.01f;
-                    if (fade < 0.0f)
+                    if (fade < 0.0f) {
                         fade = 0.0f;
+                    }
                 }
             }
         }

@@ -179,11 +179,11 @@ namespace event {
             if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
                 continue;
             }
-            
-            if(only_favorite && !entry->IsFavorited()) {
-                continue ;
+
+            if (only_favorite && !entry->IsFavorited()) {
+                continue;
             }
-            
+
             if (a_crossbow && ammo->GetRuntimeData().data.flags.none(RE::AMMO_DATA::Flag::kNonBolt) && num_items != 0) {
                 logger::trace("found bolt {}, damage {}, count {}"sv,
                     ammo->GetName(),

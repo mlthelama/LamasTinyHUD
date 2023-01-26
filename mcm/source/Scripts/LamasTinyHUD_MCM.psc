@@ -4,6 +4,7 @@ bool property bChangeable Auto
 bool property bSpell Auto
 bool property bSpellLeft Auto
 bool property bElden Auto
+bool property bCombat Auto
 
 Event OnConfigClose() native
 string function GetResolutionWidth() native
@@ -80,10 +81,13 @@ Event OnSettingChange(String a_ID)
     elseif (a_ID == "bEldenDemonSouls:MiscSetting")
         bElden = GetModSettingBool(a_ID)
         RefreshMenu()
-    elseif(a_ID == "uPositionSelect:Page")
+    elseif (a_ID == "uPositionSelect:Page")
         string[] menu_list = GetSectionNames(GetModSettingInt(a_ID))
         SetMenuOptions("uPageList:Page", menu_list, menu_list)
         SetModSettingInt("uPageList:Page", 0)
+        RefreshMenu()
+    elseif (a_ID == "bHideOutsideCombat:MiscSetting")
+        bCombat = GetModSettingBool(a_ID)
         RefreshMenu()
     endif
 EndEvent
@@ -102,4 +106,5 @@ EndEvent
 
 Event OnConfigOpen()
     bElden = GetModSettingBool("bEldenDemonSouls:MiscSetting")
+    bCombat = GetModSettingBool("bHideOutsideCombat:MiscSetting")
 EndEvent

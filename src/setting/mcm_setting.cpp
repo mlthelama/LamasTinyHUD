@@ -121,11 +121,11 @@ namespace config {
                 static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotCountTextOffset", 12));
 
             background_transparency =
-                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundTransparency", 255));
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundTransparency", 150));
             background_icon_transparency =
-                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundIconTransparency", 255));
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundIconTransparency", 175));
             icon_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparency", 125));
-            key_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uKeyTransparency", 255));
+            key_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uKeyTransparency", 225));
             text_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uTextTransparency", 255));
             icon_transparency_blocked =
                 static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparencyBlocked", 50));
@@ -141,7 +141,7 @@ namespace config {
             slot_count_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountGreen", 255));
             slot_count_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountBlue", 255));
             slot_button_feedback =
-                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotButtonFeedback", 175));
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotButtonFeedback", 150));
             draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", true);
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);

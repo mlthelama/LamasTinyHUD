@@ -181,6 +181,14 @@
                     }
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 5,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bElden"
+                    }
+                },
+                {
                     "id": "uPositionSelect:Page",
                     "text": "$LamasTinyHUD_PositionSelect_OptionText",
                     "type": "enum",
@@ -1025,6 +1033,14 @@
                     }
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 6,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bCombat"
+                    }
+                },
+                {
                     "id": "bActionCheck:MiscSetting",
                     "text": "$LamasTinyHUD_MiscSetting_OptionText",
                     "type": "toggle",
@@ -1056,6 +1072,8 @@
                     "text": "$LamasTinyHUD_MiscSetting_FadeTimerOutsideCombat_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_MiscSetting_FadeTimerOutsideCombat_InfoText",
+                    "groupCondition": 6,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 1.0,
                         "max": 30.0,

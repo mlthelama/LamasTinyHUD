@@ -60,7 +60,7 @@ namespace handle {
         page->slot_settings = *slots;
 
 
-        //TODO for now the right hand or the first setting defines the icon
+        //TODO for now the right hand or the first setting defines the icon, works well for elden.
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
         if (slots->size() == 2 && page->icon_type == ui::icon_image_type::icon_default) {
             logger::debug("Could not find an Icon with first setting, try next");
@@ -101,10 +101,13 @@ namespace handle {
         if (mcm::get_elden_demon_souls() && a_position == position_setting::position_type::bottom ||
             a_position == position_setting::position_type::top) {
             page->item_name = true;
-            //TODO fix or not
             get_offset_values(a_position, mcm::get_slot_item_name_offset_y(), offset_x, offset_y);
             draw->offset_name_text_x = offset_x + mcm::get_slot_item_name_offset_x();
             draw->offset_name_text_y = offset_y;
+        } else {
+            page->item_name = false;
+            draw->offset_name_text_x = 0.f;
+            draw->offset_name_text_y = 0.f;
         }
 
         page->draw_setting = draw;
