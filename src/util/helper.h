@@ -13,7 +13,7 @@ namespace util {
             uint32_t a_hand);
 
         static void read_configs();
-        static std::vector<std::string> get_configured_section_page_names();
+        static std::vector<std::string> get_configured_section_page_names(uint32_t a_position = 4);
         static RE::TESForm* get_form_from_mod_id_string(const std::string& a_str);
         static bool is_two_handed(RE::TESForm*& a_form);
         static handle::slot_setting::slot_type get_type(RE::TESForm*& a_form);

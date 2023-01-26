@@ -121,12 +121,20 @@ namespace util {
         config::custom_setting::read_setting();
     }
 
-    std::vector<std::string> helper::get_configured_section_page_names() {
+    std::vector<std::string> helper::get_configured_section_page_names(uint32_t a_position) {
+        //4 is all
         std::vector<std::string> names;
         for (const auto entries = config::custom_setting::get_sections(); const auto& entry : entries) {
-            names.emplace_back(entry.pItem);
+            if (a_position == static_cast<uint32_t>(handle::position_setting::position_type::total)) {
+                names.emplace_back(entry.pItem);
+            } else {
+                auto section_position = config::custom_setting::get_position_by_section(entry.pItem);
+                if (section_position == a_position) {
+                    names.emplace_back(entry.pItem);
+                }
+            }
         }
-        logger::trace("got {} sections"sv, names.size());
+        logger::trace("got {} sections, for position {}"sv, names.size(), a_position);
         return names;
     }
 
