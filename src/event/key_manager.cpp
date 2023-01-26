@@ -1,5 +1,4 @@
 ﻿#include "key_manager.h"
-#include <equip/equip_slot.h>
 
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/edit_handle.h"
