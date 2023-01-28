@@ -450,13 +450,14 @@ namespace util {
             return false;
         }
         if (a_type == handle::slot_setting::slot_type::power) {
-            const auto power = a_form->As<RE::SpellItem>();
+            /*const auto power = a_form->As<RE::SpellItem>();
             if (power->GetSpellType() == RE::MagicSystem::SpellType::kPower ||
                 power->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
                 if (power->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
                     return true;
                 }
-            }
+            }*/
+            //return false for now
             return false;
         }
         if (a_type == handle::slot_setting::slot_type::shout) {

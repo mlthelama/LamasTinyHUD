@@ -365,25 +365,49 @@ namespace handle {
         }
         switch (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
             case RE::WEAPON_TYPE::kHandToHandMelee:
-                a_icon = ui::icon_image_type::icon_default;
+                a_icon = ui::icon_image_type::hand_to_hand;
                 break;
             case RE::WEAPON_TYPE::kOneHandSword:
-                a_icon = ui::icon_image_type::sword_one_handed;
+                if (weapon->HasKeywordString("WeapTypeRapier")) {
+                    a_icon = ui::icon_image_type::rapier;
+                } else if (weapon->HasKeywordString("WeapTypeKatana")) {
+                    a_icon = ui::icon_image_type::katana;
+                } else {
+                    a_icon = ui::icon_image_type::sword_one_handed;
+                }
                 break;
             case RE::WEAPON_TYPE::kOneHandDagger:
-                a_icon = ui::icon_image_type::dagger;
+                if (weapon->HasKeywordString("WeapTypeClaw")) {
+                    a_icon = ui::icon_image_type::claw;
+                } else {
+                    a_icon = ui::icon_image_type::dagger;
+                }
                 break;
             case RE::WEAPON_TYPE::kOneHandAxe:
                 a_icon = ui::icon_image_type::axe_one_handed;
                 break;
             case RE::WEAPON_TYPE::kOneHandMace:
-                a_icon = ui::icon_image_type::mace;
+                if (weapon->HasKeywordString("WeapTypeWhip")) {
+                    a_icon = ui::icon_image_type::whip;
+                } else {
+                    a_icon = ui::icon_image_type::mace;
+                }
                 break;
             case RE::WEAPON_TYPE::kTwoHandSword:
-                a_icon = ui::icon_image_type::sword_two_handed;
+                if (weapon->HasKeywordString("WeapTypePike")) {
+                    a_icon = ui::icon_image_type::pike;
+                } else {
+                    a_icon = ui::icon_image_type::sword_two_handed;
+                }
                 break;
             case RE::WEAPON_TYPE::kTwoHandAxe:
-                a_icon = ui::icon_image_type::axe_two_handed;
+                if (weapon->HasKeywordString("WeapTypeHalberd")) {
+                    a_icon = ui::icon_image_type::halberd;
+                } else if (weapon->HasKeywordString("WeapTypeQtrStaff")) {
+                    a_icon = ui::icon_image_type::quarter_staff;
+                } else {
+                    a_icon = ui::icon_image_type::axe_two_handed;
+                }
                 break;
             case RE::WEAPON_TYPE::kBow:
                 a_icon = ui::icon_image_type::bow;
@@ -410,28 +434,32 @@ namespace handle {
 
         switch (actor_value) {
             case RE::ActorValue::kAlteration:
+                a_icon = ui::icon_image_type::alteration;
+                break;
             case RE::ActorValue::kConjuration:
+                a_icon = ui::icon_image_type::conjuration;
+                break;
             case RE::ActorValue::kDestruction:
                 switch (effect->data.resistVariable) {
                     case RE::ActorValue::kResistFire:
-                        a_icon = ui::icon_image_type::spell_fire;
+                        a_icon = ui::icon_image_type::destruction_fire;
                         break;
                     case RE::ActorValue::kResistFrost:
-                        a_icon = ui::icon_image_type::spell_frost;
+                        a_icon = ui::icon_image_type::destruction_frost;
                         break;
                     case RE::ActorValue::kResistShock:
-                        a_icon = ui::icon_image_type::spell_shock;
+                        a_icon = ui::icon_image_type::destruction_shock;
                         break;
                     default:
-                        a_icon = ui::icon_image_type::spell_default_alt;
+                        a_icon = ui::icon_image_type::destruction;
                 }
                 break;
             case RE::ActorValue::kIllusion:
-                a_icon = ui::icon_image_type::spell_default;
+                a_icon = ui::icon_image_type::illusion;
                 break;
             case RE::ActorValue::kRestoration:
                 //might not fit all spells
-                a_icon = ui::icon_image_type::spell_heal;
+                a_icon = ui::icon_image_type::restoration;
                 break;
             default:
                 a_icon = ui::icon_image_type::spell_default;
@@ -459,12 +487,33 @@ namespace handle {
         if (actor_value == RE::ActorValue::kNone) {
             actor_value = effect->data.primaryAV;
         }
-
         switch (actor_value) {
             case RE::ActorValue::kHealth:
             case RE::ActorValue::kHealRateMult:
             case RE::ActorValue::kHealRate:
                 a_icon = ui::icon_image_type::potion_health;
+                break;
+            case RE::ActorValue::kStamina:
+            case RE::ActorValue::kStaminaRateMult:
+            case RE::ActorValue::kStaminaRate:
+                a_icon = ui::icon_image_type::potion_stamina;
+                break;
+            case RE::ActorValue::kMagicka:
+            case RE::ActorValue::kMagickaRateMult:
+            case RE::ActorValue::kMagickaRate:
+                a_icon = ui::icon_image_type::potion_magicka;
+                break;
+            case RE::ActorValue::kResistFire:
+                a_icon = ui::icon_image_type::potion_fire_resist;
+                break;
+            case RE::ActorValue::kResistShock:
+                a_icon = ui::icon_image_type::potion_shock_resist;
+                break;
+            case RE::ActorValue::kResistFrost:
+                a_icon = ui::icon_image_type::potion_frost_resist;
+                break;
+            case RE::ActorValue::kResistMagic:
+                a_icon = ui::icon_image_type::potion_magic_resist;
                 break;
             default:
                 a_icon = ui::icon_image_type::potion_default;
