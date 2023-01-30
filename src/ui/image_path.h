@@ -59,6 +59,7 @@ namespace ui {
         alteration = 42,
         conjuration = 43,
         illusion = 44,
+        torch = 45,
         total
     };
 
@@ -108,6 +109,7 @@ namespace ui {
         { icon_image_type::potion_magic_resist, R"(.\Data\SKSE\Plugins\resources\icons\potion_magic_resist.png)" },
         { icon_image_type::alteration, R"(.\Data\SKSE\Plugins\resources\icons\alteration.png)" },
         { icon_image_type::conjuration, R"(.\Data\SKSE\Plugins\resources\icons\conjuration.png)" },
-        { icon_image_type::illusion, R"(.\Data\SKSE\Plugins\resources\icons\illusion.png)" }
+        { icon_image_type::illusion, R"(.\Data\SKSE\Plugins\resources\icons\illusion.png)" },
+        { icon_image_type::torch, R"(.\Data\SKSE\Plugins\resources\icons\torch.png)" }
     };
 }

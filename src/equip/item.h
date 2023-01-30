@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <handle/data/page/slot_setting.h>
 
 namespace equip {
     class item {
@@ -14,10 +15,10 @@ namespace equip {
 
         static bool is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player);
 
-        static void equip_weapon_or_shield(const RE::TESForm* a_form,
+        static void equip_item(const RE::TESForm* a_form,
             RE::BGSEquipSlot*& a_slot,
             RE::PlayerCharacter*& a_player,
-            bool a_weapon = true);
+            handle::slot_setting::slot_type a_type);
 
         static void equip_armor(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
 

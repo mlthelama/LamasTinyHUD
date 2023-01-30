@@ -18,7 +18,8 @@ namespace handle {
             armor = 6,
             scroll = 7,
             empty = 8,
-            misc = 9
+            misc = 9,
+            light = 10
         };
 
         RE::TESForm* form = nullptr;

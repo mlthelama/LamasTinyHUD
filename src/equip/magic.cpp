@@ -94,7 +94,7 @@ namespace equip {
                     cost);
                 return;
             }
-            
+
             a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                 RE::ActorValue::kMagicka,
                 -cost);

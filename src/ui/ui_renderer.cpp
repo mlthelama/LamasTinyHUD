@@ -198,7 +198,7 @@ namespace ui {
         const ImVec2 text_size = ImGui::CalcTextSize(a_text, nullptr, true);
         const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x * 0.5f,
             a_y + a_offset_y + a_offset_extra_y - text_size.y * 0.5f);
-        
+
         auto font = loaded_font;
         if (!font) {
             font = ImGui::GetDefaultFont();
@@ -335,6 +335,7 @@ namespace ui {
                     case handle::slot_setting::slot_type::armor:
                     case handle::slot_setting::slot_type::empty:
                     case handle::slot_setting::slot_type::misc:
+                    case handle::slot_setting::slot_type::light:
                         //Nothing, for now
                         break;
                 }
@@ -693,7 +694,7 @@ namespace ui {
         //string stays this way
         std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name();
         logger::trace("Trying to load Font file {}"sv, path);
-        
+
         loaded_font =
             io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
         if (io.Fonts->Build()) {

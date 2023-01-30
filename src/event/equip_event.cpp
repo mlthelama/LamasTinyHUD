@@ -66,7 +66,8 @@ namespace event {
             //always
             const auto type = util::helper::get_type(a_form);
             if (type == handle::slot_setting::slot_type::empty || type == handle::slot_setting::slot_type::weapon ||
-                type == handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield) {
+                type == handle::slot_setting::slot_type::magic || type == handle::slot_setting::slot_type::shield ||
+                type == handle::slot_setting::slot_type::light) {
                 data_ = util::helper::get_hand_assignment(a_form);
             }
             //just if equipped

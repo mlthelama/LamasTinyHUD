@@ -350,6 +350,9 @@ namespace handle {
             case slot_setting::slot_type::scroll:
                 icon = ui::icon_image_type::scroll;
                 break;
+            case slot_setting::slot_type::light:
+                icon = ui::icon_image_type::torch;
+                break;
             case slot_setting::slot_type::misc:
             case slot_setting::slot_type::empty:
                 icon = ui::icon_image_type::icon_default;

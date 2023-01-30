@@ -28,28 +28,34 @@ namespace equip {
         return worn;
     }
 
-    void item::equip_weapon_or_shield(const RE::TESForm* a_form,
+    void item::equip_item(const RE::TESForm* a_form,
         RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
-        const bool a_weapon) {
+        handle::slot_setting::slot_type a_type) {
         auto left = a_slot == equip_slot::get_left_hand_slot();
-        logger::trace("try to equip {}, left {}"sv, a_form->GetName(), left);
+        logger::trace("try to equip {}, left {}, type {}"sv, a_form->GetName(), left, static_cast<uint32_t>(a_type));
 
         RE::TESBoundObject* obj = nullptr;
         RE::ExtraDataList* extra = nullptr;
         std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>> potential_items;
-        if (a_weapon) {
+        if (a_type == handle::slot_setting::slot_type::weapon) {
             if (!a_form->Is(RE::FormType::Weapon)) {
                 logger::warn("object {} is not a weapon. return."sv, a_form->GetName());
                 return;
             }
             potential_items = get_inventory_weapon_items(a_player);
-        } else {
+        } else if (a_type == handle::slot_setting::slot_type::shield) {
             if (!a_form->Is(RE::FormType::Armor)) {
                 logger::warn("object {} is not an armor. return."sv, a_form->GetName());
                 return;
             }
             potential_items = get_inventory_armor_items(a_player);
+        } else if (a_type == handle::slot_setting::slot_type::light) {
+            if (!a_form->Is(RE::FormType::Light)) {
+                logger::warn("object {} is not a light. return."sv, a_form->GetName());
+                return;
+            }
+            potential_items = get_inventory(a_player, RE::FormType::Light);
         }
 
         auto item_count = 0;
@@ -100,13 +106,13 @@ namespace equip {
             return;
         }
 
-        logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
+        logger::trace("try to equip weapon/shield/light {}"sv, a_form->GetName());
         const auto equip_manager = RE::ActorEquipManager::GetSingleton();
 
         equip_manager->EquipObject(a_player, obj, extra, 1, a_slot);
         //TODO add setting for that
         //a_player->DrawWeaponMagicHands(true);
-        logger::trace("equipped weapon/shield {}, left {}. return."sv, a_form->GetName(), left);
+        logger::trace("equipped weapon/shield/light {}, left {}. return."sv, a_form->GetName(), left);
     }
 
     void item::equip_armor(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {

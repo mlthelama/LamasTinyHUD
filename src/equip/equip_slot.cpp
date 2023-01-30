@@ -61,6 +61,11 @@ namespace equip {
                 un_equip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
                 did_call = true;
             }
+            if (equipped_object->Is(RE::FormType::Light)) {
+                const auto light = equipped_object->As<RE::TESObjectLIGH>();
+                equip_manager->UnequipObject(a_player, light, nullptr, 1, a_slot);
+                did_call = true;
+            }
             logger::trace("called un equip for {}, left {}, did call {}"sv,
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot(),

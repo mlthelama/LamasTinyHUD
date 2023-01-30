@@ -228,6 +228,9 @@ namespace util {
         if (a_form->Is(RE::FormType::Ammo)) {
             return handle::slot_setting::slot_type::misc;
         }
+        if (a_form->Is(RE::FormType::Light)) {
+            return handle::slot_setting::slot_type::light;
+        }
 
         return handle::slot_setting::slot_type::misc;
     }
@@ -370,6 +373,7 @@ namespace util {
                     case handle::slot_setting::slot_type::weapon:
                     case handle::slot_setting::slot_type::magic:
                     case handle::slot_setting::slot_type::shield:
+                    case handle::slot_setting::slot_type::light:
                         if (!two_handed) {
                             item->form = a_form;
                             item->type = type;

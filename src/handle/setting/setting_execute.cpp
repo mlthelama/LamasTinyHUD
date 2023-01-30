@@ -96,10 +96,9 @@ namespace handle {
                 equip::magic::equip_or_cast_power(a_slot->form, a_slot->action, a_player);
                 break;
             case slot_setting::slot_type::weapon:
-                equip::item::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player);
-                break;
             case slot_setting::slot_type::shield:
-                equip::item::equip_weapon_or_shield(a_slot->form, a_slot->equip_slot, a_player, false);
+            case slot_setting::slot_type::light:
+                equip::item::equip_item(a_slot->form, a_slot->equip_slot, a_player, a_slot->type);
                 break;
             case slot_setting::slot_type::armor:
                 equip::item::equip_armor(a_slot->form, a_player);
