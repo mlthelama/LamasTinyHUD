@@ -198,13 +198,13 @@ namespace ui {
         const ImVec2 text_size = ImGui::CalcTextSize(a_text, nullptr, true);
         const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x * 0.5f,
             a_y + a_offset_y + a_offset_extra_y - text_size.y * 0.5f);
-
-        if (!loaded_font) {
-            loaded_font = ImGui::GetFont();
-        }
         
-        ImGui::GetWindowDrawList()
-            ->AddText(loaded_font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
+        auto font = loaded_font;
+        if (!font) {
+            font = ImGui::GetDefaultFont();
+        }
+
+        ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
 
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
@@ -582,7 +582,6 @@ namespace ui {
                     load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
                     load_font();
-
                     //show_ui_ = true;
                     event::sink_events();
                     logger::info("done with data loaded");
@@ -694,9 +693,7 @@ namespace ui {
         //string stays this way
         std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name();
         logger::trace("Trying to load Font file {}"sv, path);
-
-        io.Fonts->Clear();
-        io.Fonts->AddFontDefault();
+        
         loaded_font =
             io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
         if (io.Fonts->Build()) {
@@ -704,13 +701,5 @@ namespace ui {
             logger::info("Custom Font {} loaded."sv, path);
             return;
         }
-        logger::warn("Failed to load custom font, loading default now."sv);
-        io.Fonts->Clear();
-        io.Fonts->AddFontDefault();
-        io.Fonts->Build();
-
-        ImGui_ImplDX11_CreateDeviceObjects();
-
-        logger::info("Default Font loaded."sv);
     }
 }
