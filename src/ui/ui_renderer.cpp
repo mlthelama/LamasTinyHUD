@@ -336,6 +336,7 @@ namespace ui {
                     case handle::slot_setting::slot_type::empty:
                     case handle::slot_setting::slot_type::misc:
                     case handle::slot_setting::slot_type::light:
+                    case handle::slot_setting::slot_type::lantern:
                         //Nothing, for now
                         break;
                 }

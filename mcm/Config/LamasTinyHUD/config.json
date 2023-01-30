@@ -248,7 +248,7 @@
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -340,7 +340,7 @@
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern"],
                         "sourceType": "ModSettingInt"
                     }
                 },

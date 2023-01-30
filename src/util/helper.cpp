@@ -200,8 +200,17 @@ namespace util {
             }
         }
         if (a_form->IsArmor()) {
-            if (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->IsShield()) {
+            const auto armor = a_form->As<RE::TESObjectARMO>();
+            //GetSlotMask 49
+            if (armor->IsShield()) {
                 return handle::slot_setting::slot_type::shield;
+            } else if (armor->IsClothing() &&
+                       (armor->HasKeywordString("_WL_Lantern") &&
+                               armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kModFaceJewelry) ||
+                           armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kModPelvisPrimary))) {
+                //Wearable Lanterns got keyword _WL_Lantern
+                //Simple Wearable Lanterns do not have a keyword, but will be equipped on 49 (30+19)
+                return handle::slot_setting::slot_type::lantern;
             }
             return handle::slot_setting::slot_type::armor;
         }
@@ -337,6 +346,12 @@ namespace util {
                             item->left = false;
                             item->action_type = handle::slot_setting::acton_type::instant;
                         }
+                        break;
+                    case handle::slot_setting::slot_type::lantern:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
                         break;
                 }
                 break;

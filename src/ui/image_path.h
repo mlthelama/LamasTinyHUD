@@ -60,6 +60,7 @@ namespace ui {
         conjuration = 43,
         illusion = 44,
         torch = 45,
+        lantern = 46,
         total
     };
 
@@ -110,6 +111,7 @@ namespace ui {
         { icon_image_type::alteration, R"(.\Data\SKSE\Plugins\resources\icons\alteration.png)" },
         { icon_image_type::conjuration, R"(.\Data\SKSE\Plugins\resources\icons\conjuration.png)" },
         { icon_image_type::illusion, R"(.\Data\SKSE\Plugins\resources\icons\illusion.png)" },
-        { icon_image_type::torch, R"(.\Data\SKSE\Plugins\resources\icons\torch.png)" }
+        { icon_image_type::torch, R"(.\Data\SKSE\Plugins\resources\icons\torch.png)" },
+        { icon_image_type::lantern, R"(.\Data\SKSE\Plugins\resources\icons\lantern.png)" }
     };
 }

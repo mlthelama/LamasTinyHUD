@@ -353,6 +353,9 @@ namespace handle {
             case slot_setting::slot_type::light:
                 icon = ui::icon_image_type::torch;
                 break;
+            case slot_setting::slot_type::lantern:
+                icon = ui::icon_image_type::lantern;
+                break;
             case slot_setting::slot_type::misc:
             case slot_setting::slot_type::empty:
                 icon = ui::icon_image_type::icon_default;

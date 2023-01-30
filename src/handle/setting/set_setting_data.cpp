@@ -1,4 +1,5 @@
 ﻿#include "set_setting_data.h"
+#include <handle/handle/edit_handle.h>
 
 #include "equip/equip_slot.h"
 #include "handle/handle/ammo_handle.h"
@@ -313,7 +314,9 @@ namespace handle {
                 a_key_position);
         }
 
-        if (mcm::get_elden_demon_souls()) {
+        //do not trigger reequip if config a config is set
+        if (mcm::get_elden_demon_souls() &&
+            handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
             set_active_and_equip(handler);
         }
         logger::trace("processed config data"sv);

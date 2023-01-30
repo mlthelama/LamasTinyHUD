@@ -101,6 +101,7 @@ namespace handle {
                 equip::item::equip_item(a_slot->form, a_slot->equip_slot, a_player, a_slot->type);
                 break;
             case slot_setting::slot_type::armor:
+            case slot_setting::slot_type::lantern:
                 equip::item::equip_armor(a_slot->form, a_player);
                 break;
             case slot_setting::slot_type::scroll:
