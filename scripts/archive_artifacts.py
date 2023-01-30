@@ -7,7 +7,7 @@ from pathlib import Path
 def make_rel_archive(a_args):
     languages: list[str] = ["english", "czech", "french", "german", "italian", "japanese", "polish", "russian",
                             "spanish"]
-    resource_extensions: list[str] = ["*.png", "*.ttf", "*.oft"]
+    resource_extensions: list[str] = ["*.png", "*.ttf", "*.otf"]
 
     archive: zipfile = zipfile.ZipFile(a_args.name + ".zip", "w", zipfile.ZIP_DEFLATED)
     archive.write(a_args.dll, "SKSE/Plugins/{}".format(os.path.basename(a_args.dll)))

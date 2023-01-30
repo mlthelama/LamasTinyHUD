@@ -194,11 +194,14 @@ namespace ui {
         const char* a_text,
         const ImU32 a_color,
         const float a_font_size) {
-
         //it should center the text, it kind of does
         const ImVec2 text_size = ImGui::CalcTextSize(a_text, nullptr, true);
         const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x * 0.5f,
             a_y + a_offset_y + a_offset_extra_y - text_size.y * 0.5f);
+
+        if (!loaded_font) {
+            loaded_font = ImGui::GetFont();
+        }
         
         ImGui::GetWindowDrawList()
             ->AddText(loaded_font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
@@ -687,9 +690,9 @@ namespace ui {
             builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
         }
         builder.BuildRanges(&ranges);
-        
+
         //string stays this way
-        std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name(); 
+        std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name();
         logger::trace("Trying to load Font file {}"sv, path);
 
         io.Fonts->Clear();
