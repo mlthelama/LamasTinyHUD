@@ -110,10 +110,10 @@ namespace config {
                 static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowIconScaleHeight", 0.05));
             toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fToggleKeyOffsetX", 115));
             toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fToggleKeyOffsetY", 115));
-            current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -45));
+            current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -15));
             current_items_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetY", 200));
             slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 20));
-            slot_item_name_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetX", -45));
+            slot_item_name_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetX", -15));
             slot_item_name_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetY", 65));
             arrow_slot_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetX", -115));
             arrow_slot_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetY", 115));

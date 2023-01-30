@@ -39,6 +39,8 @@ namespace ui {
     float fade = 1.0f;
     bool fade_in = true;
     float fade_out_timer = mcm::get_fade_timer_outside_combat();
+    ImFont* loaded_font;
+
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
         const UINT u_msg,
@@ -192,14 +194,14 @@ namespace ui {
         const char* a_text,
         const ImU32 a_color,
         const float a_font_size) {
-        const ImFont* font = ImGui::GetFont();
 
         //it should center the text, it kind of does
         const ImVec2 text_size = ImGui::CalcTextSize(a_text, nullptr, true);
         const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x * 0.5f,
             a_y + a_offset_y + a_offset_extra_y - text_size.y * 0.5f);
-
-        ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
+        
+        ImGui::GetWindowDrawList()
+            ->AddText(loaded_font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
 
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
@@ -576,7 +578,9 @@ namespace ui {
                     load_images(gamepad_ps_icon_path_map, ps_key_struct);
                     load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
-                    show_ui_ = true;
+                    load_font();
+
+                    //show_ui_ = true;
                     event::sink_events();
                     logger::info("done with data loaded");
                 }
@@ -584,6 +588,7 @@ namespace ui {
             case SKSE::MessagingInterface::kPostLoadGame:
             case SKSE::MessagingInterface::kNewGame:
                 handle::set_setting_data::read_and_set_data();
+                show_ui_ = true;
                 break;
         }
     }
@@ -654,4 +659,55 @@ namespace ui {
     }
 
     bool ui_renderer::get_fade() { return fade_in; }
+
+    void ui_renderer::load_font() {
+        ImGuiIO& io = ImGui::GetIO();
+        ImVector<ImWchar> ranges;
+        ImFontGlyphRangesBuilder builder;
+        builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
+        if (config::file_setting::get_font_chinese_full()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
+        }
+        if (config::file_setting::get_font_chinese_simplified_common()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+        }
+        if (config::file_setting::get_font_cyrillic()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
+        }
+        if (config::file_setting::get_font_japanese()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
+        }
+        if (config::file_setting::get_font_korean()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
+        }
+        if (config::file_setting::get_font_thai()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesThai());
+        }
+        if (config::file_setting::get_font_vietnamese()) {
+            builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
+        }
+        builder.BuildRanges(&ranges);
+        
+        //string stays this way
+        std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name(); 
+        logger::trace("Trying to load Font file {}"sv, path);
+
+        io.Fonts->Clear();
+        io.Fonts->AddFontDefault();
+        loaded_font =
+            io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
+        if (io.Fonts->Build()) {
+            ImGui_ImplDX11_CreateDeviceObjects();
+            logger::info("Custom Font {} loaded."sv, path);
+            return;
+        }
+        logger::warn("Failed to load custom font, loading default now."sv);
+        io.Fonts->Clear();
+        io.Fonts->AddFontDefault();
+        io.Fonts->Build();
+
+        ImGui_ImplDX11_CreateDeviceObjects();
+
+        logger::info("Default Font loaded."sv);
+    }
 }

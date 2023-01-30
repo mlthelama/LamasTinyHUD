@@ -7,6 +7,7 @@ from pathlib import Path
 def make_rel_archive(a_args):
     languages: list[str] = ["english", "czech", "french", "german", "italian", "japanese", "polish", "russian",
                             "spanish"]
+    resource_extensions: list[str] = ["*.png", "*.ttf", "*.oft"]
 
     archive: zipfile = zipfile.ZipFile(a_args.name + ".zip", "w", zipfile.ZIP_DEFLATED)
     archive.write(a_args.dll, "SKSE/Plugins/{}".format(os.path.basename(a_args.dll)))
@@ -14,12 +15,13 @@ def make_rel_archive(a_args):
     archive.write(os.path.join(a_args.src_dir, "LamasTinyHUD.ini"), "SKSE/Plugins/LamasTinyHUD.ini")
 
     v_path: str = os.path.join(a_args.src_dir, "extern", "resources")
-    for path in Path(v_path).rglob('*.png'):
-        archive.write(path, os.path.join("SKSE/Plugins/resources/", path.parent.name, path.name))
+    for extension in resource_extensions:
+        for path in Path(v_path).rglob(extension):
+            archive.write(path, os.path.join("SKSE/Plugins/resources/", path.parent.name, path.name))
 
     archive.write(os.path.join(a_args.src_dir, "mcm", "LamasTinyHUD.esl"), "LamasTinyHUD.esl")
     v_path: str = os.path.join(a_args.src_dir, "mcm", "scripts")
-    for path in Path(v_path).rglob('*.pex'):
+    for path in Path(v_path).glob('*.pex'):
         archive.write(path, os.path.join("scripts/", path.name))
 
     archive.write(os.path.join(a_args.src_dir, "mcm", "Config", "LamasTinyHUD", "config.json"),

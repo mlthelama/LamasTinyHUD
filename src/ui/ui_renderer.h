@@ -103,6 +103,7 @@ namespace ui {
 
         static image get_key_icon(uint32_t a_key);
 
+        static void load_font();
     public:
         static bool install();
 
