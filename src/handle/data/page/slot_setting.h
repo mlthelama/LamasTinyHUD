@@ -19,7 +19,7 @@ namespace handle {
             scroll = 7,
             empty = 8,
             misc = 9,
-            light = 10, 
+            light = 10,
             lantern = 11
         };
 

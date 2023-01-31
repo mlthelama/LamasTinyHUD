@@ -355,7 +355,7 @@ namespace ui {
                 mcm::get_arrow_slot_offset_x(),
                 mcm::get_arrow_slot_offset_y(),
                 current_ammo->button_press_modify,
-                mcm::get_key_transparency());
+                mcm::get_background_icon_transparency());
             draw_icon(a_x,
                 a_y,
                 mcm::get_arrow_icon_scale_width(),
