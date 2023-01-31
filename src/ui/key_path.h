@@ -96,7 +96,7 @@ namespace ui {
         up = 200,
         prior = 201,
         left = 203,
-        right = 204,
+        right = 205,
         end = 207,
         down = 208,
         next = 209,
