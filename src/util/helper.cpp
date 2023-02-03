@@ -540,4 +540,27 @@ namespace util {
         //for now, I will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);
     }
+
+    std::vector<std::string> helper::search_for_config_files(bool a_elden) {
+        std::vector<std::string> file_list;
+        auto dir_iterator = std::filesystem::directory_iterator(ini_path);
+        auto file_name = ini_default_name;
+        if (a_elden) {
+            file_name = ini_elden_name;
+        }
+
+        for (const auto& entry : dir_iterator) {
+            if (entry.path().filename().string().starts_with(file_name)) {
+                logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
+                if (!a_elden && entry.path().filename().string().starts_with(ini_elden_name)) {
+                    logger::warn("Skipping File {}, because it would also match for Elden"sv,
+                        entry.path().filename().string());
+                    continue;
+                }
+                file_list.push_back(entry.path().filename().string());
+            }
+        }
+        logger::trace("Got {} Files to return in Path"sv, file_list.size());
+        return file_list;
+    }
 }

@@ -21,6 +21,10 @@ string function GetFormName(int a_index, bool a_left, int a_position) native
 function ResetSection(int a_index, int a_position) native
 function SetActionValue(int a_index, bool a_left, int a_value, int a_position) native
 function InitConfigForPosition(int a_position) native
+string[] function GetConfigFiles(bool a_elden) native
+string function GetActiveConfig(bool a_elden) native
+function SetConfig(bool a_elden, string a_name) native
+function SetActiveConfig(bool a_elden, int a_index) native
 
 function ResetSlot()
     ResetSection(GetModSettingInt("uPageList:Page"), GetModSettingInt("uPositionSelect:Page"))
@@ -33,6 +37,18 @@ endfunction
 function TriggerConfig()
     InitConfigForPosition(GetModSettingInt("uConfigPosition:Controls"))
     RefreshMenu()
+endfunction
+
+function CreateConfig()
+    SetConfig(bElden, GetModSettingString("sSettingName:MiscSetting"))
+    LoadReloadSettingFiles()
+    RefreshMenu()
+endfunction
+
+function LoadReloadSettingFiles()
+    SetModSettingString("sActiveSetting:MiscSetting", GetActiveConfig(bElden))
+    string[] setting_list = GetConfigFiles(bElden)
+    SetMenuOptions("uSettingList:MiscSetting", setting_list, setting_list)
 endfunction
 
 Event OnSettingChange(String a_ID)
@@ -80,6 +96,7 @@ Event OnSettingChange(String a_ID)
         RefreshMenu()
     elseif (a_ID == "bEldenDemonSouls:MiscSetting")
         bElden = GetModSettingBool(a_ID)
+        LoadReloadSettingFiles()
         RefreshMenu()
     elseif (a_ID == "uPositionSelect:Page")
         string[] menu_list = GetSectionNames(GetModSettingInt(a_ID))
@@ -88,6 +105,10 @@ Event OnSettingChange(String a_ID)
         RefreshMenu()
     elseif (a_ID == "bHideOutsideCombat:MiscSetting")
         bCombat = GetModSettingBool(a_ID)
+        RefreshMenu()
+    elseif (a_ID == "uSettingList:MiscSetting")
+        SetActiveConfig(bElden, GetModSettingInt(a_ID))
+        LoadReloadSettingFiles()
         RefreshMenu()
     endif
 EndEvent
@@ -100,6 +121,9 @@ Event OnPageSelect(string a_page)
     elseif ( a_page == "$LamasTinyHUD_HudSetting" )
         SetModSettingString("sDisplayResolutionWidth:HudSetting",GetResolutionWidth())
         SetModSettingString("sDisplayResolutionHeight:HudSetting",GetResolutionHeight())
+        RefreshMenu()
+    elseif ( a_page == "$LamasTinyHUD_MiscSetting" )
+        LoadReloadSettingFiles()
         RefreshMenu()
     endIf
 EndEvent

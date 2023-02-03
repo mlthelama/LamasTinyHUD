@@ -27,6 +27,7 @@ namespace util {
         static bool already_used(const RE::TESForm* a_form,
             handle::position_setting::position_type a_position,
             const std::vector<data_helper*>& a_config_data);
+        static std::vector<std::string> search_for_config_files(bool a_elden);
 
     private:
         static std::string get_section_name_for_page_position(uint32_t a_page, uint32_t a_position);

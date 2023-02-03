@@ -1,10 +1,12 @@
 ﻿#include "custom_setting.h"
+#include "file_setting.h"
 #include "mcm_setting.h"
+#include "util/constant.h"
 #include <SimpleIni.h>
 
 namespace config {
-    static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom.ini)";
-    static const char* ini_path_elden = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom_Elden.ini)";
+    //static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom.ini)";
+    //static const char* ini_path_elden = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom_Elden.ini)";
 
     CSimpleIniA custom_ini;
 
@@ -12,9 +14,9 @@ namespace config {
         custom_ini.Reset();
         custom_ini.SetUnicode();
         if (config::mcm_setting::get_elden_demon_souls()) {
-            custom_ini.LoadFile(ini_path_elden);
+            custom_ini.LoadFile((util::ini_path + config::file_setting::get_config_elden()).c_str());
         } else {
-            custom_ini.LoadFile(ini_path);
+            custom_ini.LoadFile((util::ini_path + config::file_setting::get_config_default()).c_str());
         }
     }
 
@@ -127,9 +129,9 @@ namespace config {
 
     void custom_setting::save_setting() {
         if (config::mcm_setting::get_elden_demon_souls()) {
-            (void)custom_ini.SaveFile(ini_path_elden);
+            (void)custom_ini.SaveFile((util::ini_path + config::file_setting::get_config_elden()).c_str());
         } else {
-            (void)custom_ini.SaveFile(ini_path);
+            (void)custom_ini.SaveFile((util::ini_path + config::file_setting::get_config_default()).c_str());
         }
         read_setting();
     }

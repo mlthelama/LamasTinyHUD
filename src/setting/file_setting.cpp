@@ -1,8 +1,12 @@
 ﻿#include "file_setting.h"
+#include "custom_setting.h"
+#include "util/constant.h"
 #include <SimpleIni.h>
 
 namespace config {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
+
+    CSimpleIniA ini;
 
     static int log_level;
     static bool draw_key_background;
@@ -17,10 +21,13 @@ namespace config {
     static bool font_thai;
     static bool font_vietnamese;
 
+    static std::string default_config;
+    static std::string elden_config;
+
     void file_setting::load_setting() {
         logger::info("reading dll ini files");
 
-        CSimpleIniA ini;
+        ini.Reset();
         ini.SetUnicode();
         ini.LoadFile(ini_path);
 
@@ -38,6 +45,9 @@ namespace config {
         font_thai = ini.GetBoolValue("Font", "bThai", false);
         font_vietnamese = ini.GetBoolValue("Font", "bVietnamese", false);
 
+        default_config = ini.GetValue("Config", "sDefault", (util::ini_default_name + util::ini_ending).c_str());
+        elden_config = ini.GetValue("Config", "sElden", (util::ini_elden_name + util::ini_ending).c_str());
+
         logger::info("finished reading dll ini files. return.");
     }
 
@@ -53,6 +63,21 @@ namespace config {
     bool file_setting::get_font_korean() { return font_korean; }
     bool file_setting::get_font_thai() { return font_thai; }
     bool file_setting::get_font_vietnamese() { return font_vietnamese; }
+    std::string file_setting::get_config_default() { return default_config; }
+    std::string file_setting::get_config_elden() { return elden_config; }
 
+    void file_setting::save_setting() {
+        (void)ini.SaveFile(ini_path);
+        load_setting();
+    }
 
+    void file_setting::set_config_default(const std::string& a_config) {
+        ini.SetValue("Config", "sDefault", a_config.c_str());
+        save_setting();
+    }
+
+    void file_setting::set_config_elden(const std::string& a_config) {
+        ini.SetValue("Config", "sElden", a_config.c_str());
+        save_setting();
+    }
 }

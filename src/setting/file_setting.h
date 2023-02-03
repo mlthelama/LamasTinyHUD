@@ -17,5 +17,14 @@ namespace config {
         static bool get_font_korean();
         static bool get_font_thai();
         static bool get_font_vietnamese();
+
+        static std::string get_config_default();
+        static std::string get_config_elden();
+
+        static void set_config_default(const std::string& a_config);
+        static void set_config_elden(const std::string& a_config);
+
+    private:
+        static void save_setting();
     };
 }

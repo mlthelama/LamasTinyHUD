@@ -19,12 +19,17 @@ namespace papyrus {
         static void
             set_action_value(RE::TESQuest*, uint32_t a_index, bool a_left, uint32_t a_value, uint32_t a_position);
         static void init_config_for_position(RE::TESQuest*, uint32_t a_position);
+        static std::vector<RE::BSFixedString> get_config_files(RE::TESQuest*, bool a_elden);
+        static RE::BSFixedString get_active_config(RE::TESQuest*, bool a_elden);
+        static void set_config(RE::TESQuest*, bool a_elden, RE::BSFixedString a_name);
+        static void set_active_config(RE::TESQuest*, bool a_elden, uint32_t a_index);
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);
 
     private:
         static bool is_size_ok(uint32_t a_idx, uint64_t a_size);
         static std::string get_section_by_index(uint32_t a_index, uint32_t a_position);
+        static bool check_name(const std::string& a_name);
     };
 
     void Register();

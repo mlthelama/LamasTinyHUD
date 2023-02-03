@@ -1,10 +1,11 @@
 ﻿#include "papyrus.h"
-
 #include "event/key_manager.h"
 #include "handle/setting/set_setting_data.h"
 #include "setting/custom_setting.h"
+#include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
+#include "util/constant.h"
 #include "util/helper.h"
 #include "util/string_util.h"
 
@@ -159,6 +160,57 @@ namespace papyrus {
         key_manager->init_edit(a_position);
     }
 
+    std::vector<RE::BSFixedString> hud_mcm::get_config_files(RE::TESQuest*, bool a_elden) {
+        logger::trace("getting config files for elden {}"sv, a_elden);
+        auto files = util::helper::search_for_config_files(a_elden);
+        std::vector<RE::BSFixedString> file_list;
+        for (const auto& file : files) {
+            file_list.emplace_back(file);
+        }
+
+        return file_list;
+    }
+
+    RE::BSFixedString hud_mcm::get_active_config(RE::TESQuest*, bool a_elden) {
+        auto file = a_elden ? config::file_setting::get_config_elden() : config::file_setting::get_config_default();
+        logger::trace("getting active Config File, Elden {}, File {}"sv, a_elden, file);
+        return file;
+    }
+
+    void hud_mcm::set_config(RE::TESQuest*, bool a_elden, RE::BSFixedString a_name) {
+        std::string name;
+        if (a_elden) {
+            name = util::ini_elden_name + "_" + a_name.data() + util::ini_ending;
+            if (check_name(name)) {
+                config::file_setting::set_config_elden(name);
+            } else {
+                logger::warn("Did not set new file, already exists, name {}"sv, name);
+            }
+        } else {
+            name = util::ini_default_name + "_" + a_name.data() + util::ini_ending;
+            if (check_name(name)) {
+                config::file_setting::set_config_default(name);
+            } else {
+                logger::warn("Did not set new file, already exists, name {}"sv, name);
+            }
+        }
+        logger::trace("set config elden {}, file {}"sv, a_elden, name);
+    }
+
+    void hud_mcm::set_active_config(RE::TESQuest*, bool a_elden, uint32_t a_index) {
+        auto files = util::helper::search_for_config_files(a_elden);
+        auto file = a_elden ? util::ini_elden_name + util::ini_ending : util::ini_default_name + util::ini_ending;
+        if (!files.empty() && is_size_ok(a_index, files.size())) {
+            file = files.at(a_index);
+        }
+
+        if (a_elden) {
+            config::file_setting::set_config_elden(file);
+        } else {
+            config::file_setting::set_config_default(file);
+        }
+    }
+
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("OnConfigClose", mcm_name, on_config_close);
         a_vm->RegisterFunction("GetResolutionWidth", mcm_name, get_resolution_width);
@@ -175,6 +227,10 @@ namespace papyrus {
         a_vm->RegisterFunction("ResetSection", mcm_name, reset_section);
         a_vm->RegisterFunction("SetActionValue", mcm_name, set_action_value);
         a_vm->RegisterFunction("InitConfigForPosition", mcm_name, init_config_for_position);
+        a_vm->RegisterFunction("GetConfigFiles", mcm_name, get_config_files);
+        a_vm->RegisterFunction("GetActiveConfig", mcm_name, get_active_config);
+        a_vm->RegisterFunction("SetConfig", mcm_name, set_config);
+        a_vm->RegisterFunction("SetActiveConfig", mcm_name, set_active_config);
 
         logger::info("Registered {} class. return."sv, mcm_name);
         return true;
@@ -196,6 +252,22 @@ namespace papyrus {
         }
         logger::trace("got section {} for index {}"sv, section, a_index);
         return section;
+    }
+    bool hud_mcm::check_name(const std::string& a_name) {
+        //check if the file exists
+        auto files = util::helper::search_for_config_files(true);
+        if (!files.empty() && std::find(files.begin(), files.end(), a_name) != files.end()) {
+            return false;
+        }
+        files = util::helper::search_for_config_files(false);
+        if (!files.empty() && std::find(files.begin(), files.end(), a_name) != files.end()) {
+            return false;
+        }
+        if (a_name == util::ini_elden_name || a_name == util::ini_default_name) {
+            return false;
+        }
+
+        return true;
     }
 
     void Register() {
