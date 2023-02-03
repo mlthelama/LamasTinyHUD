@@ -1,5 +1,4 @@
 ﻿#include "set_setting_data.h"
-#include <handle/handle/edit_handle.h>
 #include "equip/equip_slot.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
@@ -9,6 +8,7 @@
 #include "setting_execute.h"
 #include "util/helper.h"
 #include "util/string_util.h"
+#include <handle/handle/edit_handle.h>
 
 namespace handle {
     using mcm = config::mcm_setting;
