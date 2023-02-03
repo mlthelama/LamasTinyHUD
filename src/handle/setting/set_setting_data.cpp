@@ -47,6 +47,11 @@ namespace handle {
         } else if (hand == 2) {
             hand_equip = slot_setting::hand_equip::single;
         }
+
+        //used for unarmed "handling"
+        if (mcm::get_elden_demon_souls()) {
+            hand_equip = slot_setting::hand_equip::single;
+        }
         logger::trace("calling init page for page {}, position {} ..."sv, a_page, static_cast<uint32_t>(a_position));
 
         std::vector<data_helper*> data;
@@ -287,7 +292,7 @@ namespace handle {
         setting_execute::execute_settings(position_setting->slot_settings);
         position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::right);
         setting_execute::execute_settings(position_setting->slot_settings);
-        logger::trace("done equip for fist set"sv);
+        logger::trace("done equip for first set"sv);
     }
 
     void set_setting_data::process_config_data(key_position_handle*& a_key_position) {

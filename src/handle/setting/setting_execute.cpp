@@ -6,6 +6,7 @@
 #include "handle/handle/key_position_handle.h"
 #include "handle/handle/page_handle.h"
 #include "setting/mcm_setting.h"
+#include "util/constant.h"
 #include "util/string_util.h"
 
 namespace handle {
@@ -26,8 +27,9 @@ namespace handle {
                 continue;
             }
 
-            if (slot->form == nullptr && slot->type == slot_setting::slot_type::empty &&
-                slot->action == slot_setting::acton_type::un_equip) {
+            if ((!slot->form && slot->type == slot_setting::slot_type::empty &&
+                    slot->action == slot_setting::acton_type::un_equip) ||
+                (slot->form && slot->form->formID == util::unarmed)) {
                 un_equip.push_back(slot->equip_slot);
             }
 

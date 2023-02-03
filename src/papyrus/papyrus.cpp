@@ -211,6 +211,46 @@ namespace papyrus {
         }
     }
 
+    void hud_mcm::add_unarmed_setting(RE::TESQuest*, uint32_t a_position) {
+        logger::trace("Try to add Unarmed for Position {}"sv, a_position);
+        if (a_position == static_cast<uint32_t>(handle::position_setting::position_type::right) ||
+            a_position == static_cast<uint32_t>(handle::position_setting::position_type::left)) {
+            //
+            auto left = a_position == static_cast<uint32_t>(handle::position_setting::position_type::left);
+            auto max_pages = config::mcm_setting::get_max_page_count();
+            auto position = static_cast<handle::position_setting::position_type>(a_position);
+            auto page_handle = handle::page_handle::get_singleton();
+            auto highest_page = page_handle->get_highest_page_id_position(position);
+            if (static_cast<int>(max_pages) == highest_page) {
+                logger::warn("can not add Unarmed already enough settings"sv);
+                return;
+            }
+
+            for (auto i = 0; i <= highest_page; ++i) {
+                auto page = page_handle->get_page_setting(i, position);
+                //in theory in elden there should be just one setting in the list
+                auto setting = page->slot_settings.front();
+                if (setting->form && setting->form->formID == util::unarmed) {
+                    logger::warn("Already got a Unarmed Setting in this Position. Return"sv);
+                    return;
+                }
+            }
+
+            auto next_page = highest_page + 1;
+            const auto item = new data_helper();
+            item->type = handle::slot_setting::slot_type::weapon;
+            item->left = left;
+            item->form = RE::TESForm::LookupByID(util::unarmed);  //unarmed
+            item->two_handed = false;
+            item->action_type = handle::slot_setting::acton_type::default_action;
+            std::vector<data_helper*> data;
+            data.push_back(item);
+            handle::set_setting_data::set_single_slot(next_page, position, data);
+
+            logger::trace("Added Unarmed Setting Page {}, Position {}"sv, next_page, a_position);
+        }
+    }
+
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("OnConfigClose", mcm_name, on_config_close);
         a_vm->RegisterFunction("GetResolutionWidth", mcm_name, get_resolution_width);
@@ -231,6 +271,7 @@ namespace papyrus {
         a_vm->RegisterFunction("GetActiveConfig", mcm_name, get_active_config);
         a_vm->RegisterFunction("SetConfig", mcm_name, set_config);
         a_vm->RegisterFunction("SetActiveConfig", mcm_name, set_active_config);
+        a_vm->RegisterFunction("AddUnarmedSetting", mcm_name, add_unarmed_setting);
 
         logger::info("Registered {} class. return."sv, mcm_name);
         return true;

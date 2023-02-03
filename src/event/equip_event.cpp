@@ -35,7 +35,7 @@ namespace event {
         }
 
         if (config::mcm_setting::get_draw_current_items_text() &&
-            (form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo())) {
+            (form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo() || form->Is(RE::FormType::Light))) {
             handle::name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
         }
 

@@ -320,10 +320,32 @@
                     }
                 },
                 {
-                    "type": "empty"
+                    "text": "$LamasTinyHUD_Header_Unarmed",
+                    "type": "header"
                 },
                 {
-                    "type": "empty"
+                    "type": "hiddenToggle",
+                    "groupControl": 6,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bUnarmed"
+                    }
+                },
+                {
+                    "id": "sAddUnarmed:Page",
+                    "type": "text",
+                    "text": "$LamasTinyHUD_AddUnarmed_OptionText",
+                    "help": "$LamasTinyHUD_AddUnarmed_Help",
+                    "groupCondition": 6,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    },
+                    "action": {
+                        "type": "CallFunction",
+                        "function": "AddUnarmed"
+                    }
                 },
                 {
                     "type": "empty"
@@ -1107,7 +1129,7 @@
                     "help": "$LamasTinyHUD_MiscSetting_MaxPageCount_InfoText",
                     "valueOptions": {
                         "min": 2,
-                        "max": 6,
+                        "max": 10,
                         "step": 1,
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"

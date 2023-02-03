@@ -1,5 +1,6 @@
 ﻿#include "item.h"
 #include "equip/equip_slot.h"
+#include "util/constant.h"
 
 namespace equip {
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
@@ -34,6 +35,12 @@ namespace equip {
         handle::slot_setting::slot_type a_type) {
         auto left = a_slot == equip_slot::get_left_hand_slot();
         logger::trace("try to equip {}, left {}, type {}"sv, a_form->GetName(), left, static_cast<uint32_t>(a_type));
+
+        if (a_form->formID == util::unarmed) {
+            logger::trace("Got unarmed, try to call un equip"sv);
+            equip_slot::un_equip_hand(a_slot, a_player, handle::slot_setting::acton_type::un_equip);
+            return;
+        }
 
         RE::TESBoundObject* obj = nullptr;
         RE::ExtraDataList* extra = nullptr;

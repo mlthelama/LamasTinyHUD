@@ -5,6 +5,7 @@ bool property bSpell Auto
 bool property bSpellLeft Auto
 bool property bElden Auto
 bool property bCombat Auto
+bool property bUnarmed Auto
 
 Event OnConfigClose() native
 string function GetResolutionWidth() native
@@ -25,12 +26,17 @@ string[] function GetConfigFiles(bool a_elden) native
 string function GetActiveConfig(bool a_elden) native
 function SetConfig(bool a_elden, string a_name) native
 function SetActiveConfig(bool a_elden, int a_index) native
+function AddUnarmedSetting(int a_position) native
 
-function ResetSlot()
-    ResetSection(GetModSettingInt("uPageList:Page"), GetModSettingInt("uPositionSelect:Page"))
+function FillPageSelection()
     string[] menu_list = GetSectionNames(GetModSettingInt("uPositionSelect:Page"))
     SetMenuOptions("uPageList:Page", menu_list, menu_list)
     SetModSettingInt("uPageList:Page", 0)
+endfunction
+
+function ResetSlot()
+    ResetSection(GetModSettingInt("uPageList:Page"), GetModSettingInt("uPositionSelect:Page"))
+    FillPageSelection()
     RefreshMenu()
 endfunction
 
@@ -49,6 +55,12 @@ function LoadReloadSettingFiles()
     SetModSettingString("sActiveSetting:MiscSetting", GetActiveConfig(bElden))
     string[] setting_list = GetConfigFiles(bElden)
     SetMenuOptions("uSettingList:MiscSetting", setting_list, setting_list)
+endfunction
+
+function AddUnarmed()
+    AddUnarmedSetting(GetModSettingInt("uPositionSelect:Page"))
+    FillPageSelection()
+    RefreshMenu()
 endfunction
 
 Event OnSettingChange(String a_ID)
@@ -99,9 +111,8 @@ Event OnSettingChange(String a_ID)
         LoadReloadSettingFiles()
         RefreshMenu()
     elseif (a_ID == "uPositionSelect:Page")
-        string[] menu_list = GetSectionNames(GetModSettingInt(a_ID))
-        SetMenuOptions("uPageList:Page", menu_list, menu_list)
-        SetModSettingInt("uPageList:Page", 0)
+        FillPageSelection()
+        bUnarmed = bElden && (GetModSettingInt(a_ID) == 1 || GetModSettingInt(a_ID) == 3)
         RefreshMenu()
     elseif (a_ID == "bHideOutsideCombat:MiscSetting")
         bCombat = GetModSettingBool(a_ID)
@@ -131,4 +142,5 @@ EndEvent
 Event OnConfigOpen()
     bElden = GetModSettingBool("bEldenDemonSouls:MiscSetting")
     bCombat = GetModSettingBool("bHideOutsideCombat:MiscSetting")
+    bUnarmed = bElden && (GetModSettingInt("uPositionSelect:Page") == 1 || GetModSettingInt("uPositionSelect:Page") == 3)
 EndEvent

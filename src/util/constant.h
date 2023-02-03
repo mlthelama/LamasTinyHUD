@@ -12,4 +12,5 @@ namespace util {
     const std::string ini_elden_name = "LamasTinyHUD_Custom_Elden";
     const std::string ini_ending = ".ini";
 
+    constexpr RE::FormID unarmed = 0x000001F4;
 }
