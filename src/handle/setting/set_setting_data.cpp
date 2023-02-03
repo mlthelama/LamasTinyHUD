@@ -1,6 +1,5 @@
 ﻿#include "set_setting_data.h"
 #include <handle/handle/edit_handle.h>
-
 #include "equip/equip_slot.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"

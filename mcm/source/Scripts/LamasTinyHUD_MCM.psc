@@ -112,7 +112,7 @@ Event OnSettingChange(String a_ID)
         RefreshMenu()
     elseif (a_ID == "uPositionSelect:Page")
         FillPageSelection()
-        bUnarmed = bElden && (GetModSettingInt(a_ID) == 1 || GetModSettingInt(a_ID) == 3)
+        bUnarmed = (bElden && (GetModSettingInt(a_ID) == 1 || GetModSettingInt(a_ID) == 3)) || !bElden
         RefreshMenu()
     elseif (a_ID == "bHideOutsideCombat:MiscSetting")
         bCombat = GetModSettingBool(a_ID)

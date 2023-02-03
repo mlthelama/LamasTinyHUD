@@ -212,14 +212,18 @@ namespace papyrus {
     }
 
     void hud_mcm::add_unarmed_setting(RE::TESQuest*, uint32_t a_position) {
-        logger::trace("Try to add Unarmed for Position {}"sv, a_position);
-        if (a_position == static_cast<uint32_t>(handle::position_setting::position_type::right) ||
-            a_position == static_cast<uint32_t>(handle::position_setting::position_type::left)) {
+        auto elden = config::mcm_setting::get_elden_demon_souls();
+        logger::trace("Try to add Unarmed for Position {}, Elden {}"sv, a_position, elden);
+        auto page_handle = handle::page_handle::get_singleton();
+        auto position = static_cast<handle::position_setting::position_type>(a_position);
+        std::vector<data_helper*> data;
+        auto next_page = 0;
+        if (elden && (a_position == static_cast<uint32_t>(handle::position_setting::position_type::right) ||
+                         a_position == static_cast<uint32_t>(handle::position_setting::position_type::left))) {
             //
             auto left = a_position == static_cast<uint32_t>(handle::position_setting::position_type::left);
             auto max_pages = config::mcm_setting::get_max_page_count();
-            auto position = static_cast<handle::position_setting::position_type>(a_position);
-            auto page_handle = handle::page_handle::get_singleton();
+
             auto highest_page = page_handle->get_highest_page_id_position(position);
             if (static_cast<int>(max_pages) == highest_page) {
                 logger::warn("can not add Unarmed already enough settings"sv);
@@ -236,19 +240,37 @@ namespace papyrus {
                 }
             }
 
-            auto next_page = highest_page + 1;
+            next_page = highest_page + 1;
             const auto item = new data_helper();
             item->type = handle::slot_setting::slot_type::weapon;
             item->left = left;
             item->form = RE::TESForm::LookupByID(util::unarmed);  //unarmed
             item->two_handed = false;
             item->action_type = handle::slot_setting::acton_type::default_action;
-            std::vector<data_helper*> data;
             data.push_back(item);
-            handle::set_setting_data::set_single_slot(next_page, position, data);
 
-            logger::trace("Added Unarmed Setting Page {}, Position {}"sv, next_page, a_position);
+        } else {
+            next_page = static_cast<int>(page_handle->get_active_page_id());
+
+            const auto item = new data_helper();
+            item->form = RE::TESForm::LookupByID(util::unarmed);
+            item->left = false;
+            item->type = handle::slot_setting::slot_type::weapon;
+            item->action_type = handle::slot_setting::acton_type::default_action;
+            data.push_back(item);
+
+            const auto item2 = new data_helper();
+            item2->form = RE::TESForm::LookupByID(util::unarmed);
+            item2->left = true;
+            item2->type = handle::slot_setting::slot_type::weapon;
+            item2->action_type = handle::slot_setting::acton_type::default_action;
+            data.push_back(item2);
         }
+        handle::set_setting_data::set_single_slot(next_page, position, data);
+        logger::trace("Added Unarmed Setting Page {}, Position {}, Setting Count {}"sv,
+            next_page,
+            a_position,
+            data.size());
     }
 
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
