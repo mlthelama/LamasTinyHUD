@@ -32,12 +32,12 @@ namespace event {
         key_right_action_ = config::mcm_setting::get_right_action_key();
         key_bottom_action_ = config::mcm_setting::get_bottom_action_key();
         key_left_action_ = config::mcm_setting::get_left_action_key();
-        key_toggle_ = config::mcm_setting::get_toggle_key();
+        key_bottom_execute_or_toggle_ = config::mcm_setting::get_toggle_key();
         button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
 
-
+        //top execute btn is bound to the shout key, no need to check here
         if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) ||
-            !is_key_valid(key_left_action_)) {
+            !is_key_valid(key_left_action_) || !is_key_valid(key_bottom_execute_or_toggle_)) {
             return event_result::kContinue;
         }
 
@@ -102,14 +102,23 @@ namespace event {
                 continue;
             }
 
-            if (const auto control_map = RE::ControlMap::GetSingleton();
-                !control_map || !control_map->IsMovementControlsEnabled() ||
+            const auto control_map = RE::ControlMap::GetSingleton();
+            if (!control_map || !control_map->IsMovementControlsEnabled() ||
                 control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
                 continue;
             }
 
+            //get shout key
+            auto elden = config::mcm_setting::get_elden_demon_souls();
+            if (elden) {
+                RE::UserEvents* user_events = RE::UserEvents::GetSingleton();
+                key_top_execute_ = control_map->GetMappedKey(user_events->shout, button->device.get());
+            }
+
             if (config::mcm_setting::get_hide_outside_combat() && !ui::ui_renderer::get_fade()) {
-                if ((is_position_button(key_) || key_ == key_toggle_) && (button->IsDown() || button->IsPressed())) {
+                if ((is_position_button(key_) || key_ == key_bottom_execute_or_toggle_ ||
+                        (elden && key_ == key_top_execute_)) &&
+                    (button->IsDown() || button->IsPressed())) {
                     ui::ui_renderer::set_fade(true, 1.f);
                 }
             }
@@ -146,41 +155,15 @@ namespace event {
                 }
             }
 
-            if (key_ == key_toggle_ && button->IsUp() && is_toggle_down_) {
-                is_toggle_down_ = false;
-
-                /*const auto player = RE::PlayerCharacter::GetSingleton();
-                const auto actor = player->As<RE::Actor>();
-                auto spell = RE::TESForm::LookupByID(0x00012fcd);
-                if (spell->Is(RE::FormType::Spell)) {
-                    auto spell_item = spell->As<RE::SpellItem>();
-                    if (player->IsCasting(spell_item)) {
-                        logger::trace("Casting flames"sv);
-                        actor->InterruptCast(false);
-                    }
-                }*/
-            }
-
-            if (key_ == key_toggle_ && button->IsDown()) {
-                is_toggle_down_ = true;
-                //SpellCast
-                /*const auto player = RE::PlayerCharacter::GetSingleton();
-                const auto actor = player->As<RE::Actor>();
-                auto spell = RE::TESForm::LookupByID(0x00012fcd);
-                if (spell->Is(RE::FormType::Spell)) {
-                    auto spell_item = spell->As<RE::SpellItem>();
-                    actor->GetMagicCaster(RE::MagicSystem::CastingSource::kRightHand)
-                        ->CastSpellImmediate(spell_item, false, actor, 1.0f, false, 0.0f, nullptr);
-                }*/
-            }
-
             if (!button->IsDown()) {
                 continue;
             }
 
-            if (button->IsPressed() && is_key_valid(key_toggle_) && key_ == key_toggle_) {
+
+            if (button->IsPressed() && is_key_valid(key_bottom_execute_or_toggle_) &&
+                key_ == key_bottom_execute_or_toggle_) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
-                if (!config::mcm_setting::get_elden_demon_souls()) {
+                if (!elden) {
                     const auto handler = handle::page_handle::get_singleton();
                     handler->set_active_page(handler->get_next_page_id());
                 }
@@ -188,10 +171,17 @@ namespace event {
                 reset_edit();
             }
 
-            //TODO move into separate function
-            if (is_toggle_down_ && scroll_position(key_) && button->IsPressed() && is_key_valid(key_bottom_action_)) {
-                const auto page_setting = handle::setting_execute::get_position_setting_for_key(key_);
-                handle::setting_execute::execute_settings(page_setting->slot_settings);
+            if (elden && button->IsPressed()) {
+                handle::position_setting* page_setting = nullptr;
+                if (is_key_valid(key_bottom_execute_or_toggle_) && key_ == key_bottom_execute_or_toggle_) {
+                    page_setting = handle::setting_execute::get_position_setting_for_key(key_bottom_action_);
+                }
+                if (is_key_valid(key_top_execute_) && key_ == key_top_execute_) {
+                    page_setting = handle::setting_execute::get_position_setting_for_key(key_top_action_);
+                }
+                if (page_setting) {
+                    handle::setting_execute::execute_settings(page_setting->slot_settings);
+                }
             }
 
             if (is_position_button(key_)) {
@@ -318,19 +308,18 @@ namespace event {
             return;
         }
 
-
         if (config::mcm_setting::get_elden_demon_souls()) {
             const auto key_handler = handle::key_position_handle::get_singleton();
             const auto handler = handle::page_handle::get_singleton();
             if (!key_handler->is_position_locked(position_setting->position)) {
-                if ((scroll_position(a_key) && !is_toggle_down_) || !scroll_position(a_key)) {
-                    handler->set_active_page_position(
-                        handler->get_next_non_empty_setting_for_position(position_setting->position),
-                        position_setting->position);
-                }
+                handler->set_active_page_position(
+                    handler->get_next_non_empty_setting_for_position(position_setting->position),
+                    position_setting->position);
+                position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
                 if (!scroll_position(a_key)) {
-                    position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
                     handle::setting_execute::execute_settings(position_setting->slot_settings);
+                } else if (position_setting->position == handle::position_setting::position_type::top) {
+                    handle::setting_execute::execute_settings(position_setting->slot_settings, true);
                 }
             } else {
                 logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->position));

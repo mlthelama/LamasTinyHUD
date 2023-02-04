@@ -291,6 +291,8 @@ namespace handle {
         setting_execute::execute_settings(position_setting->slot_settings);
         position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::right);
         setting_execute::execute_settings(position_setting->slot_settings);
+        position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::top);
+        setting_execute::execute_settings(position_setting->slot_settings, true);
         logger::trace("done equip for first set"sv);
     }
 

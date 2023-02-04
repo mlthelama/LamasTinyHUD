@@ -11,6 +11,14 @@
                     "type": "header"
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 5,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bElden"
+                    }
+                },
+                {
                     "id": "uTopActionKey:Controls",
                     "text": "$LamasTinyHUD_TopActionKey_OptionText",
                     "type": "keymap",
@@ -58,6 +66,30 @@
                     "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "sExecuteKeyTop:Controls",
+                    "type": "text",
+                    "text": "$LamasTinyHUD_ExecuteKeyTop_OptionText",
+                    "help": "$LamasTinyHUD_ExecuteKeyTop_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    }
+                },
+                {
+                    "id": "sExecuteKeyBottom:Controls",
+                    "type": "text",
+                    "text": "$LamasTinyHUD_ExecuteKeyBottom_OptionText",
+                    "help": "$LamasTinyHUD_ExecuteKeyBottom_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "hide",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
                     }
                 },
                 {

@@ -43,12 +43,11 @@ namespace event {
         uint32_t key_right_action_ = k_invalid;
         uint32_t key_bottom_action_ = k_invalid;
         uint32_t key_left_action_ = k_invalid;
-        uint32_t key_toggle_ = k_invalid;
+        uint32_t key_bottom_execute_or_toggle_ = k_invalid;
+        uint32_t key_top_execute_ = k_invalid;
 
         uint32_t button_press_modify_ = ui::draw_full;
         uint32_t edit_active_ = k_invalid;
-
-        bool is_toggle_down_ = false;
 
         void do_button_press(uint32_t a_key);
         void do_button_hold(uint32_t a_key);

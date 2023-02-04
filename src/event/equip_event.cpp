@@ -96,6 +96,7 @@ namespace event {
                 case handle::slot_setting::slot_type::weapon:
                 case handle::slot_setting::slot_type::magic:
                 case handle::slot_setting::slot_type::shield:
+                case handle::slot_setting::slot_type::light:
                     //not handled here
                     break;
             }

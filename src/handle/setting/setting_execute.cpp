@@ -12,7 +12,7 @@
 namespace handle {
     using mcm = config::mcm_setting;
 
-    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots) {
+    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots, bool a_only_equip) {
         logger::trace("got {} settings execute"sv, a_slots.size());
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
@@ -31,6 +31,14 @@ namespace handle {
                     slot->action == slot_setting::acton_type::un_equip) ||
                 (slot->form && slot->form->formID == util::unarmed)) {
                 un_equip.push_back(slot->equip_slot);
+            }
+
+            if (mcm::get_elden_demon_souls() && a_only_equip &&
+                slot->action != slot_setting::acton_type::default_action) {
+                logger::trace("form {} does not need equip, skipping"sv,
+                    slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null");
+                equip::equip_slot::un_equip_shout_slot(player);
+                continue;
             }
 
             logger::trace("executing setting for type {}, action {}, form {}, left {} ..."sv,

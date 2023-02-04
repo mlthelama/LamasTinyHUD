@@ -324,12 +324,17 @@ namespace util {
         const auto item = new data_helper();
         const auto type = get_type(a_form);
         const auto two_handed = is_two_handed(a_form);
+        logger::trace("Item {}, is Type {}, TwoHanded {}"sv,
+            a_form ? string_util::int_to_hex(a_form->formID) : "null",
+            static_cast<uint32_t>(type),
+            two_handed);
 
         switch (a_position) {
             case handle::position_setting::position_type::top:
                 switch (type) {
                     case handle::slot_setting::slot_type::power:
                     case handle::slot_setting::slot_type::shout:
+                        //case handle::slot_setting::slot_type::misc:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;

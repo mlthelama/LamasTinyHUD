@@ -2,6 +2,7 @@
 #include "equip/equip_slot.h"
 #include "item.h"
 #include "util/offset.h"
+#include <setting/mcm_setting.h>
 
 namespace equip {
     std::vector<RE::TESForm*> magic::get_spells(const bool a_instant, const bool a_single) {
@@ -75,6 +76,11 @@ namespace equip {
         auto casting_type = spell->GetCastingType();
         logger::trace("spell {} is type {}"sv, spell->GetName(), static_cast<uint32_t>(casting_type));
         if (a_action == action_type::instant && casting_type != RE::MagicSystem::CastingType::kConcentration) {
+            if (config::mcm_setting::get_elden_demon_souls()) {
+                //normally in elden just top uses instant for spells
+                equip::equip_slot::un_equip_shout_slot(a_player);
+            }
+            
             //might cost nothing if nothing has been equipped into tha hands after start, so it seems
             auto cost = spell->CalculateMagickaCost(a_player);
             logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.2f}"), cost));
@@ -221,6 +227,8 @@ namespace equip {
         }
 
         if (a_action == handle::slot_setting::acton_type::instant) {
+            //try that
+            equip::equip_slot::un_equip_shout_slot(a_player);
             //might not consider daily cool downs
             const auto actor = a_player->As<RE::Actor>();
             actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
