@@ -653,10 +653,23 @@
                     "position": 1
                 },
                 {
-                    "id": "fHudSlotPositionOffset:HudSetting",
-                    "text": "$LamasTinyHUD_HudSetting_SlotPositionOffset_OptionText",
+                    "id": "fHudSlotPositionOffsetX:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotPositionOffset_OptionTextX",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_HudSetting_SlotPositionOffset_InfoText",
+                    "help": "$LamasTinyHUD_HudSetting_SlotPositionOffset_InfoTextX",
+                    "valueOptions": {
+                        "min": 0.0,
+                        "max": 300.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fHudSlotPositionOffsetY:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_SlotPositionOffset_OptionTextY",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_SlotPositionOffset_InfoTextY",
                     "valueOptions": {
                         "min": 0.0,
                         "max": 300.0,

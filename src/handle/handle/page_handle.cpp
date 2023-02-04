@@ -30,7 +30,8 @@ namespace handle {
 
         page_handle_data* data = this->data_;
 
-        const auto slot_offset = mcm::get_hud_slot_position_offset();
+        const auto slot_offset_x = mcm::get_hud_slot_position_offset_x();
+        const auto slot_offset_y = mcm::get_hud_slot_position_offset_y();
         const auto key_offset = mcm::get_hud_key_position_offset();
 
         auto* page = new position_setting();
@@ -85,12 +86,12 @@ namespace handle {
         float offset_x = 0.f;
         float offset_y = 0.f;
 
-        get_offset_values(a_position, slot_offset, offset_x, offset_y);
+        get_offset_values(a_position, slot_offset_x, slot_offset_y, offset_x, offset_y);
 
         draw->offset_slot_x = offset_x;
         draw->offset_slot_y = offset_y;
 
-        get_offset_values(a_position, key_offset, offset_x, offset_y);
+        get_offset_values(a_position, key_offset, key_offset, offset_x, offset_y);
         draw->offset_key_x = offset_x;
         draw->offset_key_y = offset_y;
 
@@ -101,8 +102,8 @@ namespace handle {
         if (mcm::get_elden_demon_souls() && a_position == position_setting::position_type::bottom ||
             a_position == position_setting::position_type::top) {
             page->item_name = true;
-            get_offset_values(a_position, mcm::get_slot_item_name_offset_y(), offset_x, offset_y);
-            draw->offset_name_text_x = offset_x + mcm::get_slot_item_name_offset_x();
+            get_offset_values(a_position, mcm::get_slot_item_name_offset_x(), mcm::get_slot_item_name_offset_y(), offset_x, offset_y);
+            draw->offset_name_text_x = offset_x;
             draw->offset_name_text_y = offset_y;
         } else {
             page->item_name = false;
@@ -286,24 +287,27 @@ namespace handle {
         return -1;
     }
 
-    void page_handle::get_offset_values(const position_setting::position_type a_position,
-        const float a_setting,
+    void page_handle::get_offset_values(
+        const position_setting::position_type a_position,
+        const float a_setting_x,
+        const float a_setting_y,
         float& offset_x,
-        float& offset_y) {
+        float& offset_y
+        ) {
         offset_x = 0.f;
         offset_y = 0.f;
         switch (a_position) {
             case position_setting::position_type::top:
-                offset_y = -a_setting;
+                offset_y = -a_setting_y;
                 break;
             case position_setting::position_type::right:
-                offset_x = a_setting;
+                offset_x = a_setting_x;
                 break;
             case position_setting::position_type::bottom:
-                offset_y = a_setting;
+                offset_y = a_setting_y;
                 break;
             case position_setting::position_type::left:
-                offset_x = -a_setting;
+                offset_x = -a_setting_x;
                 break;
             case position_setting::position_type::total:
                 break;
