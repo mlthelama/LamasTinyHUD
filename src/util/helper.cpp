@@ -548,13 +548,18 @@ namespace util {
 
     std::vector<std::string> helper::search_for_config_files(bool a_elden) {
         std::vector<std::string> file_list;
-        auto dir_iterator = std::filesystem::directory_iterator(ini_path);
+        auto dir_iterator =
+            std::filesystem::directory_iterator(ini_path, std::filesystem::directory_options::skip_permission_denied);
         auto file_name = ini_default_name;
         if (a_elden) {
             file_name = ini_elden_name;
         }
 
         for (const auto& entry : dir_iterator) {
+            if (!is_regular_file(entry.path()) || is_directory(entry.path()) || is_other(entry.path()) ||
+                entry.path().extension() != util::ini_ending) {
+                continue;
+            }
             if (entry.path().filename().string().starts_with(file_name)) {
                 logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
                 if (!a_elden && entry.path().filename().string().starts_with(ini_elden_name)) {
