@@ -228,7 +228,10 @@ namespace equip {
 
         if (a_action == handle::slot_setting::acton_type::instant) {
             //try that
-            equip::equip_slot::un_equip_shout_slot(a_player);
+            if (config::mcm_setting::get_elden_demon_souls()) {
+                //normally in elden just top uses instant for spells
+                equip::equip_slot::un_equip_shout_slot(a_player);
+            }
             //might not consider daily cool downs
             const auto actor = a_player->As<RE::Actor>();
             actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
