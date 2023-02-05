@@ -693,7 +693,8 @@ namespace ui {
         builder.BuildRanges(&ranges);
 
         //string stays this way
-        std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name();
+        std::string path = std::filesystem::current_path().string() + R"(\Data\SKSE\Plugins\resources\font\)" +
+                           config::file_setting::get_font_file_name();
         logger::trace("Trying to load Font file {}"sv, path);
 
         loaded_font =
