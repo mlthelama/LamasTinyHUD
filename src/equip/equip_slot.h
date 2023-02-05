@@ -18,7 +18,7 @@ namespace equip {
         static void un_equip_object_ft_dummy_dagger(RE::BGSEquipSlot*& a_slot,
             RE::PlayerCharacter*& a_player,
             RE::ActorEquipManager*& a_actor_equip_manager);
-        
+
         //not used
         // 0 - Left hand,  1 - Right hand, 2 Other
         static void un_equip_spell(RE::BSScript::IVirtualMachine* a_vm,

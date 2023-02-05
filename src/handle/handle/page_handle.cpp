@@ -102,7 +102,11 @@ namespace handle {
         if (mcm::get_elden_demon_souls() && a_position == position_setting::position_type::bottom ||
             a_position == position_setting::position_type::top) {
             page->item_name = true;
-            get_offset_values(a_position, mcm::get_slot_item_name_offset_x(), mcm::get_slot_item_name_offset_y(), offset_x, offset_y);
+            get_offset_values(a_position,
+                mcm::get_slot_item_name_offset_x(),
+                mcm::get_slot_item_name_offset_y(),
+                offset_x,
+                offset_y);
             draw->offset_name_text_x = offset_x;
             draw->offset_name_text_y = offset_y;
         } else {
@@ -287,13 +291,11 @@ namespace handle {
         return -1;
     }
 
-    void page_handle::get_offset_values(
-        const position_setting::position_type a_position,
+    void page_handle::get_offset_values(const position_setting::position_type a_position,
         const float a_setting_x,
         const float a_setting_y,
         float& offset_x,
-        float& offset_y
-        ) {
+        float& offset_y) {
         offset_x = 0.f;
         offset_y = 0.f;
         switch (a_position) {
