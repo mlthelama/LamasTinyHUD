@@ -116,5 +116,7 @@ namespace ui {
 
         static void set_fade(bool a_in, float a_value);
         static bool get_fade();
+
+        static void toggle_show_ui();
     };
 }

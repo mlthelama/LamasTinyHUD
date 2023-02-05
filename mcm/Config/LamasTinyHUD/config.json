@@ -93,6 +93,20 @@
                     }
                 },
                 {
+                    "text": "$LamasTinyHUD_Optional_Controls",
+                    "type": "header"
+                },
+                {
+                    "id": "uShowHideKey:Controls",
+                    "text": "$LamasTinyHUD_ShowHideKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_ShowHideKey_InfoText",
+                    "ignoreConflicts": false,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_Controls_Controller",
                     "type": "header",
                     "position": 1

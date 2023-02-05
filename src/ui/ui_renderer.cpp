@@ -706,4 +706,12 @@ namespace ui {
             return;
         }
     }
+    void ui_renderer::toggle_show_ui() {
+        if (show_ui_) {
+            show_ui_ = false;
+        } else {
+            show_ui_ = true;
+        }
+        logger::trace("Show UI is now {}"sv, show_ui_);
+    }
 }

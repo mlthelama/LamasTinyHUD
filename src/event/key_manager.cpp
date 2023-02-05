@@ -34,6 +34,7 @@ namespace event {
         key_left_action_ = config::mcm_setting::get_left_action_key();
         key_bottom_execute_or_toggle_ = config::mcm_setting::get_toggle_key();
         button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
+        key_hide_show_ = config::mcm_setting::get_show_hide_key();
 
         //top execute btn is bound to the shout key, no need to check here
         if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) ||
@@ -159,6 +160,9 @@ namespace event {
                 continue;
             }
 
+            if (button->IsPressed() && key_hide_show_ != k_invalid && key_ == key_hide_show_) {
+                ui::ui_renderer::toggle_show_ui();
+            }
 
             if (button->IsPressed() && is_key_valid(key_bottom_execute_or_toggle_) &&
                 key_ == key_bottom_execute_or_toggle_) {
