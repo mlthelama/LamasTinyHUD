@@ -51,7 +51,8 @@ namespace handle {
         ~page_handle() = default;
 
         static void get_offset_values(position_setting::position_type a_position,
-            float a_setting,
+            float a_setting_x,
+            float a_setting_y,
             float& offset_x,
             float& offset_y);
 

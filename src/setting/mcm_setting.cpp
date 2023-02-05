@@ -19,7 +19,8 @@ namespace config {
     static float hud_image_scale_height;
     static float hud_image_position_width;
     static float hud_image_position_height;
-    static float hud_slot_position_offset;
+    static float hud_slot_position_offset_x;
+    static float hud_slot_position_offset_y;
     static float hud_key_position_offset;
     static float icon_scale_width;
     static float icon_scale_height;
@@ -94,8 +95,10 @@ namespace config {
                 static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionWidth", 200));
             hud_image_position_height =
                 static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImagePositionHeight", 775));
-            hud_slot_position_offset =
-                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffset", 105));
+            hud_slot_position_offset_x =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffsetX", 105));
+            hud_slot_position_offset_y =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudSlotPositionOffsetY", 105));
             hud_key_position_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudKeyPositionOffset", 38));
             icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleWidth", 0.10));
             icon_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fIconScaleHeight", 0.10));
@@ -179,7 +182,8 @@ namespace config {
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height * master_scale; }
     float mcm_setting::get_hud_image_position_width() { return hud_image_position_width; }
     float mcm_setting::get_hud_image_position_height() { return hud_image_position_height; }
-    float mcm_setting::get_hud_slot_position_offset() { return hud_slot_position_offset * master_scale; }
+    float mcm_setting::get_hud_slot_position_offset_x() { return hud_slot_position_offset_x * master_scale; }
+    float mcm_setting::get_hud_slot_position_offset_y() { return hud_slot_position_offset_y * master_scale; }
     float mcm_setting::get_hud_key_position_offset() { return hud_key_position_offset * master_scale; }
     float mcm_setting::get_icon_scale_width() { return icon_scale_width * master_scale; }
     float mcm_setting::get_icon_scale_height() { return icon_scale_height * master_scale; }
