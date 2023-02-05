@@ -49,6 +49,8 @@ namespace event {
 
         uint32_t button_press_modify_ = ui::draw_full;
         uint32_t edit_active_ = k_invalid;
+        
+        bool is_toggle_down_ = false;
 
         void do_button_press(uint32_t a_key);
         void do_button_hold(uint32_t a_key);

@@ -107,6 +107,21 @@
                     }
                 },
                 {
+                    "text": "$LamasTinyHUD_Control_Handlings",
+                    "type": "header"
+                },
+                {
+                    "id": "bBottomExecuteKeyComboOnly:Controls",
+                    "text": "$LamasTinyHUD_BottomExecuteKeyComboOnly_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_BottomExecuteKeyComboOnly_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_Controls_Controller",
                     "type": "header",
                     "position": 1

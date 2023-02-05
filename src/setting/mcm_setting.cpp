@@ -11,6 +11,7 @@ namespace config {
     static uint32_t left_action_key;
     static uint32_t toggle_key;
     static uint32_t show_hide_key;
+    static bool bottom_execute_key_combo_only;
     static bool draw_toggle_button;
     static uint32_t controller_set;
     static float config_button_hold_time;
@@ -86,6 +87,7 @@ namespace config {
             left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 13));
             toggle_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uToggleKey", 27));
             show_hide_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uShowHideKey", 26));
+            bottom_execute_key_combo_only = mcm.GetBoolValue("Controls", "bBottomExecuteKeyComboOnly", false);
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
             config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
             draw_toggle_button = mcm.GetBoolValue("Controls", "bDrawToggleButton", true);
@@ -176,6 +178,7 @@ namespace config {
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
     uint32_t mcm_setting::get_toggle_key() { return toggle_key; }
     uint32_t mcm_setting::get_show_hide_key() { return show_hide_key; }
+    bool mcm_setting::get_bottom_execute_key_combo_only() { return bottom_execute_key_combo_only; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }

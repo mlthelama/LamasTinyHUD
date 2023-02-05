@@ -11,6 +11,7 @@ namespace config {
         static uint32_t get_left_action_key();
         static uint32_t get_toggle_key();
         static uint32_t get_show_hide_key();
+        static bool get_bottom_execute_key_combo_only();
         static uint32_t get_controller_set();
         static float get_config_button_hold_time();
         [[maybe_unused]] static float get_master_scale();
