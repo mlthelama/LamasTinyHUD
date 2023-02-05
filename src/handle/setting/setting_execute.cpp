@@ -12,7 +12,7 @@
 namespace handle {
     using mcm = config::mcm_setting;
 
-    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots, bool a_only_equip) {
+    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots, bool a_only_equip, bool a_only_instant) {
         logger::trace("got {} settings execute"sv, a_slots.size());
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
@@ -41,6 +41,11 @@ namespace handle {
                 continue;
             }
 
+            if (mcm::get_elden_demon_souls() && a_only_instant && slot->action != slot_setting::acton_type::instant) {
+                logger::trace("form {} does not need any work, skipping"sv, slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null");
+                continue;
+            }
+            
             logger::trace("executing setting for type {}, action {}, form {}, left {} ..."sv,
                 static_cast<uint32_t>(slot->type),
                 static_cast<uint32_t>(slot->action),

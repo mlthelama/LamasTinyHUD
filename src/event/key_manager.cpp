@@ -172,15 +172,14 @@ namespace event {
             }
 
             if (elden && button->IsPressed()) {
-                handle::position_setting* page_setting = nullptr;
                 if (is_key_valid(key_bottom_execute_or_toggle_) && key_ == key_bottom_execute_or_toggle_) {
-                    page_setting = handle::setting_execute::get_position_setting_for_key(key_bottom_action_);
+                    auto page_setting = handle::setting_execute::get_position_setting_for_key(key_bottom_action_);
+                    handle::setting_execute::execute_settings(page_setting->slot_settings);
                 }
                 if (is_key_valid(key_top_execute_) && key_ == key_top_execute_) {
-                    page_setting = handle::setting_execute::get_position_setting_for_key(key_top_action_);
-                }
-                if (page_setting) {
-                    handle::setting_execute::execute_settings(page_setting->slot_settings);
+                    auto page_setting = handle::setting_execute::get_position_setting_for_key(key_top_action_);
+                    //only instant should need work, the default shout will be handled by the game
+                    handle::setting_execute::execute_settings(page_setting->slot_settings, false, true);
                 }
             }
 
