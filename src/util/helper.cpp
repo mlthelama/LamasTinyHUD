@@ -206,7 +206,7 @@ namespace util {
                 return handle::slot_setting::slot_type::shield;
             } else if (armor->IsClothing() &&
                        (armor->HasKeywordString("_WL_Lantern") &&
-                               armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kModFaceJewelry) ||
+                               armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kNone) ||
                            armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kModPelvisPrimary))) {
                 //Wearable Lanterns got keyword _WL_Lantern
                 //Simple Wearable Lanterns do not have a keyword, but will be equipped on 49 (30+19)
@@ -352,12 +352,6 @@ namespace util {
                             item->action_type = handle::slot_setting::acton_type::instant;
                         }
                         break;
-                    case handle::slot_setting::slot_type::lantern:
-                        item->form = a_form;
-                        item->type = type;
-                        item->two_handed = two_handed;
-                        item->left = false;
-                        break;
                 }
                 break;
             case handle::position_setting::position_type::right:
@@ -374,6 +368,7 @@ namespace util {
             case handle::position_setting::position_type::bottom:
                 switch (type) {
                     case handle::slot_setting::slot_type::consumable:
+                    case handle::slot_setting::slot_type::lantern:  //not sure if best here
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
