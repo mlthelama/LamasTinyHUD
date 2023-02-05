@@ -140,7 +140,7 @@ namespace equip {
             //update ui in this case
             return;
         }
-        logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
+        logger::trace("try to equip armor/clothing {}"sv, a_form->GetName());
 
         if (auto equip_manager = RE::ActorEquipManager::GetSingleton();
             !equip_slot::un_equip_if_equipped(obj, a_player, equip_manager)) {

@@ -89,6 +89,7 @@ namespace event {
                 case handle::slot_setting::slot_type::scroll:
                 case handle::slot_setting::slot_type::misc:
                 case handle::slot_setting::slot_type::lantern:
+                case handle::slot_setting::slot_type::mask:
                     item->form = a_form;
                     item->type = type;
                     data_.push_back(item);
