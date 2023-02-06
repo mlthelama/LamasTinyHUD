@@ -3,6 +3,7 @@
 #include "image_path.h"
 
 #define WIN32_LEAN_AND_MEAN
+#include "animation_handler.h"
 #include <imgui.h>
 #include <windows.h>
 #include <winuser.h>
@@ -39,6 +40,7 @@ namespace ui {
 
         ui_renderer();
 
+        static void draw_animations_frame();
         static void draw_text(float a_x,
             float a_y,
             float a_offset_x,
@@ -54,7 +56,8 @@ namespace ui {
             float a_angle,
             ImU32 a_color = IM_COL32_WHITE);
         static void draw_hud(float a_x, float a_y, float a_scale_x, float a_scale_y, uint32_t a_alpha);
-        static void draw_slot(float a_screen_x,
+        static void draw_slot(
+            float a_screen_x,
             float a_screen_y,
             float a_scale_x,
             float a_scale_y,
@@ -62,6 +65,18 @@ namespace ui {
             float a_offset_y,
             uint32_t a_modify,
             uint32_t a_alpha);
+        static void init_animation(
+            animation_type animation_type,
+            float a_screen_x,
+            float a_screen_y,
+            float a_scale_x,
+            float a_scale_y,
+            float a_offset_x,
+            float a_offset_y,
+            uint32_t a_modify,
+            uint32_t a_alpha,
+            float a_duration
+        );
         static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
         static void draw_key(float a_x,
             float a_y,
@@ -100,6 +115,8 @@ namespace ui {
 
         template <typename T>
         static void load_images(std::map<T, const char*>& a_map, std::map<uint32_t, image>& a_struct);
+
+        static void load_animation_frames(const std::list<const char*>&, std::vector<image>& frame_list);
 
         static image get_key_icon(uint32_t a_key);
 

@@ -9,6 +9,7 @@
 
 #include "image_path.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include "animation_handler.h"
 #include "event/key_manager.h"
 #include "event/sink_event.h"
 #include "handle/handle/ammo_handle.h"
@@ -29,12 +30,16 @@ namespace ui {
         int32_t height = 0;
     };
 
+    static std::map<animation_type, std::vector<image>> animation_frame_map = {};
+    static std::vector<std::pair<animation_type, std::unique_ptr<animation>>> animation_list;
+
     static std::map<uint32_t, image> image_struct;
     static std::map<uint32_t, image> icon_struct;
     static std::map<uint32_t, image> key_struct;
     static std::map<uint32_t, image> default_key_struct;
     static std::map<uint32_t, image> ps_key_struct;
     static std::map<uint32_t, image> xbox_key_struct;
+
 
     float fade = 1.0f;
     bool fade_in = true;
@@ -125,7 +130,8 @@ namespace ui {
     }
 
     // Simple helper function to load an image into a DX11 texture with common settings
-    bool ui_renderer::load_texture_from_file(const char* filename,
+    bool ui_renderer::load_texture_from_file(
+        const char* filename,
         ID3D11ShaderResourceView** out_srv,
         std::int32_t& out_width,
         std::int32_t& out_height) {
@@ -184,6 +190,31 @@ namespace ui {
     }
 
     ui_renderer::ui_renderer() = default;
+    
+    void ui_renderer::draw_animations_frame() {
+        // logger::info("in draw animations frame");
+        // logger::info("animations to process: {}"sv, animation_list.size());
+        auto it = animation_list.begin();
+        while(it != animation_list.end()) {
+            logger::info("in loop");
+            if (!it->second->is_over()) {
+                logger::info("animation playing");
+                animation* anim = it->second.get();
+                draw_element(
+                    animation_frame_map[it->first][anim->current_frame].texture,
+                    anim->center,
+                    anim->size,
+                    anim->angle,
+                    IM_COL32(anim->r_color, anim->g_color, anim->b_color, anim->alpha)
+                    );
+                anim->animate_action(ImGui::GetIO().DeltaTime);
+                ++it;
+            } else {
+                logger::info("animation complete");
+                it = animation_list.erase(it);
+            }
+        }
+    }
 
     void ui_renderer::draw_text(const float a_x,
         const float a_y,
@@ -206,8 +237,9 @@ namespace ui {
 
         ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
     }
-
-    void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
+    
+    void ui_renderer::draw_element(
+        ID3D11ShaderResourceView* a_texture,
         const ImVec2 a_center,
         const ImVec2 a_size,
         const float a_angle,
@@ -259,9 +291,54 @@ namespace ui {
         const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
         const ImU32 color = IM_COL32(a_modify, a_modify, a_modify, a_alpha);
 
+        //logger::info("size of slot: scale {} {} * size {} {}"sv, a_scale_x, a_scale_y, width, height);
+
         draw_element(texture, center, size, angle, color);
     }
 
+    void ui_renderer::init_animation(
+        const animation_type animation_type,
+        const float a_screen_x,
+        const float a_screen_y,
+        const float a_scale_x,
+        const float a_scale_y,
+        const float a_offset_x,
+        const float a_offset_y,
+        const uint32_t a_modify,
+        const uint32_t a_alpha,
+        float a_duration
+    ) {
+        logger::info("inited animation");
+        constexpr auto angle = 0.0f;
+
+        //logger::info("animation frame map: {}"sv, animation_frame_map.size());
+        //logger::info("animation frame first animation: {}"sv, animation_frame_map[animation_type].size());
+
+        const uint32_t size = animation_frame_map[animation_type].size();
+        const int32_t width = animation_frame_map[animation_type][0].width;
+        const int32_t height = animation_frame_map[animation_type][0].height;
+
+        //logger::info("animation size: {}"sv, size);
+        //logger::info("size of animation: scale {} {} size: {} {}"sv, a_scale_x, a_scale_y, width, height);
+
+
+        std::unique_ptr<animation> anim = std::make_unique<fade_framed_out_animation>(
+            ImVec2(a_screen_x + a_offset_x, a_screen_y + a_offset_y),
+            ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y),
+            angle,
+            a_alpha,
+            255,
+            255,
+            255,
+            a_duration,
+            size,
+            10
+            );
+        logger::info("inited animation 2");
+        animation_list.emplace_back(static_cast<ui::animation_type>(animation_type), std::move(anim));
+        logger::info("inited animation 2");
+    }
+    
     void
         ui_renderer::draw_slots(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
@@ -285,6 +362,25 @@ namespace ui {
                 draw_setting->offset_slot_y,
                 page_setting->icon_type,
                 draw_setting->icon_transparency);
+             logger::info("In Draw Slots: Position: {}"sv, static_cast<uint32_t>(position));
+             logger::info("Page Setting instance: {}"sv, reinterpret_cast<uint32_t>(page_setting));
+            if (page_setting->highlight_slot) {
+                page_setting->highlight_slot = false;
+                logger::info("in highlighting animation");
+                init_animation(
+                    animation_type::highlight,
+                    a_x,
+                    a_y,
+                    draw_setting->hud_image_scale_width,
+                    draw_setting->hud_image_scale_height,
+                    draw_setting->offset_slot_x,
+                    draw_setting->offset_slot_y,
+                    draw_full,
+                    255/5,
+                    0.1f
+                    );
+                logger::info("===HIGHLIGHTING QUEUED===");
+            }
 
             if (mcm::get_elden_demon_souls() && page_setting->item_name && page_setting->slot_settings.front()->form) {
                 const ImU32 color =
@@ -347,10 +443,12 @@ namespace ui {
         }
         const auto ammo_handle = handle::ammo_handle::get_singleton();
         if (const auto current_ammo = ammo_handle->get_current(); current_ammo && mcm::get_elden_demon_souls()) {
-            const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
+            const ImU32 color = IM_COL32(
+                mcm::get_slot_count_red(),
                 mcm::get_slot_count_green(),
                 mcm::get_slot_count_blue(),
-                mcm::get_text_transparency());
+                mcm::get_text_transparency()
+                );
             draw_slot(a_x,
                 a_y,
                 mcm::get_hud_arrow_image_scale_width(),
@@ -376,7 +474,24 @@ namespace ui {
                 std::to_string(current_ammo->item_count ? current_ammo->item_count : 0).c_str(),
                 color,
                 mcm::get_arrow_count_font_size());
+
+            if(current_ammo->highlight_slot) {
+                current_ammo->highlight_slot = false;
+                init_animation(
+                    animation_type::highlight,
+                    a_x,
+                    a_y,
+                    mcm::get_hud_arrow_image_scale_width(),
+                    mcm::get_hud_arrow_image_scale_height(),
+                    mcm::get_arrow_slot_offset_x(),
+                    mcm::get_arrow_slot_offset_y(),
+                    draw_full,
+                    255/5,
+                    0.1f
+                );
+            }
         }
+        draw_animations_frame();
     }
 
     void ui_renderer::draw_key(const float a_x,
@@ -502,14 +617,11 @@ namespace ui {
 
         static constexpr ImGuiWindowFlags window_flag =
             ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoInputs;
-
-
+        
         const float screen_size_x = ImGui::GetIO().DisplaySize.x, screen_size_y = ImGui::GetIO().DisplaySize.y;
-
-
+        
         ImGui::SetNextWindowSize(ImVec2(screen_size_x, screen_size_y));
         ImGui::SetNextWindowPos(ImVec2(0.f, 0.f));
-
 
         ImGui::GetStyle().Alpha = fade;
 
@@ -525,6 +637,7 @@ namespace ui {
                 x = 0.f;
                 y = 0.f;
             }
+
             draw_hud(x, y, scale_x, scale_y, alpha);
             draw_slots(x, y, settings);
             draw_keys(x, y, settings);
@@ -586,6 +699,8 @@ namespace ui {
                     load_images(gamepad_ps_icon_path_map, ps_key_struct);
                     load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
+                    load_animation_frames(highlight_animation_file_paths, animation_frame_map[animation_type::highlight]);
+                    logger::info("check frame length: {}"sv, animation_frame_map[animation_type::highlight].size());
                     load_font();
                     //show_ui_ = true;
                     event::sink_events();
@@ -605,7 +720,7 @@ namespace ui {
         for (auto [type, path] : a_map) {
             const auto idx = static_cast<int32_t>(type);
             if (load_texture_from_file(path, &a_struct[idx].texture, a_struct[idx].width, a_struct[idx].height)) {
-                logger::info("loaded texture {}"sv, path);
+                logger::info("loaded texture {} width: {}, height: {}"sv, path, a_struct[idx].width, a_struct[idx].height);
             } else {
                 logger::error("failed to load texture {}"sv, path);
             }
@@ -613,6 +728,19 @@ namespace ui {
             a_struct[idx].width = static_cast<int32_t>(a_struct[idx].width * get_resolution_scale_width());
             a_struct[idx].height = static_cast<int32_t>(a_struct[idx].height * get_resolution_scale_height());
         }
+    }
+
+    void ui_renderer::load_animation_frames(const std::list<const char*>& paths_list, std::vector<image>& frame_list) {
+        logger::info("loading animation frames");
+        for (const auto& it : paths_list) {
+            ID3D11ShaderResourceView* texture = nullptr;
+            int32_t width = 0;
+            int32_t height = 0;
+            load_texture_from_file(it, &texture, width, height);
+            logger::info("loading animation frame: {}"sv, it);
+            frame_list.push_back(image(texture, width * get_resolution_scale_width(), height * get_resolution_scale_height()));
+        }
+        logger::info("frame list loaded {} frames"sv, frame_list.size());
     }
 
     image ui_renderer::get_key_icon(const uint32_t a_key) {
@@ -666,7 +794,7 @@ namespace ui {
     }
 
     bool ui_renderer::get_fade() { return fade_in; }
-
+    
     void ui_renderer::load_font() {
         ImGuiIO& io = ImGui::GetIO();
         ImVector<ImWchar> ranges;
@@ -707,4 +835,5 @@ namespace ui {
             return;
         }
     }
+
 }
