@@ -20,7 +20,8 @@ namespace handle {
             empty = 8,
             misc = 9,
             light = 10,
-            lantern = 11
+            lantern = 11,
+            mask = 12
         };
 
         RE::TESForm* form = nullptr;

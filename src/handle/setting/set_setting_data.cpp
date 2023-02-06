@@ -250,12 +250,15 @@ namespace handle {
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
                 for (const auto setting : page_setting->slot_settings) {
-                    if (setting->type == slot_setting::slot_type::consumable && setting->form->formID == a_form_id) {
+                    if ((setting->type == slot_setting::slot_type::consumable ||
+                            setting->type == slot_setting::slot_type::scroll) &&
+                        setting->form->formID == a_form_id) {
                         setting->item_count = setting->item_count + a_count;
                         logger::trace("FormId {}, new count {}, change count {}"sv,
                             util::string_util::int_to_hex(a_form_id),
                             setting->item_count,
                             a_count);
+                        util::helper::block_location(page_setting, setting->item_count == 0);
                     }
                 }
             }

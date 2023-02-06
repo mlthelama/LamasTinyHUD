@@ -28,6 +28,7 @@ namespace util {
             handle::position_setting::position_type a_position,
             const std::vector<data_helper*>& a_config_data);
         static std::vector<std::string> search_for_config_files(bool a_elden);
+        static void block_location(handle::position_setting* a_position_setting, bool a_condition);
 
     private:
         static std::string get_section_name_for_page_position(uint32_t a_page, uint32_t a_position);

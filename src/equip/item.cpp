@@ -1,6 +1,8 @@
 ﻿#include "item.h"
 #include "equip/equip_slot.h"
+#include "setting/mcm_setting.h"
 #include "util/constant.h"
+#include "util/string_util.h"
 
 namespace equip {
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
@@ -140,7 +142,7 @@ namespace equip {
             //update ui in this case
             return;
         }
-        logger::trace("try to equip weapon/shield {}"sv, a_form->GetName());
+        logger::trace("try to equip armor/clothing {}"sv, a_form->GetName());
 
         if (auto equip_manager = RE::ActorEquipManager::GetSingleton();
             !equip_slot::un_equip_if_equipped(obj, a_player, equip_manager)) {
@@ -164,8 +166,18 @@ namespace equip {
             }
         }
 
+
+        if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && obj && obj->IsDynamicForm() &&
+            left == 1) {
+            logger::warn(
+                "Somehow the game crashes on potions with dynamic id if the count is 0 (happens with or without the mod). So I am not consuming it. Form {}, Name {}"sv,
+                util::string_util::int_to_hex(obj->formID),
+                obj->GetName());
+            return;
+        }
+
         if (!obj || left == 0) {
-            logger::warn("could not find selected potion, maybe it all have been consumed"sv);
+            logger::warn("could not find selected potion, maybe all have been consumed"sv);
             //TODO update ui in this case
             return;
         }

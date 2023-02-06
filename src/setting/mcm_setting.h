@@ -10,6 +10,8 @@ namespace config {
         static uint32_t get_bottom_action_key();
         static uint32_t get_left_action_key();
         static uint32_t get_toggle_key();
+        static uint32_t get_show_hide_key();
+        static bool get_bottom_execute_key_combo_only();
         static uint32_t get_controller_set();
         static float get_config_button_hold_time();
         [[maybe_unused]] static float get_master_scale();
@@ -70,5 +72,6 @@ namespace config {
         static bool get_check_duplicate_items();
         static bool get_un_equip_ammo();
         static bool get_only_favorite_ammo();
+        static bool get_prevent_consumption_of_last_dynamic_potion();
     };
 }

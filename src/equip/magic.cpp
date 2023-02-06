@@ -80,7 +80,7 @@ namespace equip {
                 //normally in elden just top uses instant for spells
                 equip::equip_slot::un_equip_shout_slot(a_player);
             }
-            
+
             //might cost nothing if nothing has been equipped into tha hands after start, so it seems
             auto cost = spell->CalculateMagickaCost(a_player);
             logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.2f}"), cost));

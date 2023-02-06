@@ -34,6 +34,7 @@ namespace event {
         key_left_action_ = config::mcm_setting::get_left_action_key();
         key_bottom_execute_or_toggle_ = config::mcm_setting::get_toggle_key();
         button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
+        key_hide_show_ = config::mcm_setting::get_show_hide_key();
 
         //top execute btn is bound to the shout key, no need to check here
         if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) ||
@@ -155,10 +156,23 @@ namespace event {
                 }
             }
 
+            if (elden && config::mcm_setting::get_bottom_execute_key_combo_only() &&
+                key_ == key_bottom_execute_or_toggle_ && button->IsUp() && is_toggle_down_) {
+                is_toggle_down_ = false;
+            }
+
+            if (elden && config::mcm_setting::get_bottom_execute_key_combo_only() &&
+                key_ == key_bottom_execute_or_toggle_ && button->IsDown()) {
+                is_toggle_down_ = true;
+            }
+
             if (!button->IsDown()) {
                 continue;
             }
 
+            if (button->IsPressed() && key_hide_show_ != k_invalid && key_ == key_hide_show_) {
+                ui::ui_renderer::toggle_show_ui();
+            }
 
             if (button->IsPressed() && is_key_valid(key_bottom_execute_or_toggle_) &&
                 key_ == key_bottom_execute_or_toggle_) {
@@ -172,15 +186,17 @@ namespace event {
             }
 
             if (elden && button->IsPressed()) {
-                handle::position_setting* page_setting = nullptr;
-                if (is_key_valid(key_bottom_execute_or_toggle_) && key_ == key_bottom_execute_or_toggle_) {
-                    page_setting = handle::setting_execute::get_position_setting_for_key(key_bottom_action_);
+                if ((!config::mcm_setting::get_bottom_execute_key_combo_only() &&
+                        is_key_valid(key_bottom_execute_or_toggle_) && key_ == key_bottom_execute_or_toggle_) ||
+                    config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
+                        key_ == key_bottom_action_) {
+                    auto page_setting = handle::setting_execute::get_position_setting_for_key(key_bottom_action_);
+                    handle::setting_execute::execute_settings(page_setting->slot_settings);
                 }
                 if (is_key_valid(key_top_execute_) && key_ == key_top_execute_) {
-                    page_setting = handle::setting_execute::get_position_setting_for_key(key_top_action_);
-                }
-                if (page_setting) {
-                    handle::setting_execute::execute_settings(page_setting->slot_settings);
+                    auto page_setting = handle::setting_execute::get_position_setting_for_key(key_top_action_);
+                    //only instant should need work, the default shout will be handled by the game
+                    handle::setting_execute::execute_settings(page_setting->slot_settings, false, true);
                 }
             }
 
@@ -309,6 +325,10 @@ namespace event {
         }
 
         if (config::mcm_setting::get_elden_demon_souls()) {
+            if (config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
+                a_key == key_bottom_action_) {
+                return;
+            }
             const auto key_handler = handle::key_position_handle::get_singleton();
             const auto handler = handle::page_handle::get_singleton();
             if (!key_handler->is_position_locked(position_setting->position)) {

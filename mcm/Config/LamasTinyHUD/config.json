@@ -93,6 +93,35 @@
                     }
                 },
                 {
+                    "text": "$LamasTinyHUD_Optional_Controls",
+                    "type": "header"
+                },
+                {
+                    "id": "uShowHideKey:Controls",
+                    "text": "$LamasTinyHUD_ShowHideKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_ShowHideKey_InfoText",
+                    "ignoreConflicts": false,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "text": "$LamasTinyHUD_Control_Handlings",
+                    "type": "header"
+                },
+                {
+                    "id": "bBottomExecuteKeyComboOnly:Controls",
+                    "text": "$LamasTinyHUD_BottomExecuteKeyComboOnly_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_BottomExecuteKeyComboOnly_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_Controls_Controller",
                     "type": "header",
                     "position": 1
@@ -280,7 +309,7 @@
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern", "$LamasTinyHUD_Type_Mask"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -394,7 +423,7 @@
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern"],
+                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern", "$LamasTinyHUD_Type_Mask"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -1224,6 +1253,15 @@
                     "help": "$LamasTinyHUD_OnlyFavoriteAmmo_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bPreventConsumptionOfLastDynamicPotion:MiscSetting",
+                    "text": "$LamasTinyHUD_PreventConsumptionOfLastDynamicPotion_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_PreventConsumptionOfLastDynamicPotion_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }

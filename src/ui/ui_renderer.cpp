@@ -258,8 +258,7 @@ namespace ui {
             ->AddImageQuad(a_texture, pos[0], pos[1], pos[2], pos[3], uvs[0], uvs[1], uvs[2], uvs[3], a_color);
     }
 
-    void ui_renderer::draw_hud(
-        const float a_x,
+    void ui_renderer::draw_hud(const float a_x,
         const float a_y,
         const float a_scale_x,
         const float a_scale_y,
@@ -274,16 +273,14 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_slot(
-        const float a_screen_x,
+    void ui_renderer::draw_slot(const float a_screen_x,
         const float a_screen_y,
         const float a_scale_x,
         const float a_scale_y,
         const float a_offset_x,
         const float a_offset_y,
         const uint32_t a_modify,
-        const uint32_t a_alpha
-        ) {
+        const uint32_t a_alpha) {
         constexpr auto angle = 0.f;
 
         const auto center = ImVec2(a_screen_x + a_offset_x, a_screen_y + a_offset_y);
@@ -436,6 +433,7 @@ namespace ui {
                     case handle::slot_setting::slot_type::misc:
                     case handle::slot_setting::slot_type::light:
                     case handle::slot_setting::slot_type::lantern:
+                    case handle::slot_setting::slot_type::mask:
                         //Nothing, for now
                         break;
                 }
@@ -823,8 +821,8 @@ namespace ui {
         }
         builder.BuildRanges(&ranges);
 
-        //string stays this way
-        std::string path = "Data\\SKSE\\Plugins\\resources\\font\\" + config::file_setting::get_font_file_name();
+
+        std::string path = R"(Data\SKSE\Plugins\resources\font\)" + config::file_setting::get_font_file_name();
         logger::trace("Trying to load Font file {}"sv, path);
 
         loaded_font =
@@ -836,4 +834,12 @@ namespace ui {
         }
     }
 
+    void ui_renderer::toggle_show_ui() {
+        if (show_ui_) {
+            show_ui_ = false;
+        } else {
+            show_ui_ = true;
+        }
+        logger::trace("Show UI is now {}"sv, show_ui_);
+    }
 }
