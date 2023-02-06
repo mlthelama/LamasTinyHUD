@@ -287,9 +287,7 @@ namespace ui {
         const auto [texture, width, height] = image_struct[static_cast<int32_t>(image_type::round)];
         const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
         const ImU32 color = IM_COL32(a_modify, a_modify, a_modify, a_alpha);
-
-        //logger::info("size of slot: scale {} {} * size {} {}"sv, a_scale_x, a_scale_y, width, height);
-
+        
         draw_element(texture, center, size, angle, color);
     }
 
@@ -308,16 +306,9 @@ namespace ui {
         logger::info("inited animation");
         constexpr auto angle = 0.0f;
 
-        //logger::info("animation frame map: {}"sv, animation_frame_map.size());
-        //logger::info("animation frame first animation: {}"sv, animation_frame_map[animation_type].size());
-
         const uint32_t size = animation_frame_map[animation_type].size();
         const int32_t width = animation_frame_map[animation_type][0].width;
         const int32_t height = animation_frame_map[animation_type][0].height;
-
-        //logger::info("animation size: {}"sv, size);
-        //logger::info("size of animation: scale {} {} size: {} {}"sv, a_scale_x, a_scale_y, width, height);
-
 
         std::unique_ptr<animation> anim = std::make_unique<fade_framed_out_animation>(
             ImVec2(a_screen_x + a_offset_x, a_screen_y + a_offset_y),
