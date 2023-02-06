@@ -233,9 +233,7 @@ namespace event {
         auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
         //use settings here
         if (setting && setting->draw_setting && setting->draw_setting->icon_transparency) {
-            setting->draw_setting->icon_transparency = a_equipped ?
-                                                           config::mcm_setting::get_icon_transparency_blocked() :
-                                                           config::mcm_setting::get_icon_transparency();
+            util::helper::block_location(setting, a_equipped);
         }
         //check if bow or crossbow, now we look for ammo that is in the favor list
         if (a_equipped && a_form->Is(RE::FormType::Weapon)) {

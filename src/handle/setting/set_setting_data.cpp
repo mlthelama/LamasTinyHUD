@@ -256,6 +256,7 @@ namespace handle {
                             util::string_util::int_to_hex(a_form_id),
                             setting->item_count,
                             a_count);
+                        util::helper::block_location(page_setting, setting->item_count == 0);
                     }
                 }
             }

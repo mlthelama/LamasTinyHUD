@@ -547,31 +547,39 @@ namespace util {
 
     std::vector<std::string> helper::search_for_config_files(bool a_elden) {
         std::vector<std::string> file_list;
-        auto path = std::filesystem::current_path().string() + "\\" + ini_path;
-        auto dir_iterator =
-            std::filesystem::directory_iterator(path, std::filesystem::directory_options::skip_permission_denied);
         auto file_name = ini_default_name;
         if (a_elden) {
             file_name = ini_elden_name;
         }
 
-        logger::trace("Will start looking in Path {}"sv, path);
-        for (const auto& entry : dir_iterator) {
-            if (!is_regular_file(entry.path()) || is_directory(entry.path()) || is_other(entry.path()) ||
-                entry.path().extension() != util::ini_ending) {
-                continue;
-            }
-            if (entry.path().filename().string().starts_with(file_name)) {
-                logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
-                if (!a_elden && entry.path().filename().string().starts_with(ini_elden_name)) {
-                    logger::warn("Skipping File {}, because it would also match for Elden"sv,
-                        entry.path().filename().string());
-                    continue;
+        logger::trace("Will start looking in Path {}"sv, ini_path);
+        if (std::filesystem::is_directory(ini_path)) {
+            for (const auto& entry : std::filesystem::directory_iterator(ini_path)) {
+                if (is_regular_file(entry) && entry.path().extension() == util::ini_ending &&
+                    entry.path().filename().string().starts_with(file_name)) {
+                    logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
+                    if (!a_elden && entry.path().filename().string().starts_with(ini_elden_name)) {
+                        logger::warn("Skipping File {}, because it would also match for Elden"sv,
+                            entry.path().filename().string());
+                        continue;
+                    }
+                    file_list.push_back(entry.path().filename().string());
                 }
-                file_list.push_back(entry.path().filename().string());
             }
         }
         logger::trace("Got {} Files to return in Path"sv, file_list.size());
         return file_list;
+    }
+
+    void helper::block_location(handle::position_setting* a_position_setting, bool a_condition) {
+        //if true block
+        if (!a_position_setting || !a_position_setting->draw_setting) {
+            return;
+        }
+        if (a_condition) {
+            a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
+        } else {
+            a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency();
+        }
     }
 }

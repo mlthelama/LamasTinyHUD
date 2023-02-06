@@ -115,6 +115,11 @@ namespace handle {
             draw->offset_name_text_y = 0.f;
         }
 
+        if (slots->front()->item_count == 0 && slots->front()->type == slot_setting::slot_type::consumable ||
+            slots->front()->type == slot_setting::slot_type::scroll) {
+            draw->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
+        }
+
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);

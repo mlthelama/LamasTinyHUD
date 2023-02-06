@@ -7,7 +7,7 @@ namespace util {
     constexpr auto dynamic_name = "dynamic";
     constexpr auto delimiter = "|";
 
-    const std::string ini_path = "Data\\SKSE\\Plugins\\";  // NOLINT(modernize-raw-string-literal)
+    const auto ini_path = R"(Data\SKSE\Plugins\)";
     const std::string ini_default_name = "LamasTinyHUD_Custom";
     const std::string ini_elden_name = "LamasTinyHUD_Custom_Elden";
     const std::string ini_ending = ".ini";
