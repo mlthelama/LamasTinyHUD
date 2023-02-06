@@ -359,11 +359,8 @@ namespace ui {
                 draw_setting->offset_slot_y,
                 page_setting->icon_type,
                 draw_setting->icon_transparency);
-             logger::info("In Draw Slots: Position: {}"sv, static_cast<uint32_t>(position));
-             logger::info("Page Setting instance: {}"sv, reinterpret_cast<uint32_t>(page_setting));
             if (page_setting->highlight_slot) {
                 page_setting->highlight_slot = false;
-                logger::info("in highlighting animation");
                 init_animation(
                     animation_type::highlight,
                     a_x,
@@ -376,7 +373,6 @@ namespace ui {
                     255/5,
                     0.1f
                     );
-                logger::info("===HIGHLIGHTING QUEUED===");
             }
 
             if (mcm::get_elden_demon_souls() && page_setting->item_name && page_setting->slot_settings.front()->form) {
@@ -729,7 +725,6 @@ namespace ui {
     }
 
     void ui_renderer::load_animation_frames(const std::list<const char*>& paths_list, std::vector<image>& frame_list) {
-        logger::info("loading animation frames");
         for (const auto& it : paths_list) {
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
