@@ -1,6 +1,8 @@
 ﻿#include "item.h"
 #include "equip/equip_slot.h"
+#include "setting/mcm_setting.h"
 #include "util/constant.h"
+#include "util/string_util.h"
 
 namespace equip {
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
@@ -162,6 +164,16 @@ namespace equip {
                 left = inv_data.first;
                 break;
             }
+        }
+
+
+        if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && obj && obj->IsDynamicForm() &&
+            left == 1) {
+            logger::warn(
+                "Somehow the game crashes on potions with dynamic id if the count is 0 (happens with or without the mod). So I am not consuming it. Form {}, Name {}"sv,
+                util::string_util::int_to_hex(obj->formID),
+                obj->GetName());
+            return;
         }
 
         if (!obj || left == 0) {

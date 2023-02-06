@@ -1258,6 +1258,15 @@
                     }
                 },
                 {
+                    "id": "bPreventConsumptionOfLastDynamicPotion:MiscSetting",
+                    "text": "$LamasTinyHUD_PreventConsumptionOfLastDynamicPotion_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_PreventConsumptionOfLastDynamicPotion_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_MiscSetting_HeaderText_Settings",
                     "type": "header",
                     "position": 1

@@ -115,8 +115,8 @@ namespace handle {
             draw->offset_name_text_y = 0.f;
         }
 
-        if (slots->front()->item_count == 0 && slots->front()->type == slot_setting::slot_type::consumable ||
-            slots->front()->type == slot_setting::slot_type::scroll) {
+        if (slots->front()->item_count == 0 && (slots->front()->type == slot_setting::slot_type::consumable ||
+                                                   slots->front()->type == slot_setting::slot_type::scroll)) {
             draw->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
         }
 

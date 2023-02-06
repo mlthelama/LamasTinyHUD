@@ -483,6 +483,9 @@ namespace util {
             //return false for now
             return false;
         }
+        if (a_type == handle::slot_setting::slot_type::scroll) {
+            return true;
+        }
         if (a_type == handle::slot_setting::slot_type::shout) {
             return false;
         }

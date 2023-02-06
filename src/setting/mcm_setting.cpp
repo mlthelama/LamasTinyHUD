@@ -72,6 +72,7 @@ namespace config {
     static bool check_duplicate_items;
     static bool un_equip_ammo;
     static bool only_favorite_ammo;
+    static bool prevent_consumption_of_last_dynamic_potion;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -163,6 +164,8 @@ namespace config {
             check_duplicate_items = mcm.GetBoolValue("MiscSetting", "bCheckDuplicateItems", true);
             un_equip_ammo = mcm.GetBoolValue("MiscSetting", "bUnEquipAmmo", false);
             only_favorite_ammo = mcm.GetBoolValue("MiscSetting", "bOnlyFavoriteAmmo", false);
+            prevent_consumption_of_last_dynamic_potion =
+                mcm.GetBoolValue("MiscSetting", "bPreventConsumptionOfLastDynamicPotion", true);
         };
 
         read_mcm(mcm_default_setting);
@@ -239,4 +242,7 @@ namespace config {
     bool mcm_setting::get_check_duplicate_items() { return check_duplicate_items; }
     bool mcm_setting::get_un_equip_ammo() { return un_equip_ammo; }
     bool mcm_setting::get_only_favorite_ammo() { return only_favorite_ammo; }
+    bool mcm_setting::get_prevent_consumption_of_last_dynamic_potion() {
+        return prevent_consumption_of_last_dynamic_potion;
+    }
 }
