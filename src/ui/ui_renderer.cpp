@@ -192,8 +192,6 @@ namespace ui {
     ui_renderer::ui_renderer() = default;
     
     void ui_renderer::draw_animations_frame() {
-        // logger::info("in draw animations frame");
-        // logger::info("animations to process: {}"sv, animation_list.size());
         auto it = animation_list.begin();
         while(it != animation_list.end()) {
             logger::info("in loop");
