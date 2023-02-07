@@ -9,7 +9,11 @@
 #include <winuser.h>
 
 namespace ui {
-    struct image;
+    struct image {
+        ID3D11ShaderResourceView* texture = nullptr;
+        int32_t width = 0;
+        int32_t height = 0;
+    };
 
     class ui_renderer {
         using position = handle::position_setting::position_type;
@@ -56,8 +60,7 @@ namespace ui {
             float a_angle,
             ImU32 a_color = IM_COL32_WHITE);
         static void draw_hud(float a_x, float a_y, float a_scale_x, float a_scale_y, uint32_t a_alpha);
-        static void draw_slot(
-            float a_screen_x,
+        static void draw_slot(float a_screen_x,
             float a_screen_y,
             float a_scale_x,
             float a_scale_y,
@@ -65,8 +68,7 @@ namespace ui {
             float a_offset_y,
             uint32_t a_modify,
             uint32_t a_alpha);
-        static void init_animation(
-            animation_type animation_type,
+        static void init_animation(animation_type animation_type,
             float a_screen_x,
             float a_screen_y,
             float a_scale_x,
@@ -75,8 +77,7 @@ namespace ui {
             float a_offset_y,
             uint32_t a_modify,
             uint32_t a_alpha,
-            float a_duration
-        );
+            float a_duration);
         static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
         static void draw_key(float a_x,
             float a_y,

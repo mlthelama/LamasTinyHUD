@@ -337,7 +337,6 @@ namespace event {
                     position_setting->position);
                 position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
                 position_setting->highlight_slot = true;
-                logger::trace("Position Setting instance: {}"sv, reinterpret_cast<uint32_t>(position_setting));
                 if (!scroll_position(a_key)) {
                     handle::setting_execute::execute_settings(position_setting->slot_settings);
                 } else if (position_setting->position == handle::position_setting::position_type::top) {

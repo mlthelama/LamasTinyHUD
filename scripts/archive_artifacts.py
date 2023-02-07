@@ -17,7 +17,7 @@ def make_rel_archive(a_args):
     v_path: str = os.path.join(a_args.src_dir, "extern", "resources")
     for extension in resource_extensions:
         for path in Path(v_path).rglob(extension):
-            archive.write(path, os.path.join("SKSE/Plugins/resources/", path.parent.name, path.name))
+            archive.write(path, os.path.join("SKSE/Plugins/", path.relative_to(v_path)))
 
     archive.write(os.path.join(a_args.src_dir, "mcm", "LamasTinyHUD.esl"), "LamasTinyHUD.esl")
     v_path: str = os.path.join(a_args.src_dir, "mcm", "scripts")

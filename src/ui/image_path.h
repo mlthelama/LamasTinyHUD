@@ -17,7 +17,7 @@ namespace ui {
         R"(.\Data\SKSE\Plugins\resources\animation\highlight\frame1.png)",
         R"(.\Data\SKSE\Plugins\resources\animation\highlight\frame2.png)",
         R"(.\Data\SKSE\Plugins\resources\animation\highlight\frame3.png)"
-        };
+    };
 
     enum class icon_image_type {
         potion_health = 0,

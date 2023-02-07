@@ -42,6 +42,7 @@ set(sources ${sources}
 	src/setting/file_setting.h
 	src/setting/mcm_setting.cpp
 	src/setting/mcm_setting.h
+	src/ui/animation_handler.h
 	src/ui/image_path.h
 	src/ui/key_path.h
 	src/ui/ui_renderer.cpp
