@@ -13,6 +13,12 @@ namespace ui {
         { image_type::key, R"(.\Data\SKSE\Plugins\resources\img\key.png)" }
     };
 
+    static std::list highlight_animation_file_paths = {
+        R"(.\Data\SKSE\Plugins\resources\animation\highlight\frame1.png)",
+        R"(.\Data\SKSE\Plugins\resources\animation\highlight\frame2.png)",
+        R"(.\Data\SKSE\Plugins\resources\animation\highlight\frame3.png)"
+        };
+
     enum class icon_image_type {
         potion_health = 0,
         potion_default = 1,

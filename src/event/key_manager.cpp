@@ -336,6 +336,8 @@ namespace event {
                     handler->get_next_non_empty_setting_for_position(position_setting->position),
                     position_setting->position);
                 position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
+                position_setting->highlight_slot = true;
+                logger::trace("Position Setting instance: {}"sv, reinterpret_cast<uint32_t>(position_setting));
                 if (!scroll_position(a_key)) {
                     handle::setting_execute::execute_settings(position_setting->slot_settings);
                 } else if (position_setting->position == handle::position_setting::position_type::top) {
@@ -347,6 +349,7 @@ namespace event {
                 const auto ammo_handle = handle::ammo_handle::get_singleton();
                 if (const auto next_ammo = ammo_handle->get_next_ammo()) {
                     handle::setting_execute::execute_ammo(next_ammo);
+                    handle::ammo_handle::get_singleton()->get_current()->highlight_slot = true;
                 }
             }
         } else {

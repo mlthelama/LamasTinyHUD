@@ -18,5 +18,6 @@ namespace handle {
         position_draw_setting* draw_setting = nullptr;
         float font_size = 0.f;
         bool item_name = false;
+        bool highlight_slot = false;
     };
 }
