@@ -187,9 +187,9 @@ namespace ui {
     void ui_renderer::draw_animations_frame() {
         auto it = animation_list.begin();
         while (it != animation_list.end()) {
-            logger::trace("in draw animation draw loop");
+            logger::trace("in draw animation draw loop"sv);
             if (!it->second->is_over()) {
-                logger::trace("animation playing");
+                logger::trace("animation playing"sv);
                 animation* anim = it->second.get();
                 draw_element(animation_frame_map[it->first][anim->current_frame].texture,
                     anim->center,
@@ -199,7 +199,7 @@ namespace ui {
                 anim->animate_action(ImGui::GetIO().DeltaTime);
                 ++it;
             } else {
-                logger::trace("animation complete");
+                logger::trace("animation complete"sv);
                 it = animation_list.erase(it);
             }
         }
@@ -344,8 +344,8 @@ namespace ui {
                     draw_setting->offset_slot_x,
                     draw_setting->offset_slot_y,
                     draw_full,
-                    255 / 5,
-                    0.1f);
+                    255 / 5,  //TODO setting
+                    0.1f);    //TODO setting
             }
 
             if (mcm::get_elden_demon_souls() && page_setting->item_name && page_setting->slot_settings.front()->form) {
@@ -450,8 +450,8 @@ namespace ui {
                     mcm::get_arrow_slot_offset_x(),
                     mcm::get_arrow_slot_offset_y(),
                     draw_full,
-                    255 / 5,
-                    0.1f);
+                    255 / 5,  //TODO setting
+                    0.1f);    //TODO setting
             }
         }
         draw_animations_frame();
