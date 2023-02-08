@@ -5,7 +5,6 @@
 #include "SKSE/SKSE.h"
 
 #pragma warning(push)
-#include <spdlog/sinks/basic_file_sink.h>
 #ifdef NDEBUG
 #include <spdlog/sinks/basic_file_sink.h>
 #else
@@ -17,9 +16,7 @@ using namespace std::literals;
 
 namespace stl {
     using namespace SKSE::stl;
-
-    constexpr std::string_view safe_string(const char* a_str) { return a_str ? a_str : ""sv; }
-
+    
     template <class T>
     void write_thunk_call() {
         auto& trampoline = SKSE::GetTrampoline();
@@ -30,7 +27,6 @@ namespace stl {
 
 namespace logger = SKSE::log;
 
-#define DLLEXPORT __declspec(dllexport)
 #define EXTERN_C extern "C"
 
 #include "Version.h"
