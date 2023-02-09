@@ -178,7 +178,6 @@ namespace equip {
 
         if (!obj || left == 0) {
             logger::warn("could not find selected potion, maybe all have been consumed"sv);
-            //TODO update ui in this case
             return;
         }
 
@@ -186,7 +185,7 @@ namespace equip {
             logger::warn("object {} is not an alchemy item. return."sv, obj->GetName());
             return;
         }
-
+        
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
 
         const auto equip_manager = RE::ActorEquipManager::GetSingleton();

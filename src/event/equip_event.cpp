@@ -140,8 +140,11 @@ namespace event {
                     data_.push_back(item);
                 }
             } else {
-                util::helper::write_notification(fmt::format("Ignored Item {}, because it did not fit the requirement",
-                    a_form ? a_form->GetName() : "null"));
+                if (a_form && !a_form->Is(RE::FormType::Enchantment)) {
+                    util::helper::write_notification(
+                        fmt::format("Ignored Item {}, because it did not fit the requirement",
+                            a_form ? a_form->GetName() : "null"));
+                }
             }
 
             if (a_form && a_form->Is(RE::FormType::AlchemyItem)) {
