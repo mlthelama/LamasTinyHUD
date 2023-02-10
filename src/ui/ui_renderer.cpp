@@ -4,8 +4,11 @@
 #include <imgui_impl_dx11.h>
 #include <imgui_impl_win32.h>
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#pragma warning(pop)
 
 #include "image_path.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -662,7 +665,7 @@ namespace ui {
                     load_images(gamepad_ps_icon_path_map, ps_key_struct);
                     load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
 
-                    load_animation_frames(highlight_animation_file_paths,
+                    load_animation_frames(highlight_animation_directory,
                         animation_frame_map[animation_type::highlight]);
                     logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
                     load_font();
@@ -697,20 +700,24 @@ namespace ui {
         }
     }
 
-    void ui_renderer::load_animation_frames(const std::list<const char*>& paths_list, std::vector<image>& frame_list) {
-        for (const auto& it : paths_list) {
+    void ui_renderer::load_animation_frames(std::string file_path, std::vector<image>& frame_list) {
+        std::vector<std::string> paths;
+        std::string current_directory = std::filesystem::current_path().string();
+        for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
+            paths.push_back(entry.path().string());
+            logger::info("in here");
+
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
             int32_t height = 0;
-            load_texture_from_file(it, &texture, width, height);
-            logger::trace("loading animation frame: {}"sv, it);
+            load_texture_from_file(entry.path().string().c_str(), &texture, width, height);
+            logger::trace("loading animation frame: {}"sv, entry.path().string().c_str());
             image img;
             img.texture = texture;
             img.width = static_cast<int32_t>(width * get_resolution_scale_width());
             img.height = static_cast<int32_t>(height * get_resolution_scale_height());
             frame_list.push_back(img);
         }
-        logger::info("frame list loaded {} frames"sv, frame_list.size());
     }
 
     image ui_renderer::get_key_icon(const uint32_t a_key) {
