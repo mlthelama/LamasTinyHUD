@@ -658,12 +658,12 @@ namespace ui {
                         get_resolution_scale_width(),
                         get_resolution_scale_height());
 
-                    //load_images(image_type_name_map, image_struct, img_directory);
+                    load_images(image_type_name_map, image_struct, img_directory);
                     load_images(icon_type_name_map, icon_struct, icon_directory);
-                    load_images(key_icon_path_map, key_struct, key_directory);
+                    load_images(key_icon_name_map, key_struct, key_directory);
                     load_images(default_key_icon_path_map, default_key_struct, key_directory);
-                    load_images(gamepad_ps_icon_path_map, ps_key_struct, key_directory);
-                    load_images(gamepad_xbox_icon_path_map, xbox_key_struct, key_directory);
+                    load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
+                    load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
 
                     load_animation_frames(highlight_animation_directory,
                         animation_frame_map[animation_type::highlight]);
@@ -683,13 +683,12 @@ namespace ui {
     }
 
     template <typename T>
-    void ui_renderer::load_images(std::map<const char*, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path) {
+    void ui_renderer::load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path) {
         for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
-            logger::info("in here");
 
-            if(a_map.contains(entry.path().filename().string().c_str())) {
-                const auto index = static_cast<int32_t>(a_map[entry.path().filename().string().c_str()]);
-                if (load_texture_from_file(entry.path().filename().string().c_str(), &a_struct[index].texture, a_struct[index].width, a_struct[index].height)) {
+            if(a_map.contains(entry.path().filename().string())) {
+                const auto index = static_cast<int32_t>(a_map[entry.path().filename().string()]);
+                if (load_texture_from_file(entry.path().string().c_str(), &a_struct[index].texture, a_struct[index].width, a_struct[index].height)) {
                     logger::info("loaded texture {} width: {}, height: {}"sv,
                         entry.path().filename().string().c_str(),
                         a_struct[index].width,

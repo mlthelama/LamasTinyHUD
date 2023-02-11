@@ -15,7 +15,7 @@ namespace ui {
         total
     };
 
-    inline static std::map<const char*, image_type> image_type_name_map = {
+    inline static std::map<std::string, image_type> image_type_name_map = {
         {  R"(hud.png)", image_type::hud },
         {  R"(round.png)", image_type::round },
         {  R"(key.png)", image_type::key }
@@ -74,7 +74,7 @@ namespace ui {
     };
 
 
-    inline static std::map<const char*, icon_image_type> icon_type_name_map = {
+    inline static std::map<std::string, icon_image_type> icon_type_name_map = {
         {  R"(potion_health.png)", icon_image_type::potion_health },
         {  R"(potion_default.png)", icon_image_type::potion_default },
         {  R"(sword_one_handed.png)", icon_image_type::sword_one_handed },

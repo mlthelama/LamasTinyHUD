@@ -115,7 +115,7 @@ namespace ui {
         static inline ID3D11DeviceContext* context_ = nullptr;
 
         template <typename T>
-        static void load_images(std::map<const char*, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path);
+        static void load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path);
 
         static void load_animation_frames(std::string& file_path, std::vector<image>& frame_list);
 

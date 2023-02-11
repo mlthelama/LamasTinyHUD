@@ -3,9 +3,9 @@
 namespace ui {
     static std::string key_directory = R"(.\Data\SKSE\Plugins\resources\key)";
     
-    enum class default_keys : uint32_t { key = 0, total };
+    enum class default_keys : uint32_t { key, total };
 
-    inline static std::map<const char*, default_keys> default_key_icon_path_map = {
+    inline static std::map<std::string, default_keys> default_key_icon_path_map = {
         { R"(Blank_Black_Normal.png)", default_keys::key }
     };
 
@@ -117,7 +117,7 @@ namespace ui {
         total
     };
 
-    inline static std::map<const char*, key_values> key_icon_path_map = {
+    inline static std::map<std::string, key_values> key_icon_name_map = {
         { R"(0_Key_Dark.png)", key_values::zero },
         { R"(1_Key_Dark.png)", key_values::one },
         { R"(2_Key_Dark.png)", key_values::two },
@@ -244,7 +244,7 @@ namespace ui {
         total
     };
 
-    inline static std::map<const char*, gamepad_values> gamepad_ps_icon_path_map = {
+    inline static std::map<std::string, gamepad_values> gamepad_ps_icon_name_map = {
         { R"(PS5_Dpad_Up.png)", gamepad_values::up },
         { R"(PS5_Dpad_Down.png)", gamepad_values::down },
         { R"(PS5_Dpad_Left.png)", gamepad_values::left },
@@ -263,7 +263,7 @@ namespace ui {
         { R"(PS5_R2.png)", gamepad_values::right_trigger }
     };
 
-    inline static std::map<const char*, gamepad_values> gamepad_xbox_icon_path_map = {
+    inline static std::map<std::string, gamepad_values> gamepad_xbox_icon_name_map = {
         { R"(XboxSeriesX_Dpad_Up.png)", gamepad_values::up },
         { R"(XboxSeriesX_Dpad_Down.png)", gamepad_values::down },
         { R"(XboxSeriesX_Dpad_Left.png)", gamepad_values::left },
@@ -282,5 +282,5 @@ namespace ui {
         { R"(XboxSeriesX_RT.png)", gamepad_values::right_trigger }
     };
 
-    enum class controller_set : uint32_t { playstation = 0, xbox = 1 };
+    enum class controller_set : uint32_t { playstation, xbox };
 }
