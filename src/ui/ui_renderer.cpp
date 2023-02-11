@@ -658,12 +658,12 @@ namespace ui {
                         get_resolution_scale_width(),
                         get_resolution_scale_height());
 
-                    load_images(image_type_path_map, image_struct);
-                    load_images(icon_type_path_map, icon_struct);
-                    load_images(key_icon_path_map, key_struct);
-                    load_images(default_key_icon_path_map, default_key_struct);
-                    load_images(gamepad_ps_icon_path_map, ps_key_struct);
-                    load_images(gamepad_xbox_icon_path_map, xbox_key_struct);
+                    //load_images(image_type_name_map, image_struct, img_directory);
+                    load_images(icon_type_name_map, icon_struct, icon_directory);
+                    load_images(key_icon_path_map, key_struct, key_directory);
+                    load_images(default_key_icon_path_map, default_key_struct, key_directory);
+                    load_images(gamepad_ps_icon_path_map, ps_key_struct, key_directory);
+                    load_images(gamepad_xbox_icon_path_map, xbox_key_struct, key_directory);
 
                     load_animation_frames(highlight_animation_directory,
                         animation_frame_map[animation_type::highlight]);
@@ -683,24 +683,28 @@ namespace ui {
     }
 
     template <typename T>
-    void ui_renderer::load_images(std::map<T, const char*>& a_map, std::map<uint32_t, image>& a_struct) {
-        for (auto [type, path] : a_map) {
-            const auto idx = static_cast<int32_t>(type);
-            if (load_texture_from_file(path, &a_struct[idx].texture, a_struct[idx].width, a_struct[idx].height)) {
-                logger::info("loaded texture {} width: {}, height: {}"sv,
-                    path,
-                    a_struct[idx].width,
-                    a_struct[idx].height);
-            } else {
-                logger::error("failed to load texture {}"sv, path);
-            }
+    void ui_renderer::load_images(std::map<const char*, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path) {
+        for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
+            logger::info("in here");
 
-            a_struct[idx].width = static_cast<int32_t>(a_struct[idx].width * get_resolution_scale_width());
-            a_struct[idx].height = static_cast<int32_t>(a_struct[idx].height * get_resolution_scale_height());
+            if(a_map.contains(entry.path().filename().string().c_str())) {
+                const auto index = static_cast<int32_t>(a_map[entry.path().filename().string().c_str()]);
+                if (load_texture_from_file(entry.path().filename().string().c_str(), &a_struct[index].texture, a_struct[index].width, a_struct[index].height)) {
+                    logger::info("loaded texture {} width: {}, height: {}"sv,
+                        entry.path().filename().string().c_str(),
+                        a_struct[index].width,
+                        a_struct[index].height);
+                } else {
+                    logger::error("failed to load texture {}"sv, entry.path().filename().string().c_str());
+                }
+
+                a_struct[index].width = static_cast<int32_t>(a_struct[index].width * get_resolution_scale_width());
+                a_struct[index].height = static_cast<int32_t>(a_struct[index].height * get_resolution_scale_height());
+            }
         }
     }
 
-    void ui_renderer::load_animation_frames(std::string file_path, std::vector<image>& frame_list) {
+    void ui_renderer::load_animation_frames(std::string& file_path, std::vector<image>& frame_list) {
         std::vector<std::string> paths;
         std::string current_directory = std::filesystem::current_path().string();
         for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
