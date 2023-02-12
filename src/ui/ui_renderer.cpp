@@ -661,7 +661,7 @@ namespace ui {
                     load_images(image_type_name_map, image_struct, img_directory);
                     load_images(icon_type_name_map, icon_struct, icon_directory);
                     load_images(key_icon_name_map, key_struct, key_directory);
-                    load_images(default_key_icon_path_map, default_key_struct, key_directory);
+                    load_images(default_key_icon_name_map, default_key_struct, key_directory);
                     load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
                     load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
 
