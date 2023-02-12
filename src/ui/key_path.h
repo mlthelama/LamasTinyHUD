@@ -5,7 +5,7 @@ namespace ui {
     
     enum class default_keys : uint32_t { key, total };
 
-    inline static std::map<std::string, default_keys> default_key_icon_path_map = {
+    inline static std::map<std::string, default_keys> default_key_icon_name_map = {
         { R"(Blank_Black_Normal.png)", default_keys::key }
     };
 

@@ -685,11 +685,10 @@ namespace ui {
     template <typename T>
     void ui_renderer::load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path) {
         for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
-
             if(a_map.contains(entry.path().filename().string())) {
                 const auto index = static_cast<int32_t>(a_map[entry.path().filename().string()]);
                 if (load_texture_from_file(entry.path().string().c_str(), &a_struct[index].texture, a_struct[index].width, a_struct[index].height)) {
-                    logger::info("loaded texture {} width: {}, height: {}"sv,
+                    logger::trace("loading texture {} width: {}, height: {}"sv,
                         entry.path().filename().string().c_str(),
                         a_struct[index].width,
                         a_struct[index].height);
@@ -704,12 +703,7 @@ namespace ui {
     }
 
     void ui_renderer::load_animation_frames(std::string& file_path, std::vector<image>& frame_list) {
-        std::vector<std::string> paths;
-        std::string current_directory = std::filesystem::current_path().string();
         for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
-            paths.push_back(entry.path().string());
-            logger::info("in here");
-
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
             int32_t height = 0;
