@@ -289,7 +289,7 @@ namespace ui {
         const float a_scale_y,
         const float a_offset_x,
         const float a_offset_y,
-        [[maybe_unused]] const uint32_t a_modify,
+        const uint32_t a_modify,
         const uint32_t a_alpha,
         float a_duration) {
         logger::trace("starting inited animation");
@@ -304,9 +304,9 @@ namespace ui {
                 ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y),
                 angle,
                 a_alpha,
-                ui::draw_full,
-                ui::draw_full,
-                ui::draw_full,
+                a_modify,
+                a_modify,
+                a_modify,
                 a_duration,
                 size,
                 10);
