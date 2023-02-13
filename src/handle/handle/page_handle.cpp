@@ -68,8 +68,7 @@ namespace handle {
         }
 
         page->slot_settings = *slots;
-
-
+        
         //TODO for now the right hand or the first setting defines the icon, works well for elden.
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
         if (slots->size() == 2 && page->icon_type == ui::icon_image_type::icon_default) {
@@ -367,7 +366,6 @@ namespace handle {
                 get_consumable_icon(a_form, icon);
                 break;
             case slot_setting::slot_type::shield:
-                //kinda useless atm, icon is set by the first setting, basically right hand
                 icon = ui::icon_image_type::shield;
                 break;
             case slot_setting::slot_type::armor:

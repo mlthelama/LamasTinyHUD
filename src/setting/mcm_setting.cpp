@@ -15,7 +15,6 @@ namespace config {
     static bool draw_toggle_button;
     static uint32_t controller_set;
     static float config_button_hold_time;
-    static float master_scale;
 
     static float hud_image_scale_width;
     static float hud_image_scale_height;
@@ -32,6 +31,7 @@ namespace config {
     static float hud_arrow_image_scale_height;
     static float arrow_icon_scale_width;
     static float arrow_icon_scale_height;
+    static float master_scale;
     static float slot_count_text_offset;
     static float toggle_key_offset_x;
     static float toggle_key_offset_y;
@@ -95,7 +95,6 @@ namespace config {
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
             config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
             draw_toggle_button = mcm.GetBoolValue("Controls", "bDrawToggleButton", true);
-            master_scale = static_cast<float>(mcm.GetDoubleValue("Controls", "fMasterScale", 1));
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.23));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
@@ -119,6 +118,7 @@ namespace config {
             arrow_icon_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowIconScaleWidth", 0.05));
             arrow_icon_scale_height =
                 static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowIconScaleHeight", 0.05));
+            master_scale = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fMasterScale", 1));
             toggle_key_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fToggleKeyOffsetX", 115));
             toggle_key_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fToggleKeyOffsetY", 115));
             current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -15));
@@ -191,7 +191,6 @@ namespace config {
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }
-    [[maybe_unused]] float mcm_setting::get_master_scale() { return master_scale; }
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width * master_scale; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height * master_scale; }
@@ -208,6 +207,7 @@ namespace config {
     float mcm_setting::get_hud_arrow_image_scale_height() { return hud_arrow_image_scale_height * master_scale; }
     float mcm_setting::get_arrow_icon_scale_width() { return arrow_icon_scale_width * master_scale; }
     float mcm_setting::get_arrow_icon_scale_height() { return arrow_icon_scale_height * master_scale; }
+    [[maybe_unused]] float mcm_setting::get_master_scale() { return master_scale; }
     float mcm_setting::get_slot_count_text_offset() { return slot_count_text_offset * master_scale; }
     float mcm_setting::get_toggle_key_offset_x() { return toggle_key_offset_x * master_scale; }
     float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y * master_scale; }
