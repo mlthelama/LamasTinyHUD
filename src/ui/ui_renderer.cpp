@@ -23,6 +23,7 @@
 #include "key_path.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
+#include "util/constant.h"
 
 namespace ui {
     using mcm = config::mcm_setting;
@@ -190,9 +191,7 @@ namespace ui {
     void ui_renderer::draw_animations_frame() {
         auto it = animation_list.begin();
         while (it != animation_list.end()) {
-            logger::trace("in draw animation draw loop"sv);
             if (!it->second->is_over()) {
-                logger::trace("animation playing"sv);
                 animation* anim = it->second.get();
                 draw_element(animation_frame_map[it->first][anim->current_frame].texture,
                     anim->center,
@@ -202,7 +201,6 @@ namespace ui {
                 anim->animate_action(ImGui::GetIO().DeltaTime);
                 ++it;
             } else {
-                logger::trace("animation complete"sv);
                 it = animation_list.erase(it);
             }
         }
@@ -351,18 +349,34 @@ namespace ui {
                     0.1f);    //TODO setting
             }
 
-            if (mcm::get_elden_demon_souls() && page_setting->item_name && page_setting->slot_settings.front()->form) {
+            if (mcm::get_elden_demon_souls() && page_setting->item_name && !page_setting->slot_settings.empty()) {
                 const ImU32 color =
                     IM_COL32(draw_full, draw_full, draw_full, page_setting->draw_setting->text_transparency);
-                draw_text(draw_setting->width_setting,
-                    draw_setting->height_setting,
-                    draw_setting->offset_slot_x,
-                    draw_setting->offset_slot_y,
-                    draw_setting->offset_name_text_x,
-                    draw_setting->offset_name_text_y,
-                    page_setting->slot_settings.front()->form->GetName(),
-                    color,
-                    page_setting->font_size);
+                auto slot_setting = page_setting->slot_settings.front();
+                auto slot_name = "";
+                if (slot_setting && slot_setting->form) {
+                    slot_name = page_setting->slot_settings.front()->form->GetName();
+                } else if (slot_setting && slot_setting->actor_value != RE::ActorValue::kNone &&
+                           slot_setting->type == handle::slot_setting::slot_type::consumable &&
+                           util::actor_value_to_base_potion_map_.contains(slot_setting->actor_value)) {
+                    auto potion_form =
+                        RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[slot_setting->actor_value]);
+                    if (potion_form->Is(RE::FormType::AlchemyItem)) {
+                        slot_name = potion_form->GetName();
+                    }
+                }
+
+                if (slot_name) {
+                    draw_text(draw_setting->width_setting,
+                        draw_setting->height_setting,
+                        draw_setting->offset_slot_x,
+                        draw_setting->offset_slot_y,
+                        draw_setting->offset_name_text_x,
+                        draw_setting->offset_name_text_y,
+                        slot_name,
+                        color,
+                        page_setting->font_size);
+                }
             }
 
 
@@ -683,11 +697,16 @@ namespace ui {
     }
 
     template <typename T>
-    void ui_renderer::load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path) {
-        for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
-            if(a_map.contains(entry.path().filename().string())) {
+    void ui_renderer::load_images(std::map<std::string, T>& a_map,
+        std::map<uint32_t, image>& a_struct,
+        std::string& file_path) {
+        for (const auto& entry : std::filesystem::directory_iterator(file_path)) {
+            if (a_map.contains(entry.path().filename().string())) {
                 const auto index = static_cast<int32_t>(a_map[entry.path().filename().string()]);
-                if (load_texture_from_file(entry.path().string().c_str(), &a_struct[index].texture, a_struct[index].width, a_struct[index].height)) {
+                if (load_texture_from_file(entry.path().string().c_str(),
+                        &a_struct[index].texture,
+                        a_struct[index].width,
+                        a_struct[index].height)) {
                     logger::trace("loading texture {} width: {}, height: {}"sv,
                         entry.path().filename().string().c_str(),
                         a_struct[index].width,
@@ -703,7 +722,7 @@ namespace ui {
     }
 
     void ui_renderer::load_animation_frames(std::string& file_path, std::vector<image>& frame_list) {
-        for(const auto& entry : std::filesystem::directory_iterator(file_path)) {
+        for (const auto& entry : std::filesystem::directory_iterator(file_path)) {
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
             int32_t height = 0;

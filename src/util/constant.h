@@ -13,4 +13,10 @@ namespace util {
     const std::string ini_ending = ".ini";
 
     constexpr RE::FormID unarmed = 0x000001F4;
+
+    //I just get names from the default potions, for the default health, stamina, magicka
+    inline static std::map<RE::ActorValue, RE::FormID> actor_value_to_base_potion_map_ = { { RE::ActorValue::kHealth,
+                                                                                               0x0003EADE },
+        { RE::ActorValue::kStamina, 0x00039BE8 },
+        { RE::ActorValue::kMagicka, 0x0003EAE1 } };
 }

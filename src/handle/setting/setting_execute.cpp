@@ -19,12 +19,13 @@ namespace handle {
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
-            if (mcm::get_elden_demon_souls() && !slot->form) {
+            if (!slot->form && slot->type == slot_setting::slot_type::consumable &&
+                slot->actor_value != RE::ActorValue::kNone) {
+                logger::debug("form is null, but actor value is set to {}"sv, static_cast<int>(slot->actor_value));
+            } else if (mcm::get_elden_demon_souls() && !slot->form) {
                 logger::debug("form is null and I am in elden mode, skipping."sv);
                 continue;
-            }
-
-            if (!slot->form && slot->type != slot_setting::slot_type::empty) {
+            } else if (!slot->form && slot->type != slot_setting::slot_type::empty) {
                 logger::warn("form is null and not type empty, skipping."sv);
                 continue;
             }
@@ -81,7 +82,7 @@ namespace handle {
             page = page_handle->get_active_page_id();
             position_setting = page_handle->get_page_setting(page, position);
         }
-        if (position_setting == nullptr) {
+        if (!position_setting) {
             logger::warn("nothing to do, nothing set. return."sv);
         }
         logger::debug("page {}, position is {}, setting count {}"sv,
@@ -102,7 +103,11 @@ namespace handle {
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
             case slot_setting::slot_type::consumable:
-                equip::item::consume_potion(a_slot->form, a_player);
+                if (a_slot->form) {
+                    equip::item::consume_potion(a_slot->form, a_player);
+                } else if (a_slot->actor_value != RE::ActorValue::kNone) {
+                    equip::item::find_and_consume_fitting_option(a_slot->actor_value, a_player);
+                }
                 break;
             case slot_setting::slot_type::magic:
                 equip::magic::magic::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot, a_player);

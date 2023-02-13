@@ -5,6 +5,8 @@
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/string_util.h"
+#include <equip/item.h>
+#include <util/helper.h>
 
 namespace handle {
     using mcm = config::mcm_setting;
@@ -40,19 +42,26 @@ namespace handle {
 
         auto* slots = new std::vector<slot_setting*>;
         for (const auto element : data_helpers) {
-            logger::trace("processing form {}, type {}, action {}, left {}"sv,
+            logger::trace("processing form {}, type {}, action {}, left {}, actor_value {}"sv,
                 element->form ? util::string_util::int_to_hex(element->form->GetFormID()) : "null",
                 static_cast<int>(element->type),
                 static_cast<uint32_t>(element->action_type),
-                element->left);
+                element->left,
+                static_cast<int>(element->actor_value));
             auto* slot = new slot_setting();
             slot->form = element->form;
             slot->type = element->type;
             slot->action = element->action_type;
             slot->equip = a_hand;
+            slot->actor_value = element->actor_value;
             RE::BGSEquipSlot* equip_slot = nullptr;
             get_equip_slots(element->type, a_hand, equip_slot, element->left);
-            get_item_count(element->form, slot->item_count, element->type);
+            if (!element->form && slot->type == slot_setting::slot_type::consumable &&
+                slot->actor_value != RE::ActorValue::kNone) {
+                get_consumable_item_count(slot->actor_value, slot->item_count);
+            } else {
+                get_item_count(element->form, slot->item_count, element->type);
+            }
             slot->equip_slot = equip_slot;
 
             slots->push_back(slot);
@@ -66,6 +75,12 @@ namespace handle {
         if (slots->size() == 2 && page->icon_type == ui::icon_image_type::icon_default) {
             logger::debug("Could not find an Icon with first setting, try next");
             page->icon_type = get_icon_type(slots->at(1)->type, slots->at(1)->form);
+        }
+
+        //TODO we set the icon type according to the actor value
+        if (slots->front()->actor_value != RE::ActorValue::kNone &&
+            slots->front()->type == slot_setting::slot_type::consumable) {
+            get_consumable_icon_by_actor_value(slots->front()->actor_value, page->icon_type);
         }
 
         auto* draw = new position_draw_setting();
@@ -337,10 +352,10 @@ namespace handle {
         auto icon = ui::icon_image_type::icon_default;
         switch (a_type) {
             case slot_setting::slot_type::weapon:
-                get_icon_for_weapon_type(a_form, icon);
+                get_weapon_type_icon(a_form, icon);
                 break;
             case slot_setting::slot_type::magic:
-                get_icon_for_spell(a_form, icon);
+                get_spell_icon(a_form, icon);
                 break;
             case slot_setting::slot_type::shout:
                 icon = ui::icon_image_type::shout;
@@ -349,14 +364,14 @@ namespace handle {
                 icon = ui::icon_image_type::power;
                 break;
             case slot_setting::slot_type::consumable:
-                get_icon_for_consumable(a_form, icon);
+                get_consumable_icon(a_form, icon);
                 break;
             case slot_setting::slot_type::shield:
                 //kinda useless atm, icon is set by the first setting, basically right hand
                 icon = ui::icon_image_type::shield;
                 break;
             case slot_setting::slot_type::armor:
-                get_icon_for_item(a_form, icon);
+                get_item_icon(a_form, icon);
                 break;
             case slot_setting::slot_type::scroll:
                 icon = ui::icon_image_type::scroll;
@@ -378,7 +393,7 @@ namespace handle {
         return icon;
     }
 
-    void page_handle::get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+    void page_handle::get_weapon_type_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
         if (!a_form || !a_form->IsWeapon()) {
             a_icon = ui::icon_image_type::icon_default;
             return;
@@ -441,7 +456,7 @@ namespace handle {
         }
     }
 
-    void page_handle::get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+    void page_handle::get_spell_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
         if (!a_form && !a_form->Is(RE::FormType::Spell)) {
             return;
         }
@@ -486,8 +501,8 @@ namespace handle {
         }
     }
 
-    void page_handle::get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form && !a_form->Is(RE::FormType::AlchemyItem)) {
+    void page_handle::get_consumable_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        if (!a_form || !a_form->Is(RE::FormType::AlchemyItem)) {
             return;
         }
         const auto alchemy_potion = a_form->As<RE::AlchemyItem>();
@@ -501,13 +516,47 @@ namespace handle {
             return;
         }
 
-        const auto effect = alchemy_potion->GetCostliestEffectItem()->baseEffect;
-        auto actor_value = effect->GetMagickSkill();
+        auto actor_value = util::helper::get_actor_value_effect_from_potion(alchemy_potion);
+        get_consumable_icon_by_actor_value(actor_value, a_icon);
+    }
 
-        if (actor_value == RE::ActorValue::kNone) {
-            actor_value = effect->data.primaryAV;
+    void page_handle::get_item_count(RE::TESForm*& a_form, int32_t& a_count, const slot_setting::slot_type a_type) {
+        if (a_type == slot_setting::slot_type::empty || !a_form) {
+            a_count = 0;
+            return;
         }
-        switch (actor_value) {
+        if (a_type == slot_setting::slot_type::consumable || a_type == slot_setting::slot_type::scroll) {
+            const auto player = RE::PlayerCharacter::GetSingleton();
+            for (auto potential_items = player->GetInventory(); const auto& [item, invData] : potential_items) {
+                if (invData.second->object->formID == a_form->formID) {
+                    a_count = invData.first;
+                    break;
+                }
+            }
+        } else {
+            a_count = 0;
+        }
+        logger::trace("Item {}, count {}"sv, a_form->GetName(), a_count);
+    }
+
+    void page_handle::get_item_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
+        if (!a_form && !a_form->IsArmor()) {
+            return;
+        }
+        switch (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->GetArmorType()) {
+            case RE::BIPED_MODEL::ArmorType::kLightArmor:
+                a_icon = ui::icon_image_type::armor_light;
+                break;
+            case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
+                a_icon = ui::icon_image_type::armor_heavy;
+                break;
+            case RE::BIPED_MODEL::ArmorType::kClothing:
+                a_icon = ui::icon_image_type::armor_clothing;
+                break;
+        }
+    }
+    void page_handle::get_consumable_icon_by_actor_value(RE::ActorValue& a_actor_value, ui::icon_image_type& a_icon) {
+        switch (a_actor_value) {
             case RE::ActorValue::kHealth:
             case RE::ActorValue::kHealRateMult:
             case RE::ActorValue::kHealRate:
@@ -540,39 +589,24 @@ namespace handle {
         }
     }
 
-    void page_handle::get_item_count(RE::TESForm*& a_form, int32_t& a_count, const slot_setting::slot_type a_type) {
-        if (a_type == slot_setting::slot_type::empty || !a_form) {
-            a_count = 0;
-            return;
-        }
-        if (a_type == slot_setting::slot_type::consumable || a_type == slot_setting::slot_type::scroll) {
-            const auto player = RE::PlayerCharacter::GetSingleton();
-            for (auto potential_items = player->GetInventory(); const auto& [item, invData] : potential_items) {
-                if (invData.second->object->formID == a_form->formID) {
-                    a_count = invData.first;
-                    break;
-                }
+    void page_handle::get_consumable_item_count(RE::ActorValue& a_actor_value, int32_t& a_count) {
+        auto player = RE::PlayerCharacter::GetSingleton();
+        a_count = 0;
+        for (auto potential_items = equip::item::get_inventory(player, RE::FormType::AlchemyItem);
+             const auto& [item, inv_data] : potential_items) {
+            const auto& [num_items, entry] = inv_data;
+            auto alchemy_item = item->As<RE::AlchemyItem>();
+            if (alchemy_item->IsPoison() || alchemy_item->IsFood()) {
+                continue;
             }
-        } else {
-            a_count = 0;
-        }
-        logger::trace("Item {}, count {}"sv, a_form->GetName(), a_count);
-    }
-
-    void page_handle::get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon) {
-        if (!a_form && !a_form->IsArmor()) {
-            return;
-        }
-        switch (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->GetArmorType()) {
-            case RE::BIPED_MODEL::ArmorType::kLightArmor:
-                a_icon = ui::icon_image_type::armor_light;
-                break;
-            case RE::BIPED_MODEL::ArmorType::kHeavyArmor:
-                a_icon = ui::icon_image_type::armor_heavy;
-                break;
-            case RE::BIPED_MODEL::ArmorType::kClothing:
-                a_icon = ui::icon_image_type::armor_clothing;
-                break;
+            //returns currently only the types we want
+            auto actor_value = util::helper::get_actor_value_effect_from_potion(item);
+            if (actor_value == RE::ActorValue::kNone) {
+                continue;
+            }
+            if (actor_value == a_actor_value) {
+                a_count = a_count + num_items;
+            }
         }
     }
 }

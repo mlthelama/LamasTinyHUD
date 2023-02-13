@@ -2,6 +2,7 @@
 #include "equip/equip_slot.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
+#include "util/helper.h"
 #include "util/string_util.h"
 
 namespace equip {
@@ -161,11 +162,10 @@ namespace equip {
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
-                left = inv_data.first;
+                left = num_items;
                 break;
             }
         }
-
 
         if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && obj && obj->IsDynamicForm() &&
             left == 1) {
@@ -185,7 +185,7 @@ namespace equip {
             logger::warn("object {} is not an alchemy item. return."sv, obj->GetName());
             return;
         }
-        
+
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
 
         const auto equip_manager = RE::ActorEquipManager::GetSingleton();
@@ -266,5 +266,65 @@ namespace equip {
             logger::trace("Called to un equip {}"sv, ammo->GetName());
         }
         logger::trace("Done work. return"sv);
+    }
+
+    void item::find_and_consume_fitting_option(RE::ActorValue a_actor_value, RE::PlayerCharacter*& a_player) {
+        //get player missing value
+        auto current_actor_value = a_player->AsActorValueOwner()->GetActorValue(a_actor_value);
+        auto permanent_actor_value = a_player->AsActorValueOwner()->GetPermanentActorValue(a_actor_value);
+        auto temporary_actor_value =
+            a_player->GetActorValueModifier(RE::ACTOR_VALUE_MODIFIER::kTemporary, RE::ActorValue::kHealth);
+        auto max_actor_value = permanent_actor_value + temporary_actor_value;
+        auto missing = max_actor_value - current_actor_value;
+        logger::trace("actor value {}, current {}, max {}, missing {}"sv,
+            static_cast<int>(a_actor_value),
+            fmt::format(FMT_STRING("{:.2f}"), current_actor_value),
+            fmt::format(FMT_STRING("{:.2f}"), max_actor_value),
+            fmt::format(FMT_STRING("{:.2f}"), missing));
+
+        //min heal, max heal
+        auto min_perfect = config::mcm_setting::get_potion_min_perfect();
+        auto max_perfect = config::mcm_setting::get_potion_max_perfect();
+        logger::trace("min perfect {}, max perfect {}, missing {}"sv,
+            fmt::format(FMT_STRING("{:.2f}"), missing * min_perfect),
+            fmt::format(FMT_STRING("{:.2f}"), missing * max_perfect),
+            fmt::format(FMT_STRING("{:.2f}"), missing));
+
+        RE::TESBoundObject* obj = nullptr;
+        for (auto potential_items = equip::item::get_inventory(a_player, RE::FormType::AlchemyItem);
+             const auto& [item, inv_data] : potential_items) {
+            const auto& [num_items, entry] = inv_data;
+            auto alchemy_item = item->As<RE::AlchemyItem>();
+            if (alchemy_item->IsPoison() || alchemy_item->IsFood()) {
+                continue;
+            }
+            //returns currently only the types we want
+            auto actor_value = util::helper::get_actor_value_effect_from_potion(item);
+            if (actor_value == RE::ActorValue::kNone) {
+                continue;
+            }
+
+            if (actor_value == a_actor_value) {
+                //set obj here, because if we do not have a perfect hit, we still need to consume something
+                obj = alchemy_item;
+
+                //maybe consider consume potion "fix"
+                auto magnitude = alchemy_item->GetCostliestEffectItem()->GetMagnitude();
+                auto duration = alchemy_item->GetCostliestEffectItem()->GetDuration();
+                if (duration == 0) {
+                    duration = 1;
+                }
+                auto max_healed = magnitude * duration;
+                if (max_healed >= (missing * min_perfect) && max_healed <= (missing * max_perfect)) {
+                    logger::trace("found potion {}, magnitude * duration {}"sv,
+                        obj->GetName(),
+                        fmt::format(FMT_STRING("{:.2f}"), max_healed));
+                    break;
+                }
+            }
+        }
+
+        logger::trace("calling to consume potion {}"sv, obj ? obj->GetName() : "null");
+        consume_potion(obj, a_player);
     }
 }

@@ -28,9 +28,10 @@ namespace handle {
             const std::string& a_form_left,
             uint32_t a_type_left,
             uint32_t a_action_left,
+            RE::ActorValue a_actor_value,
             key_position_handle*& a_key_pos);
 
-        static void set_new_item_count(RE::FormID a_form_id, int32_t a_count);
+        static void set_new_item_count(RE::TESBoundObject* a_object, int32_t a_count);
 
         static void set_active_and_equip(handle::page_handle*& a_page_handle);
 

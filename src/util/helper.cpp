@@ -49,6 +49,7 @@ namespace util {
         auto type = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
         std::string form_string;
         uint32_t action = 0;
+        RE::ActorValue actor_value = RE::ActorValue::kNone;
 
         auto type_left = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
         std::string form_string_left;
@@ -77,6 +78,7 @@ namespace util {
                     }
                     action = static_cast<uint32_t>(a_data[0]->action_type);
                 }
+                actor_value = a_data[0]->actor_value;
             }
         } else {
             if (!a_data.empty()) {
@@ -87,6 +89,7 @@ namespace util {
                     form_string = "";
                 }
                 action = static_cast<uint32_t>(a_data[0]->action_type);
+                actor_value = a_data[0]->actor_value;
             }
 
 
@@ -98,6 +101,7 @@ namespace util {
                     form_string_left = "";
                 }
                 action_left = static_cast<uint32_t>(a_data[1]->action_type);
+                actor_value = a_data[1]->actor_value;
             }
         }
         config::mcm_setting::read_setting();
@@ -111,7 +115,8 @@ namespace util {
             a_hand,
             type_left,
             form_string_left,
-            action_left);
+            action_left,
+            static_cast<int>(actor_value));
         config::custom_setting::read_setting();
     }
 
@@ -371,6 +376,15 @@ namespace util {
             case handle::position_setting::position_type::bottom:
                 switch (type) {
                     case handle::slot_setting::slot_type::consumable:
+                        item->form = nullptr;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        item->actor_value = get_actor_value_effect_from_potion(a_form);
+                        if (item->actor_value == RE::ActorValue::kNone) {
+                            item->form = a_form;
+                        }
+                        break;
                     case handle::slot_setting::slot_type::lantern:  //not sure if best here
                     case handle::slot_setting::slot_type::mask:
                         item->form = a_form;
@@ -433,6 +447,7 @@ namespace util {
             config->form_left = config::custom_setting::get_item_form_left_by_section(section);
             config->type_left = config::custom_setting::get_type_left_by_section(section);
             config->action_left = config::custom_setting::get_slot_action_left_by_section(section);
+            config->actor_value = config::custom_setting::get_effect_actor_value(section);
 
             configs.push_back(config);
             next_page_for_position[position] = next_page + 1;
@@ -453,7 +468,8 @@ namespace util {
                 config->hand,
                 config->type_left,
                 config->form_left,
-                config->action_left);
+                config->action_left,
+                config->actor_value);
         }
 
         next_page_for_position.clear();
@@ -501,14 +517,20 @@ namespace util {
             max_count = equip::item::get_inventory_count(a_form);
         }
 
+        auto actor_value = RE::ActorValue::kNone;
+        if (a_form->Is(RE::FormType::AlchemyItem)) {
+            actor_value = get_actor_value_effect_from_potion(const_cast<RE::TESForm*>(a_form));
+        }
+
         auto pages = page_handle->get_pages();
         if (!pages.empty()) {
             for (auto& [page, page_settings] : pages) {
                 for (auto [position, page_setting] : page_settings) {
                     if (position == a_position) {
                         for (const auto setting : page_setting->slot_settings) {
-                            if (setting && setting->form && setting->form->formID == a_form->formID) {
-                                //return true;
+                            if (setting &&
+                                ((setting->form && setting->form->formID == a_form->formID) ||
+                                    (setting->actor_value == actor_value && actor_value != RE::ActorValue::kNone))) {
                                 count++;
                                 if (max_count == count) {
                                     logger::trace("Item already {} time(s) used. return."sv, count);
@@ -523,7 +545,8 @@ namespace util {
 
         if (!a_config_data.empty()) {
             for (const auto data_item : a_config_data) {
-                if (data_item->form && data_item->form->formID == a_form->formID) {
+                if ((data_item->form && data_item->form->formID == a_form->formID) ||
+                    (data_item->actor_value == actor_value && actor_value != RE::ActorValue::kNone)) {
                     count++;
                     if (max_count == count) {
                         logger::trace("Item already {} time(s) used. return."sv, count);
@@ -576,5 +599,30 @@ namespace util {
         } else {
             a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency();
         }
+    }
+    RE::ActorValue helper::get_actor_value_effect_from_potion(RE::TESForm* a_form) {
+        if (!a_form->Is(RE::FormType::AlchemyItem) || !config::mcm_setting::get_group_potions()) {
+            return RE::ActorValue::kNone;
+        }
+        auto alchemy_potion = a_form->As<RE::AlchemyItem>();
+
+        if (alchemy_potion->IsFood() || alchemy_potion->IsPoison()) {
+            return RE::ActorValue::kNone;
+        }
+
+        const auto effect = alchemy_potion->GetCostliestEffectItem()->baseEffect;
+        auto actor_value = effect->GetMagickSkill();
+
+        if (actor_value == RE::ActorValue::kNone) {
+            actor_value = effect->data.primaryAV;
+        }
+
+        if ((actor_value == RE::ActorValue::kHealth || actor_value == RE::ActorValue::kStamina ||
+                actor_value == RE::ActorValue::kMagicka) &&
+            effect->data.flags.none(RE::EffectSetting::EffectSettingData::Flag::kRecover)) {
+            return actor_value;
+        }
+
+        return RE::ActorValue::kNone;
     }
 }

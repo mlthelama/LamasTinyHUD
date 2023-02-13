@@ -30,5 +30,6 @@ namespace handle {
         hand_equip equip = hand_equip::total;
         RE::BGSEquipSlot* equip_slot = nullptr;
         int32_t item_count = 0;
+        RE::ActorValue actor_value = RE::ActorValue::kNone;
     };
 }

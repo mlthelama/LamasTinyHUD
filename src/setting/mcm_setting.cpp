@@ -73,6 +73,9 @@ namespace config {
     static bool un_equip_ammo;
     static bool only_favorite_ammo;
     static bool prevent_consumption_of_last_dynamic_potion;
+    static bool group_potions;
+    static float potion_min_perfect;
+    static float potion_max_perfect;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -166,6 +169,9 @@ namespace config {
             only_favorite_ammo = mcm.GetBoolValue("MiscSetting", "bOnlyFavoriteAmmo", false);
             prevent_consumption_of_last_dynamic_potion =
                 mcm.GetBoolValue("MiscSetting", "bPreventConsumptionOfLastDynamicPotion", true);
+            group_potions = mcm.GetBoolValue("MiscSetting", "bGroupPotions", false);
+            potion_min_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMinPerfect", 0.7));
+            potion_max_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMaxPerfect", 1.2));
         };
 
         read_mcm(mcm_default_setting);
@@ -245,4 +251,7 @@ namespace config {
     bool mcm_setting::get_prevent_consumption_of_last_dynamic_potion() {
         return prevent_consumption_of_last_dynamic_potion;
     }
+    bool mcm_setting::get_group_potions() { return group_potions; }
+    float mcm_setting::get_potion_min_perfect() { return potion_min_perfect; }
+    float mcm_setting::get_potion_max_perfect() { return potion_max_perfect; }
 }

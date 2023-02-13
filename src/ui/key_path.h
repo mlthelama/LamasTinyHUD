@@ -2,12 +2,11 @@
 
 namespace ui {
     static std::string key_directory = R"(.\Data\SKSE\Plugins\resources\key)";
-    
+
     enum class default_keys : uint32_t { key, total };
 
-    inline static std::map<std::string, default_keys> default_key_icon_name_map = {
-        { R"(Blank_Black_Normal.png)", default_keys::key }
-    };
+    inline static std::map<std::string, default_keys> default_key_icon_name_map = { { R"(Blank_Black_Normal.png)",
+        default_keys::key } };
 
     //scancodes (a selection)
     enum class key_values : uint32_t {
@@ -244,8 +243,8 @@ namespace ui {
         total
     };
 
-    inline static std::map<std::string, gamepad_values> gamepad_ps_icon_name_map = {
-        { R"(PS5_Dpad_Up.png)", gamepad_values::up },
+    inline static std::map<std::string, gamepad_values> gamepad_ps_icon_name_map = { { R"(PS5_Dpad_Up.png)",
+                                                                                         gamepad_values::up },
         { R"(PS5_Dpad_Down.png)", gamepad_values::down },
         { R"(PS5_Dpad_Left.png)", gamepad_values::left },
         { R"(PS5_Dpad_Right.png)", gamepad_values::right },
@@ -260,11 +259,10 @@ namespace ui {
         { R"(PS5_Square.png)", gamepad_values::x },
         { R"(PS5_Triangle.png)", gamepad_values::y },
         { R"(PS5_L2.png)", gamepad_values::left_trigger },
-        { R"(PS5_R2.png)", gamepad_values::right_trigger }
-    };
+        { R"(PS5_R2.png)", gamepad_values::right_trigger } };
 
-    inline static std::map<std::string, gamepad_values> gamepad_xbox_icon_name_map = {
-        { R"(XboxSeriesX_Dpad_Up.png)", gamepad_values::up },
+    inline static std::map<std::string, gamepad_values> gamepad_xbox_icon_name_map = { { R"(XboxSeriesX_Dpad_Up.png)",
+                                                                                           gamepad_values::up },
         { R"(XboxSeriesX_Dpad_Down.png)", gamepad_values::down },
         { R"(XboxSeriesX_Dpad_Left.png)", gamepad_values::left },
         { R"(XboxSeriesX_Dpad_Right.png)", gamepad_values::right },
@@ -279,8 +277,7 @@ namespace ui {
         { R"(XboxSeriesX_X.png)", gamepad_values::x },
         { R"(XboxSeriesX_Y.png)", gamepad_values::y },
         { R"(XboxSeriesX_LT.png)", gamepad_values::left_trigger },
-        { R"(XboxSeriesX_RT.png)", gamepad_values::right_trigger }
-    };
+        { R"(XboxSeriesX_RT.png)", gamepad_values::right_trigger } };
 
     enum class controller_set : uint32_t { playstation, xbox };
 }

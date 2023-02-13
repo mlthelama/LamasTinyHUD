@@ -84,7 +84,6 @@ namespace event {
                     break;
                 case handle::slot_setting::slot_type::shout:
                 case handle::slot_setting::slot_type::power:
-                case handle::slot_setting::slot_type::consumable:
                 case handle::slot_setting::slot_type::armor:
                 case handle::slot_setting::slot_type::scroll:
                 case handle::slot_setting::slot_type::misc:
@@ -93,6 +92,14 @@ namespace event {
                     item->form = a_form;
                     item->type = type;
                     data_.push_back(item);
+                    break;
+                case handle::slot_setting::slot_type::consumable:
+                    item->form = nullptr;
+                    item->type = type;
+                    item->actor_value = util::helper::get_actor_value_effect_from_potion(a_form);
+                    if (item->actor_value == RE::ActorValue::kNone) {
+                        item->form = a_form;
+                    }
                     break;
                 case handle::slot_setting::slot_type::weapon:
                 case handle::slot_setting::slot_type::magic:
@@ -131,7 +138,7 @@ namespace event {
             position != handle::position_setting::position_type::total && a_equipped) {
             data_ = edit_handle->get_hold_data();
             const auto item = util::helper::is_suitable_for_position(a_form, position);
-            if (item->form) {
+            if (item->form || (a_form && item->actor_value != RE::ActorValue::kNone)) {
                 if (check_duplicates && util::helper::already_used(a_form, position, data_)) {
                     util::helper::write_notification(
                         fmt::format("Item {} already used in that position", a_form ? a_form->GetName() : "null"));
