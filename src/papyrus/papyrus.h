@@ -24,6 +24,7 @@ namespace papyrus {
         static void set_config(RE::TESQuest*, bool a_elden, RE::BSFixedString a_name);
         static void set_active_config(RE::TESQuest*, bool a_elden, uint32_t a_index);
         static void add_unarmed_setting(RE::TESQuest*, uint32_t a_position);
+        static RE::BSFixedString get_actor_value(RE::TESQuest*, uint32_t a_index, uint32_t a_position);
 
         static bool Register(RE::BSScript::IVirtualMachine* a_vm);
 

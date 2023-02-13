@@ -600,6 +600,7 @@ namespace util {
             a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency();
         }
     }
+
     RE::ActorValue helper::get_actor_value_effect_from_potion(RE::TESForm* a_form) {
         if (!a_form->Is(RE::FormType::AlchemyItem) || !config::mcm_setting::get_group_potions()) {
             return RE::ActorValue::kNone;
@@ -624,5 +625,30 @@ namespace util {
         }
 
         return RE::ActorValue::kNone;
+    }
+
+    std::string helper::get_form_name_string_for_section(const std::string& a_str) {
+        std::string display_string;
+        auto form_string = config::custom_setting::get_item_form_by_section(a_str);
+        auto form_string_left = config::custom_setting::get_item_form_left_by_section(a_str);
+
+        RE::TESForm* form = nullptr;
+        if (!form_string.empty()) {
+            form = util::helper::get_form_from_mod_id_string(form_string);
+        }
+        RE::TESForm* form_left = nullptr;
+        if (!form_string_left.empty()) {
+            form_left = util::helper::get_form_from_mod_id_string(form_string_left);
+        }
+
+        display_string = form ? form->GetName() : "";
+        if (form_left) {
+            if (!display_string.empty()) {
+                display_string = display_string + util::delimiter;
+            }
+            display_string = display_string + form_left->GetName();
+        }
+
+        return display_string.empty() ? a_str : display_string;
     }
 }

@@ -362,6 +362,20 @@
                     }
                 },
                 {
+                    "id": "sActorValue:Page",
+                    "type": "text",
+                    "text": "$LamasTinyHUD_ActorValue_OptionText",
+                    "help": "$LamasTinyHUD_ActorValue_InfoText",
+                    "groupCondition": 1,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "value": "",
+                        "sourceType": "ModSettingString"
+                    }
+                },
+                
+                
+                {
                     "text": "$LamasTinyHUD_Header_Maintenance",
                     "type": "header",
                     "position": 1

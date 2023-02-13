@@ -28,6 +28,7 @@ string function GetActiveConfig(bool a_elden) native
 function SetConfig(bool a_elden, string a_name) native
 function SetActiveConfig(bool a_elden, int a_index) native
 function AddUnarmedSetting(int a_position) native
+string function GetActorValue(int a_index, int a_position) native
 
 function FillPageSelection()
     string[] menu_list = GetSectionNames(GetModSettingInt("uPositionSelect:Page"))
@@ -96,6 +97,13 @@ Event OnSettingChange(String a_ID)
         SetModSettingInt("uSlotActionLeft:Page", GetSlotAction(idx, true, position))
         SetModSettingString("sFormNameLeft:Page", GetFormName(idx, true, position))
         SetModSettingString("sSelectedItemFormLeft:Page", GetFormString(idx, true, position))
+        
+        string actorValue = GetActorValue(idx, position)
+        if (actorValue != "-1" && actorValue != "0" )
+            SetModSettingString("sActorValue:Page", actorValue)
+        else
+            SetModSettingString("sActorValue:Page", "")
+        endif
         
         RefreshMenu()
         

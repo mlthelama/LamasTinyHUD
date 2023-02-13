@@ -37,7 +37,7 @@ namespace papyrus {
         const auto sections = util::helper::get_configured_section_page_names(a_position);
         std::vector<RE::BSFixedString> sections_bs_string;
         for (const auto& section : sections) {
-            sections_bs_string.emplace_back(section);
+            sections_bs_string.emplace_back(util::helper::get_form_name_string_for_section(section));
         }
         logger::trace("Returning {} sections for Position {}"sv, sections_bs_string.size(), a_position);
         return sections_bs_string;
@@ -124,7 +124,7 @@ namespace papyrus {
         }
 
         const auto form = util::helper::get_form_from_mod_id_string(form_string);
-        if (form == nullptr) {
+        if (!form) {
             return form_string;
         }
 
@@ -220,7 +220,6 @@ namespace papyrus {
         auto next_page = 0;
         if (elden && (a_position == static_cast<uint32_t>(handle::position_setting::position_type::right) ||
                          a_position == static_cast<uint32_t>(handle::position_setting::position_type::left))) {
-            //
             auto left = a_position == static_cast<uint32_t>(handle::position_setting::position_type::left);
             auto max_pages = config::mcm_setting::get_max_page_count();
 
@@ -273,6 +272,14 @@ namespace papyrus {
             data.size());
     }
 
+    RE::BSFixedString hud_mcm::get_actor_value(RE::TESQuest*, uint32_t a_index, uint32_t a_position) {
+        std::string form_string;
+        if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
+            form_string = std::to_string(config::custom_setting::get_effect_actor_value(section));
+        }
+        return form_string;
+    }
+
     bool hud_mcm::Register(RE::BSScript::IVirtualMachine* a_vm) {
         a_vm->RegisterFunction("OnConfigClose", mcm_name, on_config_close);
         a_vm->RegisterFunction("GetResolutionWidth", mcm_name, get_resolution_width);
@@ -294,6 +301,7 @@ namespace papyrus {
         a_vm->RegisterFunction("SetConfig", mcm_name, set_config);
         a_vm->RegisterFunction("SetActiveConfig", mcm_name, set_active_config);
         a_vm->RegisterFunction("AddUnarmedSetting", mcm_name, add_unarmed_setting);
+        a_vm->RegisterFunction("GetActorValue", mcm_name, get_actor_value);
 
         logger::info("Registered {} class. return."sv, mcm_name);
         return true;
