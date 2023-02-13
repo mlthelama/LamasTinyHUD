@@ -190,23 +190,6 @@
                         "type": "CallFunction",
                         "function": "TriggerConfig"
                     }
-                },
-                {
-                    "text": "$LamasTinyHUD_Controls_MasterScale",
-                    "type": "header"
-                },
-                {
-                    "id": "fMasterScale:Controls",
-                    "text": "$LamasTinyHUD_Controls_MasterScale_OptionText",
-                    "type": "slider",
-                    "help": "$LamasTinyHUD_Controls_MasterScale_InfoText",
-                    "valueOptions": {
-                        "min": 0.2,
-                        "max": 3.0,
-                        "step": 0.1,
-                        "formatString": "{1}",
-                        "sourceType": "ModSettingFloat"
-                    }
                 }
             ]
         },
@@ -691,9 +674,26 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Offset",
+                    "text": "$LamasTinyHUD_HudSetting_MasterScale",
                     "type": "header",
                     "position": 1
+                },
+                {
+                    "id": "fMasterScale:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_MasterScale_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_MasterScale_InfoText",
+                    "valueOptions": {
+                        "min": 0.2,
+                        "max": 3.0,
+                        "step": 0.1,
+                        "formatString": "{1}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Offset",
+                    "type": "header"
                 },
                 {
                     "id": "fHudSlotPositionOffsetX:HudSetting",

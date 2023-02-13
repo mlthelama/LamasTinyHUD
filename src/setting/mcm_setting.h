@@ -14,7 +14,6 @@ namespace config {
         static bool get_bottom_execute_key_combo_only();
         static uint32_t get_controller_set();
         static float get_config_button_hold_time();
-        [[maybe_unused]] static float get_master_scale();
 
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();
@@ -31,6 +30,7 @@ namespace config {
         static float get_hud_arrow_image_scale_height();
         static float get_arrow_icon_scale_width();
         static float get_arrow_icon_scale_height();
+        [[maybe_unused]] static float get_master_scale();
         static float get_arrow_slot_count_text_offset();
         static float get_slot_count_text_offset();
         static bool get_draw_toggle_button();
