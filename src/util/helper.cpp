@@ -641,12 +641,31 @@ namespace util {
             form_left = util::helper::get_form_from_mod_id_string(form_string_left);
         }
 
-        display_string = form ? form->GetName() : "";
+        //if form is null check if av is set
+        //if form is 1f4
+        if (form && form->formID == util::unarmed) {
+            display_string = util::unarmed_mcm_text;
+        } else {
+            display_string = form ? form->GetName() : "";
+        }
+
         if (form_left) {
             if (!display_string.empty()) {
                 display_string = display_string + util::delimiter;
             }
-            display_string = display_string + form_left->GetName();
+            if (form_left->formID == util::unarmed) {
+                display_string = display_string + util::unarmed_mcm_text;
+            } else {
+                display_string = display_string + form_left->GetName();
+            }
+        }
+
+        if (display_string.empty()) {
+            auto actor_value = static_cast<RE::ActorValue>(config::custom_setting::get_effect_actor_value(a_str));
+            if (util::actor_value_to_base_potion_map_.contains(actor_value)) {
+                auto potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
+                display_string = potion_form ? potion_form->GetName() : "";
+            }
         }
 
         return display_string.empty() ? a_str : display_string;
