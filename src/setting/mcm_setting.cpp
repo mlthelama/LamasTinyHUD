@@ -37,8 +37,10 @@ namespace config {
     static float toggle_key_offset_y;
     static float current_items_offset_x;
     static float current_items_offset_y;
-    static float slot_item_name_offset_x;
-    static float slot_item_name_offset_y;
+    static float slot_item_name_offset_horizontal_x;
+    static float slot_item_name_offset_horizontal_y;
+    static float slot_item_name_offset_vertical_x;
+    static float slot_item_name_offset_vertical_y;
     static float arrow_slot_offset_x;
     static float arrow_slot_offset_y;
     static float arrow_slot_count_text_offset;
@@ -60,6 +62,7 @@ namespace config {
     static uint32_t slot_count_blue;
     static uint32_t slot_button_feedback;
     static bool draw_current_items_text;
+    static bool draw_item_name_text;
 
     static bool action_check;
     static bool empty_hand_setting;
@@ -124,8 +127,14 @@ namespace config {
             current_items_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetX", -15));
             current_items_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fCurrentItemsOffsetY", 200));
             slot_count_text_offset = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotCountTextOffset", 20));
-            slot_item_name_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetX", -15));
-            slot_item_name_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetY", 65));
+            slot_item_name_offset_horizontal_x =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetHorizontalX", -15));
+            slot_item_name_offset_horizontal_y =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetHorizontalY", 65));
+            slot_item_name_offset_vertical_x =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetVerticalX", 45));
+            slot_item_name_offset_vertical_y =
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetVerticalY", 75));
             arrow_slot_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetX", -115));
             arrow_slot_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetY", 115));
             arrow_slot_count_text_offset =
@@ -154,6 +163,7 @@ namespace config {
             slot_button_feedback =
                 static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotButtonFeedback", 150));
             draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", true);
+            draw_item_name_text = mcm.GetBoolValue("GraphicSetting", "bDrawItemNameText", true);
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", false);
@@ -213,8 +223,18 @@ namespace config {
     float mcm_setting::get_toggle_key_offset_y() { return toggle_key_offset_y * master_scale; }
     float mcm_setting::get_current_items_offset_x() { return current_items_offset_x * master_scale; }
     float mcm_setting::get_current_items_offset_y() { return current_items_offset_y * master_scale; }
-    float mcm_setting::get_slot_item_name_offset_x() { return slot_item_name_offset_x * master_scale; }
-    float mcm_setting::get_slot_item_name_offset_y() { return slot_item_name_offset_y * master_scale; }
+    float mcm_setting::get_slot_item_name_offset_horizontal_x() {
+        return slot_item_name_offset_horizontal_x * master_scale;
+    }
+    float mcm_setting::get_slot_item_name_offset_horizontal_y() {
+        return slot_item_name_offset_horizontal_y * master_scale;
+    }
+    float mcm_setting::get_slot_item_name_offset_vertical_x() {
+        return slot_item_name_offset_vertical_x * master_scale;
+    }
+    float mcm_setting::get_slot_item_name_offset_vertical_y() {
+        return slot_item_name_offset_vertical_y * master_scale;
+    }
     float mcm_setting::get_arrow_slot_offset_x() { return arrow_slot_offset_x * master_scale; }
     float mcm_setting::get_arrow_slot_offset_y() { return arrow_slot_offset_y * master_scale; }
     float mcm_setting::get_arrow_slot_count_text_offset() { return arrow_slot_count_text_offset * master_scale; }
@@ -236,6 +256,7 @@ namespace config {
     uint32_t mcm_setting::get_slot_count_blue() { return slot_count_blue; }
     bool mcm_setting::get_draw_current_items_text() { return draw_current_items_text; }
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
+    bool mcm_setting::get_draw_item_name_text() { return draw_item_name_text; }
 
     bool mcm_setting::get_action_check() { return action_check; }
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }

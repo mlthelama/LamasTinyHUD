@@ -38,8 +38,10 @@ namespace config {
         static float get_toggle_key_offset_y();
         static float get_current_items_offset_x();
         static float get_current_items_offset_y();
-        static float get_slot_item_name_offset_x();
-        static float get_slot_item_name_offset_y();
+        static float get_slot_item_name_offset_horizontal_x();
+        static float get_slot_item_name_offset_horizontal_y();
+        static float get_slot_item_name_offset_vertical_x();
+        static float get_slot_item_name_offset_vertical_y();
         static float get_arrow_slot_offset_x();
         static float get_arrow_slot_offset_y();
 
@@ -60,6 +62,7 @@ namespace config {
         static uint32_t get_slot_count_blue();
         static uint32_t get_slot_button_feedback();
         static bool get_draw_current_items_text();
+        static bool get_draw_item_name_text();
 
         static bool get_action_check();
         static bool get_empty_hand_setting();

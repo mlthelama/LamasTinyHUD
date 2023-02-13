@@ -349,7 +349,7 @@ namespace ui {
                     0.1f);    //TODO setting
             }
 
-            if (mcm::get_elden_demon_souls() && page_setting->item_name && !page_setting->slot_settings.empty()) {
+            if (page_setting->item_name && !page_setting->slot_settings.empty()) {
                 const ImU32 color =
                     IM_COL32(draw_full, draw_full, draw_full, page_setting->draw_setting->text_transparency);
                 auto slot_setting = page_setting->slot_settings.front();
