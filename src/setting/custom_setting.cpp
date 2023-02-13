@@ -54,7 +54,7 @@ namespace config {
     }
 
     int custom_setting::get_effect_actor_value(const std::string& a_section) {
-        return static_cast<int>(custom_ini.GetLongValue(a_section.c_str(), "uEffectActorValue", -1));
+        return static_cast<int>(custom_ini.GetLongValue(a_section.c_str(), "iEffectActorValue", -1));
     }
 
     uint32_t custom_setting::get_type_left_by_section(const std::string& a_section) {
@@ -126,7 +126,7 @@ namespace config {
         custom_ini.SetValue(section, "sSelectedItemForm", a_form.c_str());
         custom_ini.SetLongValue(section, "uSlotAction", a_action);
         custom_ini.SetLongValue(section, "uHandSelection", a_hand);
-        custom_ini.SetLongValue(section, "uEffectActorValue", a_effect_actor_value);
+        custom_ini.SetLongValue(section, "iEffectActorValue", a_effect_actor_value);
         custom_ini.SetLongValue(section, "uTypeLeft", a_type_left);
         custom_ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
         custom_ini.SetLongValue(section, "uSlotActionLeft", a_action_left);
