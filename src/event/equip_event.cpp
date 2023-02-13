@@ -100,6 +100,7 @@ namespace event {
                     if (item->actor_value == RE::ActorValue::kNone) {
                         item->form = a_form;
                     }
+                    data_.push_back(item);
                     break;
                 case handle::slot_setting::slot_type::weapon:
                 case handle::slot_setting::slot_type::magic:

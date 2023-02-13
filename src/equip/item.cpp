@@ -306,9 +306,16 @@ namespace equip {
 
             if (actor_value == a_actor_value) {
                 //set obj here, because if we do not have a perfect hit, we still need to consume something
+                if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && alchemy_item &&
+                    alchemy_item->IsDynamicForm() && num_items == 1) {
+                    logger::warn(
+                        "Somehow the game crashes on potions with dynamic id if the count is 0 (happens with or without the mod). So I am not consuming it. Form {}, Name {}"sv,
+                        util::string_util::int_to_hex(alchemy_item->formID),
+                        alchemy_item->GetName());
+                    continue;
+                }
                 obj = alchemy_item;
 
-                //maybe consider consume potion "fix"
                 auto magnitude = alchemy_item->GetCostliestEffectItem()->GetMagnitude();
                 auto duration = alchemy_item->GetCostliestEffectItem()->GetDuration();
                 if (duration == 0) {
