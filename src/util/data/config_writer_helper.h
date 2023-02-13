@@ -13,5 +13,6 @@ namespace util {
         uint32_t type_left{};
         std::string form_left{};
         uint32_t action_left{};
+        int actor_value{};
     };
 }

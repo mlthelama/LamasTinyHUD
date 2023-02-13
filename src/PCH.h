@@ -16,7 +16,7 @@ using namespace std::literals;
 
 namespace stl {
     using namespace SKSE::stl;
-    
+
     template <class T>
     void write_thunk_call() {
         auto& trampoline = SKSE::GetTrampoline();

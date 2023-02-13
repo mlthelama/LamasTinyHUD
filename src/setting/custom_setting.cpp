@@ -53,6 +53,10 @@ namespace config {
         return static_cast<uint32_t>(custom_ini.GetLongValue(a_section.c_str(), "uHandSelection", 1));
     }
 
+    int custom_setting::get_effect_actor_value(const std::string& a_section) {
+        return static_cast<int>(custom_ini.GetLongValue(a_section.c_str(), "uEffectActorValue", -1));
+    }
+
     uint32_t custom_setting::get_type_left_by_section(const std::string& a_section) {
         return static_cast<uint32_t>(custom_ini.GetLongValue(a_section.c_str(), "uTypeLeft", 0));
     }
@@ -96,9 +100,10 @@ namespace config {
         uint32_t a_hand,
         uint32_t a_type_left,
         const std::string& a_form_left,
-        uint32_t a_action_left) {
+        uint32_t a_action_left,
+        int a_effect_actor_value) {
         logger::trace(
-            "writing section {}, page {}, position {}, type {}, form {}, action {}, hand {}, type_left {}, a_form_left {}, action_left {}"sv,
+            "writing section {}, page {}, position {}, type {}, form {}, action {}, hand {}, type_left {}, a_form_left {}, action_left {}, a_effect_actor_value {}"sv,
             a_section,
             a_page,
             a_position,
@@ -108,7 +113,8 @@ namespace config {
             a_hand,
             a_type_left,
             a_form_left,
-            a_action_left);
+            a_action_left,
+            a_effect_actor_value);
 
         const auto section = a_section.c_str();
 
@@ -120,6 +126,7 @@ namespace config {
         custom_ini.SetValue(section, "sSelectedItemForm", a_form.c_str());
         custom_ini.SetLongValue(section, "uSlotAction", a_action);
         custom_ini.SetLongValue(section, "uHandSelection", a_hand);
+        custom_ini.SetLongValue(section, "uEffectActorValue", a_effect_actor_value);
         custom_ini.SetLongValue(section, "uTypeLeft", a_type_left);
         custom_ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
         custom_ini.SetLongValue(section, "uSlotActionLeft", a_action_left);

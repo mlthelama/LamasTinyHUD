@@ -32,7 +32,7 @@ namespace handle {
     }
 
     void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_object, const int32_t a_count) {
-        set_new_item_count(a_object->GetFormID(), a_count);
+        set_new_item_count(const_cast<RE::TESBoundObject*>(a_object), a_count);
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,
@@ -132,12 +132,14 @@ namespace handle {
         const std::string& a_form_left,
         uint32_t a_type_left,
         const uint32_t a_action_left,
+        RE::ActorValue a_actor_value,
         key_position_handle*& a_key_pos) {
         const auto form = util::helper::get_form_from_mod_id_string(a_form);
         const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
-        if (form == nullptr && form_left == nullptr)
+        if (form == nullptr && form_left == nullptr && a_actor_value == RE::ActorValue::kNone) {
             return;
+        }
 
         auto hand = static_cast<slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
@@ -202,6 +204,7 @@ namespace handle {
         item->type = type;
         item->action_type = action;
         item->left = false;
+        item->actor_value = a_actor_value;
         data.push_back(item);
 
         logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
@@ -244,7 +247,7 @@ namespace handle {
         }
     }
 
-    void set_setting_data::set_new_item_count(const RE::FormID a_form_id, int32_t a_count) {
+    void set_setting_data::set_new_item_count(RE::TESBoundObject* a_object, int32_t a_count) {
         //just consider magic items for now, that includes
         const auto page_handle = page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
@@ -252,10 +255,12 @@ namespace handle {
                 for (const auto setting : page_setting->slot_settings) {
                     if ((setting->type == slot_setting::slot_type::consumable ||
                             setting->type == slot_setting::slot_type::scroll) &&
-                        setting->form->formID == a_form_id) {
+                        ((setting->form && setting->form->formID == a_object->formID) ||
+                            (setting->actor_value != RE::ActorValue::kNone &&
+                                util::helper::get_actor_value_effect_from_potion(a_object) != RE::ActorValue::kNone))) {
                         setting->item_count = setting->item_count + a_count;
                         logger::trace("FormId {}, new count {}, change count {}"sv,
-                            util::string_util::int_to_hex(a_form_id),
+                            util::string_util::int_to_hex(a_object->formID),
                             setting->item_count,
                             a_count);
                         util::helper::block_location(page_setting, setting->item_count == 0);
@@ -269,13 +274,15 @@ namespace handle {
             const auto ammo_handle = ammo_handle::get_singleton();
             if (const auto ammo_list = ammo_handle->get_all(); !ammo_list.empty()) {
                 for (const auto ammo : ammo_list) {
-                    if (a_form_id == ammo->form->formID) {
+                    if (a_object->formID == ammo->form->formID) {
                         ammo->item_count = ammo->item_count + a_count;
                     }
                 }
             }
         }
     }
+
+
     void set_setting_data::set_active_and_equip(handle::page_handle*& a_page_handle) {
         for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
             //will do for now, items could have been removed whatsoever
@@ -320,6 +327,7 @@ namespace handle {
                 custom::get_item_form_left_by_section(section),
                 custom::get_type_left_by_section(section),
                 custom::get_slot_action_left_by_section(section),
+                static_cast<RE::ActorValue>(custom::get_effect_actor_value(section)),
                 a_key_position);
         }
 

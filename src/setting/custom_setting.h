@@ -14,6 +14,7 @@ namespace config {
         static std::string get_item_form_by_section(const std::string& a_section);
         static uint32_t get_slot_action_by_section(const std::string& a_section);
         static uint32_t get_hand_selection_by_section(const std::string& a_section);
+        static int get_effect_actor_value(const std::string& a_section);
         static uint32_t get_type_left_by_section(const std::string& a_section);
         static std::string get_item_form_left_by_section(const std::string& a_section);
         static uint32_t get_slot_action_left_by_section(const std::string& a_section);
@@ -32,7 +33,8 @@ namespace config {
             uint32_t a_hand,
             uint32_t a_type_left,
             const std::string& a_form_left,
-            uint32_t a_action_left);
+            uint32_t a_action_left,
+            int a_effect_actor_value);
 
     private:
         static void save_setting();

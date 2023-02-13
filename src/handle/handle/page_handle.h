@@ -62,11 +62,13 @@ namespace handle {
             bool a_left);
 
         static ui::icon_image_type get_icon_type(slot_setting::slot_type a_type, RE::TESForm*& a_form);
-        static void get_icon_for_weapon_type(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
-        static void get_icon_for_spell(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
-        static void get_icon_for_consumable(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
+        static void get_weapon_type_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
+        static void get_spell_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
+        static void get_consumable_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
         static void get_item_count(RE::TESForm*& a_form, int32_t& a_count, slot_setting::slot_type a_type);
-        static void get_icon_for_item(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
+        static void get_item_icon(RE::TESForm*& a_form, ui::icon_image_type& a_icon);
+        static void get_consumable_icon_by_actor_value(RE::ActorValue& a_actor_value, ui::icon_image_type& a_icon);
+        static void get_consumable_item_count(RE::ActorValue& a_actor_value, int32_t& a_count);
 
         struct page_handle_data {
             std::map<uint32_t, std::map<position_setting::position_type, position_setting*>> page_settings;

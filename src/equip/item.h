@@ -29,5 +29,7 @@ namespace equip {
         static void un_equip_ammo();
 
         static uint32_t get_inventory_count(const RE::TESForm* a_form);
+
+        static void find_and_consume_fitting_option(RE::ActorValue a_actor_value, RE::PlayerCharacter*& a_player);
     };
 }

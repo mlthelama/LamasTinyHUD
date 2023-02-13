@@ -8,4 +8,5 @@ public:
     handle::slot_setting::acton_type action_type = handle::slot_setting::acton_type::default_action;
     bool left = false;
     bool two_handed = false;
+    RE::ActorValue actor_value = RE::ActorValue::kNone;
 };

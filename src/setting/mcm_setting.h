@@ -73,5 +73,8 @@ namespace config {
         static bool get_un_equip_ammo();
         static bool get_only_favorite_ammo();
         static bool get_prevent_consumption_of_last_dynamic_potion();
+        static bool get_group_potions();
+        static float get_potion_min_perfect();
+        static float get_potion_max_perfect();
     };
 }
