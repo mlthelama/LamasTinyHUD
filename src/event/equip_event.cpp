@@ -237,6 +237,7 @@ namespace event {
     void equip_event::check_if_location_needs_block(RE::TESForm*& a_form, const bool a_equipped) {
         //is two-handed, if equipped
         //hardcode left for now, because we just need it there
+        auto left_reequip_called = false;
         const auto key_handle = handle::key_position_handle::get_singleton();
         key_handle->set_position_lock(handle::position_setting::position_type::left, a_equipped ? 1 : 0);
         const auto page_handle = handle::page_handle::get_singleton();
@@ -260,18 +261,25 @@ namespace event {
             if (config::mcm_setting::get_un_equip_ammo()) {
                 equip::item::un_equip_ammo();
             }
+            reequip_left_hand_if_needed(setting);
+            left_reequip_called = true;
         }
-
-        auto obj_right =
-            RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
-        if (!a_equipped && obj_right && !util::helper::is_two_handed(obj_right)) {
-            auto left_slot = equip::equip_slot::get_left_hand_slot();
-            auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            auto player = RE::PlayerCharacter::GetSingleton();
-            equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
-            if (setting && !setting->slot_settings.empty()) {
-                handle::setting_execute::execute_settings(setting->slot_settings);
+        
+        if (!left_reequip_called) {
+            auto obj_right = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+            if (obj_right && !util::helper::is_two_handed(obj_right)) {
+                reequip_left_hand_if_needed(setting);
             }
+        }
+    }
+    
+    void equip_event::reequip_left_hand_if_needed(handle::position_setting* a_setting) {
+        auto left_slot = equip::equip_slot::get_left_hand_slot();
+        auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto player = RE::PlayerCharacter::GetSingleton();
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
+        if (a_setting && !a_setting->slot_settings.empty()) {
+            handle::setting_execute::execute_settings(a_setting->slot_settings);
         }
     }
 }
