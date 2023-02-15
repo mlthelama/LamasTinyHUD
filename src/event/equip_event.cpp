@@ -261,18 +261,24 @@ namespace event {
             if (config::mcm_setting::get_un_equip_ammo()) {
                 equip::item::un_equip_ammo();
             }
-            reequip_left_hand_if_needed(setting);
-            left_reequip_called = true;
         }
-        
+
+        if (!a_equipped) {
+            if (!util::helper::is_two_handed(a_form)) {
+                reequip_left_hand_if_needed(setting);
+                left_reequip_called = true;
+            }
+        }
+
         if (!left_reequip_called) {
-            auto obj_right = RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+            auto obj_right =
+                RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             if (obj_right && !util::helper::is_two_handed(obj_right)) {
                 reequip_left_hand_if_needed(setting);
             }
         }
     }
-    
+
     void equip_event::reequip_left_hand_if_needed(handle::position_setting* a_setting) {
         auto left_slot = equip::equip_slot::get_left_hand_slot();
         auto equip_manager = RE::ActorEquipManager::GetSingleton();
