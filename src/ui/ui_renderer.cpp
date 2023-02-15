@@ -683,7 +683,6 @@ namespace ui {
                         animation_frame_map[animation_type::highlight]);
                     logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
                     load_font();
-                    //show_ui_ = true;
                     event::sink_events();
                     logger::info("done with data loaded"sv);
                 }
