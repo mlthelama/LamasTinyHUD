@@ -100,7 +100,6 @@ include_directories(extern/stb)
 
 find_package(imgui REQUIRED)
 
-
 # ---- Add source files ----
 
 include(cmake/sourcelist.cmake)
