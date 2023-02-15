@@ -273,7 +273,7 @@ namespace event {
         if (!left_reequip_called) {
             auto obj_right =
                 RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
-            if (obj_right && !util::helper::is_two_handed(obj_right)) {
+            if ((obj_right && !util::helper::is_two_handed(obj_right)) || !obj_right) {
                 reequip_left_hand_if_needed(setting);
             }
         }
