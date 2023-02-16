@@ -214,11 +214,35 @@ namespace ui {
         const float a_offset_extra_y,
         const char* a_text,
         const ImU32 a_color,
-        const float a_font_size) {
+        const float a_font_size,
+        bool a_center_text,
+        bool a_deduct_text_x,
+        bool a_deduct_text_y,
+        bool a_add_text_x,
+        bool a_add_text_y) {
         //it should center the text, it kind of does
+        auto text_x = 0.f;
+        auto text_y = 0.f;
         const ImVec2 text_size = ImGui::CalcTextSize(a_text, nullptr, true);
-        const auto position = ImVec2(a_x + a_offset_x + a_offset_extra_x - text_size.x * 0.5f,
-            a_y + a_offset_y + a_offset_extra_y - text_size.y * 0.5f);
+        if (a_center_text) {
+            text_x = -text_size.x * 0.5f;
+            text_y = -text_size.y * 0.5f;
+        }
+        if (a_deduct_text_x) {
+            text_x = text_x - text_size.x;
+        }
+        if (a_deduct_text_y) {
+            text_y = text_y - text_size.y;
+        }
+        if (a_add_text_x) {
+            text_x = text_x + text_size.x;
+        }
+        if (a_add_text_y) {
+            text_y = text_y + text_size.y;
+        }
+
+        const auto position =
+            ImVec2(a_x + a_offset_x + a_offset_extra_x + text_x, a_y + a_offset_y + a_offset_extra_y + text_y);
 
         auto font = loaded_font;
         if (!font) {
@@ -367,6 +391,12 @@ namespace ui {
                 }
 
                 if (slot_name) {
+                    auto center_text = (page_setting->position == handle::position_setting::position_type::top ||
+                                        page_setting->position == handle::position_setting::position_type::bottom);
+                    auto deduct_text_x = page_setting->position == handle::position_setting::position_type::left;
+                    auto deduct_text_y = page_setting->position == handle::position_setting::position_type::bottom;
+                    auto add_text_x = false;
+                    auto add_text_y = page_setting->position == handle::position_setting::position_type::top;
                     draw_text(draw_setting->width_setting,
                         draw_setting->height_setting,
                         draw_setting->offset_slot_x,
@@ -375,7 +405,12 @@ namespace ui {
                         draw_setting->offset_name_text_y,
                         slot_name,
                         color,
-                        page_setting->font_size);
+                        page_setting->font_size,
+                        center_text,
+                        deduct_text_x,
+                        deduct_text_y,
+                        add_text_x,
+                        add_text_y);
                 }
             }
 
@@ -822,6 +857,7 @@ namespace ui {
         loaded_font =
             io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
         if (io.Fonts->Build()) {
+            ImGui_ImplDX11_InvalidateDeviceObjects();
             ImGui_ImplDX11_CreateDeviceObjects();
             logger::info("Custom Font {} loaded."sv, path);
             return;
