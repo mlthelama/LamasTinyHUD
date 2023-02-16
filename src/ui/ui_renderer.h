@@ -53,7 +53,12 @@ namespace ui {
             float a_offset_extra_y,
             const char* a_text,
             ImU32 a_color = IM_COL32_WHITE,
-            float a_font_size = 20.f);
+            float a_font_size = 20.f,
+            bool a_center_text = true,
+            bool a_deduct_text_x = false,
+            bool a_deduct_text_y = false,
+            bool a_add_text_x = false,
+            bool a_add_text_y = false);
         static void draw_element(ID3D11ShaderResourceView* a_texture,
             ImVec2 a_center,
             ImVec2 a_size,

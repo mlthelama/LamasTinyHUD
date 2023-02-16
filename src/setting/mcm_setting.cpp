@@ -130,11 +130,11 @@ namespace config {
             slot_item_name_offset_horizontal_x =
                 static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetHorizontalX", -15));
             slot_item_name_offset_horizontal_y =
-                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetHorizontalY", 65));
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetHorizontalY", 85));
             slot_item_name_offset_vertical_x =
-                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetVerticalX", 45));
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetVerticalX", 10));
             slot_item_name_offset_vertical_y =
-                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetVerticalY", 75));
+                static_cast<float>(mcm.GetDoubleValue("HudSetting", "fSlotItemNameOffsetVerticalY", 65));
             arrow_slot_offset_x = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetX", -115));
             arrow_slot_offset_y = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fArrowSlotOffsetY", 115));
             arrow_slot_count_text_offset =
