@@ -526,7 +526,7 @@ namespace handle {
             return;
         }
 
-        auto actor_value = util::helper::get_actor_value_effect_from_potion(alchemy_potion);
+        auto actor_value = util::helper::get_actor_value_effect_from_potion(alchemy_potion, false);
         get_consumable_icon_by_actor_value(actor_value, a_icon);
     }
 
