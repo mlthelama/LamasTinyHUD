@@ -601,8 +601,8 @@ namespace util {
         }
     }
 
-    RE::ActorValue helper::get_actor_value_effect_from_potion(RE::TESForm* a_form) {
-        if (!a_form->Is(RE::FormType::AlchemyItem) || !config::mcm_setting::get_group_potions()) {
+    RE::ActorValue helper::get_actor_value_effect_from_potion(RE::TESForm* a_form, bool a_check) {
+        if (!a_form->Is(RE::FormType::AlchemyItem) || (!config::mcm_setting::get_group_potions() && a_check)) {
             return RE::ActorValue::kNone;
         }
         auto alchemy_potion = a_form->As<RE::AlchemyItem>();
@@ -616,6 +616,10 @@ namespace util {
 
         if (actor_value == RE::ActorValue::kNone) {
             actor_value = effect->data.primaryAV;
+        }
+
+        if (!a_check) {
+            return actor_value;
         }
 
         if ((actor_value == RE::ActorValue::kHealth || actor_value == RE::ActorValue::kStamina ||
