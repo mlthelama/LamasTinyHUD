@@ -223,7 +223,12 @@ namespace ui {
         //it should center the text, it kind of does
         auto text_x = 0.f;
         auto text_y = 0.f;
-        const ImVec2 text_size = ImGui::CalcTextSize(a_text, nullptr, true);
+
+        if (!a_text || !*a_text) {
+            return;
+        }
+
+        const ImVec2 text_size = ImGui::CalcTextSize(a_text);
         if (a_center_text) {
             text_x = -text_size.x * 0.5f;
             text_y = -text_size.y * 0.5f;
