@@ -288,22 +288,9 @@ namespace handle {
             //will do for now, items could have been removed whatsoever
             a_page_handle->init_actives(0, static_cast<position_setting::position_type>(i));
         }
-        auto player = RE::PlayerCharacter::GetSingleton();
-        auto equip_manager = RE::ActorEquipManager::GetSingleton();
-        auto right = equip::equip_slot::get_right_hand_slot();
-        auto left = equip::equip_slot::get_left_hand_slot();
 
-        //execute first setting for left, then right
-        equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
-        equip::equip_slot::un_equip_object_ft_dummy_dagger(left, player, equip_manager);
-        logger::trace("execute first setting for left/right"sv);
-        auto position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::left);
-        setting_execute::execute_settings(position_setting->slot_settings);
-        position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::right);
-        setting_execute::execute_settings(position_setting->slot_settings);
-        position_setting = a_page_handle->get_page_setting(0, position_setting::position_type::top);
-        setting_execute::execute_settings(position_setting->slot_settings, true);
-        logger::trace("done equip for first set"sv);
+        get_actives_and_equip();
+        logger::trace("processed actives and equip"sv);
     }
 
     void set_setting_data::process_config_data(key_position_handle*& a_key_position) {
@@ -356,5 +343,55 @@ namespace handle {
             }
         }
         logger::trace("processed empty data"sv);
+    }
+    void set_setting_data::get_actives_and_equip() {
+        if (!mcm::get_elden_demon_souls() || mcm::get_disable_re_equip_of_actives()) {
+            return;
+        }
+
+        clear_hands();
+
+        logger::trace("execute first setting for left/right/top"sv);
+
+        auto page_handle = handle::page_handle::get_singleton();
+        auto is_right_two_handed = false;
+
+        auto right_position_setting = page_handle->get_page_setting(
+            page_handle->get_active_page_id_position(position_setting::position_type::right),
+            position_setting::position_type::right);
+        if (right_position_setting && !right_position_setting->slot_settings.empty() &&
+            right_position_setting->slot_settings.front()->form) {
+            is_right_two_handed = util::helper::is_two_handed(right_position_setting->slot_settings.front()->form);
+        }
+
+        position_setting* position_setting;
+        if (!is_right_two_handed) {
+            position_setting = page_handle->get_page_setting(
+                page_handle->get_active_page_id_position(position_setting::position_type::left),
+                position_setting::position_type::left);
+            setting_execute::execute_settings(position_setting->slot_settings);
+        }
+
+        setting_execute::execute_settings(right_position_setting->slot_settings);
+
+        position_setting = page_handle->get_page_setting(
+            page_handle->get_active_page_id_position(position_setting::position_type::top),
+            position_setting::position_type::top);
+        setting_execute::execute_settings(position_setting->slot_settings, true);
+
+        logger::trace("done equip for first set"sv);
+    }
+
+    void set_setting_data::clear_hands() {
+        logger::trace("clear hands"sv);
+        auto player = RE::PlayerCharacter::GetSingleton();
+        auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto right = equip::equip_slot::get_right_hand_slot();
+        auto left = equip::equip_slot::get_left_hand_slot();
+
+        //execute first setting for left, then right
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(left, player, equip_manager);
+        logger::trace("clear hands done."sv);
     }
 }

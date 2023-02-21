@@ -1335,7 +1335,17 @@
                         "sourceType": "ModSettingFloat"
                     }
                 },
-
+                {
+                    "id": "bDisableReEquipOfActives:MiscSetting",
+                    "text": "$LamasTinyHUD_bDisableReEquipOfActives_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_bDisableReEquipOfActives_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
                 {
                     "text": "$LamasTinyHUD_MiscSetting_HeaderText_Settings",
                     "type": "header",
