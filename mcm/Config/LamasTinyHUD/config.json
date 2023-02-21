@@ -1337,9 +1337,20 @@
                 },
                 {
                     "id": "bDisableReEquipOfActives:MiscSetting",
-                    "text": "$LamasTinyHUD_bDisableReEquipOfActives_OptionText",
+                    "text": "$LamasTinyHUD_DisableReEquipOfActives_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_bDisableReEquipOfActives_InfoText",
+                    "help": "$LamasTinyHUD_DisableReEquipOfActives_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bSortArrowByQuantity:MiscSetting",
+                    "text": "$LamasTinyHUD_SortArrowByQuantity_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_SortArrowByQuantity_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {

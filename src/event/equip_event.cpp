@@ -185,6 +185,7 @@ namespace event {
 
     void equip_event::look_for_ammo(const bool a_crossbow) {
         bool only_favorite = config::mcm_setting::get_only_favorite_ammo();
+        bool sort_by_quantity = config::mcm_setting::get_sort_arrow_by_quantity();
         const auto max_items = config::mcm_setting::get_max_ammunition_type();
         auto player = RE::PlayerCharacter::GetSingleton();
         const auto inv = equip::item::get_inventory(player, RE::FormType::Ammo);
@@ -208,7 +209,11 @@ namespace event {
                 auto* ammo_data = new handle::ammo_data();
                 ammo_data->form = ammo;
                 ammo_data->item_count = num_items;
-                ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+                if (sort_by_quantity) {
+                    ammo_list.insert({ static_cast<uint32_t>(num_items), ammo_data });
+                } else {
+                    ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+                }
             } else if (!a_crossbow && num_items != 0 &&
                        ammo->GetRuntimeData().data.flags.all(RE::AMMO_DATA::Flag::kNonBolt)) {
                 logger::trace("found arrow {}, damage {}, count {}"sv,
@@ -218,10 +223,11 @@ namespace event {
                 auto* ammo_data = new handle::ammo_data();
                 ammo_data->form = ammo;
                 ammo_data->item_count = num_items;
-                ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
-            }
-            if (ammo_list.size() == max_items) {
-                break;
+                if (sort_by_quantity) {
+                    ammo_list.insert({ static_cast<uint32_t>(num_items), ammo_data });
+                } else {
+                    ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+                }
             }
         }
         std::vector<handle::ammo_data*> sorted_ammo;
@@ -229,6 +235,9 @@ namespace event {
         for (auto [dmg, data] : ammo_list) {
             sorted_ammo.push_back(data);
             logger::trace("got {} count {}"sv, data->form->GetName(), data->item_count);
+            if (sorted_ammo.size() == max_items) {
+                break;
+            }
         }
         ammo_list.clear();
         ammo_handle->init_ammo(sorted_ammo);

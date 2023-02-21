@@ -80,5 +80,6 @@ namespace config {
         static float get_potion_min_perfect();
         static float get_potion_max_perfect();
         static bool get_disable_re_equip_of_actives();
+        static bool get_sort_arrow_by_quantity();
     };
 }
