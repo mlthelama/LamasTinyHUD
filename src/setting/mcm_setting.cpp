@@ -79,6 +79,8 @@ namespace config {
     static bool group_potions;
     static float potion_min_perfect;
     static float potion_max_perfect;
+    static bool disable_re_equip_of_actives;
+    static bool sort_arrow_by_quantity;
 
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
@@ -182,6 +184,8 @@ namespace config {
             group_potions = mcm.GetBoolValue("MiscSetting", "bGroupPotions", false);
             potion_min_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMinPerfect", 0.7));
             potion_max_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMaxPerfect", 1.2));
+            disable_re_equip_of_actives = mcm.GetBoolValue("MiscSetting", "bDisableReEquipOfActives", false);
+            sort_arrow_by_quantity = mcm.GetBoolValue("MiscSetting", "bSortArrowByQuantity", false);
         };
 
         read_mcm(mcm_default_setting);
@@ -275,4 +279,6 @@ namespace config {
     bool mcm_setting::get_group_potions() { return group_potions; }
     float mcm_setting::get_potion_min_perfect() { return potion_min_perfect; }
     float mcm_setting::get_potion_max_perfect() { return potion_max_perfect; }
+    bool mcm_setting::get_disable_re_equip_of_actives() { return disable_re_equip_of_actives; }
+    bool mcm_setting::get_sort_arrow_by_quantity() { return sort_arrow_by_quantity; }
 }

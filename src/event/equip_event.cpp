@@ -28,6 +28,12 @@ namespace event {
             return event_result::kContinue;
         }
 
+        const auto ui = RE::UI::GetSingleton();
+        if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
+                       ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
+            return event_result::kContinue;
+        }
+
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
 
         if (!form) {
@@ -185,6 +191,7 @@ namespace event {
 
     void equip_event::look_for_ammo(const bool a_crossbow) {
         bool only_favorite = config::mcm_setting::get_only_favorite_ammo();
+        bool sort_by_quantity = config::mcm_setting::get_sort_arrow_by_quantity();
         const auto max_items = config::mcm_setting::get_max_ammunition_type();
         auto player = RE::PlayerCharacter::GetSingleton();
         const auto inv = equip::item::get_inventory(player, RE::FormType::Ammo);
@@ -208,7 +215,11 @@ namespace event {
                 auto* ammo_data = new handle::ammo_data();
                 ammo_data->form = ammo;
                 ammo_data->item_count = num_items;
-                ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+                if (sort_by_quantity) {
+                    ammo_list.insert({ static_cast<uint32_t>(num_items), ammo_data });
+                } else {
+                    ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+                }
             } else if (!a_crossbow && num_items != 0 &&
                        ammo->GetRuntimeData().data.flags.all(RE::AMMO_DATA::Flag::kNonBolt)) {
                 logger::trace("found arrow {}, damage {}, count {}"sv,
@@ -218,10 +229,11 @@ namespace event {
                 auto* ammo_data = new handle::ammo_data();
                 ammo_data->form = ammo;
                 ammo_data->item_count = num_items;
-                ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
-            }
-            if (ammo_list.size() == max_items) {
-                break;
+                if (sort_by_quantity) {
+                    ammo_list.insert({ static_cast<uint32_t>(num_items), ammo_data });
+                } else {
+                    ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
+                }
             }
         }
         std::vector<handle::ammo_data*> sorted_ammo;
@@ -229,12 +241,18 @@ namespace event {
         for (auto [dmg, data] : ammo_list) {
             sorted_ammo.push_back(data);
             logger::trace("got {} count {}"sv, data->form->GetName(), data->item_count);
+            if (sorted_ammo.size() == max_items) {
+                break;
+            }
         }
         ammo_list.clear();
         ammo_handle->init_ammo(sorted_ammo);
     }
 
     void equip_event::check_if_location_needs_block(RE::TESForm*& a_form, const bool a_equipped) {
+        logger::trace("checking if location needs block, form {}, equipped {}"sv,
+            a_form ? util::string_util::int_to_hex(a_form->formID) : "null",
+            a_equipped);
         //is two-handed, if equipped
         //hardcode left for now, because we just need it there
         auto left_reequip_called = false;
@@ -277,14 +295,19 @@ namespace event {
                 reequip_left_hand_if_needed(setting);
             }
         }
+        logger::trace("checking for block done. return."sv);
     }
 
     void equip_event::reequip_left_hand_if_needed(handle::position_setting* a_setting) {
+        if (!a_setting) {
+            return;
+        }
+        logger::trace("checking and calling re equip for setting {}"sv, static_cast<uint32_t>(a_setting->position));
         auto left_slot = equip::equip_slot::get_left_hand_slot();
         auto equip_manager = RE::ActorEquipManager::GetSingleton();
         auto player = RE::PlayerCharacter::GetSingleton();
         equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
-        if (a_setting && !a_setting->slot_settings.empty()) {
+        if (!a_setting->slot_settings.empty()) {
             handle::setting_execute::execute_settings(a_setting->slot_settings);
         }
     }
