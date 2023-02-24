@@ -28,6 +28,12 @@ namespace event {
             return event_result::kContinue;
         }
 
+        const auto ui = RE::UI::GetSingleton();
+        if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
+                       ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
+            return event_result::kContinue;
+        }
+
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
 
         if (!form) {
@@ -244,6 +250,9 @@ namespace event {
     }
 
     void equip_event::check_if_location_needs_block(RE::TESForm*& a_form, const bool a_equipped) {
+        logger::trace("checking if location needs block, form {}, equipped {}"sv,
+            a_form ? util::string_util::int_to_hex(a_form->formID) : "null",
+            a_equipped);
         //is two-handed, if equipped
         //hardcode left for now, because we just need it there
         auto left_reequip_called = false;
@@ -286,14 +295,19 @@ namespace event {
                 reequip_left_hand_if_needed(setting);
             }
         }
+        logger::trace("checking for block done. return."sv);
     }
 
     void equip_event::reequip_left_hand_if_needed(handle::position_setting* a_setting) {
+        if (!a_setting) {
+            return;
+        }
+        logger::trace("checking and calling re equip for setting {}"sv, static_cast<uint32_t>(a_setting->position));
         auto left_slot = equip::equip_slot::get_left_hand_slot();
         auto equip_manager = RE::ActorEquipManager::GetSingleton();
         auto player = RE::PlayerCharacter::GetSingleton();
         equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
-        if (a_setting && !a_setting->slot_settings.empty()) {
+        if (!a_setting->slot_settings.empty()) {
             handle::setting_execute::execute_settings(a_setting->slot_settings);
         }
     }

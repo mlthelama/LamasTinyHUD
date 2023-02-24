@@ -1,5 +1,4 @@
 ﻿#include "key_manager.h"
-
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/edit_handle.h"
 #include "handle/handle/page_handle.h"
@@ -8,6 +7,7 @@
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/helper.h"
+#include "util/string_util.h"
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;
@@ -69,7 +69,6 @@ namespace event {
             if (key_ == k_invalid) {
                 continue;
             }
-
 
             switch (button->device.get()) {
                 case device_type::kMouse:
