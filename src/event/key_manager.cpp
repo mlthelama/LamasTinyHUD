@@ -8,6 +8,7 @@
 #include "ui/ui_renderer.h"
 #include "util/helper.h"
 #include "util/string_util.h"
+#include <handle/setting/game_menu_setting.h>
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;
@@ -90,6 +91,59 @@ namespace event {
 
             if (const auto control_map = RE::ControlMap::GetSingleton(); !control_map->IsMovementControlsEnabled()) {
                 continue;
+            }
+
+            //TODO add config
+            if (button->IsDown() && button->IsPressed() && is_position_button(key_) && ui->IsShowingMenus()) {
+                uint32_t menu_form = 0;
+                if (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME)) {
+                    auto inventory_menu =
+                        static_cast<RE::InventoryMenu*>(ui->GetMenu(RE::InventoryMenu::MENU_NAME).get());
+                    if (inventory_menu) {
+                        RE::GFxValue result;
+                        inventory_menu->uiMovie->GetVariable(&result,
+                            "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
+                        if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
+                            menu_form = static_cast<std::uint32_t>(result.GetNumber());
+                            logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
+                        }
+                    }
+                }
+
+                if (ui->IsMenuOpen(RE::MagicMenu::MENU_NAME)) {
+                    auto magic_menu = static_cast<RE::MagicMenu*>(ui->GetMenu(RE::MagicMenu::MENU_NAME).get());
+                    if (magic_menu) {
+                        RE::GFxValue result;
+                        magic_menu->uiMovie->GetVariable(&result,
+                            "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
+                        if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
+                            menu_form = static_cast<std::uint32_t>(result.GetNumber());
+                            logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
+                        }
+                    }
+                }
+
+                if (ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME)) {
+                    auto favorite_menu =
+                        static_cast<RE::FavoritesMenu*>(ui->GetMenu(RE::FavoritesMenu::MENU_NAME).get());
+                    if (favorite_menu) {
+                        RE::GFxValue result;
+                        favorite_menu->uiMovie->GetVariable(&result,
+                            "_root.MenuHolder.Menu_mc.itemList.selectedEntry.formId");
+                        if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
+                            menu_form = static_cast<std::uint32_t>(result.GetNumber());
+                            logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
+                        }
+                    }
+                }
+
+                if (menu_form) {
+                    if (config::mcm_setting::get_elden_demon_souls()) {
+                        auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
+                        auto key_position = handle::key_position_handle::get_singleton()->get_position_for_key(key_);
+                        handle::game_menu_setting::elden_souls_config(tes_form_menu, key_position);
+                    }
+                }
             }
 
             /*if the game is not paused with the menu, it triggers the menu always in the background*/
