@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(NAME "LamasTinyHUD")
-set(VERSION 1.2.3.0)
+set(VERSION 1.2.4.0)
 
 # ---- Options ----
 
