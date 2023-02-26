@@ -5,9 +5,6 @@
 #include <SimpleIni.h>
 
 namespace config {
-    //static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom.ini)";
-    //static const char* ini_path_elden = R"(.\Data\SKSE\Plugins\LamasTinyHUD_Custom_Elden.ini)";
-
     CSimpleIniA custom_ini;
 
     void custom_setting::read_setting() {

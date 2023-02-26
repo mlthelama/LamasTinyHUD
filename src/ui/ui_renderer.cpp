@@ -724,12 +724,12 @@ namespace ui {
                     logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
                     load_font();
                     event::sink_events();
-                    handle::set_setting_data::read_and_set_data();
                     logger::info("done with data loaded"sv);
                 }
                 break;
             case SKSE::MessagingInterface::kPostLoadGame:
             case SKSE::MessagingInterface::kNewGame:
+                handle::set_setting_data::read_and_set_data();
                 handle::set_setting_data::get_actives_and_equip();
                 show_ui_ = true;
                 break;

@@ -28,10 +28,13 @@ namespace event {
             return event_result::kContinue;
         }
 
+        const auto edit_handle = handle::edit_handle::get_singleton();
         const auto ui = RE::UI::GetSingleton();
         if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
                        ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
-            return event_result::kContinue;
+            if (edit_handle->get_position() == handle::position_setting::position_type::total) {
+                return event_result::kContinue;
+            }
         }
 
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
@@ -46,7 +49,8 @@ namespace event {
         }
 
         //add check if we need to block left
-        if (config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
+        if (config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form) &&
+            edit_handle->get_position() == handle::position_setting::position_type::total) {
             check_if_location_needs_block(form, a_event->equipped);
         }
 

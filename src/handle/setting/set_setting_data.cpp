@@ -286,7 +286,9 @@ namespace handle {
     void set_setting_data::set_active_and_equip(handle::page_handle*& a_page_handle) {
         for (auto i = 0; i < static_cast<int>(position_setting::position_type::total); ++i) {
             //will do for now, items could have been removed whatsoever
-            a_page_handle->init_actives(0, static_cast<position_setting::position_type>(i));
+            auto position = static_cast<position_setting::position_type>(i);
+            auto page = a_page_handle->get_active_page_id_position(position);
+            a_page_handle->init_actives(page, position);
         }
 
         get_actives_and_equip();
