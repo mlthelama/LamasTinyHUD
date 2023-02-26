@@ -27,8 +27,6 @@ set(sources ${sources}
 	src/handle/handle/name_handle.h
 	src/handle/handle/page_handle.cpp
 	src/handle/handle/page_handle.h
-	src/handle/setting/game_menu_setting.cpp
-	src/handle/setting/game_menu_setting.h
 	src/handle/setting/set_setting_data.cpp
 	src/handle/setting/set_setting_data.h
 	src/handle/setting/setting_execute.cpp
