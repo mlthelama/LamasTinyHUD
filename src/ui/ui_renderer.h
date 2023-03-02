@@ -1,10 +1,9 @@
 ﻿#pragma once
+#include "animation_handler.h"
 #include "handle/data/page/position_setting.h"
 #include "image_path.h"
-
-#define WIN32_LEAN_AND_MEAN
-#include "animation_handler.h"
 #include <imgui.h>
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <winuser.h>
 

@@ -146,6 +146,8 @@
                     "text": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_InfoText",
+                    "groupCondition": 1,
+                    "groupBehavior": "hide",
                     "valueOptions": {
                         "min": 1.0,
                         "max": 35.0,
@@ -172,6 +174,8 @@
                     "text": "$LamasTinyHUD_Controls_ConfigPosition_OptionText",
                     "type": "enum",
                     "help": "$LamasTinyHUD_Controls_ConfigPosition_InfoText",
+                    "groupCondition": 1,
+                    "groupBehavior": "hide",
                     "valueOptions": {
                         "options": ["$LamasTinyHUD_Controls_Config_Top", "$LamasTinyHUD_Controls_Config_Right", "$LamasTinyHUD_Controls_Config_Bottom", "$LamasTinyHUD_Controls_Config_Left"],
                         "sourceType": "ModSettingInt"
@@ -182,6 +186,8 @@
                     "type": "text",
                     "text": "$LamasTinyHUD_Controls_TriggerConfig_OptionText",
                     "help": "$LamasTinyHUD_Controls_TriggerConfig_InfoText",
+                    "groupCondition": 1,
+                    "groupBehavior": "hide",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"

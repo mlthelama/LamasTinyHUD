@@ -1,45 +1,10 @@
 ﻿#include "magic.h"
-#include "equip/equip_slot.h"
-#include "item.h"
+#include "equip_slot.h"
+#include "setting/mcm_setting.h"
 #include "util/offset.h"
-#include <setting/mcm_setting.h>
+#include "util/player/player.h"
 
 namespace equip {
-    std::vector<RE::TESForm*> magic::get_spells(const bool a_instant, const bool a_single) {
-        //easier just to use items that have been favourited, just filter them
-        std::vector<RE::TESForm*> spell_list;
-
-        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
-            if (form->Is(RE::FormType::Spell)) {
-                if (const auto spell = form->As<RE::SpellItem>();
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell) {
-                    logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                        spell->GetName(),
-                        static_cast<uint32_t>(spell->GetCastingType()),
-                        spell->IsTwoHanded(),
-                        static_cast<uint32_t>(spell->GetSpellType()));
-                    if (spell->GetCastingType() == RE::MagicSystem::CastingType::kConcentration && a_instant) {
-                        logger::debug("skipping spell {} because it does not work will with instant cast"sv,
-                            spell->GetName());
-                        continue;
-                    }
-
-                    if ((spell->IsTwoHanded() && !a_single) || (!spell->IsTwoHanded() && a_single)) {
-                        spell_list.push_back(form);
-                    }
-                } else {
-                    logger::trace(" {} is not a spell, not needed here form type {}"sv,
-                        form->GetName(),
-                        form->GetFormType());
-                }
-            }
-        }
-
-
-        logger::trace("spell list is size {}. return."sv, spell_list.size());
-        return spell_list;
-    }
-
     //add toggle mcm if equip or cast
     void magic::cast_magic(RE::TESForm* a_form,
         action_type a_action,
@@ -143,7 +108,7 @@ namespace equip {
 
         RE::TESBoundObject* obj = nullptr;
         uint32_t left = 0;
-        for (auto potential_items = item::get_inventory(a_player, RE::FormType::Scroll);
+        for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::Scroll);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
@@ -169,34 +134,6 @@ namespace equip {
         }
 
         logger::trace("worked scroll {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
-    }
-
-    std::vector<RE::TESForm*> magic::get_powers() {
-        //easier just to use items that have been favourited, just filter them
-        std::vector<RE::TESForm*> power_list;
-
-        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
-            if (form->Is(RE::FormType::Spell)) {
-                if (const auto spell = form->As<RE::SpellItem>();
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kPower ||
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
-                    logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                        spell->GetName(),
-                        static_cast<uint32_t>(spell->GetCastingType()),
-                        spell->IsTwoHanded(),
-                        static_cast<uint32_t>(spell->GetSpellType()));
-
-                    power_list.push_back(form);
-                } else {
-                    logger::trace("{} is not a power, not needed here form type {}"sv,
-                        form->GetName(),
-                        form->GetFormType());
-                }
-            }
-        }
-
-        logger::trace("power list is size {}. return."sv, power_list.size());
-        return power_list;
     }
 
     void magic::equip_or_cast_power(RE::TESForm* a_form, action_type a_action, RE::PlayerCharacter*& a_player) {
@@ -240,21 +177,6 @@ namespace equip {
             RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell);
         }
         logger::trace("worked power {} action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
-    }
-
-    std::vector<RE::TESForm*> magic::get_shouts() {
-        //easier just to use items that have been favourited, just filter them
-        std::vector<RE::TESForm*> shout_list;
-
-        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
-            if (form->Is(RE::FormType::Shout)) {
-                logger::trace("shout name is {}"sv, form->GetName());
-                shout_list.push_back(form);
-            }
-        }
-
-        logger::trace("shout list is size {}. return."sv, shout_list.size());
-        return shout_list;
     }
 
     void magic::equip_shout(RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {

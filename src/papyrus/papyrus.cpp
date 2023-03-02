@@ -155,9 +155,7 @@ namespace papyrus {
 
     void hud_mcm::init_config_for_position(RE::TESQuest*, uint32_t a_position) {
         logger::trace("Got config Triggered for Position {}"sv, a_position);
-        const auto key_manager = event::key_manager::get_singleton();
-        key_manager->reset_edit();
-        key_manager->init_edit(a_position);
+        //TODO remove
     }
 
     std::vector<RE::BSFixedString> hud_mcm::get_config_files(RE::TESQuest*, bool a_elden) {

@@ -17,9 +17,6 @@ namespace event {
             k_gamepad_offset = 266
         };
 
-        void reset_edit();
-        void init_edit(uint32_t a_position, uint32_t a_key = k_invalid);
-
         key_manager(const key_manager&) = delete;
         key_manager(key_manager&&) = delete;
 
@@ -48,15 +45,13 @@ namespace event {
         uint32_t key_hide_show_ = k_invalid;
 
         uint32_t button_press_modify_ = ui::draw_full;
-        uint32_t edit_active_ = k_invalid;
 
         bool is_toggle_down_ = false;
 
         void do_button_press(uint32_t a_key);
-        void do_button_hold(uint32_t a_key);
         [[nodiscard]] bool is_position_button(uint32_t a_key) const;
         [[nodiscard]] bool scroll_position(uint32_t a_key) const;
-        void init_edit(handle::position_setting::position_type a_position, uint32_t a_key);
         void do_button_down(handle::position_setting*& a_position_setting) const;
+        uint32_t get_selected_form(RE::UI*& a_ui);
     };
 }

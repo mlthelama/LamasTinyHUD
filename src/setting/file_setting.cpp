@@ -1,5 +1,4 @@
 ﻿#include "file_setting.h"
-#include "custom_setting.h"
 #include "util/constant.h"
 #include <SimpleIni.h>
 

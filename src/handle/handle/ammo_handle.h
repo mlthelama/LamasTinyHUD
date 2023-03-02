@@ -6,10 +6,8 @@ namespace handle {
     public:
         static ammo_handle* get_singleton();
         void init_ammo(const std::vector<ammo_data*>& a_ammo);
-
         void clear_ammo() const;
         void set_current(int a_current) const;
-
         [[nodiscard]] RE::TESForm* get_next_ammo() const;
         [[nodiscard]] ammo_data* get_current() const;
         [[nodiscard]] std::vector<ammo_data*> get_all() const;

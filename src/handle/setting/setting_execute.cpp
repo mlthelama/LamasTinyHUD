@@ -100,6 +100,20 @@ namespace handle {
         }
     }
 
+    void setting_execute::reequip_left_hand_if_needed(handle::position_setting* a_setting) {
+        if (!a_setting) {
+            return;
+        }
+        logger::trace("checking and calling re equip for setting {}"sv, static_cast<uint32_t>(a_setting->position));
+        auto left_slot = equip::equip_slot::get_left_hand_slot();
+        auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto player = RE::PlayerCharacter::GetSingleton();
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
+        if (!a_setting->slot_settings.empty()) {
+            handle::setting_execute::execute_settings(a_setting->slot_settings);
+        }
+    }
+
     void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
             case slot_setting::slot_type::consumable:

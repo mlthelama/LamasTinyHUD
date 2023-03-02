@@ -4,9 +4,9 @@
 #include "handle/data/page/position_setting.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
+#include "util/helper.h"
+#include "util/player/player.h"
 #include "util/string_util.h"
-#include <equip/item.h>
-#include <util/helper.h>
 
 namespace handle {
     using mcm = config::mcm_setting;
@@ -602,7 +602,7 @@ namespace handle {
     void page_handle::get_consumable_item_count(RE::ActorValue& a_actor_value, int32_t& a_count) {
         auto player = RE::PlayerCharacter::GetSingleton();
         a_count = 0;
-        for (auto potential_items = equip::item::get_inventory(player, RE::FormType::AlchemyItem);
+        for (auto potential_items = util::player::get_inventory(player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {
             const auto& [num_items, entry] = inv_data;
             auto alchemy_item = item->As<RE::AlchemyItem>();

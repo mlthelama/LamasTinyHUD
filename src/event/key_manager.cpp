@@ -1,14 +1,11 @@
 ﻿#include "key_manager.h"
 #include "handle/handle/ammo_handle.h"
-#include "handle/handle/edit_handle.h"
 #include "handle/handle/page_handle.h"
-#include "handle/setting/set_setting_data.h"
+#include "handle/setting/game_menu_setting.h"
 #include "handle/setting/setting_execute.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
-#include "util/helper.h"
 #include "util/string_util.h"
-#include <handle/setting/game_menu_setting.h>
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;
@@ -47,7 +44,7 @@ namespace event {
             return event_result::kContinue;
         }
 
-        const auto ui = RE::UI::GetSingleton();
+        auto ui = RE::UI::GetSingleton();
         if (!ui) {
             return event_result::kContinue;
         }
@@ -95,54 +92,18 @@ namespace event {
 
             //TODO add config
             if (button->IsDown() && button->IsPressed() && is_position_button(key_) && ui->IsShowingMenus()) {
-                uint32_t menu_form = 0;
-                if (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME)) {
-                    auto inventory_menu =
-                        static_cast<RE::InventoryMenu*>(ui->GetMenu(RE::InventoryMenu::MENU_NAME).get());
-                    if (inventory_menu) {
-                        RE::GFxValue result;
-                        inventory_menu->uiMovie->GetVariable(&result,
-                            "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
-                        if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
-                            menu_form = static_cast<std::uint32_t>(result.GetNumber());
-                            logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
-                        }
-                    }
-                }
-
-                if (ui->IsMenuOpen(RE::MagicMenu::MENU_NAME)) {
-                    auto magic_menu = static_cast<RE::MagicMenu*>(ui->GetMenu(RE::MagicMenu::MENU_NAME).get());
-                    if (magic_menu) {
-                        RE::GFxValue result;
-                        magic_menu->uiMovie->GetVariable(&result,
-                            "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
-                        if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
-                            menu_form = static_cast<std::uint32_t>(result.GetNumber());
-                            logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
-                        }
-                    }
-                }
-
-                if (ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME)) {
-                    auto favorite_menu =
-                        static_cast<RE::FavoritesMenu*>(ui->GetMenu(RE::FavoritesMenu::MENU_NAME).get());
-                    if (favorite_menu) {
-                        RE::GFxValue result;
-                        favorite_menu->uiMovie->GetVariable(&result,
-                            "_root.MenuHolder.Menu_mc.itemList.selectedEntry.formId");
-                        if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
-                            menu_form = static_cast<std::uint32_t>(result.GetNumber());
-                            logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
-                        }
-                    }
-                }
-
+                auto menu_form = get_selected_form(ui);
                 if (menu_form) {
+                    auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
+                    auto key_position = handle::key_position_handle::get_singleton()->get_position_for_key(key_);
                     if (config::mcm_setting::get_elden_demon_souls()) {
-                        auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
-                        auto key_position = handle::key_position_handle::get_singleton()->get_position_for_key(key_);
-                        handle::game_menu_setting::elden_souls_config(tes_form_menu, key_position);
+                        //set overwrite with btn press
+                        handle::game_menu_setting::elden_souls_config(tes_form_menu, key_position, false);
+                    } else {
+                        //toggle is down, it is for left
+                        handle::game_menu_setting::default_config(tes_form_menu, key_position, is_toggle_down_);
                     }
+                    //TODO for normal button press is right, button press + toggle is left
                 }
             }
 
@@ -178,9 +139,7 @@ namespace event {
             }
 
             if (is_position_button(key_)) {
-                if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time()) {
-                    do_button_hold(key_);
-                }
+                if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time()) {}
             }
 
             if (button->IsDown() && is_position_button(key_)) {
@@ -234,8 +193,6 @@ namespace event {
                     const auto handler = handle::page_handle::get_singleton();
                     handler->set_active_page(handler->get_next_page_id());
                 }
-
-                reset_edit();
             }
 
             if (elden && button->IsPressed()) {
@@ -330,52 +287,9 @@ namespace event {
         return true;
     }
 
-    void key_manager::reset_edit() {
-        if (edit_active_ != k_invalid) {
-            //remove everything
-            edit_active_ = k_invalid;
-            handle::edit_handle::get_singleton()->init_edit(handle::position_setting::position_type::total);
-        }
-    }
-
-    void key_manager::init_edit(uint32_t a_position, uint32_t a_key) {
-        const auto position = static_cast<handle::position_setting::position_type>(a_position);
-        if (a_key == k_invalid) {
-            a_key = handle::key_position_handle::get_singleton()->get_key_for_position(position);
-        }
-        init_edit(position, a_key);
-    }
-
     void key_manager::do_button_press(uint32_t a_key) {
         logger::debug("configured Key ({}) pressed"sv, a_key);
-
-        const auto edit_handle = handle::edit_handle::get_singleton();
         auto position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
-        auto edit_page = edit_handle->get_page();
-        auto edit_position = edit_handle->get_position();
-
-        if (const auto page_handle = handle::page_handle::get_singleton();
-            edit_position == position_setting->position && edit_page == page_handle->get_active_page_id() &&
-            a_key == edit_active_) {
-            util::helper::write_notification(fmt::format("Exit Edit Mode for Position {}, persisting Setting."sv,
-                static_cast<uint32_t>(position_setting->position)));
-
-            const auto edit_data = edit_handle->get_hold_data();
-            logger::trace("edit was active, setting new configuration for page {}, position {}, data size {}"sv,
-                edit_page,
-                static_cast<uint32_t>(edit_position),
-                edit_data.size());
-
-            if (config::mcm_setting::get_elden_demon_souls()) {
-                handle::set_setting_data::set_queue_slot(edit_position, edit_data);
-            } else {
-                handle::set_setting_data::set_single_slot(edit_page, edit_position, edit_data);
-            }
-
-            //remove everything
-            reset_edit();
-            return;
-        }
 
         if (config::mcm_setting::get_elden_demon_souls()) {
             if (config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
@@ -409,22 +323,6 @@ namespace event {
         }
     }
 
-    void key_manager::do_button_hold(uint32_t a_key) {
-        if (RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
-            reset_edit();
-            return;
-        }
-
-        const auto edit_handle = handle::edit_handle::get_singleton();
-        const auto page_setting = handle::setting_execute::get_position_setting_for_key(a_key);
-        if (edit_handle->get_position() == handle::position_setting::position_type::total &&
-            edit_active_ == k_invalid) {
-            logger::debug("configured key ({}) is held, enter edit mode"sv, a_key);
-
-            init_edit(page_setting->position, a_key);
-        }
-    }
-
     bool key_manager::is_position_button(const uint32_t a_key) const {
         if (a_key == key_top_action_ || a_key == key_right_action_ || a_key == key_bottom_action_ ||
             a_key == key_left_action_) {
@@ -433,20 +331,11 @@ namespace event {
         return false;
     }
 
-
     bool key_manager::scroll_position(const uint32_t a_key) const {
         if (a_key == key_bottom_action_ || a_key == key_top_action_) {
             return true;
         }
         return false;
-    }
-
-    void key_manager::init_edit(handle::position_setting::position_type a_position, const uint32_t a_key) {
-        const auto edit_handle = handle::edit_handle::get_singleton();
-        edit_handle->init_edit(a_position);
-        util::helper::write_notification(
-            fmt::format("Entered Edit Mode for Position {}"sv, static_cast<uint32_t>(a_position)));
-        edit_active_ = a_key;
     }
 
     void key_manager::do_button_down(handle::position_setting*& a_position_setting) const {
@@ -459,5 +348,47 @@ namespace event {
                 }
             }
         }
+    }
+
+    uint32_t key_manager::get_selected_form(RE::UI*& a_ui) {
+        uint32_t menu_form = 0;
+        if (a_ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME)) {
+            auto inventory_menu = static_cast<RE::InventoryMenu*>(a_ui->GetMenu(RE::InventoryMenu::MENU_NAME).get());
+            if (inventory_menu) {
+                RE::GFxValue result;
+                inventory_menu->uiMovie->GetVariable(&result,
+                    "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
+                if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
+                    menu_form = static_cast<std::uint32_t>(result.GetNumber());
+                    logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
+                }
+            }
+        }
+
+        if (a_ui->IsMenuOpen(RE::MagicMenu::MENU_NAME)) {
+            auto magic_menu = static_cast<RE::MagicMenu*>(a_ui->GetMenu(RE::MagicMenu::MENU_NAME).get());
+            if (magic_menu) {
+                RE::GFxValue result;
+                magic_menu->uiMovie->GetVariable(&result, "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
+                if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
+                    menu_form = static_cast<std::uint32_t>(result.GetNumber());
+                    logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
+                }
+            }
+        }
+
+        if (a_ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME)) {
+            auto favorite_menu = static_cast<RE::FavoritesMenu*>(a_ui->GetMenu(RE::FavoritesMenu::MENU_NAME).get());
+            if (favorite_menu) {
+                RE::GFxValue result;
+                favorite_menu->uiMovie->GetVariable(&result, "_root.MenuHolder.Menu_mc.itemList.selectedEntry.formId");
+                if (result.GetType() == RE::GFxValue::ValueType::kNumber) {
+                    menu_form = static_cast<std::uint32_t>(result.GetNumber());
+                    logger::trace("formid {}"sv, util::string_util::int_to_hex(menu_form));
+                }
+            }
+        }
+
+        return menu_form;
     }
 }

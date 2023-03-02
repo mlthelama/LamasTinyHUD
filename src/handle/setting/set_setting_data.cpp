@@ -1,5 +1,6 @@
 ﻿#include "set_setting_data.h"
 #include "equip/equip_slot.h"
+#include "equip/item.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
@@ -7,8 +8,8 @@
 #include "setting/mcm_setting.h"
 #include "setting_execute.h"
 #include "util/helper.h"
+#include "util/player/player.h"
 #include "util/string_util.h"
-#include <handle/handle/edit_handle.h>
 
 namespace handle {
     using mcm = config::mcm_setting;
@@ -20,7 +21,7 @@ namespace handle {
         auto key_position = key_position_handle::get_singleton();
         key_position->init_key_position_map();
 
-        name_handle::get_singleton()->init_names(util::helper::get_hand_assignment());
+        name_handle::get_singleton()->init_names(util::player::get_hand_assignment());
 
         write_empty_config_and_init_active(key_position);
 
@@ -48,6 +49,7 @@ namespace handle {
         }
 
         //used for unarmed "handling"
+        //TODO fix for elden replace
         if (mcm::get_elden_demon_souls()) {
             hand_equip = slot_setting::hand_equip::single;
         }
@@ -321,8 +323,7 @@ namespace handle {
         }
 
         //do not trigger reequip if config a config is set
-        if (mcm::get_elden_demon_souls() &&
-            handle::edit_handle::get_singleton()->get_position() == handle::position_setting::position_type::total) {
+        if (mcm::get_elden_demon_souls()) {
             set_active_and_equip(handler);
         }
         logger::trace("processed config data"sv);
@@ -395,5 +396,54 @@ namespace handle {
         equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
         equip::equip_slot::un_equip_object_ft_dummy_dagger(left, player, equip_manager);
         logger::trace("clear hands done."sv);
+    }
+
+    void set_setting_data::check_if_location_needs_block(RE::TESForm*& a_form, const bool a_equipped) {
+        logger::trace("checking if location needs block, form {}, equipped {}"sv,
+            a_form ? util::string_util::int_to_hex(a_form->formID) : "null",
+            a_equipped);
+        //is two-handed, if equipped
+        //hardcode left for now, because we just need it there
+        auto left_reequip_called = false;
+        const auto key_handle = handle::key_position_handle::get_singleton();
+        key_handle->set_position_lock(handle::position_setting::position_type::left, a_equipped ? 1 : 0);
+        const auto page_handle = handle::page_handle::get_singleton();
+        auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
+        auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
+        //use settings here
+        if (setting && setting->draw_setting && setting->draw_setting->icon_transparency) {
+            util::helper::block_location(setting, a_equipped);
+        }
+        //check if bow or crossbow, now we look for ammo that is in the favor list
+        if (a_equipped && a_form->Is(RE::FormType::Weapon)) {
+            if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->IsBow() || weapon->IsCrossbow()) {
+                util::player::look_for_ammo(weapon->IsCrossbow());
+                if (const auto next_ammo = handle::ammo_handle::get_singleton()->get_next_ammo()) {
+                    handle::setting_execute::execute_ammo(next_ammo);
+                }
+            }
+        } else {
+            handle::ammo_handle::get_singleton()->clear_ammo();
+            //un equip armor here
+            if (config::mcm_setting::get_un_equip_ammo()) {
+                equip::item::un_equip_ammo();
+            }
+        }
+
+        if (!a_equipped) {
+            if (!util::helper::is_two_handed(a_form)) {
+                handle::setting_execute::reequip_left_hand_if_needed(setting);
+                left_reequip_called = true;
+            }
+        }
+
+        if (!left_reequip_called) {
+            auto obj_right =
+                RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+            if ((obj_right && !util::helper::is_two_handed(obj_right)) || !obj_right) {
+                handle::setting_execute::reequip_left_hand_if_needed(setting);
+            }
+        }
+        logger::trace("checking for block done. return."sv);
     }
 }

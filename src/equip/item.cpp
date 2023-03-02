@@ -1,37 +1,12 @@
 ﻿#include "item.h"
-#include "equip/equip_slot.h"
+#include "equip_slot.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
+#include "util/player/player.h"
 #include "util/string_util.h"
 
 namespace equip {
-    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
-        item::get_inventory_weapon_items(RE::PlayerCharacter*& a_player) {
-        return a_player->GetInventory([](const RE::TESBoundObject& a_object) { return a_object.IsWeapon(); });
-    }
-
-    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
-        item::get_inventory_armor_items(RE::PlayerCharacter*& a_player) {
-        return a_player->GetInventory([](const RE::TESBoundObject& a_object) { return a_object.IsArmor(); });
-    }
-
-    std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
-        item::get_inventory(RE::PlayerCharacter*& a_player, RE::FormType a_type) {
-        return a_player->GetInventory([a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
-    }
-
-    bool item::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
-        auto worn = false;
-        for (const auto& [item, inv_data] : get_inventory_armor_items(a_player)) {
-            if (const auto& [count, entry] = inv_data; entry->object->formID == a_obj->formID && entry->IsWorn()) {
-                worn = true;
-                break;
-            }
-        }
-        return worn;
-    }
-
     void item::equip_item(const RE::TESForm* a_form,
         RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
@@ -53,19 +28,19 @@ namespace equip {
                 logger::warn("object {} is not a weapon. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = get_inventory_weapon_items(a_player);
+            potential_items = util::player::get_inventory_weapon_items(a_player);
         } else if (a_type == handle::slot_setting::slot_type::shield) {
             if (!a_form->Is(RE::FormType::Armor)) {
                 logger::warn("object {} is not an armor. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = get_inventory_armor_items(a_player);
+            potential_items = util::player::get_inventory_armor_items(a_player);
         } else if (a_type == handle::slot_setting::slot_type::light) {
             if (!a_form->Is(RE::FormType::Light)) {
                 logger::warn("object {} is not a light. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = get_inventory(a_player, RE::FormType::Light);
+            potential_items = util::player::get_inventory(a_player, RE::FormType::Light);
         }
 
         auto item_count = 0;
@@ -130,7 +105,7 @@ namespace equip {
 
         RE::TESBoundObject* obj = nullptr;
         auto item_count = 0;
-        for (const auto& [item, inv_data] : get_inventory_armor_items(a_player)) {
+        for (const auto& [item, inv_data] : util::player::get_inventory_armor_items(a_player)) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = inv_data.second->object;
                 item_count = num_items;
@@ -158,7 +133,7 @@ namespace equip {
 
         RE::TESBoundObject* obj = nullptr;
         uint32_t left = 0;
-        for (auto potential_items = get_inventory(a_player, RE::FormType::AlchemyItem);
+        for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
@@ -199,7 +174,7 @@ namespace equip {
 
         RE::TESBoundObject* obj = nullptr;
         auto left = 0;
-        for (auto potential_items = get_inventory(a_player, RE::FormType::Ammo);
+        for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::Ammo);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
@@ -223,33 +198,6 @@ namespace equip {
         logger::trace("equipped {}. return."sv, obj->GetName());
     }
 
-    uint32_t item::get_inventory_count(const RE::TESForm* a_form) {
-        uint32_t count = 0;
-        if (!a_form) {
-            return count;
-        }
-        auto player = RE::PlayerCharacter::GetSingleton();
-        if (a_form->IsWeapon()) {
-            auto weapons = get_inventory(player, RE::FormType::Weapon);
-            for (const auto& [item, inv_data] : weapons) {
-                if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
-                    count = num_items;
-                    break;
-                }
-            }
-        } else if (a_form->IsArmor()) {
-            auto armor = get_inventory(player, RE::FormType::Armor);
-            for (const auto& [item, inv_data] : armor) {
-                if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
-                    count = num_items;
-                    break;
-                }
-            }
-        }
-        logger::trace("got {} in inventory for item {}"sv, count, a_form->GetName());
-
-        return count;
-    }
     void item::un_equip_ammo() {
         logger::debug("check if we need to un equip ammo"sv);
         auto player = RE::PlayerCharacter::GetSingleton();
@@ -291,7 +239,7 @@ namespace equip {
             fmt::format(FMT_STRING("{:.2f}"), missing));
 
         RE::TESBoundObject* obj = nullptr;
-        for (auto potential_items = equip::item::get_inventory(a_player, RE::FormType::AlchemyItem);
+        for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {
             const auto& [num_items, entry] = inv_data;
             auto alchemy_item = item->As<RE::AlchemyItem>();
@@ -306,7 +254,7 @@ namespace equip {
 
             if (actor_value == a_actor_value) {
                 //set obj here, because if we do not have a perfect hit, we still need to consume something
-                if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && alchemy_item &&
+                if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() &&
                     alchemy_item->IsDynamicForm() && num_items == 1) {
                     logger::warn(
                         "Somehow the game crashes on potions with dynamic id if the count is 0 (happens with or without the mod). So I am not consuming it. Form {}, Name {}"sv,

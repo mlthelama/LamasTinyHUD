@@ -1,13 +1,13 @@
 ﻿#include "helper.h"
 #include "constant.h"
 #include "data/config_writer_helper.h"
-#include "equip/item.h"
 #include "handle/data/page/position_setting.h"
 #include "handle/handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "string_util.h"
+#include "util/player/player.h"
 
 namespace util {
     std::string helper::get_mod_and_form(const RE::FormID& a_form_id) {
@@ -252,78 +252,6 @@ namespace util {
         return handle::slot_setting::slot_type::misc;
     }
 
-    std::vector<data_helper*> helper::get_hand_assignment(RE::TESForm*& a_form) {
-        bool two_handed = false;
-        if (a_form) {
-            two_handed = is_two_handed(a_form);
-        }
-
-        logger::trace("Item {} is two handed {}"sv, a_form ? a_form->GetName() : "null", two_handed);
-        return get_hand_assignment(two_handed);
-    }
-
-    std::vector<data_helper*> helper::get_hand_assignment(bool a_two_handed) {
-        std::vector<data_helper*> data;
-        const auto player = RE::PlayerCharacter::GetSingleton();
-        auto right_obj = player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
-        auto left_obj = player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
-
-        const auto empty_handle = config::mcm_setting::get_empty_hand_setting();
-
-        const auto item = new data_helper();
-        item->form = nullptr;
-        item->left = false;
-        item->type = handle::slot_setting::slot_type::empty;
-        item->action_type = empty_handle ? handle::slot_setting::acton_type::un_equip :
-                                           handle::slot_setting::acton_type::default_action;
-        data.push_back(item);
-
-        const auto item2 = new data_helper();
-        item2->form = nullptr;
-        item2->left = true;
-        item2->type = handle::slot_setting::slot_type::empty;
-        item2->action_type = empty_handle ? handle::slot_setting::acton_type::un_equip :
-                                            handle::slot_setting::acton_type::default_action;
-        data.push_back(item2);
-
-        if (!a_two_handed) {
-            a_two_handed = right_obj && is_two_handed(right_obj);
-        }
-
-        logger::trace("got form {}, name {} on both/right hand"sv,
-            right_obj ? string_util::int_to_hex(right_obj->GetFormID()) : "null",
-            right_obj ? right_obj->GetName() : "null");
-
-        logger::trace("got form {}, name {} on left hand"sv,
-            left_obj ? string_util::int_to_hex(left_obj->GetFormID()) : "null",
-            left_obj ? left_obj->GetName() : "null");
-
-        if (a_two_handed && right_obj && left_obj && right_obj->formID == left_obj->formID) {
-            data[0]->form = right_obj;
-            data[0]->left = false;
-            data[0]->type = get_type(right_obj);
-            data[0]->action_type = handle::slot_setting::acton_type::default_action;
-            data.erase(data.begin() + 1);
-        }
-
-        if (right_obj) {
-            data[0]->form = right_obj;
-            data[0]->left = false;
-            data[0]->type = get_type(right_obj);
-            data[0]->action_type = handle::slot_setting::acton_type::default_action;
-        }
-
-        if (left_obj) {
-            data[1]->form = left_obj;
-            data[1]->left = true;
-            data[1]->type = get_type(left_obj);
-            data[1]->action_type = handle::slot_setting::acton_type::default_action;
-        }
-
-        logger::trace("got {} items in List now. return."sv, data.size());
-        return data;
-    }
-
     void helper::write_notification(const std::string& a_string) { RE::DebugNotification(a_string.c_str()); }
 
     data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form,
@@ -514,7 +442,7 @@ namespace util {
         uint32_t count = 0;
         if (a_form->IsWeapon() || a_form->Is(RE::FormType::Armor)) {
             //check item count in inventory
-            max_count = equip::item::get_inventory_count(a_form);
+            max_count = util::player::get_inventory_count(a_form);
         }
 
         auto actor_value = RE::ActorValue::kNone;

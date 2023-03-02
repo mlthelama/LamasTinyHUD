@@ -19,8 +19,6 @@ set(sources ${sources}
 	src/handle/data/page/slot_setting.h
 	src/handle/handle/ammo_handle.cpp
 	src/handle/handle/ammo_handle.h
-	src/handle/handle/edit_handle.cpp
-	src/handle/handle/edit_handle.h
 	src/handle/handle/key_position_handle.cpp
 	src/handle/handle/key_position_handle.h
 	src/handle/handle/name_handle.cpp
@@ -54,5 +52,7 @@ set(sources ${sources}
 	src/util/helper.cpp
 	src/util/helper.h
 	src/util/offset.h
+	src/util/player/player.cpp
+	src/util/player/player.h
 	src/util/string_util.h
 )

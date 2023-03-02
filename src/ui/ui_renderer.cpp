@@ -7,11 +7,9 @@
 #pragma warning(push)
 #pragma warning(disable : 4244)
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 #pragma warning(pop)
 
-#include "image_path.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "animation_handler.h"
 #include "event/key_manager.h"
 #include "event/sink_event.h"
@@ -19,11 +17,13 @@
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
 #include "handle/setting/set_setting_data.h"
-#include "imgui_internal.h"
+#include "image_path.h"
 #include "key_path.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
+#include <imgui_internal.h>
 
 namespace ui {
     using mcm = config::mcm_setting;
@@ -615,7 +615,8 @@ namespace ui {
             return;
 
         if (const auto ui = RE::UI::GetSingleton(); !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
-                                                    !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>()) {
+                                                    !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>() ||
+                                                    ui->IsMenuOpen(RE::LoadingMenu::MENU_NAME)) {
             return;
         }
 
