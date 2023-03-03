@@ -73,7 +73,11 @@ Event OnSettingChange(String a_ID)
             SetModSettingInt("uType:Page", type)
         endif
         ;magic, power, scroll, empty (to allow if something should be unequiped)
-        bSpell = (type == 1) || (type == 4) || (type == 7) || (type == 8)
+        if ( bElden ) 
+            bSpell = false
+        else
+            bSpell = (type == 1) || (type == 4) || (type == 7) || (type == 8)
+        endif
         
         SetModSettingInt("uHandSelection:Page", GetHandSelection(idx, position))
         SetModSettingInt("uSlotAction:Page", GetSlotAction(idx, false, position))
@@ -81,11 +85,15 @@ Event OnSettingChange(String a_ID)
         SetModSettingString("sSelectedItemForm:Page", GetFormString(idx, false, position))
         
         type = GetSelectionType(idx, true, position)
-        bSpellLeft = (type == 1) || (type == 8)
         if (type < 0)
             SetModSettingInt("uTypeLeft:Page", 0)
         else
             SetModSettingInt("uTypeLeft:Page", type)
+        endif
+        if ( bElden ) 
+            bSpell = false
+        else
+            bSpellLeft = (type == 1) || (type == 8)
         endif
         
         SetModSettingInt("uSlotActionLeft:Page", GetSlotAction(idx, true, position))
@@ -100,7 +108,6 @@ Event OnSettingChange(String a_ID)
         endif
         
         RefreshMenu()
-        
     elseif (a_ID == "uSlotAction:Page")
         int value = GetModSettingInt(a_ID)
         SetActionValue(GetModSettingInt("uPageList:Page"), False, value, GetModSettingInt("uPositionSelect:Page"))
@@ -150,4 +157,6 @@ Event OnConfigOpen()
     bCombat = GetModSettingBool("bHideOutsideCombat:MiscSetting")
     bUnarmed = bElden && (GetModSettingInt("uPositionSelect:Page") == 1 || GetModSettingInt("uPositionSelect:Page") == 3)
     bGroupPotions = GetModSettingBool("bGroupPotions:MiscSetting")
+    bSpell = false
+    bSpellLeft = false
 EndEvent

@@ -12,9 +12,7 @@ namespace config {
     static uint32_t toggle_key;
     static uint32_t show_hide_key;
     static bool bottom_execute_key_combo_only;
-    static bool draw_toggle_button;
     static uint32_t controller_set;
-    static float config_button_hold_time;
 
     static float hud_image_scale_width;
     static float hud_image_scale_height;
@@ -63,6 +61,7 @@ namespace config {
     static uint32_t slot_button_feedback;
     static bool draw_current_items_text;
     static bool draw_item_name_text;
+    static bool draw_toggle_button;
 
     static bool action_check;
     static bool empty_hand_setting;
@@ -98,8 +97,6 @@ namespace config {
             show_hide_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uShowHideKey", 26));
             bottom_execute_key_combo_only = mcm.GetBoolValue("Controls", "bBottomExecuteKeyComboOnly", false);
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
-            config_button_hold_time = static_cast<float>(mcm.GetDoubleValue("Controls", "fConfigButtonHoldTime", 5));
-            draw_toggle_button = mcm.GetBoolValue("Controls", "bDrawToggleButton", true);
 
             hud_image_scale_width = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleWidth", 0.23));
             hud_image_scale_height = static_cast<float>(mcm.GetDoubleValue("HudSetting", "fHudImageScaleHeight", 0.23));
@@ -166,6 +163,7 @@ namespace config {
                 static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotButtonFeedback", 150));
             draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", true);
             draw_item_name_text = mcm.GetBoolValue("GraphicSetting", "bDrawItemNameText", true);
+            draw_toggle_button = mcm.GetBoolValue("GraphicSetting", "bDrawToggleButton", true);
 
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", false);
@@ -203,8 +201,6 @@ namespace config {
     uint32_t mcm_setting::get_show_hide_key() { return show_hide_key; }
     bool mcm_setting::get_bottom_execute_key_combo_only() { return bottom_execute_key_combo_only; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
-    bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
-    float mcm_setting::get_config_button_hold_time() { return config_button_hold_time; }
 
     float mcm_setting::get_hud_image_scale_width() { return hud_image_scale_width * master_scale; }
     float mcm_setting::get_hud_image_scale_height() { return hud_image_scale_height * master_scale; }
@@ -261,6 +257,7 @@ namespace config {
     bool mcm_setting::get_draw_current_items_text() { return draw_current_items_text; }
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
     bool mcm_setting::get_draw_item_name_text() { return draw_item_name_text; }
+    bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
 
     bool mcm_setting::get_action_check() { return action_check; }
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }

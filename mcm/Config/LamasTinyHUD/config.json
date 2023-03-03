@@ -136,15 +136,6 @@
                         "sourceType": "ModSettingInt",
                         "defaultValue": 0
                     }
-                },
-                {
-                    "id": "bDrawToggleButton:Controls",
-                    "text": "$LamasTinyHUD_DrawToggleButton_OptionText",
-                    "type": "toggle",
-                    "help": "$LamasTinyHUD_DrawToggleButton_InfoText",
-                    "valueOptions": {
-                        "sourceType": "ModSettingBool"
-                    }
                 }
             ]
         },
@@ -1111,6 +1102,15 @@
                     "text": "$LamasTinyHUD_GraphicSetting_DrawItemNameText_OptionText",
                     "type": "toggle",
                     "help": "$LamasTinyHUD_GraphicSetting_DrawItemNameText_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bDrawToggleButton:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_DrawToggleButton_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_GraphicSetting_DrawToggleButton_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }

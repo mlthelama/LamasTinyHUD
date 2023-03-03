@@ -23,7 +23,7 @@ namespace config {
 
         static void set_config_default(const std::string& a_config);
         static void set_config_elden(const std::string& a_config);
-        
+
         static bool get_show_ui();
         static void set_show_ui(bool a_show);
 
