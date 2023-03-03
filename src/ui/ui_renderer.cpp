@@ -732,7 +732,7 @@ namespace ui {
             case SKSE::MessagingInterface::kNewGame:
                 handle::set_setting_data::read_and_set_data();
                 handle::set_setting_data::get_actives_and_equip();
-                show_ui_ = true;
+                show_ui_ = config::file_setting::get_show_ui();
                 break;
         }
     }
@@ -876,6 +876,7 @@ namespace ui {
         } else {
             show_ui_ = true;
         }
+        config::file_setting::set_show_ui(show_ui_);
         logger::trace("Show UI is now {}"sv, show_ui_);
     }
 }

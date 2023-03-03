@@ -23,6 +23,8 @@ namespace config {
     static std::string default_config;
     static std::string elden_config;
 
+    static bool show_ui;
+
     void file_setting::load_setting() {
         logger::info("reading dll ini files");
 
@@ -46,6 +48,8 @@ namespace config {
 
         default_config = ini.GetValue("Config", "sDefault", (util::ini_default_name + util::ini_ending).c_str());
         elden_config = ini.GetValue("Config", "sElden", (util::ini_elden_name + util::ini_ending).c_str());
+
+        show_ui = ini.GetBoolValue("Interface", "bShowUI", true);
 
         logger::info("finished reading dll ini files. return.");
     }
@@ -77,6 +81,13 @@ namespace config {
 
     void file_setting::set_config_elden(const std::string& a_config) {
         ini.SetValue("Config", "sElden", a_config.c_str());
+        save_setting();
+    }
+
+    bool file_setting::get_show_ui() { return show_ui; }
+
+    void file_setting::set_show_ui(bool a_show) {
+        ini.SetBoolValue("Interface", "bShowUI", a_show);
         save_setting();
     }
 }
