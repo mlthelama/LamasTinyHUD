@@ -138,63 +138,12 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_Controls_Config",
-                    "type": "header"
-                },
-                {
-                    "id": "fConfigButtonHoldTime:Controls",
-                    "text": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_OptionText",
-                    "type": "slider",
-                    "help": "$LamasTinyHUD_Controls_ConfigButtonHoldTime_InfoText",
-                    "groupCondition": 1,
-                    "groupBehavior": "hide",
-                    "valueOptions": {
-                        "min": 1.0,
-                        "max": 35.0,
-                        "step": 1.0,
-                        "formatString": "{0}",
-                        "sourceType": "ModSettingFloat"
-                    }
-                },
-                {
                     "id": "bDrawToggleButton:Controls",
                     "text": "$LamasTinyHUD_DrawToggleButton_OptionText",
                     "type": "toggle",
                     "help": "$LamasTinyHUD_DrawToggleButton_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
-                    }
-                },
-                {
-                    "text": "$LamasTinyHUD_Controls_AlternativeConfig",
-                    "type": "header"
-                },
-                {
-                    "id": "uConfigPosition:Controls",
-                    "text": "$LamasTinyHUD_Controls_ConfigPosition_OptionText",
-                    "type": "enum",
-                    "help": "$LamasTinyHUD_Controls_ConfigPosition_InfoText",
-                    "groupCondition": 1,
-                    "groupBehavior": "hide",
-                    "valueOptions": {
-                        "options": ["$LamasTinyHUD_Controls_Config_Top", "$LamasTinyHUD_Controls_Config_Right", "$LamasTinyHUD_Controls_Config_Bottom", "$LamasTinyHUD_Controls_Config_Left"],
-                        "sourceType": "ModSettingInt"
-                    }
-                },
-                {
-                    "id": "sTriggerConfig:Controls",
-                    "type": "text",
-                    "text": "$LamasTinyHUD_Controls_TriggerConfig_OptionText",
-                    "help": "$LamasTinyHUD_Controls_TriggerConfig_InfoText",
-                    "groupCondition": 1,
-                    "groupBehavior": "hide",
-                    "valueOptions": {
-                        "value": "",
-                        "sourceType": "ModSettingString"
-                    },
-                    "action": {
-                        "type": "CallFunction",
-                        "function": "TriggerConfig"
                     }
                 }
             ]

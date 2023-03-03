@@ -22,7 +22,6 @@ int function GetHandSelection(int a_index, int a_position) native
 string function GetFormName(int a_index, bool a_left, int a_position) native
 function ResetSection(int a_index, int a_position) native
 function SetActionValue(int a_index, bool a_left, int a_value, int a_position) native
-function InitConfigForPosition(int a_position) native
 string[] function GetConfigFiles(bool a_elden) native
 string function GetActiveConfig(bool a_elden) native
 function SetConfig(bool a_elden, string a_name) native
@@ -39,11 +38,6 @@ endfunction
 function ResetSlot()
     ResetSection(GetModSettingInt("uPageList:Page"), GetModSettingInt("uPositionSelect:Page"))
     FillPageSelection()
-    RefreshMenu()
-endfunction
-
-function TriggerConfig()
-    InitConfigForPosition(GetModSettingInt("uConfigPosition:Controls"))
     RefreshMenu()
 endfunction
 

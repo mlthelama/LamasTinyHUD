@@ -153,11 +153,6 @@ namespace papyrus {
         }
     }
 
-    void hud_mcm::init_config_for_position(RE::TESQuest*, uint32_t a_position) {
-        logger::trace("Got config Triggered for Position {}"sv, a_position);
-        //TODO remove
-    }
-
     std::vector<RE::BSFixedString> hud_mcm::get_config_files(RE::TESQuest*, bool a_elden) {
         logger::trace("getting config files for elden {}"sv, a_elden);
         auto files = util::helper::search_for_config_files(a_elden);
@@ -293,7 +288,6 @@ namespace papyrus {
         a_vm->RegisterFunction("GetFormName", mcm_name, get_form_name);
         a_vm->RegisterFunction("ResetSection", mcm_name, reset_section);
         a_vm->RegisterFunction("SetActionValue", mcm_name, set_action_value);
-        a_vm->RegisterFunction("InitConfigForPosition", mcm_name, init_config_for_position);
         a_vm->RegisterFunction("GetConfigFiles", mcm_name, get_config_files);
         a_vm->RegisterFunction("GetActiveConfig", mcm_name, get_active_config);
         a_vm->RegisterFunction("SetConfig", mcm_name, set_config);

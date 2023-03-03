@@ -18,7 +18,6 @@ namespace papyrus {
         static void reset_section(RE::TESQuest*, uint32_t a_index, uint32_t a_position);
         static void
             set_action_value(RE::TESQuest*, uint32_t a_index, bool a_left, uint32_t a_value, uint32_t a_position);
-        static void init_config_for_position(RE::TESQuest*, uint32_t a_position);
         static std::vector<RE::BSFixedString> get_config_files(RE::TESQuest*, bool a_elden);
         static RE::BSFixedString get_active_config(RE::TESQuest*, bool a_elden);
         static void set_config(RE::TESQuest*, bool a_elden, RE::BSFixedString a_name);
