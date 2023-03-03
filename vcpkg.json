@@ -14,5 +14,8 @@
                 "win32-binding"
             ]
         }
-    ]
+    ],
+  "overrides": [
+    { "name": "imgui", "version": "1.88" }
+  ]
 }

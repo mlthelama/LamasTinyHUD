@@ -864,7 +864,6 @@ namespace ui {
         loaded_font =
             io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
         if (io.Fonts->Build()) {
-            ImGui_ImplDX11_InvalidateDeviceObjects();
             ImGui_ImplDX11_CreateDeviceObjects();
             logger::info("Custom Font {} loaded."sv, path);
             return;
