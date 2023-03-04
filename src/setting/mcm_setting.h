@@ -11,6 +11,8 @@ namespace config {
         static uint32_t get_left_action_key();
         static uint32_t get_toggle_key();
         static uint32_t get_show_hide_key();
+        static bool get_key_press_to_enter_edit();
+        static uint32_t get_edit_key();
         static bool get_bottom_execute_key_combo_only();
         static uint32_t get_controller_set();
 
@@ -80,5 +82,14 @@ namespace config {
         static float get_potion_max_perfect();
         static bool get_disable_re_equip_of_actives();
         static bool get_sort_arrow_by_quantity();
+
+        static bool get_auto_cleanup();
+        static bool get_clean_armor();
+        static bool get_clean_weapon();
+        static bool get_clean_spell();
+        static bool get_clean_alchemy_item();
+        static bool get_clean_shout();
+        static bool get_clean_light();
+        static bool get_clean_scroll();
     };
 }

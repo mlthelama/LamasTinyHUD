@@ -7,6 +7,8 @@ bool property bElden Auto
 bool property bCombat Auto
 bool property bUnarmed Auto
 bool property bGroupPotions Auto
+bool property bEditKey Auto
+bool property bCleanup Auto
 
 Event OnConfigClose() native
 string function GetResolutionWidth() native
@@ -132,7 +134,13 @@ Event OnSettingChange(String a_ID)
         LoadReloadSettingFiles()
         RefreshMenu()
     elseif (a_ID == "bGroupPotions:MiscSetting")
-        bGroupPotions = GetModSettingBool("bGroupPotions:MiscSetting")
+        bGroupPotions = GetModSettingBool(a_ID)
+        RefreshMenu()
+    elseif (a_ID == "bKeyPressToEnterEdit:Controls")
+        bEditKey = GetModSettingBool(a_ID)
+        RefreshMenu()
+    elseif (a_ID == "bAutoCleanup:CleanupSetting")
+        bCleanup = GetModSettingBool(a_ID)
         RefreshMenu()
     endif
 EndEvent
@@ -159,4 +167,6 @@ Event OnConfigOpen()
     bGroupPotions = GetModSettingBool("bGroupPotions:MiscSetting")
     bSpell = false
     bSpellLeft = false
+    bEditKey = GetModSettingBool("bKeyPressToEnterEdit:Controls")
+    bCleanup = GetModSettingBool("bAutoCleanup:CleanupSetting")
 EndEvent

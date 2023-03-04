@@ -602,4 +602,53 @@ namespace util {
 
         return display_string.empty() ? a_str : display_string;
     }
+    bool helper::clean_type_allowed(handle::slot_setting::slot_type a_type) {
+        if (!config::mcm_setting::get_auto_cleanup()) {
+            return false;
+        }
+        auto allowed = false;
+        switch (a_type) {
+            case handle::slot_setting::slot_type::weapon:
+                allowed = config::mcm_setting::get_clean_weapon();
+                break;
+            case handle::slot_setting::slot_type::magic:
+            case handle::slot_setting::slot_type::power:
+                allowed = config::mcm_setting::get_clean_spell();
+                break;
+            case handle::slot_setting::slot_type::shield:
+            case handle::slot_setting::slot_type::armor:
+            case handle::slot_setting::slot_type::lantern:
+            case handle::slot_setting::slot_type::mask:
+                allowed = config::mcm_setting::get_clean_armor();
+                break;
+            case handle::slot_setting::slot_type::shout:
+                allowed = config::mcm_setting::get_clean_shout();
+                break;
+            case handle::slot_setting::slot_type::consumable:
+                allowed = config::mcm_setting::get_clean_alchemy_item();
+                break;
+            case handle::slot_setting::slot_type::scroll:
+                allowed = config::mcm_setting::get_clean_scroll();
+                break;
+            case handle::slot_setting::slot_type::light:
+                allowed = config::mcm_setting::get_clean_light();
+                break;
+            case handle::slot_setting::slot_type::empty:
+            case handle::slot_setting::slot_type::misc:
+                allowed = false;
+                break;
+        }
+        return allowed;
+    }
+
+    bool helper::allowed_to_check(handle::position_setting::position_type a_position, bool a_left) {
+        if (config::mcm_setting::get_elden_demon_souls()) {
+            if ((a_left && a_position == handle::position_setting::position_type::left) ||
+                (!a_left && a_position != handle::position_setting::position_type::left)) {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
 }

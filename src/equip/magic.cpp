@@ -198,8 +198,12 @@ namespace equip {
             }
         }
 
-        //TODO more reading up needed to cast a shout without equipping, but every word has a spell linked to it
         const auto shout = a_form->As<RE::TESShout>();
+        if (!util::player::has_shout(a_player, shout)) {
+            logger::warn("player does not have spell {}. return."sv, shout->GetName());
+            return;
+        }
+
         RE::ActorEquipManager::GetSingleton()->EquipShout(a_player, shout);
         logger::trace("equipped shout {}. return."sv, a_form->GetName());
     }

@@ -15,6 +15,7 @@ namespace handle {
         static void set_queue_slot(position_setting::position_type a_pos, const std::vector<data_helper*>& a_data);
         static void get_actives_and_equip();
         static void check_if_location_needs_block(RE::TESForm*& a_form, bool a_equipped);
+        static void check_config_data();
 
     private:
         static void set_empty_slot(int a_page, int a_pos, key_position_handle*& a_key_pos);
@@ -34,5 +35,15 @@ namespace handle {
         static void process_config_data(key_position_handle*& a_key_position);
         static void write_empty_config_and_init_active(key_position_handle*& a_key_position);
         static void clear_hands();
+        static void check_slot_data(uint32_t a_page,
+            position_setting::position_type a_position,
+            const std::string& a_form,
+            uint32_t a_type,
+            uint32_t a_hand,
+            uint32_t a_action,
+            const std::string& a_form_left,
+            uint32_t a_type_left,
+            uint32_t a_action_left,
+            RE::ActorValue a_actor_value);
     };
 }

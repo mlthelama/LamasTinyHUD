@@ -11,6 +11,8 @@ namespace config {
     static uint32_t left_action_key;
     static uint32_t toggle_key;
     static uint32_t show_hide_key;
+    static bool key_press_to_enter_edit;
+    static uint32_t edit_key;
     static bool bottom_execute_key_combo_only;
     static uint32_t controller_set;
 
@@ -81,6 +83,15 @@ namespace config {
     static bool disable_re_equip_of_actives;
     static bool sort_arrow_by_quantity;
 
+    static bool auto_cleanup;
+    static bool clean_armor;
+    static bool clean_weapon;
+    static bool clean_spell;
+    static bool clean_alchemy_item;
+    static bool clean_shout;
+    static bool clean_light;
+    static bool clean_scroll;
+
     void mcm_setting::read_setting() {
         logger::info("reading mcm ini files");
 
@@ -95,6 +106,8 @@ namespace config {
             left_action_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftActionKey", 13));
             toggle_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uToggleKey", 27));
             show_hide_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uShowHideKey", 26));
+            key_press_to_enter_edit = mcm.GetBoolValue("Controls", "bKeyPressToEnterEdit", false);
+            edit_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uKeyToEnterEdit", 22));
             bottom_execute_key_combo_only = mcm.GetBoolValue("Controls", "bBottomExecuteKeyComboOnly", false);
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
 
@@ -184,12 +197,20 @@ namespace config {
             potion_max_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMaxPerfect", 1.2));
             disable_re_equip_of_actives = mcm.GetBoolValue("MiscSetting", "bDisableReEquipOfActives", false);
             sort_arrow_by_quantity = mcm.GetBoolValue("MiscSetting", "bSortArrowByQuantity", false);
+
+            auto_cleanup = mcm.GetBoolValue("CleanupSetting", "bAutoCleanup", false);
+            clean_armor = mcm.GetBoolValue("CleanupSetting", "bCleanArmor", true);
+            clean_weapon = mcm.GetBoolValue("CleanupSetting", "bCleanWeapon", true);
+            clean_spell = mcm.GetBoolValue("CleanupSetting", "bCleanSpell", true);
+            clean_alchemy_item = mcm.GetBoolValue("CleanupSetting", "bCleanAlchemyItem", false);
+            clean_shout = mcm.GetBoolValue("CleanupSetting", "bCleanShout", true);
+            clean_light = mcm.GetBoolValue("CleanupSetting", "bCleanLight", false);
+            clean_scroll = mcm.GetBoolValue("CleanupSetting", "bCleanScroll", false);
         };
 
         read_mcm(mcm_default_setting);
         read_mcm(mcm_config_setting);
-
-
+        
         logger::info("finished reading mcm ini files. return.");
     }
 
@@ -199,6 +220,8 @@ namespace config {
     uint32_t mcm_setting::get_left_action_key() { return left_action_key; }
     uint32_t mcm_setting::get_toggle_key() { return toggle_key; }
     uint32_t mcm_setting::get_show_hide_key() { return show_hide_key; }
+    bool mcm_setting::get_key_press_to_enter_edit() { return key_press_to_enter_edit; }
+    uint32_t mcm_setting::get_edit_key() { return edit_key; }
     bool mcm_setting::get_bottom_execute_key_combo_only() { return bottom_execute_key_combo_only; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
 
@@ -278,4 +301,13 @@ namespace config {
     float mcm_setting::get_potion_max_perfect() { return potion_max_perfect; }
     bool mcm_setting::get_disable_re_equip_of_actives() { return disable_re_equip_of_actives; }
     bool mcm_setting::get_sort_arrow_by_quantity() { return sort_arrow_by_quantity; }
+
+    bool mcm_setting::get_auto_cleanup() { return false; }
+    bool mcm_setting::get_clean_armor() { return false; }
+    bool mcm_setting::get_clean_weapon() { return false; }
+    bool mcm_setting::get_clean_spell() { return false; }
+    bool mcm_setting::get_clean_alchemy_item() { return false; }
+    bool mcm_setting::get_clean_shout() { return false; }
+    bool mcm_setting::get_clean_light() { return false; }
+    bool mcm_setting::get_clean_scroll() { return false; }
 }

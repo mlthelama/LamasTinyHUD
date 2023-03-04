@@ -12,6 +12,9 @@ namespace handle {
         bool a_overwrite) {
         std::vector<data_helper*> data;
 
+        util::helper::write_notification(fmt::format("Elden Souls Config, Position {}, overwrite {}"sv,
+            static_cast<uint32_t>(a_position),
+            static_cast<uint32_t>(a_overwrite)));
         const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(a_position);
         auto max = config::mcm_setting::get_max_page_count() - 1;  //we start at 0 so count -1
         logger::trace("Max for Position {} is {}, already set before edit {}"sv,
@@ -50,7 +53,9 @@ namespace handle {
             }
         }
 
-        logger::trace("Size is {}. calling to set data now."sv, data.size());
+        logger::trace("Size is {}. calling to set data now, overwrite is {}."sv,
+            data.size(),
+            static_cast<uint32_t>(a_overwrite));
 
         //use set_single_slot for replacement handling
         if (a_overwrite) {
@@ -113,6 +118,7 @@ namespace handle {
                 item->left = a_left;
                 item->type = type;
                 item->action_type = handle::slot_setting::acton_type::default_action;
+                item->two_handed = two_handed;
                 data.push_back(item);
                 break;
         }

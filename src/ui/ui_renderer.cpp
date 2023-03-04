@@ -730,6 +730,7 @@ namespace ui {
                 break;
             case SKSE::MessagingInterface::kPostLoadGame:
             case SKSE::MessagingInterface::kNewGame:
+                handle::set_setting_data::check_config_data();
                 handle::set_setting_data::read_and_set_data();
                 handle::set_setting_data::get_actives_and_equip();
                 show_ui_ = config::file_setting::get_show_ui();

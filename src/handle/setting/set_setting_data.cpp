@@ -48,10 +48,11 @@ namespace handle {
             hand_equip = slot_setting::hand_equip::single;
         }
 
-        //used for unarmed "handling"
-        //TODO fix for elden replace
         if (mcm::get_elden_demon_souls()) {
-            hand_equip = slot_setting::hand_equip::single;
+            if (!a_data.empty()) {
+                hand_equip =
+                    a_data.front()->two_handed ? slot_setting::hand_equip::both : slot_setting::hand_equip::single;
+            }
         }
         logger::trace("calling init page for page {}, position {} ..."sv, a_page, static_cast<uint32_t>(a_position));
 
@@ -153,7 +154,6 @@ namespace handle {
             a_hand,
             action_check);
 
-
         slot_setting::acton_type action;
         if (action_check) {
             if (a_action == a_action_left) {
@@ -168,7 +168,6 @@ namespace handle {
         } else {
             action = static_cast<slot_setting::acton_type>(a_action);
         }
-
 
         const auto type = static_cast<slot_setting::slot_type>(a_type);
 
@@ -200,6 +199,8 @@ namespace handle {
                 action = slot_setting::acton_type::default_action;
             }
         }
+
+        //util::player::has_item_or_spell(form);
 
         const auto item = new data_helper();
         item->form = form ? form : nullptr;
@@ -233,6 +234,8 @@ namespace handle {
                     action = slot_setting::acton_type::default_action;
                 }
             }
+
+            //util::player::has_item_or_spell(form_left);
 
             const auto item_left = new data_helper();
             item_left->form = form_left ? form_left : nullptr;
@@ -445,5 +448,168 @@ namespace handle {
             }
         }
         logger::trace("checking for block done. return."sv);
+    }
+
+    void set_setting_data::check_config_data() {
+        logger::trace("checking config data, removing outdated data...");
+        for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
+            check_slot_data(custom::get_page_by_section(section),
+                static_cast<position_setting::position_type>(custom::get_position_by_section(section)),
+                custom::get_item_form_by_section(section),
+                custom::get_type_by_section(section),
+                custom::get_hand_selection_by_section(section),
+                custom::get_slot_action_by_section(section),
+                custom::get_item_form_left_by_section(section),
+                custom::get_type_left_by_section(section),
+                custom::get_slot_action_left_by_section(section),
+                static_cast<RE::ActorValue>(custom::get_effect_actor_value(section)));
+        }
+
+        util::helper::rewrite_settings();
+    }
+
+    void set_setting_data::check_slot_data(uint32_t a_page,
+        position_setting::position_type a_position,
+        const std::string& a_form,
+        uint32_t a_type,
+        uint32_t a_hand,
+        uint32_t a_action,
+        const std::string& a_form_left,
+        uint32_t a_type_left,
+        uint32_t a_action_left,
+        RE::ActorValue a_actor_value) {
+        const auto form = util::helper::get_form_from_mod_id_string(a_form);
+        const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
+
+        if (form == nullptr && form_left == nullptr && a_actor_value == RE::ActorValue::kNone) {
+            return;
+        }
+
+        auto hand = static_cast<slot_setting::hand_equip>(a_hand);
+        std::vector<data_helper*> data;
+
+        auto action_check = config::mcm_setting::get_action_check();
+        logger::trace("checking page {}, pos {}, start working data hands {}, action_check {} ..."sv,
+            a_page,
+            static_cast<uint32_t>(a_position),
+            a_hand,
+            action_check);
+
+        slot_setting::acton_type action;
+        if (action_check) {
+            if (a_action == a_action_left) {
+                action = static_cast<slot_setting::acton_type>(a_action);
+            } else {
+                action = slot_setting::acton_type::default_action;
+                logger::warn("action type {} differ from action type left {}, setting both to {}"sv,
+                    a_action,
+                    a_action_left,
+                    static_cast<uint32_t>(action));
+            }
+        } else {
+            action = static_cast<slot_setting::acton_type>(a_action);
+        }
+
+        const auto type = static_cast<slot_setting::slot_type>(a_type);
+
+        if (type != slot_setting::slot_type::magic && type != slot_setting::slot_type::weapon &&
+            type != slot_setting::slot_type::shield && type != slot_setting::slot_type::empty) {
+            hand = slot_setting::hand_equip::total;
+        }
+
+        if (type == slot_setting::slot_type::shield) {
+            logger::warn("Equipping shield on the Right hand might fail, or hand will be empty"sv);
+        }
+
+        logger::trace("start building data pos {}, form {}, type {}, action {}, hand {}"sv,
+            static_cast<uint32_t>(a_position),
+            form ? util::string_util::int_to_hex(form->GetFormID()) : "null",
+            static_cast<int>(type),
+            static_cast<uint32_t>(action),
+            static_cast<uint32_t>(hand));
+
+        if (form && action == slot_setting::acton_type::un_equip) {
+            action = slot_setting::acton_type::default_action;
+            logger::warn("set action to default, because form was not null but un equip was set");
+        }
+
+        if (action == slot_setting::acton_type::instant && form) {
+            if (!util::helper::can_instant_cast(form, type)) {
+                logger::warn("form {} cannot be instant cast, set to default"sv,
+                    util::string_util::int_to_hex(form->GetFormID()));
+                action = slot_setting::acton_type::default_action;
+            }
+        }
+
+        const auto item = new data_helper();
+        auto clean_allowed = util::helper::clean_type_allowed(type);
+        auto has_form = util::player::has_item_or_spell(form);
+        if (util::helper::allowed_to_check(a_position, false) && clean_allowed && !has_form) {
+            item->form = nullptr;
+            item->type = slot_setting::slot_type::empty;
+            item->action_type = slot_setting::acton_type::default_action;
+            item->left = false;
+            item->actor_value = RE::ActorValue::kNone;
+        } else {
+            item->form = form ? form : nullptr;
+            item->type = type;
+            item->action_type = action;
+            item->left = false;
+            item->actor_value = a_actor_value;
+        }
+        data.push_back(item);
+        logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
+
+        if (hand == slot_setting::hand_equip::single) {
+            const auto type_left = static_cast<slot_setting::slot_type>(a_type_left);
+            action = static_cast<slot_setting::acton_type>(a_action_left);
+            logger::trace("start building second set data pos {}, form {}, type {}, action {}, hand {}"sv,
+                static_cast<uint32_t>(a_position),
+                form_left ? util::string_util::int_to_hex(form_left->GetFormID()) : "null",
+                static_cast<int>(type_left),
+                static_cast<uint32_t>(action),
+                static_cast<uint32_t>(hand));
+
+            if (form_left && action == slot_setting::acton_type::un_equip) {
+                action = slot_setting::acton_type::default_action;
+                logger::warn("set left action to default, because form was not null but un equip was set");
+            }
+
+            if (action == slot_setting::acton_type::instant && form_left) {
+                if (!util::helper::can_instant_cast(form_left, type)) {
+                    logger::warn("form {} cannot be instant cast, set to default"sv,
+                        util::string_util::int_to_hex(form_left->GetFormID()));
+                    action = slot_setting::acton_type::default_action;
+                }
+            }
+
+            const auto item_left = new data_helper();
+            clean_allowed = util::helper::clean_type_allowed(type_left);
+            has_form = util::player::has_item_or_spell(form_left);
+            if (util::helper::allowed_to_check(a_position, true) && clean_allowed && !has_form) {
+                item_left->form = nullptr;
+                item_left->type = slot_setting::slot_type::empty;
+                item_left->action_type = slot_setting::acton_type::default_action;
+                item_left->left = true;
+            } else {
+                item_left->form = form_left ? form_left : nullptr;
+                item_left->type = type_left;
+                item_left->action_type = action;
+                item_left->left = true;
+            }
+            data.push_back(item_left);
+        }
+
+        if (config::mcm_setting::get_elden_demon_souls() &&
+            a_position == handle::position_setting::position_type::left) {
+            data.erase(data.begin());
+        }
+
+        util::helper::write_setting_helper(a_page,
+            static_cast<uint32_t>(a_position),
+            data,
+            static_cast<uint32_t>(hand));
+
+        logger::trace("checked data size {}"sv, data.size());
     }
 }

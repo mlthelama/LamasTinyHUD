@@ -15,7 +15,10 @@ namespace handle {
     void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots,
         bool a_only_equip,
         bool a_only_instant) {
-        logger::trace("got {} settings execute"sv, a_slots.size());
+        logger::trace("got {} settings execute, only_equip {}, only_instant {}"sv,
+            a_slots.size(),
+            a_only_equip,
+            a_only_instant);
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {

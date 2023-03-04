@@ -9,6 +9,7 @@ namespace event {
     public:
         static key_manager* get_singleton();
         static void sink();
+        void set_config_edit(bool a_edit);
 
         enum : uint32_t {
             k_invalid = static_cast<uint32_t>(-1),
@@ -43,15 +44,19 @@ namespace event {
         uint32_t key_bottom_execute_or_toggle_ = k_invalid;
         uint32_t key_top_execute_ = k_invalid;
         uint32_t key_hide_show_ = k_invalid;
+        uint32_t key_edit_key_ = k_invalid;
 
         uint32_t button_press_modify_ = ui::draw_full;
 
         bool is_toggle_down_ = false;
+        bool is_edit_active_ = false;
+        bool is_toggle_down_menu_ = false;
 
         void do_button_press(uint32_t a_key);
         [[nodiscard]] bool is_position_button(uint32_t a_key) const;
         [[nodiscard]] bool scroll_position(uint32_t a_key) const;
         void do_button_down(handle::position_setting*& a_position_setting) const;
-        uint32_t get_selected_form(RE::UI*& a_ui);
+        static uint32_t get_selected_form(RE::UI*& a_ui);
+        static bool is_need_menu_open(RE::UI*& a_ui);
     };
 }

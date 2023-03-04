@@ -5,6 +5,7 @@
 #include "handle/setting/setting_execute.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
+#include "util/helper.h"
 #include "util/string_util.h"
 
 namespace event {
@@ -33,6 +34,7 @@ namespace event {
         key_bottom_execute_or_toggle_ = config::mcm_setting::get_toggle_key();
         button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
         key_hide_show_ = config::mcm_setting::get_show_hide_key();
+        key_edit_key_ = config::mcm_setting::get_edit_key();
 
         //top execute btn is bound to the shout key, no need to check here
         if (!is_key_valid(key_top_action_) || !is_key_valid(key_right_action_) || !is_key_valid(key_bottom_action_) ||
@@ -90,20 +92,40 @@ namespace event {
                 continue;
             }
 
-            //TODO add config
-            if (button->IsDown() && button->IsPressed() && is_position_button(key_) && ui->IsShowingMenus()) {
-                auto menu_form = get_selected_form(ui);
-                if (menu_form) {
-                    auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
-                    auto key_position = handle::key_position_handle::get_singleton()->get_position_for_key(key_);
-                    if (config::mcm_setting::get_elden_demon_souls()) {
-                        //set overwrite with btn press
-                        handle::game_menu_setting::elden_souls_config(tes_form_menu, key_position, false);
-                    } else {
-                        //toggle is down, it is for left
-                        handle::game_menu_setting::default_config(tes_form_menu, key_position, is_toggle_down_);
+            if (button->IsDown() && button->IsPressed() && is_key_valid(key_edit_key_) && key_ == key_edit_key_ &&
+                config::mcm_setting::get_key_press_to_enter_edit() && is_need_menu_open(ui)) {
+                set_config_edit(true);
+            }
+
+            if (is_need_menu_open(ui) && key_ == key_bottom_execute_or_toggle_ && button->IsUp() &&
+                is_toggle_down_menu_) {
+                is_toggle_down_menu_ = false;
+            }
+
+            if (is_need_menu_open(ui) && key_ == key_bottom_execute_or_toggle_ && button->IsDown()) {
+                is_toggle_down_menu_ = true;
+            }
+
+            if (button->IsDown() && button->IsPressed() && is_position_button(key_) && is_need_menu_open(ui)) {
+                auto need_edit_key = config::mcm_setting::get_key_press_to_enter_edit();
+
+                if ((!need_edit_key && !is_edit_active_) || (need_edit_key && is_edit_active_)) {
+                    auto menu_form = get_selected_form(ui);
+                    if (menu_form) {
+                        auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
+                        auto key_position = handle::key_position_handle::get_singleton()->get_position_for_key(key_);
+                        if (config::mcm_setting::get_elden_demon_souls()) {
+                            //set overwrite with btn press
+                            handle::game_menu_setting::elden_souls_config(tes_form_menu,
+                                key_position,
+                                is_toggle_down_menu_);
+                        } else {
+                            //toggle is down, it is for left
+                            handle::game_menu_setting::default_config(tes_form_menu,
+                                key_position,
+                                is_toggle_down_menu_);
+                        }
                     }
-                    //TODO for normal button press is right, button press + toggle is left
                 }
             }
 
@@ -136,10 +158,6 @@ namespace event {
                     (button->IsDown() || button->IsPressed())) {
                     ui::ui_renderer::set_fade(true, 1.f);
                 }
-            }
-
-            if (is_position_button(key_)) {
-                if (button->IsHeld() && button->HeldDuration() >= config::mcm_setting::get_config_button_hold_time()) {}
             }
 
             if (button->IsDown() && is_position_button(key_)) {
@@ -182,7 +200,7 @@ namespace event {
                 continue;
             }
 
-            if (button->IsPressed() && key_hide_show_ != k_invalid && key_ == key_hide_show_) {
+            if (button->IsPressed() && is_key_valid(key_hide_show_) && key_ == key_hide_show_) {
                 ui::ui_renderer::toggle_show_ui();
             }
 
@@ -390,5 +408,19 @@ namespace event {
         }
 
         return menu_form;
+    }
+
+    void key_manager::set_config_edit(bool a_edit) {
+        if (is_edit_active_ != a_edit && config::mcm_setting::get_key_press_to_enter_edit()) {
+            is_edit_active_ = a_edit;
+            auto log_string = fmt::format("Edit Set to {}"sv, a_edit);
+            util::helper::write_notification(log_string);
+            logger::trace("{}", log_string);
+        }
+    }
+
+    bool key_manager::is_need_menu_open(RE::UI*& a_ui) {
+        return a_ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || a_ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
+               a_ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME);
     }
 }

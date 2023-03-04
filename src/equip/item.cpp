@@ -28,13 +28,13 @@ namespace equip {
                 logger::warn("object {} is not a weapon. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = util::player::get_inventory_weapon_items(a_player);
+            potential_items = util::player::get_inventory(a_player, RE::FormType::Weapon);
         } else if (a_type == handle::slot_setting::slot_type::shield) {
             if (!a_form->Is(RE::FormType::Armor)) {
                 logger::warn("object {} is not an armor. return."sv, a_form->GetName());
                 return;
             }
-            potential_items = util::player::get_inventory_armor_items(a_player);
+            potential_items = util::player::get_inventory(a_player, RE::FormType::Armor);
         } else if (a_type == handle::slot_setting::slot_type::light) {
             if (!a_form->Is(RE::FormType::Light)) {
                 logger::warn("object {} is not a light. return."sv, a_form->GetName());
@@ -95,8 +95,6 @@ namespace equip {
         const auto equip_manager = RE::ActorEquipManager::GetSingleton();
 
         equip_manager->EquipObject(a_player, obj, extra, 1, a_slot);
-        //TODO add setting for that
-        //a_player->DrawWeaponMagicHands(true);
         logger::trace("equipped weapon/shield/light {}, left {}. return."sv, a_form->GetName(), left);
     }
 
@@ -105,7 +103,7 @@ namespace equip {
 
         RE::TESBoundObject* obj = nullptr;
         auto item_count = 0;
-        for (const auto& [item, inv_data] : util::player::get_inventory_armor_items(a_player)) {
+        for (const auto& [item, inv_data] : util::player::get_inventory(a_player, RE::FormType::Armor)) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = inv_data.second->object;
                 item_count = num_items;

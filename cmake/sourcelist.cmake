@@ -10,6 +10,8 @@ set(sources ${sources}
 	src/event/equip_event.h
 	src/event/key_manager.cpp
 	src/event/key_manager.h
+	src/event/menu_manager.cpp
+	src/event/menu_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
 	src/handle/data/ammo_data.h

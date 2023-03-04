@@ -19,6 +19,14 @@
                     }
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 8,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bEditKey"
+                    }
+                },
+                {
                     "id": "uTopActionKey:Controls",
                     "text": "$LamasTinyHUD_TopActionKey_OptionText",
                     "type": "keymap",
@@ -94,7 +102,8 @@
                 },
                 {
                     "text": "$LamasTinyHUD_Optional_Controls",
-                    "type": "header"
+                    "type": "header",
+                    "position": 1
                 },
                 {
                     "id": "uShowHideKey:Controls",
@@ -106,6 +115,28 @@
                         "sourceType": "ModSettingInt"
                     }
                 },
+                {
+                    "id": "bKeyPressToEnterEdit:Controls",
+                    "text": "$LamasTinyHUD_Controls_KeyPressToEnterEdit_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_Controls_KeyPressToEnterEdit_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "uKeyToEnterEdit:Controls",
+                    "text": "$LamasTinyHUD_Controls_KeyToEnterEdit_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_Controls_KeyToEnterEdit_InfoText",
+                    "ignoreConflicts": false,
+                    "groupCondition": 8,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+
                 {
                     "text": "$LamasTinyHUD_Control_Handlings",
                     "type": "header"
@@ -123,8 +154,7 @@
                 },
                 {
                     "text": "$LamasTinyHUD_Controls_Controller",
-                    "type": "header",
-                    "position": 1
+                    "type": "header"
                 },
                 {
                     "id": "uControllerSet:Controls",
@@ -302,8 +332,8 @@
                         "sourceType": "ModSettingString"
                     }
                 },
-                
-                
+
+
                 {
                     "text": "$LamasTinyHUD_Header_Maintenance",
                     "type": "header",
@@ -776,7 +806,9 @@
                     "text": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetVerticalX_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetVerticalX_InfoText",
-                    "groupCondition": {"NOT": 5},
+                    "groupCondition": {
+                        "NOT": 5
+                    },
                     "groupBehavior": "disable",
                     "valueOptions": {
                         "min": -500.0,
@@ -791,7 +823,9 @@
                     "text": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetVerticalY_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_HudSetting_SlotItemNameOffsetVerticalY_InfoText",
-                    "groupCondition": {"NOT": 5},
+                    "groupCondition": {
+                        "NOT": 5
+                    },
                     "groupBehavior": "disable",
                     "valueOptions": {
                         "min": -500.0,
@@ -1397,6 +1431,109 @@
                     "text": "$LamasTinyHUD_DisableInputQuickLoot_OptionText",
                     "type": "toggle",
                     "help": "$LamasTinyHUD_DisableInputQuickLoot_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_CleanupSetting",
+            "cursorFillMode": "topToBottom",
+            "content": [{
+                    "text": "$LamasTinyHUD_CleanupSetting_HeaderText_Check",
+                    "type": "header"
+                },
+                {
+                    "type": "hiddenToggle",
+                    "groupControl": 9,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bCleanup"
+                    }
+                },
+                {
+                    "id": "bAutoCleanup:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_AutoCleanup_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_AutoCleanup_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanArmor:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanArmor_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanArmor_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanWeapon:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanWeapon_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanWeapon_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanSpell:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanSpell_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanSpell_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanAlchemyItem:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanAlchemyItem_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanAlchemyItem_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanShout:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanShout_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanShout_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanLight:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanLight_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanLight_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bCleanScroll:CleanupSetting",
+                    "text": "$LamasTinyHUD_CleanupSetting_CleanScroll_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_CleanupSetting_CleanScroll_InfoText",
+                    "groupCondition": 9,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
