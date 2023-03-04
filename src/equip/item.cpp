@@ -277,7 +277,11 @@ namespace equip {
             }
         }
 
-        logger::trace("calling to consume potion {}"sv, obj ? obj->GetName() : "null");
-        consume_potion(obj, a_player);
+        if (obj) {
+            logger::trace("calling to consume potion {}"sv, obj->GetName());
+            consume_potion(obj, a_player);
+        } else {
+            logger::warn("No suitable potion found. return.");
+        }
     }
 }
