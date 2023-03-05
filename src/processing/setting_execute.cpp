@@ -15,6 +15,10 @@ namespace processing {
     void setting_execute::execute_settings(const std::vector<handle::slot_setting*>& a_slots,
         bool a_only_equip,
         bool a_only_instant) {
+        if (a_slots.empty()) {
+            logger::info("settings are empty. return.");
+            return;
+        }
         logger::trace("got {} settings execute, only_equip {}, only_instant {}"sv,
             a_slots.size(),
             a_only_equip,
