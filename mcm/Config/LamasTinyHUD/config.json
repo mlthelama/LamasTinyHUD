@@ -1539,6 +1539,229 @@
                     }
                 }
             ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_Information_Bind",
+            "cursorFillMode": "topToBottom",
+            "content": [{
+                    "text": "$LamasTinyHUD_Information_HeaderText_CanBeAddedNormalAll",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Weapon_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Weapon_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Spell_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Spell_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Shield_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Shield_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Shout_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Shout_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Power_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Power_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Consumable_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Consumable_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Armor_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Armor_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Scroll_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Scroll_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Light_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Light_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Lantern_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Lantern_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Mask_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Mask_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_Normal_Slot",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_NormalSlotSingle_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_NormalSlotSingle_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_NormalSlotCombined_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_NormalSlotCombined_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_CanBeAddedEldenTop",
+                    "type": "header",
+                    "position": 1
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Power_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Power_Equip_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Shout_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Shout_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Spell_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Spell_FireAndForget_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_CanBeAddedEldenRight",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Weapon_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Weapon_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Spell_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Spell_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_CanBeAddedEldenBottom",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Consumable_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Consumable_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Scroll_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Scroll_Instant_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Lantern_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Lantern_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Mask_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Mask_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_CanBeAddedEldenLeft",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Weapon_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Weapon_OneHanded_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Spell_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Spell_OneHanded_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Shield_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Shield_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_Light_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_Light_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_EldenSlot",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_EldenSlot_General_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_EldenSlot_General_InfoText"
+                }
+            ]
+        },
+        {
+            "pageDisplayName": "$LamasTinyHUD_Information_Config",
+            "cursorFillMode": "topToBottom",
+            "content": [{
+                    "text": "$LamasTinyHUD_Information_HeaderText_ConfigNormal",
+                    "type": "header"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_ConfigMenu_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_ConfigMenu_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_ConfigSingleItemSlot_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_ConfigSingleItemSlot_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_ConfigCombinedItemSlot_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_ConfigCombinedItemSlot_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_RemoveItems_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_RemoveItems_InfoText"
+                }
+                {
+                    "text": "$LamasTinyHUD_Information_HeaderText_ConfigElden",
+                    "type": "header",
+                    "position": 1
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_ConfigMenu_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_ConfigMenu_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_AddItems_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_AddItems_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_OverwriteItems_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_OverwriteItems_InfoText"
+                },
+                {
+                    "text": "$LamasTinyHUD_Information_RemoveItems_OptionText",
+                    "type": "text",
+                    "help": "$LamasTinyHUD_Information_RemoveItems_InfoText"
+                }
+            ]
         }
     ]
 }
