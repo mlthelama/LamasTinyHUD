@@ -4,7 +4,6 @@
 #include "handle/data/page/position_setting.h"
 #include "handle/page_handle.h"
 #include "setting/custom_setting.h"
-#include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "string_util.h"
 #include "util/player/player.h"
