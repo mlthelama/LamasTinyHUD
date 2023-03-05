@@ -1,9 +1,10 @@
+#include "event/sink_event.h"
+#include "handle/setting/set_setting_data.h"
 #include "hook/hook.h"
 #include "papyrus/papyrus.h"
 #include "setting/file_setting.h"
+#include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
-#include "util/constant.h"
-#include "util/helper.h"
 
 void init_logger() {
     if (static bool initialized = false; !initialized) {
@@ -13,75 +14,90 @@ void init_logger() {
     }
 
     try {
-#ifndef NDEBUG
-        auto sink = std::make_shared<spdlog::sinks::msvc_sink_mt>();
-#else
         auto path = logger::log_directory();
         if (!path) {
             stl::report_and_fail("failed to get standard log path"sv);
         }
 
         *path /= fmt::format("{}.log"sv, Version::PROJECT);
-        auto sink = make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
-#endif
-        auto log = make_shared<spdlog::logger>("global log"s, move(sink));
+        auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
+        auto log = std::make_shared<spdlog::logger>("global log"s, std::move(sink));
 
-#ifndef NDEBUG
-        log->set_level(spdlog::level::trace);
-#else
-        log->set_level(spdlog::level::trace);
-        log->flush_on(spdlog::level::trace);
-#endif
+        log->set_level(spdlog::level::info);
+        log->flush_on(spdlog::level::info);
 
-        set_default_logger(move(log));
-        spdlog::set_pattern("[%H:%M:%S.%f] %s(%#) [%^%l%$] %v"s);
+        spdlog::set_default_logger(std::move(log));
+        spdlog::set_pattern("[%H:%M:%S.%f][%s(%#)][%!][%l] %v"s);
 
         logger::info("{} v{}"sv, Version::PROJECT, Version::NAME);
 
         try {
-            util::helper::read_configs();
+            config::file_setting::load_setting();
+            config::mcm_setting::read_setting();
+            config::custom_setting::read_setting();
         } catch (const std::exception& e) {
             logger::warn("failed to load setting {}"sv, e.what());
         }
 
-        switch (config::file_setting::get_log_level()) {
-            case util::const_log_trace:
-                spdlog::set_level(spdlog::level::trace);
-                spdlog::flush_on(spdlog::level::trace);
-                break;
-            case util::const_log_debug:
-                spdlog::set_level(spdlog::level::debug);
-                spdlog::flush_on(spdlog::level::debug);
-                break;
-            case util::const_log_info:
-                spdlog::set_level(spdlog::level::info);
-                spdlog::flush_on(spdlog::level::info);
-                break;
-            default:
-                spdlog::set_level(spdlog::level::trace);
-                spdlog::flush_on(spdlog::level::trace);
-                break;
+        if (config::file_setting::get_is_debug()) {
+            spdlog::set_level(spdlog::level::trace);
+            spdlog::flush_on(spdlog::level::trace);
         }
     } catch (const std::exception& e) {
         logger::critical("failed, cause {}"sv, e.what());
     }
 }
 
+void message_callback(SKSE::MessagingInterface::Message* msg) {
+    switch (msg->type) {
+        case SKSE::MessagingInterface::kDataLoaded:
+            if (ui::ui_renderer::d_3d_init_hook::initialized) {
+                logger::trace("Added Callback for UI. Now load Images, scale values width {}, height {}"sv,
+                    ui::ui_renderer::get_resolution_scale_width(),
+                    ui::ui_renderer::get_resolution_scale_height());
+
+                ui::ui_renderer::load_all_images();
+                ui::ui_renderer::load_font();
+                event::sink_events();
+                papyrus::Register();
+                hook::hook::install();
+                logger::info("done with data loaded"sv);
+            }
+            break;
+        case SKSE::MessagingInterface::kPostLoadGame:
+        case SKSE::MessagingInterface::kNewGame:
+            logger::info("Running checks for data and hud settings after {}"sv, static_cast<uint32_t>(msg->type));
+            handle::set_setting_data::check_config_data();
+            handle::set_setting_data::read_and_set_data();
+            handle::set_setting_data::get_actives_and_equip();
+            ui::ui_renderer::set_show_ui(config::file_setting::get_show_ui());
+            logger::info("Done running after {}"sv, static_cast<uint32_t>(msg->type));
+            break;
+        default:
+            break;
+    }
+}
+
 EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse) {
-#ifndef NDEBUG
-    while (!IsDebuggerPresent()) {};
-#endif
-
-
     init_logger();
 
     logger::info("{} loading"sv, Version::PROJECT);
+    logger::info("Game version {}", a_skse->RuntimeVersion().string());
 
     Init(a_skse);
 
-    papyrus::Register();
-    ui::ui_renderer::install();
-    hook::hook::install();
+    SKSE::AllocTrampoline(14 * 2);
+
+    stl::write_thunk_call<ui::ui_renderer::d_3d_init_hook>();
+    stl::write_thunk_call<ui::ui_renderer::dxgi_present_hook>();
+
+    auto g_message = SKSE::GetMessagingInterface();
+    if (!g_message) {
+        logger::error("Messaging Interface Not Found. return."sv);
+        return false;
+    }
+
+    g_message->RegisterListener(message_callback);
 
     logger::info("{} loaded"sv, Version::PROJECT);
     return true;

@@ -120,12 +120,6 @@ namespace util {
         config::custom_setting::read_setting();
     }
 
-    void helper::read_configs() {
-        config::file_setting::load_setting();
-        config::mcm_setting::read_setting();
-        config::custom_setting::read_setting();
-    }
-
     std::vector<std::string> helper::get_configured_section_page_names(uint32_t a_position) {
         //4 is all
         std::vector<std::string> names;

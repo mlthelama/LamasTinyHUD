@@ -10,7 +10,6 @@ namespace util {
             uint32_t a_position,
             const std::vector<data_helper*>& a_data,
             uint32_t a_hand);
-        static void read_configs();
         static std::vector<std::string> get_configured_section_page_names(
             uint32_t a_position = static_cast<uint32_t>(handle::position_setting::position_type::total));
         static RE::TESForm* get_form_from_mod_id_string(const std::string& a_str);

@@ -1,29 +1,16 @@
 ﻿#include "ui_renderer.h"
-#include <d3d11.h>
-#include <dxgi.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
-
-#pragma warning(push)
-#pragma warning(disable : 4244)
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#pragma warning(pop)
-
 #include "animation_handler.h"
 #include "event/key_manager.h"
-#include "event/sink_event.h"
 #include "handle/handle/ammo_handle.h"
 #include "handle/handle/name_handle.h"
 #include "handle/handle/page_handle.h"
-#include "handle/setting/set_setting_data.h"
 #include "image_path.h"
 #include "key_path.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
-#include <imgui_internal.h>
+#include <stb_image.h>
+
 
 namespace ui {
     using mcm = config::mcm_setting;
@@ -335,8 +322,7 @@ namespace ui {
                 a_modify,
                 a_modify,
                 a_duration,
-                size,
-                10);
+                size);
         animation_list.emplace_back(static_cast<ui::animation_type>(animation_type), std::move(anim));
         logger::trace("done inited animation. return.");
     }
@@ -701,43 +687,6 @@ namespace ui {
         }
     }
 
-
-    void ui_renderer::message_callback(SKSE::MessagingInterface::Message* msg)
-    //CallBack & LoadTextureFromFile should call after resource loaded.
-    {
-        // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
-        switch (msg->type) {
-            case SKSE::MessagingInterface::kDataLoaded:
-                if (d_3d_init_hook::initialized) {
-                    logger::trace("Load Images, scale values width {}, height {}"sv,
-                        get_resolution_scale_width(),
-                        get_resolution_scale_height());
-
-                    load_images(image_type_name_map, image_struct, img_directory);
-                    load_images(icon_type_name_map, icon_struct, icon_directory);
-                    load_images(key_icon_name_map, key_struct, key_directory);
-                    load_images(default_key_icon_name_map, default_key_struct, key_directory);
-                    load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
-                    load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
-
-                    load_animation_frames(highlight_animation_directory,
-                        animation_frame_map[animation_type::highlight]);
-                    logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
-                    load_font();
-                    event::sink_events();
-                    logger::info("done with data loaded"sv);
-                }
-                break;
-            case SKSE::MessagingInterface::kPostLoadGame:
-            case SKSE::MessagingInterface::kNewGame:
-                handle::set_setting_data::check_config_data();
-                handle::set_setting_data::read_and_set_data();
-                handle::set_setting_data::get_actives_and_equip();
-                show_ui_ = config::file_setting::get_show_ui();
-                break;
-        }
-    }
-
     template <typename T>
     void ui_renderer::load_images(std::map<std::string, T>& a_map,
         std::map<uint32_t, image>& a_struct,
@@ -794,24 +743,6 @@ namespace ui {
         return return_image;
     }
 
-    bool ui_renderer::install() {
-        auto g_message = SKSE::GetMessagingInterface();
-        if (!g_message) {
-            logger::error("Messaging Interface Not Found. return."sv);
-            return false;
-        }
-
-        g_message->RegisterListener(message_callback);
-
-        SKSE::AllocTrampoline(14 * 2);
-
-        stl::write_thunk_call<d_3d_init_hook>();
-        stl::write_thunk_call<dxgi_present_hook>();
-
-        logger::info("installed callback for ui. return.");
-        return true;
-    }
-
     float ui_renderer::get_resolution_scale_width() { return ImGui::GetIO().DisplaySize.x / 1920.f; }
 
     float ui_renderer::get_resolution_scale_height() { return ImGui::GetIO().DisplaySize.y / 1080.f; }
@@ -831,43 +762,50 @@ namespace ui {
     bool ui_renderer::get_fade() { return fade_in; }
 
     void ui_renderer::load_font() {
-        ImGuiIO& io = ImGui::GetIO();
-        ImVector<ImWchar> ranges;
-        ImFontGlyphRangesBuilder builder;
-        builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
-        if (config::file_setting::get_font_chinese_full()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
-        }
-        if (config::file_setting::get_font_chinese_simplified_common()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
-        }
-        if (config::file_setting::get_font_cyrillic()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
-        }
-        if (config::file_setting::get_font_japanese()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
-        }
-        if (config::file_setting::get_font_korean()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
-        }
-        if (config::file_setting::get_font_thai()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesThai());
-        }
-        if (config::file_setting::get_font_vietnamese()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
-        }
-        builder.BuildRanges(&ranges);
-
-
         std::string path = R"(Data\SKSE\Plugins\resources\font\)" + config::file_setting::get_font_file_name();
+        auto file_path = std::filesystem::path(path);
         logger::trace("Trying to load Font file {}"sv, path);
 
-        loaded_font =
-            io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
-        if (io.Fonts->Build()) {
-            ImGui_ImplDX11_CreateDeviceObjects();
-            logger::info("Custom Font {} loaded."sv, path);
-            return;
+        if (config::file_setting::get_font_load() && std::filesystem::is_regular_file(file_path) &&
+            ((file_path.extension() == ".ttf") || (file_path.extension() == ".otf"))) {
+            ImGuiIO& io = ImGui::GetIO();
+            ImVector<ImWchar> ranges;
+            ImFontGlyphRangesBuilder builder;
+            builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
+            if (config::file_setting::get_font_chinese_full()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
+            }
+            if (config::file_setting::get_font_chinese_simplified_common()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+            }
+            if (config::file_setting::get_font_cyrillic()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
+            }
+            if (config::file_setting::get_font_japanese()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
+            }
+            if (config::file_setting::get_font_korean()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
+            }
+            if (config::file_setting::get_font_thai()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesThai());
+            }
+            if (config::file_setting::get_font_vietnamese()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
+            }
+            builder.BuildRanges(&ranges);
+
+            loaded_font = io.Fonts->AddFontFromFileTTF(file_path.string().c_str(),
+                config::file_setting::get_font_size(),
+                nullptr,
+                ranges.Data);
+            if (io.Fonts->Build()) {
+                ImGui_ImplDX11_CreateDeviceObjects();
+                logger::info("Custom Font {} loaded."sv, path);
+                return;
+            }
+        } else {
+            loaded_font = ImGui::GetDefaultFont();
         }
     }
 
@@ -879,5 +817,19 @@ namespace ui {
         }
         config::file_setting::set_show_ui(show_ui_);
         logger::trace("Show UI is now {}"sv, show_ui_);
+    }
+
+    void ui_renderer::set_show_ui(bool a_show) { show_ui_ = a_show; }
+
+    void ui_renderer::load_all_images() {
+        load_images(image_type_name_map, image_struct, img_directory);
+        load_images(icon_type_name_map, icon_struct, icon_directory);
+        load_images(key_icon_name_map, key_struct, key_directory);
+        load_images(default_key_icon_name_map, default_key_struct, key_directory);
+        load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
+        load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
+
+        load_animation_frames(highlight_animation_directory, animation_frame_map[animation_type::highlight]);
+        logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
     }
 }

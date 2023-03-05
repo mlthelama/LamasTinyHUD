@@ -7,84 +7,6 @@
 #include "util/string_util.h"
 
 namespace util {
-    std::vector<RE::TESForm*> player::get_spells(const bool a_instant, const bool a_single) {
-        //easier just to use items that have been favourited, just filter them
-        std::vector<RE::TESForm*> spell_list;
-
-        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
-            if (form->Is(RE::FormType::Spell)) {
-                if (const auto spell = form->As<RE::SpellItem>();
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell) {
-                    logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                        spell->GetName(),
-                        static_cast<uint32_t>(spell->GetCastingType()),
-                        spell->IsTwoHanded(),
-                        static_cast<uint32_t>(spell->GetSpellType()));
-                    if (spell->GetCastingType() == RE::MagicSystem::CastingType::kConcentration && a_instant) {
-                        logger::debug("skipping spell {} because it does not work will with instant cast"sv,
-                            spell->GetName());
-                        continue;
-                    }
-
-                    if ((spell->IsTwoHanded() && !a_single) || (!spell->IsTwoHanded() && a_single)) {
-                        spell_list.push_back(form);
-                    }
-                } else {
-                    logger::trace(" {} is not a spell, not needed here form type {}"sv,
-                        form->GetName(),
-                        form->GetFormType());
-                }
-            }
-        }
-
-
-        logger::trace("spell list is size {}. return."sv, spell_list.size());
-        return spell_list;
-    }
-
-    std::vector<RE::TESForm*> player::get_powers() {
-        //easier just to use items that have been favourited, just filter them
-        std::vector<RE::TESForm*> power_list;
-
-        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
-            if (form->Is(RE::FormType::Spell)) {
-                if (const auto spell = form->As<RE::SpellItem>();
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kPower ||
-                    spell->GetSpellType() == RE::MagicSystem::SpellType::kLesserPower) {
-                    logger::trace("spell is {}, casting {}, is two_handed {}, spelltype {}"sv,
-                        spell->GetName(),
-                        static_cast<uint32_t>(spell->GetCastingType()),
-                        spell->IsTwoHanded(),
-                        static_cast<uint32_t>(spell->GetSpellType()));
-
-                    power_list.push_back(form);
-                } else {
-                    logger::trace("{} is not a power, not needed here form type {}"sv,
-                        form->GetName(),
-                        form->GetFormType());
-                }
-            }
-        }
-
-        logger::trace("power list is size {}. return."sv, power_list.size());
-        return power_list;
-    }
-
-    std::vector<RE::TESForm*> player::get_shouts() {
-        //easier just to use items that have been favourited, just filter them
-        std::vector<RE::TESForm*> shout_list;
-
-        for (auto magic_favorites = RE::MagicFavorites::GetSingleton()->spells; auto form : magic_favorites) {
-            if (form->Is(RE::FormType::Shout)) {
-                logger::trace("shout name is {}"sv, form->GetName());
-                shout_list.push_back(form);
-            }
-        }
-
-        logger::trace("shout list is size {}. return."sv, shout_list.size());
-        return shout_list;
-    }
-
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
         player::get_inventory(RE::PlayerCharacter*& a_player, RE::FormType a_type) {
         return a_player->GetInventory([a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
@@ -117,16 +39,6 @@ namespace util {
         logger::trace("got {} in inventory for item {}"sv, count, a_form->GetName());
 
         return count;
-    }
-
-    std::vector<data_helper*> player::get_hand_assignment(RE::TESForm*& a_form) {
-        bool two_handed = false;
-        if (a_form) {
-            two_handed = util::helper::is_two_handed(a_form);
-        }
-
-        logger::trace("Item {} is two handed {}"sv, a_form ? a_form->GetName() : "null", two_handed);
-        return get_hand_assignment(two_handed);
     }
 
     std::vector<data_helper*> player::get_hand_assignment(bool a_two_handed) {

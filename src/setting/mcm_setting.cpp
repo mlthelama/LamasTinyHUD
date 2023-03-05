@@ -1,5 +1,4 @@
 ﻿#include "mcm_setting.h"
-#include <SimpleIni.h>
 
 namespace config {
     static const char* mcm_default_setting = R"(.\Data\MCM\Config\LamasTinyHUD\settings.ini)";
@@ -210,7 +209,7 @@ namespace config {
 
         read_mcm(mcm_default_setting);
         read_mcm(mcm_config_setting);
-        
+
         logger::info("finished reading mcm ini files. return.");
     }
 
@@ -302,12 +301,12 @@ namespace config {
     bool mcm_setting::get_disable_re_equip_of_actives() { return disable_re_equip_of_actives; }
     bool mcm_setting::get_sort_arrow_by_quantity() { return sort_arrow_by_quantity; }
 
-    bool mcm_setting::get_auto_cleanup() { return false; }
-    bool mcm_setting::get_clean_armor() { return false; }
-    bool mcm_setting::get_clean_weapon() { return false; }
-    bool mcm_setting::get_clean_spell() { return false; }
-    bool mcm_setting::get_clean_alchemy_item() { return false; }
-    bool mcm_setting::get_clean_shout() { return false; }
-    bool mcm_setting::get_clean_light() { return false; }
-    bool mcm_setting::get_clean_scroll() { return false; }
+    bool mcm_setting::get_auto_cleanup() { return auto_cleanup; }
+    bool mcm_setting::get_clean_armor() { return clean_armor; }
+    bool mcm_setting::get_clean_weapon() { return clean_weapon; }
+    bool mcm_setting::get_clean_spell() { return clean_spell; }
+    bool mcm_setting::get_clean_alchemy_item() { return clean_alchemy_item; }
+    bool mcm_setting::get_clean_shout() { return clean_shout; }
+    bool mcm_setting::get_clean_light() { return clean_light; }
+    bool mcm_setting::get_clean_scroll() { return clean_scroll; }
 }

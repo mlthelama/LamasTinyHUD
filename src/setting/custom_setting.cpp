@@ -2,7 +2,6 @@
 #include "file_setting.h"
 #include "mcm_setting.h"
 #include "util/constant.h"
-#include <SimpleIni.h>
 
 namespace config {
     CSimpleIniA custom_ini;

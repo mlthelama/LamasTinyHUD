@@ -44,6 +44,7 @@ namespace handle {
             const std::string& a_form_left,
             uint32_t a_type_left,
             uint32_t a_action_left,
-            RE::ActorValue a_actor_value);
+            RE::ActorValue a_actor_value,
+            const std::string& a_section);
     };
 }

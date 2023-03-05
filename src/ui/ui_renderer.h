@@ -2,10 +2,6 @@
 #include "animation_handler.h"
 #include "handle/data/page/position_setting.h"
 #include "image_path.h"
-#include <imgui.h>
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <winuser.h>
 
 namespace ui {
     struct image {
@@ -21,24 +17,6 @@ namespace ui {
         struct wnd_proc_hook {
             static LRESULT thunk(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param);
             static inline WNDPROC func;
-        };
-
-        struct d_3d_init_hook {
-            static void thunk();
-            static inline REL::Relocation<decltype(thunk)> func;
-
-            static constexpr auto id = REL::RelocationID(75595, 77226);
-            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00);  // VR unknown
-
-            static inline std::atomic<bool> initialized = false;
-        };
-
-        struct dxgi_present_hook {
-            static void thunk(std::uint32_t a_p1);
-            static inline REL::Relocation<decltype(thunk)> func;
-
-            static constexpr auto id = REL::RelocationID(75461, 77246);
-            static constexpr auto offset = REL::Offset(0x9);
         };
 
         ui_renderer();
@@ -126,11 +104,7 @@ namespace ui {
 
         static image get_key_icon(uint32_t a_key);
 
-        static void load_font();
-
     public:
-        static bool install();
-
         static float get_resolution_scale_width();
         static float get_resolution_scale_height();
 
@@ -141,5 +115,27 @@ namespace ui {
         static bool get_fade();
 
         static void toggle_show_ui();
+        static void set_show_ui(bool a_show);
+
+        static void load_all_images();
+        static void load_font();
+
+        struct d_3d_init_hook {
+            static void thunk();
+            static inline REL::Relocation<decltype(thunk)> func;
+
+            static constexpr auto id = REL::RelocationID(75595, 77226);
+            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00);  // VR unknown
+
+            static inline std::atomic<bool> initialized = false;
+        };
+
+        struct dxgi_present_hook {
+            static void thunk(std::uint32_t a_p1);
+            static inline REL::Relocation<decltype(thunk)> func;
+
+            static constexpr auto id = REL::RelocationID(75461, 77246);
+            static constexpr auto offset = REL::Offset(0x9);
+        };
     };
 }

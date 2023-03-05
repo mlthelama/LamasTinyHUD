@@ -2,7 +2,6 @@
 #include "equip/equip_slot.h"
 #include "handle/data/data_helper.h"
 #include "handle/data/page/position_setting.h"
-#include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
 #include "util/player/player.h"
@@ -69,14 +68,14 @@ namespace handle {
 
         page->slot_settings = *slots;
 
-        //TODO for now the right hand or the first setting defines the icon, works well for elden.
+        //for now the right hand or the first setting defines the icon, works well for elden.
         page->icon_type = get_icon_type(slots->front()->type, slots->front()->form);
         if (slots->size() == 2 && page->icon_type == ui::icon_image_type::icon_default) {
             logger::debug("Could not find an Icon with first setting, try next");
             page->icon_type = get_icon_type(slots->at(1)->type, slots->at(1)->form);
         }
 
-        //TODO we set the icon type according to the actor value
+        //we set the icon type according to the actor value
         if (slots->front()->actor_value != RE::ActorValue::kNone &&
             slots->front()->type == slot_setting::slot_type::consumable) {
             get_consumable_icon_by_actor_value(slots->front()->actor_value, page->icon_type);

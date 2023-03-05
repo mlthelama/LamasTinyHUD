@@ -1,7 +1,4 @@
 ﻿#pragma once
-#include <algorithm>
-#include <cctype>
-#include <locale>
 
 namespace util {
     class string_util {
@@ -14,6 +11,7 @@ namespace util {
             return ltrim_copy(stream.str());
         }
 
+    private:
         static void ltrim(std::string& s) {
             s.erase(s.begin(), std::ranges::find_if(s, [](const unsigned char ch) { return !std::isspace(ch); }));
         }

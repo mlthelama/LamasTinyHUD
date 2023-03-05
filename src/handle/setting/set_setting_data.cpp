@@ -462,10 +462,15 @@ namespace handle {
                 custom::get_item_form_left_by_section(section),
                 custom::get_type_left_by_section(section),
                 custom::get_slot_action_left_by_section(section),
-                static_cast<RE::ActorValue>(custom::get_effect_actor_value(section)));
+                static_cast<RE::ActorValue>(custom::get_effect_actor_value(section)),
+                section);
         }
 
-        util::helper::rewrite_settings();
+        logger::trace("done checking config data, rewriting if in elden souls {}..."sv, mcm::get_elden_demon_souls());
+
+        if (mcm::get_elden_demon_souls()) {
+            util::helper::rewrite_settings();
+        }
     }
 
     void set_setting_data::check_slot_data(uint32_t a_page,
@@ -477,7 +482,8 @@ namespace handle {
         const std::string& a_form_left,
         uint32_t a_type_left,
         uint32_t a_action_left,
-        RE::ActorValue a_actor_value) {
+        RE::ActorValue a_actor_value,
+        const std::string& a_section) {
         const auto form = util::helper::get_form_from_mod_id_string(a_form);
         const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
@@ -600,15 +606,30 @@ namespace handle {
             data.push_back(item_left);
         }
 
-        if (config::mcm_setting::get_elden_demon_souls() &&
-            a_position == handle::position_setting::position_type::left) {
-            data.erase(data.begin());
+        if (config::mcm_setting::get_elden_demon_souls()) {
+            if (a_position == handle::position_setting::position_type::left) {
+                data.erase(data.begin());
+            } else {
+                if (data.size() == 2) {
+                    data.erase(data.begin() + 1);
+                }
+            }
+
+            if (!data.empty()) {
+                auto slot = data.front();
+                if (!slot->form && slot->actor_value == RE::ActorValue::kNone) {
+                    data.clear();
+                    config::custom_setting::reset_section(a_section);
+                }
+            }
         }
 
-        util::helper::write_setting_helper(a_page,
-            static_cast<uint32_t>(a_position),
-            data,
-            static_cast<uint32_t>(hand));
+        if (!data.empty()) {
+            util::helper::write_setting_helper(a_page,
+                static_cast<uint32_t>(a_position),
+                data,
+                static_cast<uint32_t>(hand));
+        }
 
         logger::trace("checked data size {}"sv, data.size());
     }

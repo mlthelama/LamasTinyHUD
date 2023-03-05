@@ -1,15 +1,15 @@
 ﻿#include "file_setting.h"
 #include "util/constant.h"
-#include <SimpleIni.h>
 
 namespace config {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
 
     CSimpleIniA ini;
 
-    static int log_level;
+    static int is_debug;
     static bool draw_key_background;
 
+    static bool font_load;
     static std::string font_file_name;
     static float font_size;
     static bool font_chinese_full;
@@ -32,10 +32,11 @@ namespace config {
         ini.SetUnicode();
         ini.LoadFile(ini_path);
 
-        log_level = ini.GetLongValue("General", "iLogLevel", 2);
+        is_debug = ini.GetBoolValue("General", "bIsDebug", false);
 
         draw_key_background = ini.GetBoolValue("Image", "bDrawKeyBackground", false);
 
+        font_load = ini.GetBoolValue("Font", "bLoad", true);
         font_file_name = ini.GetValue("Font", "sName", "");
         font_size = static_cast<float>(ini.GetDoubleValue("Font", "fSize", 20));
         font_chinese_full = ini.GetBoolValue("Font", "bChineseFull", false);
@@ -54,9 +55,10 @@ namespace config {
         logger::info("finished reading dll ini files. return.");
     }
 
-    int file_setting::get_log_level() { return log_level; }
+    int file_setting::get_is_debug() { return is_debug; }
     bool file_setting::get_draw_key_background() { return draw_key_background; }
 
+    bool file_setting::get_font_load() { return font_load; }
     std::string file_setting::get_font_file_name() { return font_file_name; }
     float file_setting::get_font_size() { return font_size; }
     bool file_setting::get_font_chinese_full() { return font_chinese_full; }
