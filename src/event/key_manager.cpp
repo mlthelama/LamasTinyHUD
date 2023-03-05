@@ -1,8 +1,8 @@
 ﻿#include "key_manager.h"
-#include "handle/handle/ammo_handle.h"
-#include "handle/handle/page_handle.h"
-#include "handle/setting/game_menu_setting.h"
-#include "handle/setting/setting_execute.h"
+#include "handle/ammo_handle.h"
+#include "handle/page_handle.h"
+#include "processing/game_menu_setting.h"
+#include "processing/setting_execute.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/helper.h"
@@ -116,12 +116,12 @@ namespace event {
                         auto key_position = handle::key_position_handle::get_singleton()->get_position_for_key(key_);
                         if (config::mcm_setting::get_elden_demon_souls()) {
                             //set overwrite with btn press
-                            handle::game_menu_setting::elden_souls_config(tes_form_menu,
+                            processing::game_menu_setting::elden_souls_config(tes_form_menu,
                                 key_position,
                                 is_toggle_down_menu_);
                         } else {
                             //toggle is down, it is for left
-                            handle::game_menu_setting::default_config(tes_form_menu,
+                            processing::game_menu_setting::default_config(tes_form_menu,
                                 key_position,
                                 is_toggle_down_menu_);
                         }
@@ -162,7 +162,7 @@ namespace event {
 
             if (button->IsDown() && is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
-                auto position_setting = handle::setting_execute::get_position_setting_for_key(key_);
+                auto position_setting = processing::setting_execute::get_position_setting_for_key(key_);
                 if (position_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
@@ -173,7 +173,7 @@ namespace event {
             if (button->IsUp() && is_position_button(key_)) {
                 logger::debug("configured Key ({}) is up"sv, key_);
                 //set slot back to normal color
-                const auto position_setting = handle::setting_execute::get_position_setting_for_key(key_);
+                const auto position_setting = processing::setting_execute::get_position_setting_for_key(key_);
                 if (position_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
@@ -218,13 +218,13 @@ namespace event {
                         is_key_valid(key_bottom_execute_or_toggle_) && key_ == key_bottom_execute_or_toggle_) ||
                     config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
                         key_ == key_bottom_action_) {
-                    auto page_setting = handle::setting_execute::get_position_setting_for_key(key_bottom_action_);
-                    handle::setting_execute::execute_settings(page_setting->slot_settings);
+                    auto page_setting = processing::setting_execute::get_position_setting_for_key(key_bottom_action_);
+                    processing::setting_execute::execute_settings(page_setting->slot_settings);
                 }
                 if (is_key_valid(key_top_execute_) && key_ == key_top_execute_) {
-                    auto page_setting = handle::setting_execute::get_position_setting_for_key(key_top_action_);
+                    auto page_setting = processing::setting_execute::get_position_setting_for_key(key_top_action_);
                     //only instant should need work, the default shout will be handled by the game
-                    handle::setting_execute::execute_settings(page_setting->slot_settings, false, true);
+                    processing::setting_execute::execute_settings(page_setting->slot_settings, false, true);
                 }
             }
 
@@ -307,7 +307,7 @@ namespace event {
 
     void key_manager::do_button_press(uint32_t a_key) {
         logger::debug("configured Key ({}) pressed"sv, a_key);
-        auto position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
+        auto position_setting = processing::setting_execute::get_position_setting_for_key(a_key);
 
         if (config::mcm_setting::get_elden_demon_souls()) {
             if (config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
@@ -320,24 +320,24 @@ namespace event {
                 handler->set_active_page_position(
                     handler->get_next_non_empty_setting_for_position(position_setting->position),
                     position_setting->position);
-                position_setting = handle::setting_execute::get_position_setting_for_key(a_key);
+                position_setting = processing::setting_execute::get_position_setting_for_key(a_key);
                 position_setting->highlight_slot = true;
                 if (!scroll_position(a_key)) {
-                    handle::setting_execute::execute_settings(position_setting->slot_settings);
+                    processing::setting_execute::execute_settings(position_setting->slot_settings);
                 } else if (position_setting->position == handle::position_setting::position_type::top) {
-                    handle::setting_execute::execute_settings(position_setting->slot_settings, true);
+                    processing::setting_execute::execute_settings(position_setting->slot_settings, true);
                 }
             } else {
                 logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->position));
                 //check ammo is set, might be a bow or crossbow present
                 const auto ammo_handle = handle::ammo_handle::get_singleton();
                 if (const auto next_ammo = ammo_handle->get_next_ammo()) {
-                    handle::setting_execute::execute_ammo(next_ammo);
+                    processing::setting_execute::execute_ammo(next_ammo);
                     handle::ammo_handle::get_singleton()->get_current()->highlight_slot = true;
                 }
             }
         } else {
-            handle::setting_execute::execute_settings(position_setting->slot_settings);
+            processing::setting_execute::execute_settings(position_setting->slot_settings);
         }
     }
 

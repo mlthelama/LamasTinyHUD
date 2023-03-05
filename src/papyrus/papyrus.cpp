@@ -1,6 +1,6 @@
 ﻿#include "papyrus.h"
 #include "event/key_manager.h"
-#include "handle/setting/set_setting_data.h"
+#include "processing/set_setting_data.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
@@ -17,7 +17,7 @@ namespace papyrus {
         if (config::mcm_setting::get_elden_demon_souls()) {
             util::helper::rewrite_settings();
         }
-        handle::set_setting_data::read_and_set_data();
+        processing::set_setting_data::read_and_set_data();
         //In case the setting was changed
         ui::ui_renderer::set_fade(true, 1.f);
 
@@ -257,7 +257,7 @@ namespace papyrus {
             item2->action_type = handle::slot_setting::acton_type::default_action;
             data.push_back(item2);
         }
-        handle::set_setting_data::set_single_slot(next_page, position, data);
+        processing::set_setting_data::set_single_slot(next_page, position, data);
         logger::trace("Added Unarmed Setting Page {}, Position {}, Setting Count {}"sv,
             next_page,
             a_position,

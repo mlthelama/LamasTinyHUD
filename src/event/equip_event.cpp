@@ -1,6 +1,6 @@
 ﻿#include "equip_event.h"
-#include "handle/handle/name_handle.h"
-#include "handle/setting/set_setting_data.h"
+#include "handle/name_handle.h"
+#include "processing/set_setting_data.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
 #include "util/player/player.h"
@@ -38,7 +38,7 @@ namespace event {
 
         //add check if we need to block left
         if (config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
-            handle::set_setting_data::check_if_location_needs_block(form, a_event->equipped);
+            processing::set_setting_data::check_if_location_needs_block(form, a_event->equipped);
         }
 
         return event_result::kContinue;

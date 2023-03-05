@@ -14,30 +14,30 @@ set(sources ${sources}
 	src/event/menu_manager.h
 	src/event/sink_event.cpp
 	src/event/sink_event.h
+	src/handle/ammo_handle.cpp
+	src/handle/ammo_handle.h
 	src/handle/data/ammo_data.h
 	src/handle/data/data_helper.h
 	src/handle/data/page/position_draw_setting.h
 	src/handle/data/page/position_setting.h
 	src/handle/data/page/slot_setting.h
-	src/handle/handle/ammo_handle.cpp
-	src/handle/handle/ammo_handle.h
-	src/handle/handle/key_position_handle.cpp
-	src/handle/handle/key_position_handle.h
-	src/handle/handle/name_handle.cpp
-	src/handle/handle/name_handle.h
-	src/handle/handle/page_handle.cpp
-	src/handle/handle/page_handle.h
-	src/handle/setting/game_menu_setting.cpp
-	src/handle/setting/game_menu_setting.h
-	src/handle/setting/set_setting_data.cpp
-	src/handle/setting/set_setting_data.h
-	src/handle/setting/setting_execute.cpp
-	src/handle/setting/setting_execute.h
+	src/handle/key_position_handle.cpp
+	src/handle/key_position_handle.h
+	src/handle/name_handle.cpp
+	src/handle/name_handle.h
+	src/handle/page_handle.cpp
+	src/handle/page_handle.h
 	src/hook/hook.cpp
 	src/hook/hook.h
 	src/main.cpp
 	src/papyrus/papyrus.cpp
 	src/papyrus/papyrus.h
+	src/processing/game_menu_setting.cpp
+	src/processing/game_menu_setting.h
+	src/processing/set_setting_data.cpp
+	src/processing/set_setting_data.h
+	src/processing/setting_execute.cpp
+	src/processing/setting_execute.h
 	src/setting/custom_setting.cpp
 	src/setting/custom_setting.h
 	src/setting/file_setting.cpp

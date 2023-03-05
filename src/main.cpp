@@ -1,7 +1,7 @@
 #include "event/sink_event.h"
-#include "handle/setting/set_setting_data.h"
 #include "hook/hook.h"
 #include "papyrus/papyrus.h"
+#include "processing/set_setting_data.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
@@ -66,9 +66,9 @@ void message_callback(SKSE::MessagingInterface::Message* msg) {
         case SKSE::MessagingInterface::kPostLoadGame:
         case SKSE::MessagingInterface::kNewGame:
             logger::info("Running checks for data and hud settings after {}"sv, static_cast<uint32_t>(msg->type));
-            handle::set_setting_data::check_config_data();
-            handle::set_setting_data::read_and_set_data();
-            handle::set_setting_data::get_actives_and_equip();
+            processing::set_setting_data::check_config_data();
+            processing::set_setting_data::read_and_set_data();
+            processing::set_setting_data::get_actives_and_equip();
             ui::ui_renderer::set_show_ui(config::file_setting::get_show_ui());
             logger::info("Done running after {}"sv, static_cast<uint32_t>(msg->type));
             break;

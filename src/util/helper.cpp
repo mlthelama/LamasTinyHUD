@@ -2,7 +2,7 @@
 #include "constant.h"
 #include "data/config_writer_helper.h"
 #include "handle/data/page/position_setting.h"
-#include "handle/handle/page_handle.h"
+#include "handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"

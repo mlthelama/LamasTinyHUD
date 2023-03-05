@@ -1,5 +1,5 @@
 ﻿#include "hook.h"
-#include "handle/setting/set_setting_data.h"
+#include "processing/set_setting_data.h"
 
 namespace hook {
     void hook::install() {
@@ -22,7 +22,7 @@ namespace hook {
 
         if (a_object->GetPlayable()) {
             if (a_object->IsMagicItem() || a_object->IsAmmo()) {
-                handle::set_setting_data::set_new_item_count_if_needed(a_object, a_count);
+                processing::set_setting_data::set_new_item_count_if_needed(a_object, a_count);
             }
         }
     }
@@ -36,7 +36,7 @@ namespace hook {
 
         if (a_object->GetPlayable()) {
             if (const auto obj = a_object->GetBaseObject(); obj->IsMagicItem() || a_object->IsAmmo()) {
-                handle::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
+                processing::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
             }
         }
     }
@@ -51,7 +51,7 @@ namespace hook {
         const RE::NiPoint3* a_rotate) {
         if (a_item->GetPlayable()) {
             if (a_item->IsMagicItem() || a_item->IsAmmo()) {
-                handle::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
+                processing::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
             }
             //TODO add handling here to auto remove items that have been removed
         }

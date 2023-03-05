@@ -1,13 +1,13 @@
 #include "game_menu_setting.h"
-#include "handle/handle/page_handle.h"
+#include "handle/page_handle.h"
 #include "set_setting_data.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
 #include "util/string_util.h"
 
-namespace handle {
-    void handle::game_menu_setting::elden_souls_config(RE::TESForm* a_form,
+namespace processing {
+    void game_menu_setting::elden_souls_config(RE::TESForm* a_form,
         handle::position_setting::position_type a_position,
         bool a_overwrite) {
         std::vector<data_helper*> data;
@@ -60,14 +60,14 @@ namespace handle {
         //use set_single_slot for replacement handling
         if (a_overwrite) {
             auto page = handle::page_handle::get_singleton()->get_active_page_id_position(a_position);
-            handle::set_setting_data::set_single_slot(page, a_position, data);
+            processing::set_setting_data::set_single_slot(page, a_position, data);
         } else {
-            handle::set_setting_data::set_queue_slot(a_position, data);
+            processing::set_setting_data::set_queue_slot(a_position, data);
         }
 
         logger::trace("Setting done. return.");
     }
-    void handle::game_menu_setting::default_config(RE::TESForm*& a_form,
+    void game_menu_setting::default_config(RE::TESForm*& a_form,
         handle::position_setting::position_type a_position,
         bool a_left) {
         const auto two_handed = util::helper::is_two_handed(a_form);
@@ -225,6 +225,6 @@ namespace handle {
                 data_item->left);
         }
         //do things
-        handle::set_setting_data::set_single_slot(page, a_position, data);
+        processing::set_setting_data::set_single_slot(page, a_position, data);
     }
 }
