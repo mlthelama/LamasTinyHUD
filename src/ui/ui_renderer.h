@@ -90,7 +90,6 @@ namespace ui {
             ID3D11ShaderResourceView** out_srv,
             std::int32_t& out_width,
             std::int32_t& out_height);
-        static void message_callback(SKSE::MessagingInterface::Message* msg);
 
         static inline bool show_ui_ = false;
         static inline ID3D11Device* device_ = nullptr;
@@ -104,7 +103,7 @@ namespace ui {
 
         static image get_key_icon(uint32_t a_key);
         static void load_font();
-        
+
     public:
         static float get_resolution_scale_width();
         static float get_resolution_scale_height();

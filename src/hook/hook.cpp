@@ -53,7 +53,7 @@ namespace hook {
             if (a_item->IsMagicItem() || a_item->IsAmmo()) {
                 handle::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
             }
-            //TODO add handling here to autoremove items that have been removed
+            //TODO add handling here to auto remove items that have been removed
         }
 
         return remove_item_(a_this, a_item, a_count, a_reason, a_extra_list, a_move_to_ref, a_drop_loc, a_rotate);

@@ -7,7 +7,6 @@
 #include "ui/ui_renderer.h"
 #include "util/constant.h"
 #include "util/helper.h"
-#include "util/string_util.h"
 
 namespace papyrus {
     static const char* mcm_name = "LamasTinyHUD_MCM";

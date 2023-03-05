@@ -102,7 +102,7 @@ namespace ui {
         if (!d_3d_init_hook::initialized.load()) {
             return;
         }
-        
+
         if (!loaded_font) {
             load_font();
         }
