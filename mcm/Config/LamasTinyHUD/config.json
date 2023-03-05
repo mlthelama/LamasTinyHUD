@@ -1735,7 +1735,7 @@
                     "text": "$LamasTinyHUD_Information_RemoveItems_OptionText",
                     "type": "text",
                     "help": "$LamasTinyHUD_Information_RemoveItems_InfoText"
-                }
+                },
                 {
                     "text": "$LamasTinyHUD_Information_HeaderText_ConfigElden",
                     "type": "header",

@@ -128,7 +128,6 @@ namespace equip {
     void item::consume_potion(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
         logger::trace("try to consume {}"sv, a_form->GetName());
 
-
         RE::TESBoundObject* obj = nullptr;
         uint32_t left = 0;
         for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::AlchemyItem);
@@ -158,6 +157,16 @@ namespace equip {
             logger::warn("object {} is not an alchemy item. return."sv, obj->GetName());
             return;
         }
+        
+        /*auto alchemy_item = obj->As<RE::AlchemyItem>();
+        if (alchemy_item->IsPoison()) {
+            //check if there is a weapon to apply it to
+            auto equipped_object = a_player->GetEquippedEntryData(false);
+            if (equipped_object && equipped_object->object->IsWeapon()) {
+                //check, somehow poisons both weapons
+                equipped_object->PoisonObject(alchemy_item, 1);
+            }
+        }*/
 
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
 
