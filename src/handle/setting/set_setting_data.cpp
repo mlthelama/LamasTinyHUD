@@ -451,6 +451,10 @@ namespace handle {
     }
 
     void set_setting_data::check_config_data() {
+        if (!config::mcm_setting::get_auto_cleanup()) {
+            return;
+        }
+        
         logger::trace("checking config data, removing outdated data...");
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             check_slot_data(custom::get_page_by_section(section),
