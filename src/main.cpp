@@ -57,7 +57,6 @@ void message_callback(SKSE::MessagingInterface::Message* msg) {
                     ui::ui_renderer::get_resolution_scale_height());
 
                 ui::ui_renderer::load_all_images();
-                ui::ui_renderer::load_font();
                 event::sink_events();
                 papyrus::Register();
                 hook::hook::install();

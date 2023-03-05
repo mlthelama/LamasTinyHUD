@@ -103,7 +103,8 @@ namespace ui {
         static void load_animation_frames(std::string& file_path, std::vector<image>& frame_list);
 
         static image get_key_icon(uint32_t a_key);
-
+        static void load_font();
+        
     public:
         static float get_resolution_scale_width();
         static float get_resolution_scale_height();
@@ -118,7 +119,6 @@ namespace ui {
         static void set_show_ui(bool a_show);
 
         static void load_all_images();
-        static void load_font();
 
         struct d_3d_init_hook {
             static void thunk();
