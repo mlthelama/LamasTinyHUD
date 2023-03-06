@@ -1,8 +1,8 @@
-﻿#include "hook.h"
+﻿#include "player_hook.h"
 #include "processing/set_setting_data.h"
 
 namespace hook {
-    void hook::install() {
+    void player_hook::install() {
         logger::info("Hooking ..."sv);
 
         REL::Relocation<std::uintptr_t> player_character_vtbl{ RE::VTABLE_PlayerCharacter[0] };
@@ -13,7 +13,7 @@ namespace hook {
         logger::info("Hooked."sv);
     }
 
-    void hook::add_object_to_container(RE::Actor* a_this,
+    void player_hook::add_object_to_container(RE::Actor* a_this,
         RE::TESBoundObject* a_object,
         RE::ExtraDataList* a_extra_list,
         int32_t a_count,
@@ -27,7 +27,7 @@ namespace hook {
         }
     }
 
-    void hook::pick_up_object(RE::Actor* a_this,
+    void player_hook::pick_up_object(RE::Actor* a_this,
         RE::TESObjectREFR* a_object,
         uint32_t a_count,
         bool a_arg3,
@@ -41,7 +41,7 @@ namespace hook {
         }
     }
 
-    RE::ObjectRefHandle hook::remove_item(RE::Actor* a_this,
+    RE::ObjectRefHandle player_hook::remove_item(RE::Actor* a_this,
         RE::TESBoundObject* a_item,
         std::int32_t a_count,
         RE::ITEM_REMOVE_REASON a_reason,

@@ -27,8 +27,8 @@ set(sources ${sources}
 	src/handle/name_handle.h
 	src/handle/page_handle.cpp
 	src/handle/page_handle.h
-	src/hook/hook.cpp
-	src/hook/hook.h
+	src/hook/player_hook.cpp
+	src/hook/player_hook.h
 	src/main.cpp
 	src/papyrus/papyrus.cpp
 	src/papyrus/papyrus.h

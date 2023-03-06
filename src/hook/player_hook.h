@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 namespace hook {
-    class hook {
+    class player_hook {
     public:
         static void install();
 
