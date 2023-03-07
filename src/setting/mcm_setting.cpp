@@ -201,7 +201,7 @@ namespace config {
             disable_re_equip_of_actives = mcm.GetBoolValue("MiscSetting", "bDisableReEquipOfActives", false);
             sort_arrow_by_quantity = mcm.GetBoolValue("MiscSetting", "bSortArrowByQuantity", false);
             apply_poison_charges = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uApplyPoisonCharges", 5));
-            
+
             auto_cleanup = mcm.GetBoolValue("CleanupSetting", "bAutoCleanup", false);
             clean_armor = mcm.GetBoolValue("CleanupSetting", "bCleanArmor", true);
             clean_weapon = mcm.GetBoolValue("CleanupSetting", "bCleanWeapon", true);
