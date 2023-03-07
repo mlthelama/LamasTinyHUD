@@ -157,16 +157,16 @@ namespace equip {
             logger::warn("object {} is not an alchemy item. return."sv, obj->GetName());
             return;
         }
-        
-        /*auto alchemy_item = obj->As<RE::AlchemyItem>();
+
+        auto alchemy_item = obj->As<RE::AlchemyItem>();
         if (alchemy_item->IsPoison()) {
             //check if there is a weapon to apply it to
             auto equipped_object = a_player->GetEquippedEntryData(false);
             if (equipped_object && equipped_object->object->IsWeapon()) {
                 //check, somehow poisons both weapons
-                equipped_object->PoisonObject(alchemy_item, 1);
+                equipped_object->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
             }
-        }*/
+        }
 
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
 

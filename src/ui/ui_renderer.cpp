@@ -1,6 +1,6 @@
 ﻿#include "ui_renderer.h"
 #include "animation_handler.h"
-#include "event/key_manager.h"
+#include "control/common.h"
 #include "handle/ammo_handle.h"
 #include "handle/name_handle.h"
 #include "handle/page_handle.h"
@@ -733,7 +733,7 @@ namespace ui {
 
     image ui_renderer::get_key_icon(const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
-        if (a_key >= event::key_manager::k_gamepad_offset) {
+        if (a_key >= control::common::k_gamepad_offset) {
             if (mcm::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
                 return_image = ps_key_struct[a_key];
             } else {

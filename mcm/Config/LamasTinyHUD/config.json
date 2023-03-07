@@ -101,7 +101,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_Optional_Controls",
+                    "text": "$LamasTinyHUD_Supporting_Controls",
                     "type": "header",
                     "position": 1
                 },
@@ -132,6 +132,16 @@
                     "ignoreConflicts": false,
                     "groupCondition": 8,
                     "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uLeftOrOverwriteEditKey:Controls",
+                    "text": "$LamasTinyHUD_LeftOrOverwriteEditKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_LeftOrOverwriteEditKey_InfoText",
+                    "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
                     }
@@ -1344,6 +1354,19 @@
                     "groupBehavior": "disable",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "uApplyPoisonCharges:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_ApplyPoisonCharges_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_MiscSetting_ApplyPoisonCharges_InfoText",
+                    "valueOptions": {
+                        "min": 1,
+                        "max": 10,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
                     }
                 },
                 {

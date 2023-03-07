@@ -12,6 +12,7 @@ namespace config {
     static uint32_t show_hide_key;
     static bool key_press_to_enter_edit;
     static uint32_t edit_key;
+    static uint32_t left_or_overwrite_edit_key;
     static bool bottom_execute_key_combo_only;
     static uint32_t controller_set;
 
@@ -81,6 +82,7 @@ namespace config {
     static float potion_max_perfect;
     static bool disable_re_equip_of_actives;
     static bool sort_arrow_by_quantity;
+    static uint32_t apply_poison_charges;
 
     static bool auto_cleanup;
     static bool clean_armor;
@@ -107,6 +109,8 @@ namespace config {
             show_hide_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uShowHideKey", 26));
             key_press_to_enter_edit = mcm.GetBoolValue("Controls", "bKeyPressToEnterEdit", false);
             edit_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uKeyToEnterEdit", 22));
+            left_or_overwrite_edit_key =
+                static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftOrOverwriteEditKey", 38));
             bottom_execute_key_combo_only = mcm.GetBoolValue("Controls", "bBottomExecuteKeyComboOnly", false);
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
 
@@ -196,7 +200,8 @@ namespace config {
             potion_max_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMaxPerfect", 1.2));
             disable_re_equip_of_actives = mcm.GetBoolValue("MiscSetting", "bDisableReEquipOfActives", false);
             sort_arrow_by_quantity = mcm.GetBoolValue("MiscSetting", "bSortArrowByQuantity", false);
-
+            apply_poison_charges = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uApplyPoisonCharges", 5));
+            
             auto_cleanup = mcm.GetBoolValue("CleanupSetting", "bAutoCleanup", false);
             clean_armor = mcm.GetBoolValue("CleanupSetting", "bCleanArmor", true);
             clean_weapon = mcm.GetBoolValue("CleanupSetting", "bCleanWeapon", true);
@@ -221,6 +226,7 @@ namespace config {
     uint32_t mcm_setting::get_show_hide_key() { return show_hide_key; }
     bool mcm_setting::get_key_press_to_enter_edit() { return key_press_to_enter_edit; }
     uint32_t mcm_setting::get_edit_key() { return edit_key; }
+    uint32_t mcm_setting::get_left_or_overwrite_edit_key() { return left_or_overwrite_edit_key; }
     bool mcm_setting::get_bottom_execute_key_combo_only() { return bottom_execute_key_combo_only; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
 
@@ -300,6 +306,7 @@ namespace config {
     float mcm_setting::get_potion_max_perfect() { return potion_max_perfect; }
     bool mcm_setting::get_disable_re_equip_of_actives() { return disable_re_equip_of_actives; }
     bool mcm_setting::get_sort_arrow_by_quantity() { return sort_arrow_by_quantity; }
+    uint32_t mcm_setting::get_apply_poison_charges() { return apply_poison_charges; }
 
     bool mcm_setting::get_auto_cleanup() { return auto_cleanup; }
     bool mcm_setting::get_clean_armor() { return clean_armor; }

@@ -1,5 +1,5 @@
 #include "menu_manager.h"
-#include "key_manager.h"
+#include "control/binding.h"
 
 namespace event {
     menu_manager* menu_manager::get_singleton() {
@@ -17,7 +17,9 @@ namespace event {
         if (!a_event->opening &&
             (a_event->menuName == RE::InventoryMenu::MENU_NAME || a_event->menuName == RE::MagicMenu::MENU_NAME ||
                 a_event->menuName == RE::FavoritesMenu::MENU_NAME)) {
-            key_manager::get_singleton()->set_config_edit(false);
+            auto binding = control::binding::get_singleton();
+            binding->set_is_edit_down(false);
+            binding->set_is_edit_left_down(false);
         }
         return event_result::kContinue;
     }

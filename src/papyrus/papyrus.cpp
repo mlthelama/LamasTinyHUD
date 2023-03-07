@@ -1,5 +1,5 @@
 ﻿#include "papyrus.h"
-#include "event/key_manager.h"
+#include "control/binding.h"
 #include "processing/set_setting_data.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
@@ -18,6 +18,8 @@ namespace papyrus {
             util::helper::rewrite_settings();
         }
         processing::set_setting_data::read_and_set_data();
+        processing::set_setting_data::get_actives_and_equip();
+        control::binding::get_singleton()->set_all_keys();
         //In case the setting was changed
         ui::ui_renderer::set_fade(true, 1.f);
 

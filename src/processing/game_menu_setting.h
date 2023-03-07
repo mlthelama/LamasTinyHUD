@@ -9,5 +9,8 @@ namespace processing {
             bool a_overwrite);
         static void
             default_config(RE::TESForm*& a_form, handle::position_setting::position_type a_position, bool a_left);
+
+        static uint32_t get_selected_form(RE::UI*& a_ui);
+        static bool is_need_menu_open(RE::UI*& a_ui);
     };
 }

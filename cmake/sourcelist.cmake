@@ -1,5 +1,9 @@
 set(sources ${sources}
 	src/PCH.h
+	src/control/binding.cpp
+	src/control/binding.h
+	src/control/common.cpp
+	src/control/common.h
 	src/equip/equip_slot.cpp
 	src/equip/equip_slot.h
 	src/equip/item.cpp
@@ -27,6 +31,10 @@ set(sources ${sources}
 	src/handle/name_handle.h
 	src/handle/page_handle.cpp
 	src/handle/page_handle.h
+	src/hook/hook.cpp
+	src/hook/hook.h
+	src/hook/menu_hook.cpp
+	src/hook/menu_hook.h
 	src/hook/player_hook.cpp
 	src/hook/player_hook.h
 	src/main.cpp

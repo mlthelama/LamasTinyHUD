@@ -1,5 +1,6 @@
+#include "control/binding.h"
 #include "event/sink_event.h"
-#include "hook/player_hook.h"
+#include "hook/hook.h"
 #include "papyrus/papyrus.h"
 #include "processing/set_setting_data.h"
 #include "setting/file_setting.h"
@@ -59,7 +60,8 @@ void message_callback(SKSE::MessagingInterface::Message* msg) {
                 ui::ui_renderer::load_all_images();
                 event::sink_events();
                 papyrus::Register();
-                hook::player_hook::install();
+                hook::hook::install();
+                control::binding::get_singleton()->set_all_keys();
                 logger::info("done with data loaded"sv);
             }
             break;

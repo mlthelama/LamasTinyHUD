@@ -75,14 +75,14 @@ namespace config {
 
     void custom_setting::write_slot_action_by_section(const std::string& a_section, const uint32_t a_action) {
         read_setting();
-        custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", a_action);
+        custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", static_cast<long>(a_action));
 
         save_setting();
     }
 
     void custom_setting::write_slot_action_left_by_section(const std::string& a_section, const uint32_t a_action) {
         read_setting();
-        custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", a_action);
+        custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", static_cast<long>(a_action));
 
         save_setting();
     }
