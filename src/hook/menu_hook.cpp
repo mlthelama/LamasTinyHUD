@@ -8,7 +8,6 @@ namespace hook {
     void menu_hook::install() {
         logger::info("Hooking ..."sv);
 
-
         REL::Relocation<std::uintptr_t> menu_controls_vtbl{ RE::VTABLE_MenuControls[0] };
         process_event_ = menu_controls_vtbl.write_vfunc(0x1, &menu_hook::process_event);
 
@@ -25,6 +24,10 @@ namespace hook {
 
         if (a_event && *a_event && processing::game_menu_setting::is_need_menu_open(ui)) {
             for (auto event = *a_event; event; event = event->next) {
+                if (event->eventType != RE::INPUT_EVENT_TYPE::kButton) {
+                    continue;
+                }
+
                 if (event->HasIDCode()) {
                     auto button = static_cast<RE::ButtonEvent*>(event);
 

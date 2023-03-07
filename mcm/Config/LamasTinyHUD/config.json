@@ -1363,7 +1363,7 @@
                     "help": "$LamasTinyHUD_MiscSetting_ApplyPoisonCharges_InfoText",
                     "valueOptions": {
                         "min": 1,
-                        "max": 10,
+                        "max": 20,
                         "step": 1,
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"

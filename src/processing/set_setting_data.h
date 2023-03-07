@@ -17,6 +17,7 @@ namespace processing {
         static void get_actives_and_equip();
         static void check_if_location_needs_block(RE::TESForm*& a_form, bool a_equipped);
         static void check_config_data();
+        static void remove_item_if_needed(const RE::TESBoundObject* a_object);
 
     private:
         static void set_empty_slot(int a_page, int a_pos, handle::key_position_handle*& a_key_pos);

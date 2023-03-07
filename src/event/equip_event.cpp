@@ -37,7 +37,7 @@ namespace event {
         }
 
         //add check if we need to block left
-        if (config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
+        if (!ui->GameIsPaused() && config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
             processing::set_setting_data::check_if_location_needs_block(form, a_event->equipped);
         }
 

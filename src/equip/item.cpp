@@ -162,10 +162,24 @@ namespace equip {
         if (alchemy_item->IsPoison()) {
             //check if there is a weapon to apply it to
             auto equipped_object = a_player->GetEquippedEntryData(false);
-            if (equipped_object && equipped_object->object->IsWeapon()) {
-                //check, somehow poisons both weapons
+            if (equipped_object && equipped_object->object->IsWeapon() && !equipped_object->IsPoisoned()) {
+                logger::trace("try to add poison {} to right {}"sv,
+                    alchemy_item->GetName(),
+                    equipped_object->GetDisplayName());
                 equipped_object->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
+                a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
             }
+            auto equipped_object_left = a_player->GetEquippedEntryData(true);
+            if (equipped_object_left && equipped_object_left->object->IsWeapon() &&
+                !equipped_object_left->IsPoisoned()) {
+                logger::trace("try to add poison {} to left {}"sv,
+                    alchemy_item->GetName(),
+                    equipped_object_left->GetDisplayName());
+                equipped_object_left->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
+                a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
+            }
+            logger::trace("Is a poison, I am done here. return.");
+            return;
         }
 
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);

@@ -634,4 +634,14 @@ namespace processing {
 
         logger::trace("checked data size {}"sv, data.size());
     }
+
+    void set_setting_data::remove_item_if_needed(const RE::TESBoundObject* a_object) {
+        auto type = util::helper::get_type((RE::TESForm*&)a_object);
+        if (util::helper::clean_type_allowed(type)) {
+            logger::trace("allowed to clean type {}, now check if we have the item in use."sv,
+                static_cast<uint32_t>(type));
+            //if we have the item, check if there is a count left
+            //TODO
+        }
+    }
 }
