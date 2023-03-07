@@ -66,6 +66,9 @@ namespace config {
         static bool get_draw_current_items_text();
         static bool get_draw_item_name_text();
 
+        static uint32_t get_alpha_slot_animation();
+        static float get_duration_slot_animation();
+
         static bool get_action_check();
         static bool get_empty_hand_setting();
         static bool get_hide_outside_combat();

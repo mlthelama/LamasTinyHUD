@@ -95,6 +95,8 @@ namespace handle {
         draw->icon_transparency = mcm::get_icon_transparency();
         draw->key_transparency = mcm::get_key_transparency();
         draw->text_transparency = mcm::get_text_transparency();
+        draw->alpha_slot_animation = mcm::get_alpha_slot_animation();
+        draw->duration_slot_animation = mcm::get_duration_slot_animation();
 
         float offset_x = 0.f;
         float offset_y = 0.f;

@@ -65,6 +65,9 @@ namespace config {
     static bool draw_item_name_text;
     static bool draw_toggle_button;
 
+    static uint32_t alpha_slot_animation;
+    static float duration_slot_animation;
+
     static bool action_check;
     static bool empty_hand_setting;
     static bool hide_outside_combat;
@@ -181,6 +184,11 @@ namespace config {
             draw_item_name_text = mcm.GetBoolValue("GraphicSetting", "bDrawItemNameText", true);
             draw_toggle_button = mcm.GetBoolValue("GraphicSetting", "bDrawToggleButton", true);
 
+            alpha_slot_animation =
+                static_cast<uint32_t>(mcm.GetLongValue("AnimationSetting", "uAlphaSlotAnimation", 51));
+            duration_slot_animation =
+                static_cast<float>(mcm.GetDoubleValue("AnimationSetting", "fDurationSlotAnimation", 0.1));
+
             action_check = mcm.GetBoolValue("MiscSetting", "bActionCheck", false);
             empty_hand_setting = mcm.GetBoolValue("MiscSetting", "bEmptyHandSetting", false);
             hide_outside_combat = mcm.GetBoolValue("MiscSetting", "bHideOutsideCombat", false);
@@ -286,6 +294,9 @@ namespace config {
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
     bool mcm_setting::get_draw_item_name_text() { return draw_item_name_text; }
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
+
+    uint32_t mcm_setting::get_alpha_slot_animation() { return alpha_slot_animation; }
+    float mcm_setting::get_duration_slot_animation() { return duration_slot_animation; }
 
     bool mcm_setting::get_action_check() { return action_check; }
     bool mcm_setting::get_empty_hand_setting() { return empty_hand_setting; }

@@ -364,8 +364,8 @@ namespace ui {
                     draw_setting->offset_slot_x,
                     draw_setting->offset_slot_y,
                     draw_full,
-                    255 / 5,  //TODO setting
-                    0.1f);    //TODO setting
+                    draw_setting->alpha_slot_animation,
+                    draw_setting->duration_slot_animation);
             }
 
             if (page_setting->item_name && !page_setting->slot_settings.empty()) {
@@ -497,8 +497,8 @@ namespace ui {
                     mcm::get_arrow_slot_offset_x(),
                     mcm::get_arrow_slot_offset_y(),
                     draw_full,
-                    255 / 5,  //TODO setting
-                    0.1f);    //TODO setting
+                    mcm::get_alpha_slot_animation(),
+                    mcm::get_duration_slot_animation());
             }
         }
         draw_animations_frame();
