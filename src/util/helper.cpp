@@ -1,6 +1,7 @@
 ﻿#include "helper.h"
 #include "constant.h"
 #include "data/config_writer_helper.h"
+#include "equip/equip_slot.h"
 #include "handle/data/page/position_setting.h"
 #include "handle/page_handle.h"
 #include "setting/custom_setting.h"
@@ -38,85 +39,6 @@ namespace util {
         }
 
         return form_string;
-    }
-
-    void helper::write_setting_helper(const uint32_t a_page,
-        const uint32_t a_position,
-        const std::vector<data_helper*>& a_data,
-        const uint32_t a_hand) {
-        const auto section = get_section_name_for_page_position(a_page, a_position);
-        auto type = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
-        std::string form_string;
-        uint32_t action = 0;
-        RE::ActorValue actor_value = RE::ActorValue::kNone;
-
-        auto type_left = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
-        std::string form_string_left;
-        uint32_t action_left = 0;
-
-        if (a_data.empty()) {
-            return;
-        }
-
-        if (config::mcm_setting::get_elden_demon_souls()) {
-            if (!a_data.empty()) {
-                if (a_data[0]->left) {
-                    type_left = static_cast<uint32_t>(a_data[0]->type);
-                    if (a_data[0]->form) {
-                        form_string_left = get_mod_and_form(a_data[0]->form->formID);
-                    } else {
-                        form_string_left = "";
-                    }
-                    action_left = static_cast<uint32_t>(a_data[0]->action_type);
-                } else {
-                    type = static_cast<uint32_t>(a_data[0]->type);
-                    if (a_data[0]->form) {
-                        form_string = get_mod_and_form(a_data[0]->form->formID);
-                    } else {
-                        form_string = "";
-                    }
-                    action = static_cast<uint32_t>(a_data[0]->action_type);
-                }
-                actor_value = a_data[0]->actor_value;
-            }
-        } else {
-            if (!a_data.empty()) {
-                type = static_cast<uint32_t>(a_data[0]->type);
-                if (a_data[0]->form) {
-                    form_string = get_mod_and_form(a_data[0]->form->formID);
-                } else {
-                    form_string = "";
-                }
-                action = static_cast<uint32_t>(a_data[0]->action_type);
-                actor_value = a_data[0]->actor_value;
-            }
-
-
-            if (a_data.size() == 2) {
-                type_left = static_cast<uint32_t>(a_data[1]->type);
-                if (a_data[1]->form) {
-                    form_string_left = get_mod_and_form(a_data[1]->form->formID);
-                } else {
-                    form_string_left = "";
-                }
-                action_left = static_cast<uint32_t>(a_data[1]->action_type);
-                actor_value = a_data[1]->actor_value;
-            }
-        }
-        config::mcm_setting::read_setting();
-
-        config::custom_setting::write_section_setting(section,
-            a_page,
-            a_position,
-            type,
-            form_string,
-            action,
-            a_hand,
-            type_left,
-            form_string_left,
-            action_left,
-            static_cast<int>(actor_value));
-        config::custom_setting::read_setting();
     }
 
     std::vector<std::string> helper::get_configured_section_page_names(uint32_t a_position) {
@@ -245,104 +167,6 @@ namespace util {
         return handle::slot_setting::slot_type::misc;
     }
 
-    void helper::write_notification(const std::string& a_string) { RE::DebugNotification(a_string.c_str()); }
-
-    data_helper* helper::is_suitable_for_position(RE::TESForm*& a_form,
-        const handle::position_setting::position_type a_position) {
-        //all kind of weapons and magic/spells
-        const auto item = new data_helper();
-        const auto type = get_type(a_form);
-        const auto two_handed = is_two_handed(a_form);
-        logger::trace("Item {}, is Type {}, TwoHanded {}"sv,
-            a_form ? string_util::int_to_hex(a_form->formID) : "null",
-            static_cast<uint32_t>(type),
-            two_handed);
-
-        switch (a_position) {
-            case handle::position_setting::position_type::top:
-                switch (type) {
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::shout:
-                        //case handle::slot_setting::slot_type::misc:
-                        item->form = a_form;
-                        item->type = type;
-                        item->two_handed = two_handed;
-                        item->left = false;
-                        item->action_type = can_instant_cast(a_form, type) ?
-                                                handle::slot_setting::acton_type::instant :
-                                                handle::slot_setting::acton_type::default_action;
-                        break;
-                    case handle::slot_setting::slot_type::magic:
-                        if (can_instant_cast(a_form, type)) {
-                            item->form = a_form;
-                            item->type = type;
-                            item->two_handed = two_handed;
-                            item->left = false;
-                            item->action_type = handle::slot_setting::acton_type::instant;
-                        }
-                        break;
-                }
-                break;
-            case handle::position_setting::position_type::right:
-                switch (type) {
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::magic:
-                        item->form = a_form;
-                        item->type = type;
-                        item->two_handed = two_handed;
-                        item->left = false;
-                        break;
-                }
-                break;
-            case handle::position_setting::position_type::bottom:
-                switch (type) {
-                    case handle::slot_setting::slot_type::consumable:
-                        item->form = nullptr;
-                        item->type = type;
-                        item->two_handed = two_handed;
-                        item->left = false;
-                        item->actor_value = get_actor_value_effect_from_potion(a_form);
-                        if (item->actor_value == RE::ActorValue::kNone) {
-                            item->form = a_form;
-                        }
-                        break;
-                    case handle::slot_setting::slot_type::lantern:  //not sure if best here
-                    case handle::slot_setting::slot_type::mask:
-                        item->form = a_form;
-                        item->type = type;
-                        item->two_handed = two_handed;
-                        item->left = false;
-                        break;
-                    case handle::slot_setting::slot_type::scroll:
-                        item->form = a_form;
-                        item->type = type;
-                        item->two_handed = two_handed;
-                        item->left = false;
-                        item->action_type = handle::slot_setting::acton_type::instant;
-                        break;
-                }
-                break;
-            case handle::position_setting::position_type::left:
-                switch (type) {
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::magic:
-                    case handle::slot_setting::slot_type::shield:
-                    case handle::slot_setting::slot_type::light:
-                        if (!two_handed) {
-                            item->form = a_form;
-                            item->type = type;
-                            item->two_handed = two_handed;
-                            item->left = true;
-                            break;
-                        }
-                        break;
-                }
-                break;
-        }
-
-        return item;
-    }
-
     void helper::rewrite_settings() {
         logger::trace("rewriting config ..."sv);
         std::map<uint32_t, uint32_t> next_page_for_position;
@@ -433,7 +257,7 @@ namespace util {
 
         uint32_t max_count = 1;
         uint32_t count = 0;
-        if (a_form->IsWeapon() || a_form->Is(RE::FormType::Armor)) {
+        if (a_form->IsWeapon() || a_form->IsArmor()) {
             //check item count in inventory
             max_count = util::player::get_inventory_count(a_form);
         }
@@ -482,44 +306,6 @@ namespace util {
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {
         //for now, I will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);
-    }
-
-    std::vector<std::string> helper::search_for_config_files(bool a_elden) {
-        std::vector<std::string> file_list;
-        auto file_name = ini_default_name;
-        if (a_elden) {
-            file_name = ini_elden_name;
-        }
-
-        logger::trace("Will start looking in Path {}"sv, ini_path);
-        if (std::filesystem::is_directory(ini_path)) {
-            for (const auto& entry : std::filesystem::directory_iterator(ini_path)) {
-                if (is_regular_file(entry) && entry.path().extension() == util::ini_ending &&
-                    entry.path().filename().string().starts_with(file_name)) {
-                    logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
-                    if (!a_elden && entry.path().filename().string().starts_with(ini_elden_name)) {
-                        logger::warn("Skipping File {}, because it would also match for Elden"sv,
-                            entry.path().filename().string());
-                        continue;
-                    }
-                    file_list.push_back(entry.path().filename().string());
-                }
-            }
-        }
-        logger::trace("Got {} Files to return in Path"sv, file_list.size());
-        return file_list;
-    }
-
-    void helper::block_location(handle::position_setting* a_position_setting, bool a_condition) {
-        //if true block
-        if (!a_position_setting || !a_position_setting->draw_setting) {
-            return;
-        }
-        if (a_condition) {
-            a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
-        } else {
-            a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency();
-        }
     }
 
     RE::ActorValue helper::get_actor_value_effect_from_potion(RE::TESForm* a_form, bool a_check) {
@@ -634,14 +420,82 @@ namespace util {
         return allowed;
     }
 
-    bool helper::allowed_to_check(handle::position_setting::position_type a_position, bool a_left) {
-        if (config::mcm_setting::get_elden_demon_souls()) {
-            if ((a_left && a_position == handle::position_setting::position_type::left) ||
-                (!a_left && a_position != handle::position_setting::position_type::left)) {
-                return true;
-            }
-            return false;
+    void helper::write_setting_to_file(const uint32_t a_page,
+        const uint32_t a_position,
+        const std::vector<data_helper*>& a_data,
+        const uint32_t a_hand) {
+        const auto section = get_section_name_for_page_position(a_page, a_position);
+        auto type = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
+        std::string form_string;
+        uint32_t action = 0;
+        RE::ActorValue actor_value = RE::ActorValue::kNone;
+
+        auto type_left = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
+        std::string form_string_left;
+        uint32_t action_left = 0;
+
+        if (a_data.empty()) {
+            return;
         }
-        return true;
+
+        if (config::mcm_setting::get_elden_demon_souls()) {
+            if (!a_data.empty()) {
+                if (a_data[0]->left) {
+                    type_left = static_cast<uint32_t>(a_data[0]->type);
+                    if (a_data[0]->form) {
+                        form_string_left = get_mod_and_form(a_data[0]->form->formID);
+                    } else {
+                        form_string_left = "";
+                    }
+                    action_left = static_cast<uint32_t>(a_data[0]->action_type);
+                } else {
+                    type = static_cast<uint32_t>(a_data[0]->type);
+                    if (a_data[0]->form) {
+                        form_string = get_mod_and_form(a_data[0]->form->formID);
+                    } else {
+                        form_string = "";
+                    }
+                    action = static_cast<uint32_t>(a_data[0]->action_type);
+                }
+                actor_value = a_data[0]->actor_value;
+            }
+        } else {
+            if (!a_data.empty()) {
+                type = static_cast<uint32_t>(a_data[0]->type);
+                if (a_data[0]->form) {
+                    form_string = get_mod_and_form(a_data[0]->form->formID);
+                } else {
+                    form_string = "";
+                }
+                action = static_cast<uint32_t>(a_data[0]->action_type);
+                actor_value = a_data[0]->actor_value;
+            }
+
+
+            if (a_data.size() == 2) {
+                type_left = static_cast<uint32_t>(a_data[1]->type);
+                if (a_data[1]->form) {
+                    form_string_left = get_mod_and_form(a_data[1]->form->formID);
+                } else {
+                    form_string_left = "";
+                }
+                action_left = static_cast<uint32_t>(a_data[1]->action_type);
+                actor_value = a_data[1]->actor_value;
+            }
+        }
+        config::mcm_setting::read_setting();
+
+        config::custom_setting::write_section_setting(section,
+            a_page,
+            a_position,
+            type,
+            form_string,
+            action,
+            a_hand,
+            type_left,
+            form_string_left,
+            action_left,
+            static_cast<int>(actor_value));
+        config::custom_setting::read_setting();
     }
 }

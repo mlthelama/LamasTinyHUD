@@ -32,7 +32,7 @@ namespace handle {
         float hud_image_scale_height = 0.f;
 
         [[maybe_unused]] uint32_t background_transparency = ui::draw_full;
-        
+
         uint32_t alpha_slot_animation = 0;
         float duration_slot_animation = 0.f;
     };

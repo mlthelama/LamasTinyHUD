@@ -21,7 +21,7 @@ namespace hook {
         add_object_to_container_(a_this, a_object, a_extra_list, a_count, a_from_refr);
 
         if (a_object->GetPlayable()) {
-            if (a_object->IsMagicItem() || a_object->IsAmmo()) {
+            if (a_object->IsInventoryObject()) {
                 processing::set_setting_data::set_new_item_count_if_needed(a_object, a_count);
             }
         }
@@ -35,7 +35,7 @@ namespace hook {
         pick_up_object_(a_this, a_object, a_count, a_arg3, a_play_sound);
 
         if (a_object->GetPlayable()) {
-            if (const auto obj = a_object->GetBaseObject(); obj->IsMagicItem() || a_object->IsAmmo()) {
+            if (const auto obj = a_object->GetBaseObject(); obj->IsInventoryObject()) {
                 processing::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
             }
         }
@@ -50,10 +50,9 @@ namespace hook {
         const RE::NiPoint3* a_drop_loc,
         const RE::NiPoint3* a_rotate) {
         if (a_item->GetPlayable()) {
-            if (a_item->IsMagicItem() || a_item->IsAmmo()) {
+            if (a_item->IsInventoryObject()) {
                 processing::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
             }
-            processing::set_setting_data::remove_item_if_needed(a_item);
         }
 
         return remove_item_(a_this, a_item, a_count, a_reason, a_extra_list, a_move_to_ref, a_drop_loc, a_rotate);

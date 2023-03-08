@@ -31,6 +31,7 @@ namespace papyrus {
         static bool is_size_ok(uint32_t a_idx, uint64_t a_size);
         static std::string get_section_by_index(uint32_t a_index, uint32_t a_position);
         static bool check_name(const std::string& a_name);
+        static std::vector<std::string> search_for_config_files(bool a_elden);
     };
 
     void Register();

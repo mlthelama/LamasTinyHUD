@@ -31,5 +31,6 @@ namespace handle {
         RE::BGSEquipSlot* equip_slot = nullptr;
         int32_t item_count = 0;
         RE::ActorValue actor_value = RE::ActorValue::kNone;
+        bool display_item_count = false;
     };
 }

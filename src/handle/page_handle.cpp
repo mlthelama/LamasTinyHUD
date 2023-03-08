@@ -31,6 +31,8 @@ namespace handle {
 
         page_handle_data* data = this->data_;
 
+        auto elden = mcm::get_elden_demon_souls();
+
         const auto slot_offset_x = mcm::get_hud_slot_position_offset_x();
         const auto slot_offset_y = mcm::get_hud_slot_position_offset_y();
         const auto key_offset = mcm::get_hud_key_position_offset();
@@ -60,6 +62,11 @@ namespace handle {
                 get_consumable_item_count(slot->actor_value, slot->item_count);
             } else {
                 get_item_count(element->form, slot->item_count, element->type);
+            }
+
+            if (slot->type == handle::slot_setting::slot_type::consumable ||
+                slot->type == handle::slot_setting::slot_type::scroll) {
+                slot->display_item_count = true;
             }
             slot->equip_slot = equip_slot;
 
@@ -125,7 +132,7 @@ namespace handle {
                 offset_y);
             draw->offset_name_text_x = mcm::get_slot_item_name_offset_horizontal_x();
             draw->offset_name_text_y = offset_y;
-        } else if ((!mcm::get_elden_demon_souls() && mcm::get_draw_item_name_text()) &&
+        } else if ((!elden && mcm::get_draw_item_name_text()) &&
                    (a_position == position_setting::position_type::left ||
                        a_position == position_setting::position_type::right)) {
             page->item_name = true;
@@ -142,17 +149,18 @@ namespace handle {
             draw->offset_name_text_y = 0.f;
         }
 
-        if (slots->front()->item_count == 0 && (slots->front()->type == slot_setting::slot_type::consumable ||
-                                                   slots->front()->type == slot_setting::slot_type::scroll)) {
+        if (slots->front()->item_count == 0 &&
+            ((slots->front()->type == slot_setting::slot_type::consumable) ||
+                (slots->front()->form && slots->front()->form->IsInventoryObject()))) {
             draw->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
         }
-
+        
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
         page->font_size = config::mcm_setting::get_slot_count_text_font_size();
 
-        if (mcm::get_elden_demon_souls()) {
+        if (elden) {
             if (slots->front()->type != slot_setting::slot_type::empty ||
                 slots->size() == 2 && slots->at(1)->type != slot_setting::slot_type::empty) {
                 const auto config_page = static_cast<int>(a_page);
@@ -536,7 +544,8 @@ namespace handle {
             a_count = 0;
             return;
         }
-        if (a_type == slot_setting::slot_type::consumable || a_type == slot_setting::slot_type::scroll) {
+
+        if (a_form->IsInventoryObject()) {
             const auto player = RE::PlayerCharacter::GetSingleton();
             for (auto potential_items = player->GetInventory(); const auto& [item, invData] : potential_items) {
                 if (invData.second->object->formID == a_form->formID) {

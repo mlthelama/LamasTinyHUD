@@ -156,7 +156,7 @@ namespace papyrus {
 
     std::vector<RE::BSFixedString> hud_mcm::get_config_files(RE::TESQuest*, bool a_elden) {
         logger::trace("getting config files for elden {}"sv, a_elden);
-        auto files = util::helper::search_for_config_files(a_elden);
+        auto files = search_for_config_files(a_elden);
         std::vector<RE::BSFixedString> file_list;
         for (const auto& file : files) {
             file_list.emplace_back(file);
@@ -192,7 +192,7 @@ namespace papyrus {
     }
 
     void hud_mcm::set_active_config(RE::TESQuest*, bool a_elden, uint32_t a_index) {
-        auto files = util::helper::search_for_config_files(a_elden);
+        auto files = search_for_config_files(a_elden);
         auto file = a_elden ? util::ini_elden_name + util::ini_ending : util::ini_default_name + util::ini_ending;
         if (!files.empty() && is_size_ok(a_index, files.size())) {
             file = files.at(a_index);
@@ -319,11 +319,11 @@ namespace papyrus {
     }
     bool hud_mcm::check_name(const std::string& a_name) {
         //check if the file exists
-        auto files = util::helper::search_for_config_files(true);
+        auto files = search_for_config_files(true);
         if (!files.empty() && std::find(files.begin(), files.end(), a_name) != files.end()) {
             return false;
         }
-        files = util::helper::search_for_config_files(false);
+        files = search_for_config_files(false);
         if (!files.empty() && std::find(files.begin(), files.end(), a_name) != files.end()) {
             return false;
         }
@@ -332,6 +332,32 @@ namespace papyrus {
         }
 
         return true;
+    }
+
+    std::vector<std::string> hud_mcm::search_for_config_files(bool a_elden) {
+        std::vector<std::string> file_list;
+        auto file_name = util::ini_default_name;
+        if (a_elden) {
+            file_name = util::ini_elden_name;
+        }
+
+        logger::trace("Will start looking in Path {}"sv, util::ini_path);
+        if (std::filesystem::is_directory(util::ini_path)) {
+            for (const auto& entry : std::filesystem::directory_iterator(util::ini_path)) {
+                if (is_regular_file(entry) && entry.path().extension() == util::ini_ending &&
+                    entry.path().filename().string().starts_with(file_name)) {
+                    logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
+                    if (!a_elden && entry.path().filename().string().starts_with(util::ini_elden_name)) {
+                        logger::warn("Skipping File {}, because it would also match for Elden"sv,
+                            entry.path().filename().string());
+                        continue;
+                    }
+                    file_list.push_back(entry.path().filename().string());
+                }
+            }
+        }
+        logger::trace("Got {} Files to return in Path"sv, file_list.size());
+        return file_list;
     }
 
     void Register() {

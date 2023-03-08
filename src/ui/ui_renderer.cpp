@@ -419,15 +419,17 @@ namespace ui {
                 switch (first_type) {
                     case handle::slot_setting::slot_type::scroll:
                     case handle::slot_setting::slot_type::consumable:
-                        draw_text(draw_setting->width_setting,
-                            draw_setting->height_setting,
-                            draw_setting->offset_slot_x,
-                            draw_setting->offset_slot_y,
-                            draw_setting->offset_text_x,
-                            draw_setting->offset_text_y,
-                            std::to_string(slot_settings.front()->item_count).c_str(),
-                            color,
-                            page_setting->font_size);
+                        if (slot_settings.front()->display_item_count) {
+                            draw_text(draw_setting->width_setting,
+                                draw_setting->height_setting,
+                                draw_setting->offset_slot_x,
+                                draw_setting->offset_slot_y,
+                                draw_setting->offset_text_x,
+                                draw_setting->offset_text_y,
+                                std::to_string(slot_settings.front()->item_count).c_str(),
+                                color,
+                                page_setting->font_size);
+                        }
                         break;
                     case handle::slot_setting::slot_type::shout:
                     case handle::slot_setting::slot_type::power:

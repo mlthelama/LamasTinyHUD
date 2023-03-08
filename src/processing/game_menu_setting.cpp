@@ -12,7 +12,7 @@ namespace processing {
         bool a_overwrite) {
         std::vector<data_helper*> data;
 
-        util::helper::write_notification(fmt::format("Elden Souls Config, Position {}, overwrite {}"sv,
+        write_notification(fmt::format("Elden Souls Config, Position {}, overwrite {}"sv,
             static_cast<uint32_t>(a_position),
             static_cast<uint32_t>(a_overwrite)));
         const auto pos_max = handle::page_handle::get_singleton()->get_highest_page_id_position(a_position);
@@ -27,29 +27,29 @@ namespace processing {
 
         //check for replace mode here
         if (!a_overwrite && (data.size() == max || max == 0)) {
-            util::helper::write_notification(fmt::format("Can not add more Items to Position", max));
+            write_notification(fmt::format("Can not add more Items to Position", max));
             logger::trace("Max is 0, can not add anymore, return.");
             return;
         }
 
         const auto check_duplicates = config::mcm_setting::get_check_duplicate_items();
 
-        const auto item = util::helper::is_suitable_for_position(a_form, a_position);
+        const auto item = is_suitable_for_position(a_form, a_position);
         if (item->form || (a_form && item->actor_value != RE::ActorValue::kNone)) {
             if (check_duplicates && util::helper::already_used(a_form, a_position, data)) {
                 auto log_string =
                     fmt::format("Item {} already used in that position", a_form ? a_form->GetName() : "null");
-                util::helper::write_notification(log_string);
+                write_notification(log_string);
                 logger::trace("{}. return."sv, log_string);  //well
                 return;
             } else {
-                util::helper::write_notification(fmt::format("Added Item {}", a_form ? a_form->GetName() : "null"));
+                write_notification(fmt::format("Added Item {}", a_form ? a_form->GetName() : "null"));
                 data.push_back(item);
             }
         } else {
             if (a_form && !a_form->Is(RE::FormType::Enchantment)) {
-                util::helper::write_notification(fmt::format("Ignored Item {}, because it did not fit the requirement",
-                    a_form ? a_form->GetName() : "null"));
+                write_notification(
+                    fmt::format("Ignored Item {}, because it did not fit the requirement", a_form->GetName()));
             }
         }
 
@@ -76,7 +76,7 @@ namespace processing {
                 a_form ? a_form->GetName() : "null",
                 two_handed,
                 a_left);
-            util::helper::write_notification(log_string);
+            write_notification(log_string);
             logger::trace("{}. return."sv, log_string);  //well
             return;
         }
@@ -124,7 +124,7 @@ namespace processing {
         }
 
         for (const auto data_item : data) {
-            util::helper::write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
+            write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
                 data_item->form ? data_item->form->GetName() : "null",
                 static_cast<uint32_t>(data_item->type),
                 static_cast<uint32_t>(data_item->action_type),
@@ -275,4 +275,104 @@ namespace processing {
         return a_ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || a_ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
                a_ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME);
     }
+
+    data_helper* game_menu_setting::is_suitable_for_position(RE::TESForm*& a_form,
+        const handle::position_setting::position_type a_position) {
+        //all kind of weapons and magic/spells
+        const auto item = new data_helper();
+        const auto type = util::helper::get_type(a_form);
+        const auto two_handed = util::helper::is_two_handed(a_form);
+        logger::trace("Item {}, is Type {}, TwoHanded {}"sv,
+            a_form ? util::string_util::int_to_hex(a_form->formID) : "null",
+            static_cast<uint32_t>(type),
+            two_handed);
+
+        switch (a_position) {
+            case handle::position_setting::position_type::top:
+                switch (type) {
+                    case handle::slot_setting::slot_type::power:
+                    case handle::slot_setting::slot_type::shout:
+                        //case handle::slot_setting::slot_type::misc:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        item->action_type = util::helper::can_instant_cast(a_form, type) ?
+                                                handle::slot_setting::acton_type::instant :
+                                                handle::slot_setting::acton_type::default_action;
+                        break;
+                    case handle::slot_setting::slot_type::magic:
+                        if (util::helper::can_instant_cast(a_form, type)) {
+                            item->form = a_form;
+                            item->type = type;
+                            item->two_handed = two_handed;
+                            item->left = false;
+                            item->action_type = handle::slot_setting::acton_type::instant;
+                        }
+                        break;
+                }
+                break;
+            case handle::position_setting::position_type::right:
+                switch (type) {
+                    case handle::slot_setting::slot_type::weapon:
+                    case handle::slot_setting::slot_type::magic:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        break;
+                }
+                break;
+            case handle::position_setting::position_type::bottom:
+                switch (type) {
+                    case handle::slot_setting::slot_type::consumable:
+                        item->form = nullptr;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        item->actor_value = util::helper::get_actor_value_effect_from_potion(a_form);
+                        if (item->actor_value == RE::ActorValue::kNone) {
+                            item->form = a_form;
+                        }
+                        break;
+                    case handle::slot_setting::slot_type::lantern:  //not sure if best here
+                    case handle::slot_setting::slot_type::mask:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        break;
+                    case handle::slot_setting::slot_type::scroll:
+                        item->form = a_form;
+                        item->type = type;
+                        item->two_handed = two_handed;
+                        item->left = false;
+                        item->action_type = handle::slot_setting::acton_type::instant;
+                        break;
+                }
+                break;
+            case handle::position_setting::position_type::left:
+                switch (type) {
+                    case handle::slot_setting::slot_type::weapon:
+                    case handle::slot_setting::slot_type::magic:
+                    case handle::slot_setting::slot_type::shield:
+                    case handle::slot_setting::slot_type::light:
+                        if (!two_handed) {
+                            item->form = a_form;
+                            item->type = type;
+                            item->two_handed = two_handed;
+                            item->left = true;
+                            break;
+                        }
+                        break;
+                }
+                break;
+            case handle::position_setting::position_type::total:
+                break;
+        }
+
+        return item;
+    }
+
+    void game_menu_setting::write_notification(const std::string& a_string) { RE::DebugNotification(a_string.c_str()); }
 }

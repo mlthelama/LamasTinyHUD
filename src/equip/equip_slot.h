@@ -27,5 +27,8 @@ namespace equip {
             RE::Actor* a_actor,
             RE::TESShout* a_shout);
         static void un_equip_shout_slot(RE::PlayerCharacter*& a_player);
+
+    private:
+        static bool is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player);
     };
 }

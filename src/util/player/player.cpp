@@ -1,6 +1,4 @@
 #include "player.h"
-#include "handle/ammo_handle.h"
-#include "handle/data/ammo_data.h"
 #include "setting/mcm_setting.h"
 #include "util/helper.h"
 #include "util/offset.h"
@@ -10,17 +8,6 @@ namespace util {
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
         player::get_inventory(RE::PlayerCharacter*& a_player, RE::FormType a_type) {
         return a_player->GetInventory([a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
-    }
-
-    bool player::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
-        auto worn = false;
-        for (const auto& [item, inv_data] : get_inventory(a_player, RE::FormType::Armor)) {
-            if (const auto& [count, entry] = inv_data; entry->object->formID == a_obj->formID && entry->IsWorn()) {
-                worn = true;
-                break;
-            }
-        }
-        return worn;
     }
 
     uint32_t player::get_inventory_count(const RE::TESForm* a_form) {
@@ -101,66 +88,6 @@ namespace util {
 
         logger::trace("got {} items in List now. return."sv, data.size());
         return data;
-    }
-
-    void player::look_for_ammo(const bool a_crossbow) {
-        bool only_favorite = config::mcm_setting::get_only_favorite_ammo();
-        bool sort_by_quantity = config::mcm_setting::get_sort_arrow_by_quantity();
-        const auto max_items = config::mcm_setting::get_max_ammunition_type();
-        auto player = RE::PlayerCharacter::GetSingleton();
-        const auto inv = util::player::get_inventory(player, RE::FormType::Ammo);
-        std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
-        for (const auto& [item, inv_data] : inv) {
-            const auto& [num_items, entry] = inv_data;
-            const auto ammo = item->As<RE::TESAmmo>();
-            if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
-                continue;
-            }
-
-            if (only_favorite && !entry->IsFavorited()) {
-                continue;
-            }
-
-            if (a_crossbow && ammo->GetRuntimeData().data.flags.none(RE::AMMO_DATA::Flag::kNonBolt) && num_items != 0) {
-                logger::trace("found bolt {}, damage {}, count {}"sv,
-                    ammo->GetName(),
-                    ammo->GetRuntimeData().data.damage,
-                    num_items);
-                auto* ammo_data = new handle::ammo_data();
-                ammo_data->form = ammo;
-                ammo_data->item_count = num_items;
-                if (sort_by_quantity) {
-                    ammo_list.insert({ static_cast<uint32_t>(num_items), ammo_data });
-                } else {
-                    ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
-                }
-            } else if (!a_crossbow && num_items != 0 &&
-                       ammo->GetRuntimeData().data.flags.all(RE::AMMO_DATA::Flag::kNonBolt)) {
-                logger::trace("found arrow {}, damage {}, count {}"sv,
-                    ammo->GetName(),
-                    ammo->GetRuntimeData().data.damage,
-                    num_items);
-                auto* ammo_data = new handle::ammo_data();
-                ammo_data->form = ammo;
-                ammo_data->item_count = num_items;
-                if (sort_by_quantity) {
-                    ammo_list.insert({ static_cast<uint32_t>(num_items), ammo_data });
-                } else {
-                    ammo_list.insert({ static_cast<uint32_t>(ammo->GetRuntimeData().data.damage), ammo_data });
-                }
-            }
-        }
-        std::vector<handle::ammo_data*> sorted_ammo;
-        const auto ammo_handle = handle::ammo_handle::get_singleton();
-        for (auto [dmg, data] : ammo_list) {
-            sorted_ammo.push_back(data);
-            logger::trace("got {} count {}"sv, data->form->GetName(), data->item_count);
-            if (sorted_ammo.size() == max_items) {
-                break;
-            }
-        }
-        ammo_list.clear();
-        ammo_handle->init_ammo(sorted_ammo);
     }
 
     bool player::has_item_or_spell(RE::TESForm* a_form) {

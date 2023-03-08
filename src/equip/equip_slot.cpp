@@ -25,7 +25,7 @@ namespace equip {
     bool equip_slot::un_equip_if_equipped(RE::TESBoundObject*& a_obj,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
-        const auto is_worn = util::player::is_item_worn(a_obj, a_player);
+        const auto is_worn = is_item_worn(a_obj, a_player);
         if (is_worn) {
             a_actor_equip_manager->UnequipObject(a_player, a_obj);
             logger::trace("unequipped {} armor"sv, a_obj->GetName());
@@ -122,4 +122,16 @@ namespace equip {
             }
         }
     }
+
+    bool equip_slot::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
+        auto worn = false;
+        for (const auto& [item, inv_data] : util::player::get_inventory(a_player, RE::FormType::Armor)) {
+            if (const auto& [count, entry] = inv_data; entry->object->formID == a_obj->formID && entry->IsWorn()) {
+                worn = true;
+                break;
+            }
+        }
+        return worn;
+    }
+
 }
