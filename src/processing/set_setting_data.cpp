@@ -18,12 +18,11 @@ namespace processing {
     void set_setting_data::read_and_set_data() {
         logger::trace("Setting handlers, elden demon souls {} ..."sv, mcm::get_elden_demon_souls());
 
-        auto key_position = handle::key_position_handle::get_singleton();
-        key_position->init_key_position_map();
+        handle::key_position_handle::get_singleton()->init_key_position_map();
 
         handle::name_handle::get_singleton()->init_names(util::player::get_hand_assignment());
 
-        write_empty_config_and_init_active(key_position);
+        write_empty_config_and_init_active();
 
         logger::trace("continue with overwriting data from configuration ..."sv);
 
@@ -137,11 +136,19 @@ namespace processing {
         uint32_t a_type_left,
         const uint32_t a_action_left,
         RE::ActorValue a_actor_value,
-        handle::key_position_handle*& a_key_pos) {
+        handle::key_position_handle*& a_key_pos,
+        const std::string& a_section) {
         const auto form = util::helper::get_form_from_mod_id_string(a_form);
         const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
         if (form == nullptr && form_left == nullptr && a_actor_value == RE::ActorValue::kNone) {
+            //reset section here if allowed
+            logger::info(
+                "section {}, form and form left are null as well as the actor value is non. resetting if allowed."sv,
+                a_section);
+            if (mcm::get_auto_cleanup()) {
+                custom::reset_section(a_section);
+            }
             return;
         }
 
@@ -305,8 +312,8 @@ namespace processing {
     void set_setting_data::process_config_data() {
         custom::read_setting();
         auto key_position = handle::key_position_handle::get_singleton();
-
         auto handler = handle::page_handle::get_singleton();
+
         if (mcm::get_elden_demon_souls()) {
             for (auto i = 0; i < static_cast<int>(handle::position_setting::position_type::total); ++i) {
                 //will do for now, items could have been removed whatsoever
@@ -325,7 +332,8 @@ namespace processing {
                 custom::get_type_left_by_section(section),
                 custom::get_slot_action_left_by_section(section),
                 static_cast<RE::ActorValue>(custom::get_effect_actor_value(section)),
-                key_position);
+                key_position,
+                section);
         }
 
         //do not trigger reequip if config a config is set
@@ -334,7 +342,7 @@ namespace processing {
         }
         logger::trace("processed config data"sv);
     }
-    void set_setting_data::write_empty_config_and_init_active(handle::key_position_handle*& a_key_position) {
+    void set_setting_data::write_empty_config_and_init_active() {
         //we start at 0, so it is max count -1
         if (!mcm::get_elden_demon_souls()) {
             if (const auto page_handle = handle::page_handle::get_singleton();
@@ -344,11 +352,12 @@ namespace processing {
             }
         }
 
+        auto key_position = handle::key_position_handle::get_singleton();
         //set empty for each position, it will be overwritten if it is configured
         const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
             for (auto j = 0; j < static_cast<int>(handle::position_setting::position_type::total); ++j) {
-                set_empty_slot(i, j, a_key_position);
+                set_empty_slot(i, j, key_position);
             }
         }
         logger::trace("processed empty data"sv);
@@ -530,7 +539,7 @@ namespace processing {
         logger::trace("doing cleanup at page {}, position {}, form {}"sv,
             a_position_setting->page,
             static_cast<uint32_t>(a_position_setting->position),
-            util::string_util::int_to_hex(a_slot_setting->form->formID));
+            a_slot_setting->form ? util::string_util::int_to_hex(a_slot_setting->form->formID) : "null");
 
         if (mcm::get_elden_demon_souls()) {
             config::custom_setting::reset_section(
@@ -600,9 +609,12 @@ namespace processing {
                 }
             }
         }
+
         if (need_reprocess) {
             util::helper::rewrite_settings();
+            write_empty_config_and_init_active();
             process_config_data();
+            get_actives_and_equip();
         }
     }
 }

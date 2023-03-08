@@ -30,11 +30,12 @@ namespace processing {
             uint32_t a_type_left,
             uint32_t a_action_left,
             RE::ActorValue a_actor_value,
-            handle::key_position_handle*& a_key_pos);
+            handle::key_position_handle*& a_key_pos,
+            const std::string& a_section);
         static void set_new_item_count(RE::TESBoundObject* a_object, int32_t a_count);
         static void set_active_and_equip(handle::page_handle*& a_page_handle);
         static void process_config_data();
-        static void write_empty_config_and_init_active(handle::key_position_handle*& a_key_position);
+        static void write_empty_config_and_init_active();
         static void clear_hands();
         static void block_location(handle::position_setting* a_position_setting, bool a_condition);
         static void look_for_ammo(bool a_crossbow);
