@@ -14,6 +14,7 @@ namespace config {
         static bool get_key_press_to_enter_edit();
         static uint32_t get_edit_key();
         static uint32_t get_left_or_overwrite_edit_key();
+        static uint32_t get_remove_key();
         static bool get_bottom_execute_key_combo_only();
         static uint32_t get_controller_set();
 

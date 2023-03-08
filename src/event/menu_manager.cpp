@@ -24,6 +24,9 @@ namespace event {
             if (binding->get_is_edit_left_down()) {
                 binding->set_is_edit_left_down(false);
             }
+            if (binding->get_is_remove_down()) {
+                binding->set_is_remove_down(false);
+            }
         }
         return event_result::kContinue;
     }

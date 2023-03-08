@@ -534,10 +534,12 @@ namespace processing {
 
     void set_setting_data::do_cleanup(handle::position_setting*& a_position_setting,
         handle::slot_setting*& a_slot_setting) {
-        logger::trace("doing cleanup at page {}, position {}, form {}"sv,
+        auto log_string = fmt::format("doing cleanup at page {}, position {}, form {}"sv,
             a_position_setting->page,
             static_cast<uint32_t>(a_position_setting->position),
             a_slot_setting->form ? util::string_util::int_to_hex(a_slot_setting->form->formID) : "null");
+        RE::DebugNotification(log_string.c_str());
+        logger::trace("{}"sv, log_string);
 
         if (mcm::get_elden_demon_souls()) {
             config::custom_setting::reset_section(
@@ -613,6 +615,25 @@ namespace processing {
             write_empty_config_and_init_active();
             process_config_data();
             get_actives_and_equip();
+        }
+    }
+
+    void set_setting_data::default_remove(RE::TESForm* a_form) {
+        auto page_handle = handle::page_handle::get_singleton();
+        for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
+            for (auto [position, page_setting] : page_settings) {
+                for (auto setting : page_setting->slot_settings) {
+                    if ((setting->form && setting->form->formID == a_form->formID) ||
+                        (setting->actor_value != RE::ActorValue::kNone &&
+                            util::helper::get_actor_value_effect_from_potion(a_form) != RE::ActorValue::kNone)) {
+                        do_cleanup(page_setting, setting);
+                        if (config::mcm_setting::get_elden_demon_souls()) {
+                            util::helper::rewrite_settings();
+                        }
+                        process_config_data();
+                    }
+                }
+            }
         }
     }
 }

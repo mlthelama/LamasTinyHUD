@@ -578,7 +578,7 @@ namespace ui {
         const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
 
         const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
-        
+
         draw_element(texture, center, size, angle, color);
     }
 

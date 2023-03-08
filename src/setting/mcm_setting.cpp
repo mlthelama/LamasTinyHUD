@@ -13,6 +13,7 @@ namespace config {
     static bool key_press_to_enter_edit;
     static uint32_t edit_key;
     static uint32_t left_or_overwrite_edit_key;
+    static uint32_t remove_key;
     static bool bottom_execute_key_combo_only;
     static uint32_t controller_set;
 
@@ -114,6 +115,8 @@ namespace config {
             edit_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uKeyToEnterEdit", 22));
             left_or_overwrite_edit_key =
                 static_cast<uint32_t>(mcm.GetLongValue("Controls", "uLeftOrOverwriteEditKey", 38));
+            remove_key = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uRemoveKey", 37));
+
             bottom_execute_key_combo_only = mcm.GetBoolValue("Controls", "bBottomExecuteKeyComboOnly", false);
             controller_set = static_cast<uint32_t>(mcm.GetLongValue("Controls", "uControllerSet", 0));
 
@@ -235,6 +238,7 @@ namespace config {
     bool mcm_setting::get_key_press_to_enter_edit() { return key_press_to_enter_edit; }
     uint32_t mcm_setting::get_edit_key() { return edit_key; }
     uint32_t mcm_setting::get_left_or_overwrite_edit_key() { return left_or_overwrite_edit_key; }
+    uint32_t mcm_setting::get_remove_key() { return remove_key; }
     bool mcm_setting::get_bottom_execute_key_combo_only() { return bottom_execute_key_combo_only; }
     uint32_t mcm_setting::get_controller_set() { return controller_set; }
 

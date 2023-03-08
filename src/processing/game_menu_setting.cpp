@@ -23,7 +23,6 @@ namespace processing {
             max = config::mcm_setting::get_max_page_count() - pos_max;
         }
 
-        //check for replace mode here
         if (!a_overwrite && (data.size() == max || max == 0)) {
             write_notification(fmt::format("Can not add more Items to Position", max));
             logger::trace("Max is 0, can not add anymore, return.");
@@ -371,4 +370,5 @@ namespace processing {
     }
 
     void game_menu_setting::write_notification(const std::string& a_string) { RE::DebugNotification(a_string.c_str()); }
+
 }

@@ -28,9 +28,9 @@
                 },
                 {
                     "id": "uTopActionKey:Controls",
-                    "text": "$LamasTinyHUD_TopActionKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_TopActionKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_TopActionKey_InfoText",
+                    "help": "$LamasTinyHUD_Controls_TopActionKey_InfoText",
                     "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
@@ -38,9 +38,9 @@
                 },
                 {
                     "id": "uRightActionKey:Controls",
-                    "text": "$LamasTinyHUD_RightActionKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_RightActionKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_RightActionKey_InfoText",
+                    "help": "$LamasTinyHUD_Controls_RightActionKey_InfoText",
                     "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
@@ -48,9 +48,9 @@
                 },
                 {
                     "id": "uBottomActionKey:Controls",
-                    "text": "$LamasTinyHUD_BottomActionKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_BottomActionKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_BottomActionKey_InfoText",
+                    "help": "$LamasTinyHUD_Controls_BottomActionKey_InfoText",
                     "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
@@ -58,9 +58,9 @@
                 },
                 {
                     "id": "uLeftActionKey:Controls",
-                    "text": "$LamasTinyHUD_LeftActionKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_LeftActionKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_LeftActionKey_InfoText",
+                    "help": "$LamasTinyHUD_Controls_LeftActionKey_InfoText",
                     "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
@@ -68,9 +68,9 @@
                 },
                 {
                     "id": "uToggleKey:Controls",
-                    "text": "$LamasTinyHUD_ToggleKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_ToggleKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_ToggleKey_InfoText",
+                    "help": "$LamasTinyHUD_Controls_ToggleKey_InfoText",
                     "ignoreConflicts": false,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
@@ -79,8 +79,8 @@
                 {
                     "id": "sExecuteKeyTop:Controls",
                     "type": "text",
-                    "text": "$LamasTinyHUD_ExecuteKeyTop_OptionText",
-                    "help": "$LamasTinyHUD_ExecuteKeyTop_InfoText",
+                    "text": "$LamasTinyHUD_Controls_ExecuteKeyTop_OptionText",
+                    "help": "$LamasTinyHUD_Controls_ExecuteKeyTop_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "hide",
                     "valueOptions": {
@@ -91,8 +91,8 @@
                 {
                     "id": "sExecuteKeyBottom:Controls",
                     "type": "text",
-                    "text": "$LamasTinyHUD_ExecuteKeyBottom_OptionText",
-                    "help": "$LamasTinyHUD_ExecuteKeyBottom_InfoText",
+                    "text": "$LamasTinyHUD_Controls_ExecuteKeyBottom_OptionText",
+                    "help": "$LamasTinyHUD_Controls_ExecuteKeyBottom_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "hide",
                     "valueOptions": {
@@ -101,16 +101,16 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_Supporting_Controls",
+                    "text": "$LamasTinyHUD_Controls_SupportingControls",
                     "type": "header",
                     "position": 1
                 },
                 {
                     "id": "uShowHideKey:Controls",
-                    "text": "$LamasTinyHUD_ShowHideKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_ShowHideKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_ShowHideKey_InfoText",
-                    "ignoreConflicts": false,
+                    "help": "$LamasTinyHUD_Controls_ShowHideKey_InfoText",
+                    "ignoreConflicts": true,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
                     }
@@ -129,7 +129,7 @@
                     "text": "$LamasTinyHUD_Controls_KeyToEnterEdit_OptionText",
                     "type": "keymap",
                     "help": "$LamasTinyHUD_Controls_KeyToEnterEdit_InfoText",
-                    "ignoreConflicts": false,
+                    "ignoreConflicts": true,
                     "groupCondition": 8,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -138,10 +138,21 @@
                 },
                 {
                     "id": "uLeftOrOverwriteEditKey:Controls",
-                    "text": "$LamasTinyHUD_LeftOrOverwriteEditKey_OptionText",
+                    "text": "$LamasTinyHUD_Controls_LeftOrOverwriteEditKey_OptionText",
                     "type": "keymap",
-                    "help": "$LamasTinyHUD_LeftOrOverwriteEditKey_InfoText",
-                    "ignoreConflicts": false,
+                    "help": "$LamasTinyHUD_Controls_LeftOrOverwriteEditKey_InfoText",
+                    "ignoreConflicts": true,
+                    "valueOptions": {
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+
+                {
+                    "id": "uRemoveKey:Controls",
+                    "text": "$LamasTinyHUD_Controls_RemoveKey_OptionText",
+                    "type": "keymap",
+                    "help": "$LamasTinyHUD_Controls_RemoveKey_InfoText",
+                    "ignoreConflicts": true,
                     "valueOptions": {
                         "sourceType": "ModSettingInt"
                     }
@@ -153,9 +164,9 @@
                 },
                 {
                     "id": "bBottomExecuteKeyComboOnly:Controls",
-                    "text": "$LamasTinyHUD_BottomExecuteKeyComboOnly_OptionText",
+                    "text": "$LamasTinyHUD_Controls_BottomExecuteKeyComboOnly_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_BottomExecuteKeyComboOnly_InfoText",
+                    "help": "$LamasTinyHUD_Controls_BottomExecuteKeyComboOnly_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -220,20 +231,20 @@
                 },
                 {
                     "id": "uPositionSelect:Page",
-                    "text": "$LamasTinyHUD_PositionSelect_OptionText",
+                    "text": "$LamasTinyHUD_Pages_PositionSelect_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_PositionSelect_InfoText",
+                    "help": "$LamasTinyHUD_Pages_PositionSelect_InfoText",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Controls_Config_Top", "$LamasTinyHUD_Controls_Config_Right", "$LamasTinyHUD_Controls_Config_Bottom", "$LamasTinyHUD_Controls_Config_Left", "$LamasTinyHUD_Controls_Config_All"],
+                        "options": ["$LamasTinyHUD_Pages_Top", "$LamasTinyHUD_Pages_Right", "$LamasTinyHUD_Pages_Bottom", "$LamasTinyHUD_Pages_Left", "$LamasTinyHUD_Pages_All"],
                         "sourceType": "ModSettingInt",
                         "defaultValue": 0
                     }
                 },
                 {
                     "id": "uPageList:Page",
-                    "text": "$LamasTinyHUD_PageList",
+                    "text": "$LamasTinyHUD_Pages_PageList_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_PageList_InfoText",
+                    "help": "$LamasTinyHUD_Pages_PageList_InfoText",
                     "valueOptions": {
                         "options": [
                             "$LamasTinyHUD_ENUM"
@@ -257,8 +268,8 @@
                 {
                     "id": "sPosition:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_Position",
-                    "help": "$LamasTinyHUD_Position_InfoText",
+                    "text": "$LamasTinyHUD_Pages_Page_OptionText",
+                    "help": "$LamasTinyHUD_Pages_Page_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -272,45 +283,45 @@
                 },
                 {
                     "id": "uType:Page",
-                    "text": "$LamasTinyHUD_Type",
+                    "text": "$LamasTinyHUD_Pages_Type_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_Type_InfoText",
+                    "help": "$LamasTinyHUD_Pages_Type_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern", "$LamasTinyHUD_Type_Mask"],
+                        "options": ["$LamasTinyHUD_Pages_TypeWeapon", "$LamasTinyHUD_Pages_TypeMagic", "$LamasTinyHUD_Pages_TypeShield", "$LamasTinyHUD_Pages_TypeShout", "$LamasTinyHUD_Pages_TypePower", "$LamasTinyHUD_Pages_TypeConsumable", "$LamasTinyHUD_Pages_TypeItem", "$LamasTinyHUD_Pages_TypeScroll", "$LamasTinyHUD_Pages_TypeEmpty", "$LamasTinyHUD_Pages_TypeMisc", "$LamasTinyHUD_Pages_TypeLight", "$LamasTinyHUD_Pages_TypeLantern", "$LamasTinyHUD_Pages_TypeMask"],
                         "sourceType": "ModSettingInt"
                     }
                 },
                 {
                     "id": "uHandSelection:Page",
-                    "text": "$LamasTinyHUD_HandSelection",
+                    "text": "$LamasTinyHUD_Pages_HandSelection_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_HandSelection_InfoText",
+                    "help": "$LamasTinyHUD_Pages_HandSelection_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Single", "$LamasTinyHUD_Both"],
+                        "options": ["$LamasTinyHUD_Pages_Single", "$LamasTinyHUD_Pages_Both"],
                         "sourceType": "ModSettingInt"
                     }
                 },
                 {
                     "id": "uSlotAction:Page",
-                    "text": "$LamasTinyHUD_SlotAction",
+                    "text": "$LamasTinyHUD_Pages_SlotAction_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "help": "$LamasTinyHUD_Pages_SlotAction_InfoText",
                     "groupCondition": 2,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant", "$LamasTinyHUD_Action_Unequip"],
+                        "options": ["$LamasTinyHUD_Pages_ActionDefault", "$LamasTinyHUD_Pages_ActionInstant", "$LamasTinyHUD_Pages_ActionUnEquip"],
                         "sourceType": "ModSettingInt"
                     }
                 },
                 {
                     "id": "sFormName:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItem",
-                    "help": "$LamasTinyHUD_SelectedItem_InfoText",
+                    "text": "$LamasTinyHUD_Pages_SelectedItem_OptionText",
+                    "help": "$LamasTinyHUD_Pages_SelectedItem_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -321,8 +332,8 @@
                 {
                     "id": "sSelectedItemForm:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "text": "$LamasTinyHUD_Pages_SelectedItemForm_OptionText",
+                    "help": "$LamasTinyHUD_Pages_SelectedItemForm_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -333,8 +344,8 @@
                 {
                     "id": "sActorValue:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_ActorValue_OptionText",
-                    "help": "$LamasTinyHUD_ActorValue_InfoText",
+                    "text": "$LamasTinyHUD_Pages_ActorValue_OptionText",
+                    "help": "$LamasTinyHUD_Pages_ActorValue_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -345,15 +356,15 @@
 
 
                 {
-                    "text": "$LamasTinyHUD_Header_Maintenance",
+                    "text": "$LamasTinyHUD_Pages_Maintenance",
                     "type": "header",
                     "position": 1
                 },
                 {
                     "id": "sResetSlot:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_ResetSlot",
-                    "help": "$LamasTinyHUD_ResetSlot_Help",
+                    "text": "$LamasTinyHUD_Pages_ResetSlot_OptionText",
+                    "help": "$LamasTinyHUD_Pages_ResetSlot_InfoText",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
@@ -364,7 +375,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_Header_Unarmed",
+                    "text": "$LamasTinyHUD_Pages_Unarmed",
                     "type": "header"
                 },
                 {
@@ -378,8 +389,8 @@
                 {
                     "id": "sAddUnarmed:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_AddUnarmed_OptionText",
-                    "help": "$LamasTinyHUD_AddUnarmed_Help",
+                    "text": "$LamasTinyHUD_Pages_AddUnarmed_OptionText",
+                    "help": "$LamasTinyHUD_Pages_AddUnarmed_InfoText",
                     "groupCondition": 6,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -400,13 +411,13 @@
                 },
                 {
                     "id": "uTypeLeft:Page",
-                    "text": "$LamasTinyHUD_Type",
+                    "text": "$LamasTinyHUD_Pages_Type_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_Type_InfoText",
+                    "help": "$LamasTinyHUD_Pages_Type_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Type_Weapon", "$LamasTinyHUD_Type_Magic", "$LamasTinyHUD_Type_Shield", "$LamasTinyHUD_Type_Shout", "$LamasTinyHUD_Type_Power", "$LamasTinyHUD_Type_Consumable", "$LamasTinyHUD_Type_Item", "$LamasTinyHUD_Type_Scroll", "$LamasTinyHUD_Type_Empty", "$LamasTinyHUD_Type_Misc", "$LamasTinyHUD_Type_Light", "$LamasTinyHUD_Type_Lantern", "$LamasTinyHUD_Type_Mask"],
+                        "options": ["$LamasTinyHUD_Pages_TypeWeapon", "$LamasTinyHUD_Pages_TypeMagic", "$LamasTinyHUD_Pages_TypeShield", "$LamasTinyHUD_Pages_TypeShout", "$LamasTinyHUD_Pages_TypePower", "$LamasTinyHUD_Pages_TypeConsumable", "$LamasTinyHUD_Pages_TypeItem", "$LamasTinyHUD_Pages_TypeScroll", "$LamasTinyHUD_Pages_TypeEmpty", "$LamasTinyHUD_Pages_TypeMisc", "$LamasTinyHUD_Pages_TypeLight", "$LamasTinyHUD_Pages_TypeLantern", "$LamasTinyHUD_Pages_TypeMask"],
                         "sourceType": "ModSettingInt"
                     }
                 },
@@ -415,21 +426,21 @@
                 },
                 {
                     "id": "uSlotActionLeft:Page",
-                    "text": "$LamasTinyHUD_SlotAction",
+                    "text": "$LamasTinyHUD_Pages_SlotAction_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_SlotAction_InfoText",
+                    "help": "$LamasTinyHUD_Pages_SlotAction_InfoText",
                     "groupCondition": 3,
                     "groupBehavior": "disable",
                     "valueOptions": {
-                        "options": ["$LamasTinyHUD_Action_Default", "$LamasTinyHUD_Action_Instant", "$LamasTinyHUD_Action_Unequip"],
+                        "options": ["$LamasTinyHUD_Pages_ActionDefault", "$LamasTinyHUD_Pages_ActionInstant", "$LamasTinyHUD_Pages_ActionUnEquip"],
                         "sourceType": "ModSettingInt"
                     }
                 },
                 {
                     "id": "sFormNameLeft:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItem",
-                    "help": "$LamasTinyHUD_SelectedItem_InfoText",
+                    "text": "$LamasTinyHUD_Pages_SelectedItem_OptionText",
+                    "help": "$LamasTinyHUD_Pages_SelectedItem_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -440,8 +451,8 @@
                 {
                     "id": "sSelectedItemFormLeft:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_SelectedItemForm",
-                    "help": "$LamasTinyHUD_SelectedItemForm_Help",
+                    "text": "$LamasTinyHUD_Pages_SelectedItemForm_OptionText",
+                    "help": "$LamasTinyHUD_Pages_SelectedItemForm_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -455,7 +466,7 @@
             "pageDisplayName": "$LamasTinyHUD_HudSetting",
             "cursorFillMode": "topToBottom",
             "content": [{
-                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Resolution",
+                    "text": "$LamasTinyHUD_HudSetting_Resolution",
                     "type": "header"
                 },
                 {
@@ -473,8 +484,8 @@
                         "sourceType": "ModSettingString"
                     },
                     "type": "text",
-                    "text": "$LamasTinyHUD_DisplayResolutionWidth",
-                    "help": "$LamasTinyHUD_DisplayResolutionWidth_Help"
+                    "text": "$LamasTinyHUD_HudSetting_DisplayResolutionWidth_OptionText",
+                    "help": "$LamasTinyHUD_HudSetting_DisplayResolutionWidth_InfoText"
                 },
                 {
                     "id": "sDisplayResolutionHeight:HudSetting",
@@ -483,12 +494,12 @@
                         "sourceType": "ModSettingString"
                     },
                     "type": "text",
-                    "text": "$LamasTinyHUD_DisplayResolutionHeight",
-                    "help": "$LamasTinyHUD_DisplayResolutionHeight_Help"
+                    "text": "$LamasTinyHUD_HudSetting_DisplayResolutionHeight_OptionText",
+                    "help": "$LamasTinyHUD_HudSetting_DisplayResolutionHeight_InfoText"
                 },
 
                 {
-                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Position",
+                    "text": "$LamasTinyHUD_HudSetting_Position",
                     "type": "header"
                 },
                 {
@@ -518,7 +529,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Scale",
+                    "text": "$LamasTinyHUD_HudSetting_Scale",
                     "type": "header"
                 },
                 {
@@ -678,7 +689,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_HudSetting_HeaderText_Offset",
+                    "text": "$LamasTinyHUD_HudSetting_Offset",
                     "type": "header"
                 },
                 {
@@ -896,7 +907,7 @@
             "pageDisplayName": "$LamasTinyHUD_GraphicSetting",
             "cursorFillMode": "topToBottom",
             "content": [{
-                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Transparency",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency",
                     "type": "header"
                 },
                 {
@@ -988,7 +999,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Font",
+                    "text": "$LamasTinyHUD_GraphicSetting_Font",
                     "type": "header"
                 },
                 {
@@ -1033,7 +1044,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Color",
+                    "text": "$LamasTinyHUD_GraphicSetting_Color",
                     "type": "header",
                     "position": 1
                 },
@@ -1116,7 +1127,7 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_GraphicSetting_HeaderText_Misc",
+                    "text": "$LamasTinyHUD_GraphicSetting_Misc",
                     "type": "header"
                 },
                 {
@@ -1166,7 +1177,7 @@
             "pageDisplayName": "$LamasTinyHUD_AnimationSetting",
             "cursorFillMode": "topToBottom",
             "content": [{
-                    "text": "$LamasTinyHUD_AnimationSetting_HeaderText_SlotAnimation",
+                    "text": "$LamasTinyHUD_AnimationSetting_SlotAnimation",
                     "type": "header"
                 },
                 {
@@ -1201,7 +1212,7 @@
             "pageDisplayName": "$LamasTinyHUD_MiscSetting",
             "cursorFillMode": "topToBottom",
             "content": [{
-                    "text": "$LamasTinyHUD_MiscSetting_HeaderText_Check",
+                    "text": "$LamasTinyHUD_MiscSetting_BehaviorSettings",
                     "type": "header"
                 },
                 {
@@ -1230,9 +1241,9 @@
                 },
                 {
                     "id": "bHideOutsideCombat:MiscSetting",
-                    "text": "$LamasTinyHUD_HideOutsideCombat_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_HideOutsideCombat_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_HideOutsideCombat_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_HideOutsideCombat_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
@@ -1254,9 +1265,9 @@
                 },
                 {
                     "id": "bEldenDemonSouls:MiscSetting",
-                    "text": "$LamasTinyHUD_EldenDemonSouls_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_EldenDemonSouls_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_EldenDemonSouls_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_EldenDemonSouls_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
@@ -1291,9 +1302,9 @@
                 },
                 {
                     "id": "bCheckDuplicateItems:MiscSetting",
-                    "text": "$LamasTinyHUD_CheckDuplicateItems_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_CheckDuplicateItems_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_CheckDuplicateItems_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_CheckDuplicateItems_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -1302,9 +1313,9 @@
                 },
                 {
                     "id": "bUnEquipAmmo:MiscSetting",
-                    "text": "$LamasTinyHUD_UnEquipAmmo_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_UnEquipAmmo_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_UnEquipAmmo_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_UnEquipAmmo_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -1313,9 +1324,9 @@
                 },
                 {
                     "id": "bOnlyFavoriteAmmo:MiscSetting",
-                    "text": "$LamasTinyHUD_OnlyFavoriteAmmo_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_OnlyFavoriteAmmo_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_OnlyFavoriteAmmo_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_OnlyFavoriteAmmo_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -1324,18 +1335,18 @@
                 },
                 {
                     "id": "bPreventConsumptionOfLastDynamicPotion:MiscSetting",
-                    "text": "$LamasTinyHUD_PreventConsumptionOfLastDynamicPotion_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_PreventConsumptionOfLastDynamicPotion_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_PreventConsumptionOfLastDynamicPotion_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_PreventConsumptionOfLastDynamicPotion_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
                 },
                 {
                     "id": "bGroupPotions:MiscSetting",
-                    "text": "$LamasTinyHUD_GroupPotions_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_GroupPotions_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_GroupPotions_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_GroupPotions_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
@@ -1372,9 +1383,9 @@
                 },
                 {
                     "id": "bDisableReEquipOfActives:MiscSetting",
-                    "text": "$LamasTinyHUD_DisableReEquipOfActives_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_DisableReEquipOfActives_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_DisableReEquipOfActives_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_DisableReEquipOfActives_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -1383,9 +1394,9 @@
                 },
                 {
                     "id": "bSortArrowByQuantity:MiscSetting",
-                    "text": "$LamasTinyHUD_SortArrowByQuantity_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_SortArrowByQuantity_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_SortArrowByQuantity_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_SortArrowByQuantity_InfoText",
                     "groupCondition": 5,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -1406,15 +1417,15 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_MiscSetting_HeaderText_Settings",
+                    "text": "$LamasTinyHUD_MiscSetting_Settings",
                     "type": "header",
                     "position": 1
                 },
                 {
                     "id": "sActiveSetting:MiscSetting",
                     "type": "text",
-                    "text": "$LamasTinyHUD_ActiveSetting_OptionText",
-                    "help": "$LamasTinyHUD_ActiveSetting_InfoText",
+                    "text": "$LamasTinyHUD_MiscSetting_ActiveSetting_OptionText",
+                    "help": "$LamasTinyHUD_MiscSetting_ActiveSetting_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -1424,9 +1435,9 @@
                 },
                 {
                     "id": "uSettingList:MiscSetting",
-                    "text": "$LamasTinyHUD_SettingList_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_SettingList_OptionText",
                     "type": "enum",
-                    "help": "$LamasTinyHUD_SettingList_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_SettingList_InfoText",
                     "valueOptions": {
                         "options": [
                             "$LamasTinyHUD_ENUM"
@@ -1436,14 +1447,14 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_MiscSetting_HeaderText_Create_New_Setting",
+                    "text": "$LamasTinyHUD_MiscSetting_CreateNewSetting",
                     "type": "header"
                 },
                 {
                     "id": "sSettingName:MiscSetting",
                     "type": "input",
-                    "text": "$LamasTinyHUD_SettingName_OptionText",
-                    "help": "$LamasTinyHUD_SettingName_InfoText",
+                    "text": "$LamasTinyHUD_MiscSetting_SettingName_OptionText",
+                    "help": "$LamasTinyHUD_MiscSetting_SettingName_InfoText",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
@@ -1452,8 +1463,8 @@
                 {
                     "id": "sCreateSetting:MiscSetting",
                     "type": "text",
-                    "text": "$LamasTinyHUD_CreateSetting_OptionText",
-                    "help": "$LamasTinyHUD_CreateSetting_InfoText",
+                    "text": "$LamasTinyHUD_MiscSetting_CreateSetting_OptionText",
+                    "help": "$LamasTinyHUD_MiscSetting_CreateSetting_InfoText",
                     "valueOptions": {
                         "value": "",
                         "sourceType": "ModSettingString"
@@ -1464,32 +1475,32 @@
                     }
                 },
                 {
-                    "text": "$LamasTinyHUD_MiscSetting_HeaderText_Misc_Check",
+                    "text": "$LamasTinyHUD_MiscSetting_Check",
                     "type": "header"
                 },
                 {
                     "id": "bActionCheck:MiscSetting",
-                    "text": "$LamasTinyHUD_MiscSetting_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_ActionCheck_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_MiscSetting_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_ActionCheck_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
                 },
                 {
                     "id": "bEmptyHandSetting:MiscSetting",
-                    "text": "$LamasTinyHUD_EmptyHandSetting_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_EmptyHandSetting_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_EmptyHandSetting_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_EmptyHandSetting_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
                 },
                 {
                     "id": "bDisableInputQuickLoot:MiscSetting",
-                    "text": "$LamasTinyHUD_DisableInputQuickLoot_OptionText",
+                    "text": "$LamasTinyHUD_MiscSetting_DisableInputQuickLoot_OptionText",
                     "type": "toggle",
-                    "help": "$LamasTinyHUD_DisableInputQuickLoot_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_DisableInputQuickLoot_InfoText",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
@@ -1500,7 +1511,7 @@
             "pageDisplayName": "$LamasTinyHUD_CleanupSetting",
             "cursorFillMode": "topToBottom",
             "content": [{
-                    "text": "$LamasTinyHUD_CleanupSetting_HeaderText_Check",
+                    "text": "$LamasTinyHUD_CleanupSetting_Check",
                     "type": "header"
                 },
                 {
@@ -1603,7 +1614,7 @@
             "pageDisplayName": "$LamasTinyHUD_Information_Bind",
             "cursorFillMode": "topToBottom",
             "content": [{
-                    "text": "$LamasTinyHUD_Information_HeaderText_CanBeAddedNormalAll",
+                    "text": "$LamasTinyHUD_Information_CanBeAddedNormalAll",
                     "type": "header"
                 },
                 {

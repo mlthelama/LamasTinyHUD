@@ -15,6 +15,7 @@ namespace control {
         [[nodiscard]] uint32_t get_hide_show() const;
         [[nodiscard]] uint32_t get_edit_key() const;
         [[nodiscard]] uint32_t get_edit_key_left_or_overwrite() const;
+        [[nodiscard]] uint32_t get_remove_key() const;
 
         void set_all_keys();  //except top_execute
         void set_top_execute(uint32_t a_key);
@@ -28,6 +29,8 @@ namespace control {
         [[nodiscard]] bool get_is_edit_left_down() const;
         void set_is_edit_left_down(bool a_down);
 
+        [[nodiscard]] bool get_is_remove_down() const;
+        void set_is_remove_down(bool a_down);
 
         binding(const binding&) = delete;
         binding(binding&&) = delete;
@@ -47,8 +50,10 @@ namespace control {
         uint32_t key_hide_show_ = control::common::k_invalid;
         uint32_t key_edit_key_ = control::common::k_invalid;
         uint32_t key_edit_left_or_overwrite_ = control::common::k_invalid;
+        uint32_t key_remove_key_ = control::common::k_invalid;
 
         bool is_edit_down_ = false;
         bool is_edit_left_down_ = false;
+        bool is_remove_down_ = false;
     };
 }  // control

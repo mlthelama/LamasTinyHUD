@@ -1,6 +1,7 @@
 #include "menu_hook.h"
 #include "handle/key_position_handle.h"
 #include "processing/game_menu_setting.h"
+#include "processing/set_setting_data.h"
 #include "setting/mcm_setting.h"
 
 namespace hook {
@@ -32,42 +33,50 @@ namespace hook {
                     auto button = static_cast<RE::ButtonEvent*>(event);
 
                     key_ = button->idCode;
-                    if (key_ == control::common::k_invalid) {
+                    if (key_ == common::k_invalid) {
                         continue;
                     }
 
-                    control::common::get_key_id(button, key_);
+                    common::get_key_id(button, key_);
 
                     if (button->IsUp()) {
                         if (binding->get_is_edit_down() &&
-                            ((edit_key && control::common::is_key_valid_and_matches(key_, binding->get_edit_key())) ||
-                                control::common::is_key_valid_and_matches(key_,
+                            ((edit_key && common::is_key_valid_and_matches(key_, binding->get_edit_key())) ||
+                                common::is_key_valid_and_matches(key_,
                                     binding->get_bottom_execute_or_toggle_action()))) {
                             binding->set_is_edit_down(false);
                         }
 
-                        if (binding->get_is_edit_left_down() && control::common::is_key_valid_and_matches(key_,
-                                                                    binding->get_edit_key_left_or_overwrite())) {
+                        if (binding->get_is_edit_left_down() &&
+                            common::is_key_valid_and_matches(key_, binding->get_edit_key_left_or_overwrite())) {
                             binding->set_is_edit_left_down(false);
+                        }
+
+                        if (binding->get_is_remove_down() &&
+                            common::is_key_valid_and_matches(key_, binding->get_remove_key())) {
+                            binding->set_is_remove_down(false);
                         }
                     }
 
                     if (button->IsDown()) {
-                        if (control::common::is_key_valid_and_matches(key_,
-                                binding->get_bottom_execute_or_toggle_action()) ||
+                        if (common::is_key_valid_and_matches(key_, binding->get_bottom_execute_or_toggle_action()) ||
                             (config::mcm_setting::get_key_press_to_enter_edit() &&
-                                control::common::is_key_valid_and_matches(key_, binding->get_edit_key()))) {
+                                common::is_key_valid_and_matches(key_, binding->get_edit_key()))) {
                             binding->set_is_edit_down(true);
                         }
-                        if (control::common::is_key_valid_and_matches(key_,
-                                binding->get_edit_key_left_or_overwrite())) {
+
+                        if (common::is_key_valid_and_matches(key_, binding->get_edit_key_left_or_overwrite())) {
                             binding->set_is_edit_left_down(true);
+                        }
+
+                        if (common::is_key_valid_and_matches(key_, binding->get_remove_key())) {
+                            binding->set_is_remove_down(true);
                         }
                     }
 
                     if (need_to_overwrite(button, user_event, control_map) &&
                         (binding->get_is_edit_down() || binding->get_is_edit_left_down())) {
-                        button->idCode = control::common::k_invalid;
+                        button->idCode = common::k_invalid;
                         button->userEvent = "";
                     }
 
@@ -75,7 +84,8 @@ namespace hook {
                         continue;
                     }
 
-                    if (!binding->get_is_edit_down() && !binding->get_is_edit_left_down()) {
+                    if (!binding->get_is_edit_down() && !binding->get_is_edit_left_down() &&
+                        !binding->get_is_remove_down()) {
                         continue;
                     }
 
@@ -85,14 +95,20 @@ namespace hook {
                             auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
                             auto key_position =
                                 handle::key_position_handle::get_singleton()->get_position_for_key(key_);
-                            if (config::mcm_setting::get_elden_demon_souls()) {
-                                processing::game_menu_setting::elden_souls_config(tes_form_menu,
-                                    key_position,
-                                    binding->get_is_edit_left_down());
+                            if (binding->get_is_remove_down()) {
+                                logger::trace("doing remove for form"sv);
+                                processing::set_setting_data::default_remove(tes_form_menu);
                             } else {
-                                processing::game_menu_setting::default_config(tes_form_menu,
-                                    key_position,
-                                    binding->get_is_edit_left_down());
+                                logger::trace("doing add or place for form."sv);
+                                if (config::mcm_setting::get_elden_demon_souls()) {
+                                    processing::game_menu_setting::elden_souls_config(tes_form_menu,
+                                        key_position,
+                                        binding->get_is_edit_left_down());
+                                } else {
+                                    processing::game_menu_setting::default_config(tes_form_menu,
+                                        key_position,
+                                        binding->get_is_edit_left_down());
+                                }
                             }
                         }
                     }

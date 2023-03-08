@@ -20,6 +20,7 @@ namespace control {
     uint32_t binding::get_hide_show() const { return key_hide_show_; }
     uint32_t binding::get_edit_key() const { return key_edit_key_; }
     uint32_t binding::get_edit_key_left_or_overwrite() const { return key_edit_left_or_overwrite_; }
+    uint32_t binding::get_remove_key() const { return key_remove_key_; }
 
     void binding::set_all_keys() {
         key_top_action_ = config::mcm_setting::get_top_action_key();
@@ -30,6 +31,7 @@ namespace control {
         key_hide_show_ = config::mcm_setting::get_show_hide_key();
         key_edit_key_ = config::mcm_setting::get_edit_key();
         key_edit_left_or_overwrite_ = config::mcm_setting::get_left_or_overwrite_edit_key();
+        key_remove_key_ = config::mcm_setting::get_remove_key();
     }
 
     void binding::set_top_execute(uint32_t a_key) { key_top_execute_ = a_key; }
@@ -61,6 +63,12 @@ namespace control {
     void binding::set_is_edit_left_down(bool a_down) {
         logger::trace("setting left down to {}", a_down);
         is_edit_left_down_ = a_down;
+    }
+
+    bool binding::get_is_remove_down() const { return is_remove_down_; }
+    void binding::set_is_remove_down(bool a_down) {
+        logger::trace("setting remove down to {}", a_down);
+        is_remove_down_ = a_down;
     }
 
 }  // control
