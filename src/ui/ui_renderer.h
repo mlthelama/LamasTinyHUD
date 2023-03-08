@@ -11,8 +11,9 @@ namespace ui {
     };
 
     class ui_renderer {
-        using position = handle::position_setting::position_type;
         using page_setting = handle::position_setting;
+        using slot_type = handle::slot_setting::slot_type;
+        using position_type = handle::position_setting::position_type;
 
         struct wnd_proc_hook {
             static LRESULT thunk(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param);
@@ -60,7 +61,7 @@ namespace ui {
             uint32_t a_modify,
             uint32_t a_alpha,
             float a_duration);
-        static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_slots(float a_x, float a_y, const std::map<position_type, page_setting*>& a_settings);
         static void draw_key(float a_x,
             float a_y,
             float a_scale_x,
@@ -68,7 +69,7 @@ namespace ui {
             float a_offset_x,
             float a_offset_y,
             uint32_t a_alpha = 255);
-        static void draw_keys(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_keys(float a_x, float a_y, const std::map<position_type, page_setting*>& a_settings);
         static void draw_icon(float a_x,
             float a_y,
             float a_scale_x,

@@ -4,7 +4,7 @@ namespace handle {
     class slot_setting {
     public:
         //un equip just makes sense with form == nullptr
-        enum class acton_type : std::uint32_t { default_action = 0, instant = 1, un_equip = 2 };
+        enum class action_type : std::uint32_t { default_action = 0, instant = 1, un_equip = 2 };
 
         enum class hand_equip : std::uint32_t { single = 0, both = 1, total = 2 };
 
@@ -26,7 +26,7 @@ namespace handle {
 
         RE::TESForm* form = nullptr;
         slot_type type = slot_type::empty;
-        acton_type action = acton_type::default_action;
+        action_type action = action_type::default_action;
         hand_equip equip = hand_equip::total;
         RE::BGSEquipSlot* equip_slot = nullptr;
         int32_t item_count = 0;

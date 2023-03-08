@@ -26,33 +26,29 @@ namespace processing {
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
-            if (!slot->form && slot->type == handle::slot_setting::slot_type::consumable &&
-                slot->actor_value != RE::ActorValue::kNone) {
+            if (!slot->form && slot->type == slot_type::consumable && slot->actor_value != RE::ActorValue::kNone) {
                 logger::debug("form is null, but actor value is set to {}"sv, static_cast<int>(slot->actor_value));
             } else if (mcm::get_elden_demon_souls() && !slot->form) {
                 logger::debug("form is null and I am in elden mode, skipping."sv);
                 continue;
-            } else if (!slot->form && slot->type != handle::slot_setting::slot_type::empty) {
+            } else if (!slot->form && slot->type != slot_type::empty) {
                 logger::warn("form is null and not type empty, skipping."sv);
                 continue;
             }
 
-            if ((!slot->form && slot->type == handle::slot_setting::slot_type::empty &&
-                    slot->action == handle::slot_setting::acton_type::un_equip) ||
+            if ((!slot->form && slot->type == slot_type::empty && slot->action == action_type::un_equip) ||
                 (slot->form && slot->form->formID == util::unarmed)) {
                 un_equip.push_back(slot->equip_slot);
             }
 
-            if (mcm::get_elden_demon_souls() && a_only_equip &&
-                slot->action != handle::slot_setting::acton_type::default_action) {
+            if (mcm::get_elden_demon_souls() && a_only_equip && slot->action != action_type::default_action) {
                 logger::trace("form {} does not need equip, skipping"sv,
                     slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null");
                 equip::equip_slot::un_equip_shout_slot(player);
                 continue;
             }
 
-            if (mcm::get_elden_demon_souls() && a_only_instant &&
-                slot->action != handle::slot_setting::acton_type::instant) {
+            if (mcm::get_elden_demon_souls() && a_only_instant && slot->action != action_type::instant) {
                 logger::trace("form {} does not need any work, skipping"sv,
                     slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null");
                 continue;
@@ -68,14 +64,14 @@ namespace processing {
 
         if (!un_equip.empty()) {
             for (RE::BGSEquipSlot*& slot : un_equip) {
-                equip::equip_slot::un_equip_hand(slot, player, handle::slot_setting::acton_type::un_equip);
+                equip::equip_slot::un_equip_hand(slot, player, action_type::un_equip);
             }
         }
     }
 
     handle::position_setting* setting_execute::get_position_setting_for_key(const uint32_t a_key) {
         const auto position = handle::key_position_handle::get_singleton()->get_position_for_key(a_key);
-        if (position == handle::position_setting::position_type::total) {
+        if (position == position_type::total) {
             logger::warn("nothing to do, nothing set. return."sv);
             return nullptr;
         }
@@ -124,40 +120,40 @@ namespace processing {
 
     void setting_execute::execute_setting(handle::slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
-            case handle::slot_setting::slot_type::consumable:
+            case slot_type::consumable:
                 if (a_slot->form) {
                     equip::item::consume_potion(a_slot->form, a_player);
                 } else if (a_slot->actor_value != RE::ActorValue::kNone) {
                     equip::item::find_and_consume_fitting_option(a_slot->actor_value, a_player);
                 }
                 break;
-            case handle::slot_setting::slot_type::magic:
+            case slot_type::magic:
                 equip::magic::magic::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot, a_player);
                 break;
-            case handle::slot_setting::slot_type::shout:
+            case slot_type::shout:
                 equip::magic::equip_shout(a_slot->form, a_player);
                 break;
-            case handle::slot_setting::slot_type::power:
+            case slot_type::power:
                 equip::magic::equip_or_cast_power(a_slot->form, a_slot->action, a_player);
                 break;
-            case handle::slot_setting::slot_type::weapon:
-            case handle::slot_setting::slot_type::shield:
-            case handle::slot_setting::slot_type::light:
+            case slot_type::weapon:
+            case slot_type::shield:
+            case slot_type::light:
                 equip::item::equip_item(a_slot->form, a_slot->equip_slot, a_player, a_slot->type);
                 break;
-            case handle::slot_setting::slot_type::armor:
-            case handle::slot_setting::slot_type::lantern:
-            case handle::slot_setting::slot_type::mask:
+            case slot_type::armor:
+            case slot_type::lantern:
+            case slot_type::mask:
                 equip::item::equip_armor(a_slot->form, a_player);
                 break;
-            case handle::slot_setting::slot_type::scroll:
+            case slot_type::scroll:
                 equip::magic::cast_scroll(a_slot->form, a_slot->action, a_player);
                 break;
-            case handle::slot_setting::slot_type::misc:
+            case slot_type::misc:
                 //TODO
                 logger::warn("ignoring misc-item."sv);
                 break;
-            case handle::slot_setting::slot_type::empty:
+            case slot_type::empty:
                 equip::equip_slot::un_equip_hand(a_slot->equip_slot, a_player, a_slot->action);
                 break;
         }

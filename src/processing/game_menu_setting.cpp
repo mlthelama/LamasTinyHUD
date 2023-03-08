@@ -7,9 +7,7 @@
 #include "util/string_util.h"
 
 namespace processing {
-    void game_menu_setting::elden_souls_config(RE::TESForm* a_form,
-        handle::position_setting::position_type a_position,
-        bool a_overwrite) {
+    void game_menu_setting::elden_souls_config(RE::TESForm* a_form, position_type a_position, bool a_overwrite) {
         std::vector<data_helper*> data;
 
         write_notification(fmt::format("Elden Souls Config, Position {}, overwrite {}"sv,
@@ -67,9 +65,7 @@ namespace processing {
 
         logger::trace("Setting done. return.");
     }
-    void game_menu_setting::default_config(RE::TESForm*& a_form,
-        handle::position_setting::position_type a_position,
-        bool a_left) {
+    void game_menu_setting::default_config(RE::TESForm*& a_form, position_type a_position_type, bool a_left) {
         const auto two_handed = util::helper::is_two_handed(a_form);
         if (two_handed && a_left) {
             auto log_string = fmt::format("Going to Ignore {}, because Two Handed {} and Left {}",
@@ -85,23 +81,23 @@ namespace processing {
         const auto type = util::helper::get_type(a_form);
         const auto item = new data_helper();
         switch (type) {
-            case handle::slot_setting::slot_type::empty:
+            case slot_type::empty:
                 item->form = nullptr;
                 item->type = type;
                 data.push_back(item);
                 break;
-            case handle::slot_setting::slot_type::shout:
-            case handle::slot_setting::slot_type::power:
-            case handle::slot_setting::slot_type::armor:
-            case handle::slot_setting::slot_type::scroll:
-            case handle::slot_setting::slot_type::misc:
-            case handle::slot_setting::slot_type::lantern:
-            case handle::slot_setting::slot_type::mask:
+            case slot_type::shout:
+            case slot_type::power:
+            case slot_type::armor:
+            case slot_type::scroll:
+            case slot_type::misc:
+            case slot_type::lantern:
+            case slot_type::mask:
                 item->form = a_form;
                 item->type = type;
                 data.push_back(item);
                 break;
-            case handle::slot_setting::slot_type::consumable:
+            case slot_type::consumable:
                 item->form = nullptr;
                 item->type = type;
                 item->actor_value = util::helper::get_actor_value_effect_from_potion(a_form);
@@ -110,14 +106,14 @@ namespace processing {
                 }
                 data.push_back(item);
                 break;
-            case handle::slot_setting::slot_type::weapon:
-            case handle::slot_setting::slot_type::magic:
-            case handle::slot_setting::slot_type::shield:
-            case handle::slot_setting::slot_type::light:
+            case slot_type::weapon:
+            case slot_type::magic:
+            case slot_type::shield:
+            case slot_type::light:
                 item->form = a_form;
                 item->left = a_left;
                 item->type = type;
-                item->action_type = handle::slot_setting::acton_type::default_action;
+                item->action_type = handle::slot_setting::action_type::default_action;
                 item->two_handed = two_handed;
                 data.push_back(item);
                 break;
@@ -134,24 +130,24 @@ namespace processing {
         auto page_handle = handle::page_handle::get_singleton();
         auto page = page_handle->get_active_page_id();
         //for some types we need to check if there is something on the other hand
-        if (type == handle::slot_setting::slot_type::weapon || type == handle::slot_setting::slot_type::magic ||
-            type == handle::slot_setting::slot_type::shield || type == handle::slot_setting::slot_type::light) {
+        if (type == slot_type::weapon || type == slot_type::magic || type == slot_type::shield ||
+            type == slot_type::light) {
             if (!two_handed) {
-                auto slot_settings = page_handle->get_page_setting(page, a_position)->slot_settings;
+                auto slot_settings = page_handle->get_page_setting(page, a_position_type)->slot_settings;
 
                 std::vector<data_helper*> current_data;
                 const auto item_current = new data_helper();
                 item_current->form = nullptr;
                 item_current->left = false;
-                item_current->type = handle::slot_setting::slot_type::empty;
-                item_current->action_type = handle::slot_setting::acton_type::default_action;
+                item_current->type = slot_type::empty;
+                item_current->action_type = handle::slot_setting::action_type::default_action;
                 current_data.push_back(item_current);
 
                 const auto item2_current = new data_helper();
                 item2_current->form = nullptr;
                 item2_current->left = true;
-                item2_current->type = handle::slot_setting::slot_type::empty;
-                item2_current->action_type = handle::slot_setting::acton_type::default_action;
+                item2_current->type = slot_type::empty;
+                item2_current->action_type = handle::slot_setting::action_type::default_action;
                 current_data.push_back(item2_current);
 
                 auto current_two_handed = false;
@@ -203,8 +199,8 @@ namespace processing {
                     const auto item2 = new data_helper();
                     item2->form = RE::TESForm::LookupByID(util::unarmed);
                     item2->left = !a_left;  //need the opposite
-                    item2->type = handle::slot_setting::slot_type::weapon;
-                    item2->action_type = handle::slot_setting::acton_type::default_action;
+                    item2->type = slot_type::weapon;
+                    item2->action_type = handle::slot_setting::action_type::default_action;
                     data.push_back(item2);
                 } else {
                     if (a_left) {
@@ -225,7 +221,7 @@ namespace processing {
                 data_item->left);
         }
         //do things
-        processing::set_setting_data::set_single_slot(page, a_position, data);
+        processing::set_setting_data::set_single_slot(page, a_position_type, data);
     }
 
     uint32_t game_menu_setting::get_selected_form(RE::UI*& a_ui) {
@@ -288,34 +284,34 @@ namespace processing {
             two_handed);
 
         switch (a_position) {
-            case handle::position_setting::position_type::top:
+            case position_type::top:
                 switch (type) {
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::shout:
-                        //case handle::slot_setting::slot_type::misc:
+                    case slot_type::power:
+                    case slot_type::shout:
+                        //case slot_type::misc:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
                         item->left = false;
                         item->action_type = util::helper::can_instant_cast(a_form, type) ?
-                                                handle::slot_setting::acton_type::instant :
-                                                handle::slot_setting::acton_type::default_action;
+                                                handle::slot_setting::action_type::instant :
+                                                handle::slot_setting::action_type::default_action;
                         break;
-                    case handle::slot_setting::slot_type::magic:
+                    case slot_type::magic:
                         if (util::helper::can_instant_cast(a_form, type)) {
                             item->form = a_form;
                             item->type = type;
                             item->two_handed = two_handed;
                             item->left = false;
-                            item->action_type = handle::slot_setting::acton_type::instant;
+                            item->action_type = handle::slot_setting::action_type::instant;
                         }
                         break;
                 }
                 break;
-            case handle::position_setting::position_type::right:
+            case position_type::right:
                 switch (type) {
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::magic:
+                    case slot_type::weapon:
+                    case slot_type::magic:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
@@ -323,9 +319,9 @@ namespace processing {
                         break;
                 }
                 break;
-            case handle::position_setting::position_type::bottom:
+            case position_type::bottom:
                 switch (type) {
-                    case handle::slot_setting::slot_type::consumable:
+                    case slot_type::consumable:
                         item->form = nullptr;
                         item->type = type;
                         item->two_handed = two_handed;
@@ -335,28 +331,28 @@ namespace processing {
                             item->form = a_form;
                         }
                         break;
-                    case handle::slot_setting::slot_type::lantern:  //not sure if best here
-                    case handle::slot_setting::slot_type::mask:
+                    case slot_type::lantern:  //not sure if best here
+                    case slot_type::mask:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
                         item->left = false;
                         break;
-                    case handle::slot_setting::slot_type::scroll:
+                    case slot_type::scroll:
                         item->form = a_form;
                         item->type = type;
                         item->two_handed = two_handed;
                         item->left = false;
-                        item->action_type = handle::slot_setting::acton_type::instant;
+                        item->action_type = handle::slot_setting::action_type::instant;
                         break;
                 }
                 break;
-            case handle::position_setting::position_type::left:
+            case position_type::left:
                 switch (type) {
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::magic:
-                    case handle::slot_setting::slot_type::shield:
-                    case handle::slot_setting::slot_type::light:
+                    case slot_type::weapon:
+                    case slot_type::magic:
+                    case slot_type::shield:
+                    case slot_type::light:
                         if (!two_handed) {
                             item->form = a_form;
                             item->type = type;
@@ -367,7 +363,7 @@ namespace processing {
                         break;
                 }
                 break;
-            case handle::position_setting::position_type::total:
+            case position_type::total:
                 break;
         }
 

@@ -145,7 +145,7 @@ namespace equip {
         }
 
         if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
-            selected_power && a_action != handle::slot_setting::acton_type::instant) {
+            selected_power && a_action != handle::slot_setting::action_type::instant) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
                 selected_power->Is(RE::FormType::Shout),
@@ -163,7 +163,7 @@ namespace equip {
             return;
         }
 
-        if (a_action == handle::slot_setting::acton_type::instant) {
+        if (a_action == handle::slot_setting::action_type::instant) {
             //try that
             if (config::mcm_setting::get_elden_demon_souls()) {
                 //normally in elden just top uses instant for spells

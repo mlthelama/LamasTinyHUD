@@ -331,8 +331,9 @@ namespace ui {
         logger::trace("done inited animation. return.");
     }
 
-    void
-        ui_renderer::draw_slots(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_slots(const float a_x,
+        const float a_y,
+        const std::map<position_type, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -376,7 +377,7 @@ namespace ui {
                 if (slot_setting && slot_setting->form) {
                     slot_name = page_setting->slot_settings.front()->form->GetName();
                 } else if (slot_setting && slot_setting->actor_value != RE::ActorValue::kNone &&
-                           slot_setting->type == handle::slot_setting::slot_type::consumable &&
+                           slot_setting->type == slot_type::consumable &&
                            util::actor_value_to_base_potion_map_.contains(slot_setting->actor_value)) {
                     auto potion_form =
                         RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[slot_setting->actor_value]);
@@ -386,12 +387,12 @@ namespace ui {
                 }
 
                 if (slot_name) {
-                    auto center_text = (page_setting->position == handle::position_setting::position_type::top ||
-                                        page_setting->position == handle::position_setting::position_type::bottom);
-                    auto deduct_text_x = page_setting->position == handle::position_setting::position_type::left;
-                    auto deduct_text_y = page_setting->position == handle::position_setting::position_type::bottom;
+                    auto center_text = (page_setting->position == position_type::top ||
+                                        page_setting->position == position_type::bottom);
+                    auto deduct_text_x = page_setting->position == position_type::left;
+                    auto deduct_text_y = page_setting->position == position_type::bottom;
                     auto add_text_x = false;
-                    auto add_text_y = page_setting->position == handle::position_setting::position_type::top;
+                    auto add_text_y = page_setting->position == position_type::top;
                     draw_text(draw_setting->width_setting,
                         draw_setting->height_setting,
                         draw_setting->offset_slot_x,
@@ -409,7 +410,6 @@ namespace ui {
                 }
             }
 
-
             if (auto slot_settings = page_setting->slot_settings; !slot_settings.empty()) {
                 const auto first_type = slot_settings.front()->type;
                 const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
@@ -417,8 +417,8 @@ namespace ui {
                     mcm::get_slot_count_blue(),
                     page_setting->draw_setting->text_transparency);
                 switch (first_type) {
-                    case handle::slot_setting::slot_type::scroll:
-                    case handle::slot_setting::slot_type::consumable:
+                    case slot_type::scroll:
+                    case slot_type::consumable:
                         if (slot_settings.front()->display_item_count) {
                             draw_text(draw_setting->width_setting,
                                 draw_setting->height_setting,
@@ -431,27 +431,27 @@ namespace ui {
                                 page_setting->font_size);
                         }
                         break;
-                    case handle::slot_setting::slot_type::shout:
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::magic:
+                    case slot_type::shout:
+                    case slot_type::power:
+                    case slot_type::magic:
                         draw_text(draw_setting->width_setting,
                             draw_setting->height_setting,
                             draw_setting->offset_slot_x,
                             draw_setting->offset_slot_y,
                             draw_setting->offset_text_x,
                             draw_setting->offset_text_y,
-                            slot_settings.front()->action == handle::slot_setting::acton_type::instant ? "I" : "E",
+                            slot_settings.front()->action == handle::slot_setting::action_type::instant ? "I" : "E",
                             color,
                             page_setting->font_size);
                         break;
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::shield:
-                    case handle::slot_setting::slot_type::armor:
-                    case handle::slot_setting::slot_type::empty:
-                    case handle::slot_setting::slot_type::misc:
-                    case handle::slot_setting::slot_type::light:
-                    case handle::slot_setting::slot_type::lantern:
-                    case handle::slot_setting::slot_type::mask:
+                    case slot_type::weapon:
+                    case slot_type::shield:
+                    case slot_type::armor:
+                    case slot_type::empty:
+                    case slot_type::misc:
+                    case slot_type::light:
+                    case slot_type::lantern:
+                    case slot_type::mask:
                         //Nothing, for now
                         break;
                 }
@@ -523,7 +523,9 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_keys(const float a_x,
+        const float a_y,
+        const std::map<position_type, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -576,8 +578,7 @@ namespace ui {
         const auto size = ImVec2(static_cast<float>(width) * a_scale_x, static_cast<float>(height) * a_scale_y);
 
         const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
-
-
+        
         draw_element(texture, center, size, angle, color);
     }
 

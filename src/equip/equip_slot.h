@@ -4,7 +4,7 @@
 namespace equip {
     class equip_slot {
     public:
-        using action_type = handle::slot_setting::acton_type;
+        using action_type = handle::slot_setting::action_type;
 
         static RE::BGSEquipSlot* get_right_hand_slot();
         static RE::BGSEquipSlot* get_left_hand_slot();

@@ -5,6 +5,10 @@
 #include "util/string_util.h"
 
 namespace util {
+    using slot_type = handle::slot_setting::slot_type;
+    using action_type = handle::slot_setting::action_type;
+
+
     std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>>
         player::get_inventory(RE::PlayerCharacter*& a_player, RE::FormType a_type) {
         return a_player->GetInventory([a_type](const RE::TESBoundObject& a_object) { return a_object.Is(a_type); });
@@ -39,17 +43,15 @@ namespace util {
         const auto item = new data_helper();
         item->form = nullptr;
         item->left = false;
-        item->type = handle::slot_setting::slot_type::empty;
-        item->action_type = empty_handle ? handle::slot_setting::acton_type::un_equip :
-                                           handle::slot_setting::acton_type::default_action;
+        item->type = slot_type::empty;
+        item->action_type = empty_handle ? action_type::un_equip : action_type::default_action;
         data.push_back(item);
 
         const auto item2 = new data_helper();
         item2->form = nullptr;
         item2->left = true;
-        item2->type = handle::slot_setting::slot_type::empty;
-        item2->action_type = empty_handle ? handle::slot_setting::acton_type::un_equip :
-                                            handle::slot_setting::acton_type::default_action;
+        item2->type = slot_type::empty;
+        item2->action_type = empty_handle ? action_type::un_equip : action_type::default_action;
         data.push_back(item2);
 
         if (!a_two_handed) {
@@ -68,7 +70,7 @@ namespace util {
             data[0]->form = right_obj;
             data[0]->left = false;
             data[0]->type = util::helper::get_type(right_obj);
-            data[0]->action_type = handle::slot_setting::acton_type::default_action;
+            data[0]->action_type = action_type::default_action;
             data.erase(data.begin() + 1);
         }
 
@@ -76,14 +78,14 @@ namespace util {
             data[0]->form = right_obj;
             data[0]->left = false;
             data[0]->type = util::helper::get_type(right_obj);
-            data[0]->action_type = handle::slot_setting::acton_type::default_action;
+            data[0]->action_type = action_type::default_action;
         }
 
         if (left_obj) {
             data[1]->form = left_obj;
             data[1]->left = true;
             data[1]->type = util::helper::get_type(left_obj);
-            data[1]->action_type = handle::slot_setting::acton_type::default_action;
+            data[1]->action_type = action_type::default_action;
         }
 
         logger::trace("got {} items in List now. return."sv, data.size());
@@ -142,5 +144,4 @@ namespace util {
         REL::Relocation<func_t> func{ offset::has_shout };
         return func(a_actor, a_shout);
     }
-
 }  // util

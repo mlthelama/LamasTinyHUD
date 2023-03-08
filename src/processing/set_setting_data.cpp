@@ -36,7 +36,7 @@ namespace processing {
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,
-        const handle::position_setting::position_type a_position,
+        const position_type a_position,
         const std::vector<data_helper*>& a_data) {
         //well for now we have to match
         auto key_pos = handle::key_position_handle::get_singleton();
@@ -59,8 +59,8 @@ namespace processing {
         if (a_data.empty()) {
             const auto item = new data_helper();
             item->form = nullptr;
-            item->action_type = handle::slot_setting::acton_type::default_action;
-            item->type = handle::slot_setting::slot_type::empty;
+            item->action_type = handle::slot_setting::action_type::default_action;
+            item->type = slot_type::empty;
             data.push_back(item);
 
             logger::warn("Got no settings in List, create empty."sv);
@@ -80,8 +80,7 @@ namespace processing {
     }
 
 
-    void set_setting_data::set_queue_slot(handle::position_setting::position_type a_pos,
-        const std::vector<data_helper*>& a_data) {
+    void set_setting_data::set_queue_slot(position_type a_pos, const std::vector<data_helper*>& a_data) {
         //each data item will be a new page with this position
         logger::trace("Got {} items to process"sv, a_data.size());
         if (a_data.empty()) {
@@ -115,19 +114,19 @@ namespace processing {
         std::vector<data_helper*> data;
         const auto item = new data_helper();
         item->form = nullptr;
-        item->action_type = handle::slot_setting::acton_type::default_action;
-        item->type = handle::slot_setting::slot_type::empty;
+        item->action_type = handle::slot_setting::action_type::default_action;
+        item->type = slot_type::empty;
         data.push_back(item);
 
         handle::page_handle::get_singleton()->init_page(a_page,
-            static_cast<handle::position_setting::position_type>(a_pos),
+            static_cast<position_type>(a_pos),
             data,
             handle::slot_setting::hand_equip::total,
             a_key_pos);
     }
 
     void set_setting_data::set_slot(const uint32_t a_page,
-        handle::position_setting::position_type a_position,
+        position_type a_position,
         const std::string& a_form,
         uint32_t a_type,
         uint32_t a_hand,
@@ -162,29 +161,29 @@ namespace processing {
             a_hand,
             action_check);
 
-        handle::slot_setting::acton_type action;
+        handle::slot_setting::action_type action;
         if (action_check) {
             if (a_action == a_action_left) {
-                action = static_cast<handle::slot_setting::acton_type>(a_action);
+                action = static_cast<handle::slot_setting::action_type>(a_action);
             } else {
-                action = handle::slot_setting::acton_type::default_action;
+                action = handle::slot_setting::action_type::default_action;
                 logger::warn("action type {} differ from action type left {}, setting both to {}"sv,
                     a_action,
                     a_action_left,
                     static_cast<uint32_t>(action));
             }
         } else {
-            action = static_cast<handle::slot_setting::acton_type>(a_action);
+            action = static_cast<handle::slot_setting::action_type>(a_action);
         }
 
-        const auto type = static_cast<handle::slot_setting::slot_type>(a_type);
+        const auto type = static_cast<slot_type>(a_type);
 
-        if (type != handle::slot_setting::slot_type::magic && type != handle::slot_setting::slot_type::weapon &&
-            type != handle::slot_setting::slot_type::shield && type != handle::slot_setting::slot_type::empty) {
+        if (type != slot_type::magic && type != slot_type::weapon && type != slot_type::shield &&
+            type != slot_type::empty) {
             hand = handle::slot_setting::hand_equip::total;
         }
 
-        if (type == handle::slot_setting::slot_type::shield) {
+        if (type == slot_type::shield) {
             logger::warn("Equipping shield on the Right hand might fail, or hand will be empty"sv);
         }
 
@@ -195,16 +194,16 @@ namespace processing {
             static_cast<uint32_t>(action),
             static_cast<uint32_t>(hand));
 
-        if (form && action == handle::slot_setting::acton_type::un_equip) {
-            action = handle::slot_setting::acton_type::default_action;
+        if (form && action == handle::slot_setting::action_type::un_equip) {
+            action = handle::slot_setting::action_type::default_action;
             logger::warn("set action to default, because form was not null but un equip was set");
         }
 
-        if (action == handle::slot_setting::acton_type::instant && form) {
+        if (action == handle::slot_setting::action_type::instant && form) {
             if (!util::helper::can_instant_cast(form, type)) {
                 logger::warn("form {} cannot be instant cast, set to default"sv,
                     util::string_util::int_to_hex(form->GetFormID()));
-                action = handle::slot_setting::acton_type::default_action;
+                action = handle::slot_setting::action_type::default_action;
             }
         }
 
@@ -219,8 +218,8 @@ namespace processing {
         logger::trace("checking if we need to build a second data set, already got {}"sv, data.size());
 
         if (hand == handle::slot_setting::hand_equip::single) {
-            const auto type_left = static_cast<handle::slot_setting::slot_type>(a_type_left);
-            action = static_cast<handle::slot_setting::acton_type>(a_action_left);
+            const auto type_left = static_cast<slot_type>(a_type_left);
+            action = static_cast<handle::slot_setting::action_type>(a_action_left);
             logger::trace("start building second set data pos {}, form {}, type {}, action {}, hand {}"sv,
                 static_cast<uint32_t>(a_position),
                 form_left ? util::string_util::int_to_hex(form_left->GetFormID()) : "null",
@@ -228,16 +227,16 @@ namespace processing {
                 static_cast<uint32_t>(action),
                 static_cast<uint32_t>(hand));
 
-            if (form_left && action == handle::slot_setting::acton_type::un_equip) {
-                action = handle::slot_setting::acton_type::default_action;
+            if (form_left && action == handle::slot_setting::action_type::un_equip) {
+                action = handle::slot_setting::action_type::default_action;
                 logger::warn("set left action to default, because form was not null but un equip was set");
             }
 
-            if (action == handle::slot_setting::acton_type::instant && form_left) {
+            if (action == handle::slot_setting::action_type::instant && form_left) {
                 if (!util::helper::can_instant_cast(form_left, type)) {
                     logger::warn("form {} cannot be instant cast, set to default"sv,
                         util::string_util::int_to_hex(form_left->GetFormID()));
-                    action = handle::slot_setting::acton_type::default_action;
+                    action = handle::slot_setting::action_type::default_action;
                 }
             }
 
@@ -298,9 +297,9 @@ namespace processing {
 
 
     void set_setting_data::set_active_and_equip(handle::page_handle*& a_page_handle) {
-        for (auto i = 0; i < static_cast<int>(handle::position_setting::position_type::total); ++i) {
+        for (auto i = 0; i < static_cast<int>(position_type::total); ++i) {
             //will do for now, items could have been removed whatsoever
-            auto position = static_cast<handle::position_setting::position_type>(i);
+            auto position = static_cast<position_type>(i);
             auto page = a_page_handle->get_active_page_id_position(position);
             a_page_handle->init_actives(page, position);
         }
@@ -315,15 +314,15 @@ namespace processing {
         auto handler = handle::page_handle::get_singleton();
 
         if (mcm::get_elden_demon_souls()) {
-            for (auto i = 0; i < static_cast<int>(handle::position_setting::position_type::total); ++i) {
+            for (auto i = 0; i < static_cast<int>(position_type::total); ++i) {
                 //will do for now, items could have been removed whatsoever
-                handler->set_highest_page_position(-1, static_cast<handle::position_setting::position_type>(i));
+                handler->set_highest_page_position(-1, static_cast<position_type>(i));
             }
         }
 
         for (const auto sections = util::helper::get_configured_section_page_names(); const auto& section : sections) {
             set_slot(custom::get_page_by_section(section),
-                static_cast<handle::position_setting::position_type>(custom::get_position_by_section(section)),
+                static_cast<position_type>(custom::get_position_by_section(section)),
                 custom::get_item_form_by_section(section),
                 custom::get_type_by_section(section),
                 custom::get_hand_selection_by_section(section),
@@ -356,7 +355,7 @@ namespace processing {
         //set empty for each position, it will be overwritten if it is configured
         const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
-            for (auto j = 0; j < static_cast<int>(handle::position_setting::position_type::total); ++j) {
+            for (auto j = 0; j < static_cast<int>(position_type::total); ++j) {
                 set_empty_slot(i, j, key_position);
             }
         }
@@ -374,9 +373,9 @@ namespace processing {
         auto page_handle = handle::page_handle::get_singleton();
         auto is_right_two_handed = false;
 
-        auto right_position_setting = page_handle->get_page_setting(
-            page_handle->get_active_page_id_position(handle::position_setting::position_type::right),
-            handle::position_setting::position_type::right);
+        auto right_position_setting =
+            page_handle->get_page_setting(page_handle->get_active_page_id_position(position_type::right),
+                position_type::right);
         if (right_position_setting && !right_position_setting->slot_settings.empty() &&
             right_position_setting->slot_settings.front()->form) {
             is_right_two_handed = util::helper::is_two_handed(right_position_setting->slot_settings.front()->form);
@@ -384,17 +383,16 @@ namespace processing {
 
         handle::position_setting* position_setting;
         if (!is_right_two_handed) {
-            position_setting = page_handle->get_page_setting(
-                page_handle->get_active_page_id_position(handle::position_setting::position_type::left),
-                handle::position_setting::position_type::left);
+            position_setting =
+                page_handle->get_page_setting(page_handle->get_active_page_id_position(position_type::left),
+                    position_type::left);
             setting_execute::execute_settings(position_setting->slot_settings);
         }
 
         setting_execute::execute_settings(right_position_setting->slot_settings);
 
-        position_setting = page_handle->get_page_setting(
-            page_handle->get_active_page_id_position(handle::position_setting::position_type::top),
-            handle::position_setting::position_type::top);
+        position_setting = page_handle->get_page_setting(page_handle->get_active_page_id_position(position_type::top),
+            position_type::top);
         setting_execute::execute_settings(position_setting->slot_settings, true);
 
         logger::trace("done equip for first set"sv);
@@ -421,10 +419,10 @@ namespace processing {
         //hardcode left for now, because we just need it there
         auto left_reequip_called = false;
         const auto key_handle = handle::key_position_handle::get_singleton();
-        key_handle->set_position_lock(handle::position_setting::position_type::left, a_equipped ? 1 : 0);
+        key_handle->set_position_lock(position_type::left, a_equipped ? 1 : 0);
         const auto page_handle = handle::page_handle::get_singleton();
-        auto page = page_handle->get_active_page_id_position(handle::position_setting::position_type::left);
-        auto setting = page_handle->get_page_setting(page, handle::position_setting::position_type::left);
+        auto page = page_handle->get_active_page_id_position(position_type::left);
+        auto setting = page_handle->get_page_setting(page, position_type::left);
         //use settings here
         if (setting && setting->draw_setting && setting->draw_setting->icon_transparency) {
             block_location(setting, a_equipped);
@@ -547,8 +545,8 @@ namespace processing {
                     static_cast<uint32_t>(a_position_setting->position)));
         } else {
             a_slot_setting->form = nullptr;
-            a_slot_setting->type = handle::slot_setting::slot_type::empty;
-            a_slot_setting->action = handle::slot_setting::acton_type::default_action;
+            a_slot_setting->type = slot_type::empty;
+            a_slot_setting->action = handle::slot_setting::action_type::default_action;
 
             std::vector<data_helper*> data;
 

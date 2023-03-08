@@ -239,7 +239,7 @@ namespace papyrus {
             item->left = left;
             item->form = RE::TESForm::LookupByID(util::unarmed);  //unarmed
             item->two_handed = false;
-            item->action_type = handle::slot_setting::acton_type::default_action;
+            item->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item);
 
         } else {
@@ -249,14 +249,14 @@ namespace papyrus {
             item->form = RE::TESForm::LookupByID(util::unarmed);
             item->left = false;
             item->type = handle::slot_setting::slot_type::weapon;
-            item->action_type = handle::slot_setting::acton_type::default_action;
+            item->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item);
 
             const auto item2 = new data_helper();
             item2->form = RE::TESForm::LookupByID(util::unarmed);
             item2->left = true;
             item2->type = handle::slot_setting::slot_type::weapon;
-            item2->action_type = handle::slot_setting::acton_type::default_action;
+            item2->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item2);
         }
         processing::set_setting_data::set_single_slot(next_page, position, data);

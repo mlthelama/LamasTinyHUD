@@ -111,19 +111,19 @@ namespace util {
 
     handle::slot_setting::slot_type helper::get_type(RE::TESForm*& a_form) {
         if (!a_form) {
-            return handle::slot_setting::slot_type::empty;
+            return slot_type::empty;
         }
 
         if (a_form->IsWeapon()) {
             if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); !weapon->IsBound()) {
-                return handle::slot_setting::slot_type::weapon;
+                return slot_type::weapon;
             }
         }
         if (a_form->IsArmor()) {
             const auto armor = a_form->As<RE::TESObjectARMO>();
             //GetSlotMask 49
             if (armor->IsShield()) {
-                return handle::slot_setting::slot_type::shield;
+                return slot_type::shield;
             } else if (armor->IsClothing() &&
                        (armor->HasKeywordString("_WL_Lantern") &&
                                armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kNone) &&
@@ -131,40 +131,40 @@ namespace util {
                            armor->HasPartOf(RE::BIPED_MODEL::BipedObjectSlot::kModPelvisPrimary))) {
                 //Wearable Lanterns got keyword _WL_Lantern
                 //Simple Wearable Lanterns do not have a keyword, but will be equipped on 49 (30+19)
-                return handle::slot_setting::slot_type::lantern;
+                return slot_type::lantern;
             } else if (armor->IsClothing() && armor->HasKeywordString("BOS_DisplayMaskKeyword")) {
-                return handle::slot_setting::slot_type::mask;
+                return slot_type::mask;
             }
-            return handle::slot_setting::slot_type::armor;
+            return slot_type::armor;
         }
         if (a_form->Is(RE::FormType::Spell)) {
             const auto spell_type = a_form->As<RE::SpellItem>()->GetSpellType();
             if (spell_type == RE::MagicSystem::SpellType::kSpell ||
                 spell_type == RE::MagicSystem::SpellType::kLeveledSpell) {
-                return handle::slot_setting::slot_type::magic;
+                return slot_type::magic;
             }
             if (spell_type == RE::MagicSystem::SpellType::kLesserPower ||
                 spell_type == RE::MagicSystem::SpellType::kPower) {
-                return handle::slot_setting::slot_type::power;
+                return slot_type::power;
             }
         }
         if (a_form->Is(RE::FormType::Shout)) {
-            return handle::slot_setting::slot_type::shout;
+            return slot_type::shout;
         }
         if (a_form->Is(RE::FormType::AlchemyItem)) {
-            return handle::slot_setting::slot_type::consumable;
+            return slot_type::consumable;
         }
         if (a_form->Is(RE::FormType::Scroll)) {
-            return handle::slot_setting::slot_type::scroll;
+            return slot_type::scroll;
         }
         if (a_form->Is(RE::FormType::Ammo)) {
-            return handle::slot_setting::slot_type::misc;
+            return slot_type::misc;
         }
         if (a_form->Is(RE::FormType::Light)) {
-            return handle::slot_setting::slot_type::light;
+            return slot_type::light;
         }
 
-        return handle::slot_setting::slot_type::misc;
+        return slot_type::misc;
     }
 
     void helper::rewrite_settings() {
@@ -222,8 +222,8 @@ namespace util {
         logger::trace("done rewriting."sv);
     }
 
-    bool helper::can_instant_cast(RE::TESForm* a_form, const handle::slot_setting::slot_type a_type) {
-        if (a_type == handle::slot_setting::slot_type::magic) {
+    bool helper::can_instant_cast(RE::TESForm* a_form, const slot_type a_type) {
+        if (a_type == slot_type::magic) {
             const auto spell = a_form->As<RE::SpellItem>();
             if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell ||
                 spell->GetSpellType() == RE::MagicSystem::SpellType::kLeveledSpell) {
@@ -233,13 +233,13 @@ namespace util {
             }
             return false;
         }
-        if (a_type == handle::slot_setting::slot_type::power) {
+        if (a_type == slot_type::power) {
             return false;
         }
-        if (a_type == handle::slot_setting::slot_type::scroll) {
+        if (a_type == slot_type::scroll) {
             return true;
         }
-        if (a_type == handle::slot_setting::slot_type::shout) {
+        if (a_type == slot_type::shout) {
             return false;
         }
 
@@ -381,39 +381,39 @@ namespace util {
 
         return display_string.empty() ? a_str : display_string;
     }
-    bool helper::clean_type_allowed(handle::slot_setting::slot_type a_type) {
+    bool helper::clean_type_allowed(slot_type a_type) {
         if (!config::mcm_setting::get_auto_cleanup()) {
             return false;
         }
         auto allowed = false;
         switch (a_type) {
-            case handle::slot_setting::slot_type::weapon:
+            case slot_type::weapon:
                 allowed = config::mcm_setting::get_clean_weapon();
                 break;
-            case handle::slot_setting::slot_type::magic:
-            case handle::slot_setting::slot_type::power:
+            case slot_type::magic:
+            case slot_type::power:
                 allowed = config::mcm_setting::get_clean_spell();
                 break;
-            case handle::slot_setting::slot_type::shield:
-            case handle::slot_setting::slot_type::armor:
-            case handle::slot_setting::slot_type::lantern:
-            case handle::slot_setting::slot_type::mask:
+            case slot_type::shield:
+            case slot_type::armor:
+            case slot_type::lantern:
+            case slot_type::mask:
                 allowed = config::mcm_setting::get_clean_armor();
                 break;
-            case handle::slot_setting::slot_type::shout:
+            case slot_type::shout:
                 allowed = config::mcm_setting::get_clean_shout();
                 break;
-            case handle::slot_setting::slot_type::consumable:
+            case slot_type::consumable:
                 allowed = config::mcm_setting::get_clean_alchemy_item();
                 break;
-            case handle::slot_setting::slot_type::scroll:
+            case slot_type::scroll:
                 allowed = config::mcm_setting::get_clean_scroll();
                 break;
-            case handle::slot_setting::slot_type::light:
+            case slot_type::light:
                 allowed = config::mcm_setting::get_clean_light();
                 break;
-            case handle::slot_setting::slot_type::empty:
-            case handle::slot_setting::slot_type::misc:
+            case slot_type::empty:
+            case slot_type::misc:
                 allowed = false;
                 break;
         }
@@ -425,12 +425,12 @@ namespace util {
         const std::vector<data_helper*>& a_data,
         const uint32_t a_hand) {
         const auto section = get_section_name_for_page_position(a_page, a_position);
-        auto type = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
+        auto type = static_cast<uint32_t>(slot_type::empty);
         std::string form_string;
         uint32_t action = 0;
         RE::ActorValue actor_value = RE::ActorValue::kNone;
 
-        auto type_left = static_cast<uint32_t>(handle::slot_setting::slot_type::empty);
+        auto type_left = static_cast<uint32_t>(slot_type::empty);
         std::string form_string_left;
         uint32_t action_left = 0;
 

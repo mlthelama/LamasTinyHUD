@@ -36,7 +36,7 @@ namespace equip {
     void equip_slot::un_equip_hand(RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         const action_type a_action) {
-        if (a_action != handle::slot_setting::acton_type::un_equip) {
+        if (a_action != handle::slot_setting::action_type::un_equip) {
             return;
         }
         RE::TESForm* equipped_object = nullptr;

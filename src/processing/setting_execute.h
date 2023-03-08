@@ -5,6 +5,10 @@
 namespace processing {
     class setting_execute {
     public:
+        using position_type = handle::position_setting::position_type;
+        using slot_type = handle::slot_setting::slot_type;
+        using action_type = handle::slot_setting::action_type;
+
         static void execute_settings(const std::vector<handle::slot_setting*>& a_slots,
             bool a_only_equip = false,
             bool a_only_instant = false);

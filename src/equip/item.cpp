@@ -16,7 +16,7 @@ namespace equip {
 
         if (a_form->formID == util::unarmed) {
             logger::trace("Got unarmed, try to call un equip"sv);
-            equip_slot::un_equip_hand(a_slot, a_player, handle::slot_setting::acton_type::un_equip);
+            equip_slot::un_equip_hand(a_slot, a_player, handle::slot_setting::action_type::un_equip);
             return;
         }
 
@@ -87,7 +87,7 @@ namespace equip {
             //all we have are already equipped
             logger::warn("All Items we have of {} are equipped, return."sv, obj->GetName());
             //try to prevent the game to equip something else
-            equip_slot::un_equip_hand(a_slot, a_player, handle::slot_setting::acton_type::un_equip);
+            equip_slot::un_equip_hand(a_slot, a_player, handle::slot_setting::action_type::un_equip);
             return;
         }
 

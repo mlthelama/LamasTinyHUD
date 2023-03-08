@@ -3,7 +3,6 @@
 
 namespace handle {
     using mcm = config::mcm_setting;
-    using position = position_setting::position_type;
 
     key_position_handle* key_position_handle::get_singleton() {
         static key_position_handle singleton;
@@ -16,22 +15,21 @@ namespace handle {
             this->data_ = new key_position_handle_data();
         }
 
-        data_->key_position_map[mcm::get_top_action_key()] = position::top;
-        data_->key_position_map[mcm::get_right_action_key()] = position::right;
-        data_->key_position_map[mcm::get_bottom_action_key()] = position::bottom;
-        data_->key_position_map[mcm::get_left_action_key()] = position::left;
+        data_->key_position_map[mcm::get_top_action_key()] = position_type::top;
+        data_->key_position_map[mcm::get_right_action_key()] = position_type::right;
+        data_->key_position_map[mcm::get_bottom_action_key()] = position_type::bottom;
+        data_->key_position_map[mcm::get_left_action_key()] = position_type::left;
 
-        data_->position_key_map[position::top] = mcm::get_top_action_key();
-        data_->position_key_map[position::right] = mcm::get_right_action_key();
-        data_->position_key_map[position::bottom] = mcm::get_bottom_action_key();
-        data_->position_key_map[position::left] = mcm::get_left_action_key();
+        data_->position_key_map[position_type::top] = mcm::get_top_action_key();
+        data_->position_key_map[position_type::right] = mcm::get_right_action_key();
+        data_->position_key_map[position_type::bottom] = mcm::get_bottom_action_key();
+        data_->position_key_map[position_type::left] = mcm::get_left_action_key();
 
 
         logger::trace("done with init of position key map."sv);
     }
 
-    void key_position_handle::set_position_lock(const position_setting::position_type a_position,
-        const uint32_t a_locked) {
+    void key_position_handle::set_position_lock(const position_type a_position, const uint32_t a_locked) {
         if (!this->data_) {
             this->data_ = new key_position_handle_data();
         }
@@ -47,10 +45,10 @@ namespace handle {
             logger::trace("got position {} for key {}"sv, static_cast<uint32_t>(pos), a_key);
             return pos;
         }
-        return position::total;
+        return position_type::total;
     }
 
-    uint32_t key_position_handle::get_key_for_position(const position_setting::position_type a_position) const {
+    uint32_t key_position_handle::get_key_for_position(const position_type a_position) const {
         if (const key_position_handle_data* data = this->data_;
             data && !data->position_key_map.empty() && data->position_key_map.contains(a_position)) {
             const auto key = data->position_key_map.at(a_position);
@@ -60,7 +58,7 @@ namespace handle {
         return 0;
     }
 
-    bool key_position_handle::is_position_locked(const position_setting::position_type a_position) const {
+    bool key_position_handle::is_position_locked(const position_type a_position) const {
         if (const key_position_handle_data* data = this->data_;
             data && !data->position_lock_map.empty() && data->position_lock_map.contains(a_position)) {
             return data->position_lock_map.at(a_position) == 1;
