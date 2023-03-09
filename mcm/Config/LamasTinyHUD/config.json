@@ -256,8 +256,8 @@
                 {
                     "id": "sPage:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_Page",
-                    "help": "$LamasTinyHUD_Page_InfoText",
+                    "text": "$LamasTinyHUD_Pages_Page_OptionText",
+                    "help": "$LamasTinyHUD_Pages_Page_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {
@@ -268,8 +268,8 @@
                 {
                     "id": "sPosition:Page",
                     "type": "text",
-                    "text": "$LamasTinyHUD_Pages_Page_OptionText",
-                    "help": "$LamasTinyHUD_Pages_Page_InfoText",
+                    "text": "$LamasTinyHUD_Pages_Position_OptionText",
+                    "help": "$LamasTinyHUD_Pages_Position_InfoText",
                     "groupCondition": 1,
                     "groupBehavior": "disable",
                     "valueOptions": {

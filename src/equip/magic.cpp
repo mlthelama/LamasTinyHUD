@@ -22,15 +22,7 @@ namespace equip {
         }
 
         const auto spell = a_form->As<RE::SpellItem>();
-
-        //spell->avEffectSetting->data.dualCastScale
-        //maybe add option to dual cast
-        //and that it does consume mana
-        //spell->avEffectSetting->data.baseCost
-        /*logger::trace("dual cast scale {}, base cost {}"sv,
-            spell->avEffectSetting->data.dualCastScale,
-            spell->avEffectSetting->data.baseCost);*/
-
+        
         if (!a_player->HasSpell(spell)) {
             logger::warn("player does not have spell {}. return."sv, spell->GetName());
             return;
@@ -74,8 +66,27 @@ namespace equip {
             //might need to set some things
             //TODO make an animation to play here
             //a_player->NotifyAnimationGraph("RightCastSelf");
+            auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
+            auto target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
+
+            auto magnitude = 1.f;
+            auto effectiveness = 1.f;
+            if (auto* effect = spell->GetCostliestEffectItem()) {
+                magnitude = effect->GetMagnitude();
+            }
+            logger::trace("casting spell {}, magnitude {}, effecticeness {}"sv,
+                spell->GetName(),
+                fmt::format(FMT_STRING("{:.2f}"), magnitude),
+                fmt::format(FMT_STRING("{:.2f}"), effectiveness));
+
             actor->GetMagicCaster(get_casting_source(a_slot))
-                ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
+                ->CastSpellImmediate(spell,
+                    false,
+                    target,
+                    effectiveness,
+                    false,
+                    magnitude,
+                    is_self_target ? nullptr : actor);
         } else {
             const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();

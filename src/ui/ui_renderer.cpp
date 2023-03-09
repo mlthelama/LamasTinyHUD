@@ -26,10 +26,11 @@ namespace ui {
     static std::map<uint32_t, image> xbox_key_struct;
 
 
-    float fade = 1.0f;
-    bool fade_in = true;
-    float fade_out_timer = mcm::get_fade_timer_outside_combat();
+    auto fade = 1.0f;
+    auto fade_in = true;
+    auto fade_out_timer = mcm::get_fade_timer_outside_combat();
     ImFont* loaded_font;
+    auto tried_font_load = false;
 
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
@@ -103,7 +104,7 @@ namespace ui {
             return;
         }
 
-        if (!loaded_font) {
+        if (!loaded_font && !tried_font_load) {
             load_font();
         }
 
@@ -771,8 +772,8 @@ namespace ui {
     void ui_renderer::load_font() {
         std::string path = R"(Data\SKSE\Plugins\resources\font\)" + config::file_setting::get_font_file_name();
         auto file_path = std::filesystem::path(path);
-        logger::trace("Trying to load Font file {}"sv, path);
-
+        logger::trace("Need to load font {} from file {}"sv, config::file_setting::get_font_load(), path);
+        tried_font_load = true;
         if (config::file_setting::get_font_load() && std::filesystem::is_regular_file(file_path) &&
             ((file_path.extension() == ".ttf") || (file_path.extension() == ".otf"))) {
             ImGuiIO& io = ImGui::GetIO();
@@ -811,8 +812,6 @@ namespace ui {
                 logger::info("Custom Font {} loaded."sv, path);
                 return;
             }
-        } else {
-            loaded_font = ImGui::GetDefaultFont();
         }
     }
 

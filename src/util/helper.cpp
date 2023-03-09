@@ -404,7 +404,7 @@ namespace util {
         if (a_type == slot_type::scroll) {
             return true;
         }
-        
+
         if (a_type == slot_type::shout) {
             return false;
         }
