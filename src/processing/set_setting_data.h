@@ -42,5 +42,6 @@ namespace processing {
         static void look_for_ammo(bool a_crossbow);
         //easier to have both, first only needed to get the page, position. the second, so it is easier to have the form
         static void do_cleanup(handle::position_setting*& a_position_setting, handle::slot_setting*& a_slot_setting);
+        static bool clean_type_allowed(slot_type a_type);
     };
 }

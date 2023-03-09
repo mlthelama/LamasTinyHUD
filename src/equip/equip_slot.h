@@ -6,6 +6,7 @@ namespace equip {
     public:
         using action_type = handle::slot_setting::action_type;
 
+        //could be replaced with default object manager
         static RE::BGSEquipSlot* get_right_hand_slot();
         static RE::BGSEquipSlot* get_left_hand_slot();
         static RE::BGSEquipSlot* get_voice_slot();

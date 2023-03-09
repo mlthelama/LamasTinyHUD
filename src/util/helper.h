@@ -15,17 +15,13 @@ namespace util {
         static bool is_two_handed(RE::TESForm*& a_form);
         static slot_type get_type(RE::TESForm*& a_form);
         static void rewrite_settings();
-        static bool can_instant_cast(RE::TESForm* a_form, slot_type a_type);
-        static bool already_used(const RE::TESForm* a_form,
-            position_type a_position,
-            const std::vector<data_helper*>& a_config_data);
         static std::string get_section_name_for_page_position(uint32_t a_page, uint32_t a_position);
         static RE::ActorValue get_actor_value_effect_from_potion(RE::TESForm* a_form, bool a_check = true);
         static std::string get_form_name_string_for_section(const std::string& a_str);
-        static bool clean_type_allowed(slot_type a_type);
         static void write_setting_to_file(uint32_t a_page,
             uint32_t a_position,
             const std::vector<data_helper*>& a_data,
             uint32_t a_hand);
+        static bool can_instant_cast(RE::TESForm* a_form, slot_type a_type);
     };
 }

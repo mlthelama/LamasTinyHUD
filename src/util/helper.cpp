@@ -222,87 +222,6 @@ namespace util {
         logger::trace("done rewriting."sv);
     }
 
-    bool helper::can_instant_cast(RE::TESForm* a_form, const slot_type a_type) {
-        if (a_type == slot_type::magic) {
-            const auto spell = a_form->As<RE::SpellItem>();
-            if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell ||
-                spell->GetSpellType() == RE::MagicSystem::SpellType::kLeveledSpell) {
-                if (spell->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        if (a_type == slot_type::power) {
-            return false;
-        }
-        if (a_type == slot_type::scroll) {
-            return true;
-        }
-        if (a_type == slot_type::shout) {
-            return false;
-        }
-
-        return false;
-    }
-
-    bool helper::already_used(const RE::TESForm* a_form,
-        const handle::position_setting::position_type a_position,
-        const std::vector<data_helper*>& a_config_data) {
-        if (!a_form) {
-            return false;
-        }
-        //get pages and check for the form id in the position we are editing
-        const auto page_handle = handle::page_handle::get_singleton();
-
-        uint32_t max_count = 1;
-        uint32_t count = 0;
-        if (a_form->IsWeapon() || a_form->IsArmor()) {
-            //check item count in inventory
-            max_count = util::player::get_inventory_count(a_form);
-        }
-
-        auto actor_value = RE::ActorValue::kNone;
-        if (a_form->Is(RE::FormType::AlchemyItem)) {
-            actor_value = get_actor_value_effect_from_potion(const_cast<RE::TESForm*>(a_form));
-        }
-
-        auto pages = page_handle->get_pages();
-        if (!pages.empty()) {
-            for (auto& [page, page_settings] : pages) {
-                for (auto [position, page_setting] : page_settings) {
-                    if (position == a_position) {
-                        for (const auto setting : page_setting->slot_settings) {
-                            if (setting &&
-                                ((setting->form && setting->form->formID == a_form->formID) ||
-                                    (setting->actor_value == actor_value && actor_value != RE::ActorValue::kNone))) {
-                                count++;
-                                if (max_count == count) {
-                                    logger::trace("Item already {} time(s) used. return."sv, count);
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        if (!a_config_data.empty()) {
-            for (const auto data_item : a_config_data) {
-                if ((data_item->form && data_item->form->formID == a_form->formID) ||
-                    (data_item->actor_value == actor_value && actor_value != RE::ActorValue::kNone)) {
-                    count++;
-                    if (max_count == count) {
-                        logger::trace("Item already {} time(s) used. return."sv, count);
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
     std::string helper::get_section_name_for_page_position(const uint32_t a_page, const uint32_t a_position) {
         //for now, I will just generate it
         return fmt::format("Page{}Position{}", a_page, a_position);
@@ -380,44 +299,6 @@ namespace util {
         }
 
         return display_string.empty() ? a_str : display_string;
-    }
-    bool helper::clean_type_allowed(slot_type a_type) {
-        if (!config::mcm_setting::get_auto_cleanup()) {
-            return false;
-        }
-        auto allowed = false;
-        switch (a_type) {
-            case slot_type::weapon:
-                allowed = config::mcm_setting::get_clean_weapon();
-                break;
-            case slot_type::magic:
-            case slot_type::power:
-                allowed = config::mcm_setting::get_clean_spell();
-                break;
-            case slot_type::shield:
-            case slot_type::armor:
-            case slot_type::lantern:
-            case slot_type::mask:
-                allowed = config::mcm_setting::get_clean_armor();
-                break;
-            case slot_type::shout:
-                allowed = config::mcm_setting::get_clean_shout();
-                break;
-            case slot_type::consumable:
-                allowed = config::mcm_setting::get_clean_alchemy_item();
-                break;
-            case slot_type::scroll:
-                allowed = config::mcm_setting::get_clean_scroll();
-                break;
-            case slot_type::light:
-                allowed = config::mcm_setting::get_clean_light();
-                break;
-            case slot_type::empty:
-            case slot_type::misc:
-                allowed = false;
-                break;
-        }
-        return allowed;
     }
 
     void helper::write_setting_to_file(const uint32_t a_page,
@@ -497,5 +378,29 @@ namespace util {
             action_left,
             static_cast<int>(actor_value));
         config::custom_setting::read_setting();
+    }
+
+    bool helper::can_instant_cast(RE::TESForm* a_form, const slot_type a_type) {
+        if (a_type == slot_type::magic) {
+            const auto spell = a_form->As<RE::SpellItem>();
+            if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell ||
+                spell->GetSpellType() == RE::MagicSystem::SpellType::kLeveledSpell) {
+                if (spell->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (a_type == slot_type::power) {
+            return false;
+        }
+        if (a_type == slot_type::scroll) {
+            return true;
+        }
+        if (a_type == slot_type::shout) {
+            return false;
+        }
+
+        return false;
     }
 }

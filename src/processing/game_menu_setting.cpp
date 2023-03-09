@@ -4,6 +4,7 @@
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
+#include "util/player/player.h"
 #include "util/string_util.h"
 
 namespace processing {
@@ -33,7 +34,7 @@ namespace processing {
 
         const auto item = is_suitable_for_position(a_form, a_position);
         if (item->form || (a_form && item->actor_value != RE::ActorValue::kNone)) {
-            if (check_duplicates && util::helper::already_used(a_form, a_position, data)) {
+            if (check_duplicates && already_used(a_form, a_position, data)) {
                 auto log_string =
                     fmt::format("Item {} already used in that position", a_form ? a_form->GetName() : "null");
                 write_notification(log_string);
@@ -371,4 +372,60 @@ namespace processing {
 
     void game_menu_setting::write_notification(const std::string& a_string) { RE::DebugNotification(a_string.c_str()); }
 
+    bool game_menu_setting::already_used(const RE::TESForm* a_form,
+        const handle::position_setting::position_type a_position,
+        const std::vector<data_helper*>& a_config_data) {
+        if (!a_form) {
+            return false;
+        }
+        //get pages and check for the form id in the position we are editing
+        const auto page_handle = handle::page_handle::get_singleton();
+
+        uint32_t max_count = 1;
+        uint32_t count = 0;
+        if (a_form->IsWeapon() || a_form->IsArmor()) {
+            //check item count in inventory
+            max_count = util::player::get_inventory_count(a_form);
+        }
+
+        auto actor_value = RE::ActorValue::kNone;
+        if (a_form->Is(RE::FormType::AlchemyItem)) {
+            actor_value = util::helper::get_actor_value_effect_from_potion(const_cast<RE::TESForm*>(a_form));
+        }
+
+        auto pages = page_handle->get_pages();
+        if (!pages.empty()) {
+            for (auto& [page, page_settings] : pages) {
+                for (auto [position, page_setting] : page_settings) {
+                    if (position == a_position) {
+                        for (const auto setting : page_setting->slot_settings) {
+                            if (setting &&
+                                ((setting->form && setting->form->formID == a_form->formID) ||
+                                    (setting->actor_value == actor_value && actor_value != RE::ActorValue::kNone))) {
+                                count++;
+                                if (max_count == count) {
+                                    logger::trace("Item already {} time(s) used. return."sv, count);
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!a_config_data.empty()) {
+            for (const auto data_item : a_config_data) {
+                if ((data_item->form && data_item->form->formID == a_form->formID) ||
+                    (data_item->actor_value == actor_value && actor_value != RE::ActorValue::kNone)) {
+                    count++;
+                    if (max_count == count) {
+                        logger::trace("Item already {} time(s) used. return."sv, count);
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

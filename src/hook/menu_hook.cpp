@@ -75,7 +75,8 @@ namespace hook {
                     }
 
                     if (need_to_overwrite(button, user_event, control_map) &&
-                        (binding->get_is_edit_down() || binding->get_is_edit_left_down())) {
+                        (binding->get_is_edit_down() || binding->get_is_edit_left_down() ||
+                            binding->get_is_remove_down())) {
                         button->idCode = common::k_invalid;
                         button->userEvent = "";
                     }

@@ -17,5 +17,8 @@ namespace processing {
     private:
         static data_helper* is_suitable_for_position(RE::TESForm*& a_form, position_type a_position);
         static void write_notification(const std::string& a_string);
+        static bool already_used(const RE::TESForm* a_form,
+            position_type a_position,
+            const std::vector<data_helper*>& a_config_data);
     };
 }

@@ -270,7 +270,7 @@ namespace processing {
                             setting->item_count,
                             a_count);
                         block_location(page_setting, setting->item_count == 0);
-                        if (setting->item_count == 0 && util::helper::clean_type_allowed(setting->type)) {
+                        if (setting->item_count == 0 && clean_type_allowed(setting->type)) {
                             do_cleanup(page_setting, setting);
                             if (mcm::get_elden_demon_souls()) {
                                 util::helper::rewrite_settings();
@@ -595,7 +595,7 @@ namespace processing {
                     static_cast<uint32_t>(page_setting->position));
                 for (auto setting : page_setting->slot_settings) {
                     if (setting->form || (!setting->form && setting->actor_value != RE::ActorValue::kNone)) {
-                        if (util::helper::clean_type_allowed(setting->type)) {
+                        if (clean_type_allowed(setting->type)) {
                             auto has_it = util::player::has_item_or_spell(setting->form);
                             if ((!setting->form && setting->actor_value != RE::ActorValue::kNone &&
                                     setting->item_count == 0) ||
@@ -630,10 +630,51 @@ namespace processing {
                         if (config::mcm_setting::get_elden_demon_souls()) {
                             util::helper::rewrite_settings();
                         }
+                        write_empty_config_and_init_active();
                         process_config_data();
+                        get_actives_and_equip();
                     }
                 }
             }
         }
+    }
+
+    bool set_setting_data::clean_type_allowed(slot_type a_type) {
+        if (!config::mcm_setting::get_auto_cleanup()) {
+            return false;
+        }
+        auto allowed = false;
+        switch (a_type) {
+            case slot_type::weapon:
+                allowed = config::mcm_setting::get_clean_weapon();
+                break;
+            case slot_type::magic:
+            case slot_type::power:
+                allowed = config::mcm_setting::get_clean_spell();
+                break;
+            case slot_type::shield:
+            case slot_type::armor:
+            case slot_type::lantern:
+            case slot_type::mask:
+                allowed = config::mcm_setting::get_clean_armor();
+                break;
+            case slot_type::shout:
+                allowed = config::mcm_setting::get_clean_shout();
+                break;
+            case slot_type::consumable:
+                allowed = config::mcm_setting::get_clean_alchemy_item();
+                break;
+            case slot_type::scroll:
+                allowed = config::mcm_setting::get_clean_scroll();
+                break;
+            case slot_type::light:
+                allowed = config::mcm_setting::get_clean_light();
+                break;
+            case slot_type::empty:
+            case slot_type::misc:
+                allowed = false;
+                break;
+        }
+        return allowed;
     }
 }
