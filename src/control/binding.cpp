@@ -70,5 +70,4 @@ namespace control {
         logger::trace("setting remove down to {}", a_down);
         is_remove_down_ = a_down;
     }
-
 }  // control

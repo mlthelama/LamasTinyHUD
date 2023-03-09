@@ -39,10 +39,12 @@ namespace equip {
         if (a_action != handle::slot_setting::action_type::un_equip) {
             return;
         }
+
         RE::TESForm* equipped_object = nullptr;
         if (a_slot == get_left_hand_slot()) {
             equipped_object = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
         }
+
         if (a_slot == get_right_hand_slot()) {
             equipped_object = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         }
@@ -64,15 +66,18 @@ namespace equip {
                     did_call = true;
                 }
             }
+
             if (equipped_object->Is(RE::FormType::Spell)) {
                 un_equip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
                 did_call = true;
             }
+
             if (equipped_object->Is(RE::FormType::Light)) {
                 const auto light = equipped_object->As<RE::TESObjectLIGH>();
                 equip_manager->UnequipObject(a_player, light, nullptr, 1, a_slot);
                 did_call = true;
             }
+
             logger::trace("called un equip for {}, left {}, did call {}"sv,
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot(),
@@ -133,5 +138,4 @@ namespace equip {
         }
         return worn;
     }
-
 }

@@ -3,7 +3,6 @@
 #include "data/config_writer_helper.h"
 #include "equip/equip_slot.h"
 #include "handle/data/page/position_setting.h"
-#include "handle/page_handle.h"
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "string_util.h"
@@ -21,7 +20,6 @@ namespace util {
             form->GetName(),
             string_util::int_to_hex(form->GetFormID()),
             form->GetFormID());
-
 
         if (form->IsDynamicForm()) {
             form_string = fmt::format("{}{}{}", dynamic_name, delimiter, string_util::int_to_hex(form->GetFormID()));
@@ -99,6 +97,7 @@ namespace util {
                 return true;
             }
         }
+
         if (a_form->IsWeapon()) {
             if (const auto weapon = a_form->As<RE::TESObjectWEAP>();
                 weapon->IsTwoHandedAxe() || weapon->IsTwoHandedSword() || weapon->IsBow() || weapon->IsCrossbow()) {
@@ -119,6 +118,7 @@ namespace util {
                 return slot_type::weapon;
             }
         }
+
         if (a_form->IsArmor()) {
             const auto armor = a_form->As<RE::TESObjectARMO>();
             //GetSlotMask 49
@@ -137,6 +137,7 @@ namespace util {
             }
             return slot_type::armor;
         }
+
         if (a_form->Is(RE::FormType::Spell)) {
             const auto spell_type = a_form->As<RE::SpellItem>()->GetSpellType();
             if (spell_type == RE::MagicSystem::SpellType::kSpell ||
@@ -148,18 +149,23 @@ namespace util {
                 return slot_type::power;
             }
         }
+
         if (a_form->Is(RE::FormType::Shout)) {
             return slot_type::shout;
         }
+
         if (a_form->Is(RE::FormType::AlchemyItem)) {
             return slot_type::consumable;
         }
+
         if (a_form->Is(RE::FormType::Scroll)) {
             return slot_type::scroll;
         }
+
         if (a_form->Is(RE::FormType::Ammo)) {
             return slot_type::misc;
         }
+
         if (a_form->Is(RE::FormType::Light)) {
             return slot_type::light;
         }
@@ -231,15 +237,14 @@ namespace util {
         if (!a_form->Is(RE::FormType::AlchemyItem) || (!config::mcm_setting::get_group_potions() && a_check)) {
             return RE::ActorValue::kNone;
         }
-        auto alchemy_potion = a_form->As<RE::AlchemyItem>();
 
+        auto alchemy_potion = a_form->As<RE::AlchemyItem>();
         if (alchemy_potion->IsFood() || alchemy_potion->IsPoison()) {
             return RE::ActorValue::kNone;
         }
 
         const auto effect = alchemy_potion->GetCostliestEffectItem()->baseEffect;
         auto actor_value = effect->GetMagickSkill();
-
         if (actor_value == RE::ActorValue::kNone) {
             actor_value = effect->data.primaryAV;
         }
@@ -391,12 +396,15 @@ namespace util {
             }
             return false;
         }
+
         if (a_type == slot_type::power) {
             return false;
         }
+
         if (a_type == slot_type::scroll) {
             return true;
         }
+        
         if (a_type == slot_type::shout) {
             return false;
         }

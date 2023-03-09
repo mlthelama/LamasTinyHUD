@@ -1,7 +1,6 @@
 #include "common.h"
 
 namespace control {
-
     void common::get_key_id(const RE::ButtonEvent* a_button, uint32_t& a_key) {
         switch (a_button->device.get()) {
             case RE::INPUT_DEVICE::kMouse:

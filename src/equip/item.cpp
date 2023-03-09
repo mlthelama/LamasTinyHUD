@@ -57,12 +57,14 @@ namespace equip {
             //update ui in this case
             return;
         }
+
         const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
         if (left && obj_left && obj_left->formID == obj->formID) {
             logger::debug("Object Left {} is already where it should be already equipped. return."sv, obj->GetName());
             return;
         }
+
         if (!left && obj_right && obj_right->formID == obj->formID) {
             logger::debug("Object Right {} is already where it should be already equipped. return."sv, obj->GetName());
             return;
@@ -169,6 +171,7 @@ namespace equip {
                 equipped_object->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
                 a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
             }
+
             auto equipped_object_left = a_player->GetEquippedEntryData(true);
             if (equipped_object_left && equipped_object_left->object->IsWeapon() &&
                 !equipped_object_left->IsPoisoned()) {
@@ -191,7 +194,6 @@ namespace equip {
 
     void item::equip_ammo(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player) {
         logger::trace("try to equip {}"sv, a_form->GetName());
-
 
         RE::TESBoundObject* obj = nullptr;
         auto left = 0;
@@ -222,6 +224,7 @@ namespace equip {
     void item::un_equip_ammo() {
         logger::debug("check if we need to un equip ammo"sv);
         auto player = RE::PlayerCharacter::GetSingleton();
+
         auto obj = player->GetCurrentAmmo();
         if (!obj || !obj->IsAmmo()) {
             return;
@@ -263,6 +266,7 @@ namespace equip {
         for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {
             const auto& [num_items, entry] = inv_data;
+
             auto alchemy_item = item->As<RE::AlchemyItem>();
             if (alchemy_item->IsPoison() || alchemy_item->IsFood()) {
                 continue;
@@ -290,6 +294,7 @@ namespace equip {
                 if (duration == 0) {
                     duration = 1;
                 }
+                
                 auto max_healed = magnitude * duration;
                 if (max_healed >= (missing * min_perfect) && max_healed <= (missing * max_perfect)) {
                     logger::trace("found potion {}, magnitude * duration {}"sv,

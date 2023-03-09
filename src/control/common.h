@@ -1,7 +1,6 @@
 #pragma once
 
 namespace control {
-
     class common {
     public:
         enum : uint32_t {
@@ -19,5 +18,4 @@ namespace control {
     private:
         static uint32_t get_gamepad_index(RE::BSWin32GamepadDevice::Key a_key);
     };
-
 }  // control
