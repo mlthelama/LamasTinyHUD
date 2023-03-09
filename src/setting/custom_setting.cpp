@@ -2,7 +2,6 @@
 #include "file_setting.h"
 #include "mcm_setting.h"
 #include "util/constant.h"
-#include <SimpleIni.h>
 
 namespace config {
     CSimpleIniA custom_ini;
@@ -76,14 +75,14 @@ namespace config {
 
     void custom_setting::write_slot_action_by_section(const std::string& a_section, const uint32_t a_action) {
         read_setting();
-        custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", a_action);
+        custom_ini.SetLongValue(a_section.c_str(), "uSlotAction", static_cast<long>(a_action));
 
         save_setting();
     }
 
     void custom_setting::write_slot_action_left_by_section(const std::string& a_section, const uint32_t a_action) {
         read_setting();
-        custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", a_action);
+        custom_ini.SetLongValue(a_section.c_str(), "uSlotActionLeft", static_cast<long>(a_action));
 
         save_setting();
     }
@@ -117,16 +116,16 @@ namespace config {
 
         reset_section(section);
 
-        custom_ini.SetLongValue(section, "uPage", a_page);
-        custom_ini.SetLongValue(section, "uPosition", a_position);
-        custom_ini.SetLongValue(section, "uType", a_type);
+        custom_ini.SetLongValue(section, "uPage", static_cast<long>(a_page));
+        custom_ini.SetLongValue(section, "uPosition", static_cast<long>(a_position));
+        custom_ini.SetLongValue(section, "uType", static_cast<long>(a_type));
         custom_ini.SetValue(section, "sSelectedItemForm", a_form.c_str());
-        custom_ini.SetLongValue(section, "uSlotAction", a_action);
-        custom_ini.SetLongValue(section, "uHandSelection", a_hand);
+        custom_ini.SetLongValue(section, "uSlotAction", static_cast<long>(a_action));
+        custom_ini.SetLongValue(section, "uHandSelection", static_cast<long>(a_hand));
         custom_ini.SetLongValue(section, "iEffectActorValue", a_effect_actor_value);
-        custom_ini.SetLongValue(section, "uTypeLeft", a_type_left);
+        custom_ini.SetLongValue(section, "uTypeLeft", static_cast<long>(a_type_left));
         custom_ini.SetValue(section, "sSelectedItemFormLeft", a_form_left.c_str());
-        custom_ini.SetLongValue(section, "uSlotActionLeft", a_action_left);
+        custom_ini.SetLongValue(section, "uSlotActionLeft", static_cast<long>(a_action_left));
 
         save_setting();
     }

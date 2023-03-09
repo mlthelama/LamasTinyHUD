@@ -1,17 +1,29 @@
 #pragma once
 
-// ReSharper disable once CppUnusedIncludeDirective
-#include "RE/Skyrim.h"
-#include "SKSE/SKSE.h"
+#define STB_IMAGE_IMPLEMENTATION
+#define IMGUI_DEFINE_MATH_OPERATORS
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 
-#pragma warning(push)
-#ifdef NDEBUG
+#include <RE/Skyrim.h>
+#include <SKSE/SKSE.h>
+
 #include <spdlog/sinks/basic_file_sink.h>
-#else
-#include <spdlog/sinks/msvc_sink.h>
-#endif
-#pragma warning(pop)
 
+#include <SimpleIni.h>
+#include <algorithm>
+#include <cctype>
+#include <d3d11.h>
+#include <dxgi.h>
+#include <imgui.h>
+#include <imgui_impl_dx11.h>
+#include <imgui_impl_win32.h>
+#include <imgui_internal.h>
+#include <locale>
+#include <windows.h>
+#include <winuser.h>
+
+namespace logger = SKSE::log;
 using namespace std::literals;
 
 namespace stl {
@@ -24,8 +36,6 @@ namespace stl {
         T::func = trampoline.write_call<5>(hook.address(), T::thunk);
     }
 }
-
-namespace logger = SKSE::log;
 
 #define EXTERN_C extern "C"
 

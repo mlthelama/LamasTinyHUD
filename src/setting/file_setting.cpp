@@ -1,16 +1,15 @@
 ﻿#include "file_setting.h"
-#include "custom_setting.h"
 #include "util/constant.h"
-#include <SimpleIni.h>
 
 namespace config {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
 
     CSimpleIniA ini;
 
-    static int log_level;
+    static int is_debug;
     static bool draw_key_background;
 
+    static bool font_load;
     static std::string font_file_name;
     static float font_size;
     static bool font_chinese_full;
@@ -24,6 +23,8 @@ namespace config {
     static std::string default_config;
     static std::string elden_config;
 
+    static bool show_ui;
+
     void file_setting::load_setting() {
         logger::info("reading dll ini files");
 
@@ -31,10 +32,11 @@ namespace config {
         ini.SetUnicode();
         ini.LoadFile(ini_path);
 
-        log_level = ini.GetLongValue("General", "iLogLevel", 2);
+        is_debug = ini.GetBoolValue("General", "bIsDebug", false);
 
         draw_key_background = ini.GetBoolValue("Image", "bDrawKeyBackground", false);
 
+        font_load = ini.GetBoolValue("Font", "bLoad", true);
         font_file_name = ini.GetValue("Font", "sName", "");
         font_size = static_cast<float>(ini.GetDoubleValue("Font", "fSize", 20));
         font_chinese_full = ini.GetBoolValue("Font", "bChineseFull", false);
@@ -48,12 +50,15 @@ namespace config {
         default_config = ini.GetValue("Config", "sDefault", (util::ini_default_name + util::ini_ending).c_str());
         elden_config = ini.GetValue("Config", "sElden", (util::ini_elden_name + util::ini_ending).c_str());
 
+        show_ui = ini.GetBoolValue("Interface", "bShowUI", true);
+
         logger::info("finished reading dll ini files. return.");
     }
 
-    int file_setting::get_log_level() { return log_level; }
+    int file_setting::get_is_debug() { return is_debug; }
     bool file_setting::get_draw_key_background() { return draw_key_background; }
 
+    bool file_setting::get_font_load() { return font_load; }
     std::string file_setting::get_font_file_name() { return font_file_name; }
     float file_setting::get_font_size() { return font_size; }
     bool file_setting::get_font_chinese_full() { return font_chinese_full; }
@@ -78,6 +83,13 @@ namespace config {
 
     void file_setting::set_config_elden(const std::string& a_config) {
         ini.SetValue("Config", "sElden", a_config.c_str());
+        save_setting();
+    }
+
+    bool file_setting::get_show_ui() { return show_ui; }
+
+    void file_setting::set_show_ui(bool a_show) {
+        ini.SetBoolValue("Interface", "bShowUI", a_show);
         save_setting();
     }
 }

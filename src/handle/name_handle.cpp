@@ -1,8 +1,6 @@
 ﻿#include "name_handle.h"
 #include "handle/data/data_helper.h"
-#include "setting/custom_setting.h"
 #include "util/constant.h"
-#include "util/string_util.h"
 
 namespace handle {
     name_handle* name_handle::get_singleton() {

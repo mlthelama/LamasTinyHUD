@@ -1,13 +1,12 @@
 ﻿#include "papyrus.h"
-#include "event/key_manager.h"
-#include "handle/setting/set_setting_data.h"
+#include "control/binding.h"
+#include "processing/set_setting_data.h"
 #include "setting/custom_setting.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "ui/ui_renderer.h"
 #include "util/constant.h"
 #include "util/helper.h"
-#include "util/string_util.h"
 
 namespace papyrus {
     static const char* mcm_name = "LamasTinyHUD_MCM";
@@ -18,7 +17,9 @@ namespace papyrus {
         if (config::mcm_setting::get_elden_demon_souls()) {
             util::helper::rewrite_settings();
         }
-        handle::set_setting_data::read_and_set_data();
+        processing::set_setting_data::read_and_set_data();
+        processing::set_setting_data::get_actives_and_equip();
+        control::binding::get_singleton()->set_all_keys();
         //In case the setting was changed
         ui::ui_renderer::set_fade(true, 1.f);
 
@@ -153,16 +154,9 @@ namespace papyrus {
         }
     }
 
-    void hud_mcm::init_config_for_position(RE::TESQuest*, uint32_t a_position) {
-        logger::trace("Got config Triggered for Position {}"sv, a_position);
-        const auto key_manager = event::key_manager::get_singleton();
-        key_manager->reset_edit();
-        key_manager->init_edit(a_position);
-    }
-
     std::vector<RE::BSFixedString> hud_mcm::get_config_files(RE::TESQuest*, bool a_elden) {
         logger::trace("getting config files for elden {}"sv, a_elden);
-        auto files = util::helper::search_for_config_files(a_elden);
+        auto files = search_for_config_files(a_elden);
         std::vector<RE::BSFixedString> file_list;
         for (const auto& file : files) {
             file_list.emplace_back(file);
@@ -198,7 +192,7 @@ namespace papyrus {
     }
 
     void hud_mcm::set_active_config(RE::TESQuest*, bool a_elden, uint32_t a_index) {
-        auto files = util::helper::search_for_config_files(a_elden);
+        auto files = search_for_config_files(a_elden);
         auto file = a_elden ? util::ini_elden_name + util::ini_ending : util::ini_default_name + util::ini_ending;
         if (!files.empty() && is_size_ok(a_index, files.size())) {
             file = files.at(a_index);
@@ -245,7 +239,7 @@ namespace papyrus {
             item->left = left;
             item->form = RE::TESForm::LookupByID(util::unarmed);  //unarmed
             item->two_handed = false;
-            item->action_type = handle::slot_setting::acton_type::default_action;
+            item->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item);
 
         } else {
@@ -255,17 +249,17 @@ namespace papyrus {
             item->form = RE::TESForm::LookupByID(util::unarmed);
             item->left = false;
             item->type = handle::slot_setting::slot_type::weapon;
-            item->action_type = handle::slot_setting::acton_type::default_action;
+            item->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item);
 
             const auto item2 = new data_helper();
             item2->form = RE::TESForm::LookupByID(util::unarmed);
             item2->left = true;
             item2->type = handle::slot_setting::slot_type::weapon;
-            item2->action_type = handle::slot_setting::acton_type::default_action;
+            item2->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item2);
         }
-        handle::set_setting_data::set_single_slot(next_page, position, data);
+        processing::set_setting_data::set_single_slot(next_page, position, data);
         logger::trace("Added Unarmed Setting Page {}, Position {}, Setting Count {}"sv,
             next_page,
             a_position,
@@ -295,7 +289,6 @@ namespace papyrus {
         a_vm->RegisterFunction("GetFormName", mcm_name, get_form_name);
         a_vm->RegisterFunction("ResetSection", mcm_name, reset_section);
         a_vm->RegisterFunction("SetActionValue", mcm_name, set_action_value);
-        a_vm->RegisterFunction("InitConfigForPosition", mcm_name, init_config_for_position);
         a_vm->RegisterFunction("GetConfigFiles", mcm_name, get_config_files);
         a_vm->RegisterFunction("GetActiveConfig", mcm_name, get_active_config);
         a_vm->RegisterFunction("SetConfig", mcm_name, set_config);
@@ -326,11 +319,11 @@ namespace papyrus {
     }
     bool hud_mcm::check_name(const std::string& a_name) {
         //check if the file exists
-        auto files = util::helper::search_for_config_files(true);
+        auto files = search_for_config_files(true);
         if (!files.empty() && std::find(files.begin(), files.end(), a_name) != files.end()) {
             return false;
         }
-        files = util::helper::search_for_config_files(false);
+        files = search_for_config_files(false);
         if (!files.empty() && std::find(files.begin(), files.end(), a_name) != files.end()) {
             return false;
         }
@@ -339,6 +332,32 @@ namespace papyrus {
         }
 
         return true;
+    }
+
+    std::vector<std::string> hud_mcm::search_for_config_files(bool a_elden) {
+        std::vector<std::string> file_list;
+        auto file_name = util::ini_default_name;
+        if (a_elden) {
+            file_name = util::ini_elden_name;
+        }
+
+        logger::trace("Will start looking in Path {}"sv, util::ini_path);
+        if (std::filesystem::is_directory(util::ini_path)) {
+            for (const auto& entry : std::filesystem::directory_iterator(util::ini_path)) {
+                if (is_regular_file(entry) && entry.path().extension() == util::ini_ending &&
+                    entry.path().filename().string().starts_with(file_name)) {
+                    logger::trace("found file {}, path {}"sv, entry.path().filename().string(), entry.path().string());
+                    if (!a_elden && entry.path().filename().string().starts_with(util::ini_elden_name)) {
+                        logger::warn("Skipping File {}, because it would also match for Elden"sv,
+                            entry.path().filename().string());
+                        continue;
+                    }
+                    file_list.push_back(entry.path().filename().string());
+                }
+            }
+        }
+        logger::trace("Got {} Files to return in Path"sv, file_list.size());
+        return file_list;
     }
 
     void Register() {

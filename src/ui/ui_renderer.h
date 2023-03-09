@@ -1,12 +1,7 @@
 ﻿#pragma once
+#include "animation_handler.h"
 #include "handle/data/page/position_setting.h"
 #include "image_path.h"
-
-#define WIN32_LEAN_AND_MEAN
-#include "animation_handler.h"
-#include <imgui.h>
-#include <windows.h>
-#include <winuser.h>
 
 namespace ui {
     struct image {
@@ -16,30 +11,13 @@ namespace ui {
     };
 
     class ui_renderer {
-        using position = handle::position_setting::position_type;
         using page_setting = handle::position_setting;
+        using slot_type = handle::slot_setting::slot_type;
+        using position_type = handle::position_setting::position_type;
 
         struct wnd_proc_hook {
             static LRESULT thunk(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param);
             static inline WNDPROC func;
-        };
-
-        struct d_3d_init_hook {
-            static void thunk();
-            static inline REL::Relocation<decltype(thunk)> func;
-
-            static constexpr auto id = REL::RelocationID(75595, 77226);
-            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00);  // VR unknown
-
-            static inline std::atomic<bool> initialized = false;
-        };
-
-        struct dxgi_present_hook {
-            static void thunk(std::uint32_t a_p1);
-            static inline REL::Relocation<decltype(thunk)> func;
-
-            static constexpr auto id = REL::RelocationID(75461, 77246);
-            static constexpr auto offset = REL::Offset(0x9);
         };
 
         ui_renderer();
@@ -83,7 +61,7 @@ namespace ui {
             uint32_t a_modify,
             uint32_t a_alpha,
             float a_duration);
-        static void draw_slots(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_slots(float a_x, float a_y, const std::map<position_type, page_setting*>& a_settings);
         static void draw_key(float a_x,
             float a_y,
             float a_scale_x,
@@ -91,7 +69,7 @@ namespace ui {
             float a_offset_x,
             float a_offset_y,
             uint32_t a_alpha = 255);
-        static void draw_keys(float a_x, float a_y, const std::map<position, page_setting*>& a_settings);
+        static void draw_keys(float a_x, float a_y, const std::map<position_type, page_setting*>& a_settings);
         static void draw_icon(float a_x,
             float a_y,
             float a_scale_x,
@@ -113,7 +91,6 @@ namespace ui {
             ID3D11ShaderResourceView** out_srv,
             std::int32_t& out_width,
             std::int32_t& out_height);
-        static void message_callback(SKSE::MessagingInterface::Message* msg);
 
         static inline bool show_ui_ = false;
         static inline ID3D11Device* device_ = nullptr;
@@ -126,12 +103,9 @@ namespace ui {
         static void load_animation_frames(std::string& file_path, std::vector<image>& frame_list);
 
         static image get_key_icon(uint32_t a_key);
-
         static void load_font();
 
     public:
-        static bool install();
-
         static float get_resolution_scale_width();
         static float get_resolution_scale_height();
 
@@ -142,5 +116,26 @@ namespace ui {
         static bool get_fade();
 
         static void toggle_show_ui();
+        static void set_show_ui(bool a_show);
+
+        static void load_all_images();
+
+        struct d_3d_init_hook {
+            static void thunk();
+            static inline REL::Relocation<decltype(thunk)> func;
+
+            static constexpr auto id = REL::RelocationID(75595, 77226);
+            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00);  // VR unknown
+
+            static inline std::atomic<bool> initialized = false;
+        };
+
+        struct dxgi_present_hook {
+            static void thunk(std::uint32_t a_p1);
+            static inline REL::Relocation<decltype(thunk)> func;
+
+            static constexpr auto id = REL::RelocationID(75461, 77246);
+            static constexpr auto offset = REL::Offset(0x9);
+        };
     };
 }

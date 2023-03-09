@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "handle/data/data_helper.h"
-#include <handle/data/page/position_setting.h>
+#include "handle/data/page/position_setting.h"
 
 namespace event {
     class equip_event final : public RE::BSTEventSink<RE::TESEquipEvent> {
@@ -23,13 +23,5 @@ namespace event {
     private:
         equip_event() = default;
         ~equip_event() override = default;
-
-        std::vector<data_helper*> data_;
-
-        void work_default(RE::TESForm*& a_form, bool a_equipped);
-        void work_elden_demon_souls(RE::TESForm*& a_form, bool a_equipped);
-        static void look_for_ammo(bool a_crossbow);
-        static void check_if_location_needs_block(RE::TESForm*& a_form, bool a_equipped);
-        static void reequip_left_hand_if_needed(handle::position_setting* a_setting);
     };
 }

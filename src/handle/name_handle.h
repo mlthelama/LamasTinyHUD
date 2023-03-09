@@ -6,7 +6,6 @@ namespace handle {
     public:
         static name_handle* get_singleton();
         void init_names(const std::vector<data_helper*>& data_helpers);
-
         [[nodiscard]] std::string get_item_name_string() const;
 
         name_handle(const name_handle&) = delete;

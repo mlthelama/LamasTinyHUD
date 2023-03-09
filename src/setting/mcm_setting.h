@@ -11,9 +11,12 @@ namespace config {
         static uint32_t get_left_action_key();
         static uint32_t get_toggle_key();
         static uint32_t get_show_hide_key();
+        static bool get_key_press_to_enter_edit();
+        static uint32_t get_edit_key();
+        static uint32_t get_left_or_overwrite_edit_key();
+        static uint32_t get_remove_key();
         static bool get_bottom_execute_key_combo_only();
         static uint32_t get_controller_set();
-        static float get_config_button_hold_time();
 
         static float get_hud_image_scale_width();
         static float get_hud_image_scale_height();
@@ -64,6 +67,9 @@ namespace config {
         static bool get_draw_current_items_text();
         static bool get_draw_item_name_text();
 
+        static uint32_t get_alpha_slot_animation();
+        static float get_duration_slot_animation();
+
         static bool get_action_check();
         static bool get_empty_hand_setting();
         static bool get_hide_outside_combat();
@@ -81,5 +87,15 @@ namespace config {
         static float get_potion_max_perfect();
         static bool get_disable_re_equip_of_actives();
         static bool get_sort_arrow_by_quantity();
+        static uint32_t get_apply_poison_charges();
+
+        static bool get_auto_cleanup();
+        static bool get_clean_armor();
+        static bool get_clean_weapon();
+        static bool get_clean_spell();
+        static bool get_clean_alchemy_item();
+        static bool get_clean_shout();
+        static bool get_clean_light();
+        static bool get_clean_scroll();
     };
 }

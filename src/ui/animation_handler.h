@@ -1,5 +1,4 @@
 #pragma once
-#include <imgui.h>
 
 namespace ui {
     enum class animation_type { highlight = 0 };
@@ -62,12 +61,8 @@ namespace ui {
             uint32_t a_g_color,
             uint32_t a_b_color,
             float a_duration,
-            uint32_t a_length,
-            uint32_t a_fade_step)
-            : animation(a_center, a_size, a_angle, a_alpha, a_r_color, a_g_color, a_b_color, a_duration, a_length) {
-            this->fade_step = a_fade_step;
-        };
-        uint32_t fade_step;
+            uint32_t a_length)
+            : animation(a_center, a_size, a_angle, a_alpha, a_r_color, a_g_color, a_b_color, a_duration, a_length){};
         void animate_action(float a_delta_time) override {
             if (!is_over()) {
                 this->delta_time += a_delta_time;

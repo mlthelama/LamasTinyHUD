@@ -5,9 +5,10 @@ namespace config {
     public:
         static void load_setting();
 
-        static int get_log_level();
+        static int get_is_debug();
         static bool get_draw_key_background();
 
+        static bool get_font_load();
         static std::string get_font_file_name();
         static float get_font_size();
         static bool get_font_chinese_full();
@@ -23,6 +24,9 @@ namespace config {
 
         static void set_config_default(const std::string& a_config);
         static void set_config_elden(const std::string& a_config);
+
+        static bool get_show_ui();
+        static void set_show_ui(bool a_show);
 
     private:
         static void save_setting();

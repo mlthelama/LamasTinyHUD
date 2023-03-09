@@ -1,29 +1,16 @@
 ﻿#include "ui_renderer.h"
-#include <d3d11.h>
-#include <dxgi.h>
-#include <imgui_impl_dx11.h>
-#include <imgui_impl_win32.h>
-
-#pragma warning(push)
-#pragma warning(disable : 4244)
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#pragma warning(pop)
-
-#include "image_path.h"
-#define IMGUI_DEFINE_MATH_OPERATORS
 #include "animation_handler.h"
-#include "event/key_manager.h"
-#include "event/sink_event.h"
-#include "handle/handle/ammo_handle.h"
-#include "handle/handle/name_handle.h"
-#include "handle/handle/page_handle.h"
-#include "handle/setting/set_setting_data.h"
-#include "imgui_internal.h"
+#include "control/common.h"
+#include "handle/ammo_handle.h"
+#include "handle/name_handle.h"
+#include "handle/page_handle.h"
+#include "image_path.h"
 #include "key_path.h"
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
+#include <stb_image.h>
+
 
 namespace ui {
     using mcm = config::mcm_setting;
@@ -39,10 +26,11 @@ namespace ui {
     static std::map<uint32_t, image> xbox_key_struct;
 
 
-    float fade = 1.0f;
-    bool fade_in = true;
-    float fade_out_timer = mcm::get_fade_timer_outside_combat();
+    auto fade = 1.0f;
+    auto fade_in = true;
+    auto fade_out_timer = mcm::get_fade_timer_outside_combat();
     ImFont* loaded_font;
+    auto tried_font_load = false;
 
 
     LRESULT ui_renderer::wnd_proc_hook::thunk(const HWND h_wnd,
@@ -114,6 +102,10 @@ namespace ui {
 
         if (!d_3d_init_hook::initialized.load()) {
             return;
+        }
+
+        if (!loaded_font && !tried_font_load) {
+            load_font();
         }
 
         ImGui_ImplDX11_NewFrame();
@@ -335,14 +327,14 @@ namespace ui {
                 a_modify,
                 a_modify,
                 a_duration,
-                size,
-                10);
+                size);
         animation_list.emplace_back(static_cast<ui::animation_type>(animation_type), std::move(anim));
         logger::trace("done inited animation. return.");
     }
 
-    void
-        ui_renderer::draw_slots(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_slots(const float a_x,
+        const float a_y,
+        const std::map<position_type, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -374,8 +366,8 @@ namespace ui {
                     draw_setting->offset_slot_x,
                     draw_setting->offset_slot_y,
                     draw_full,
-                    255 / 5,  //TODO setting
-                    0.1f);    //TODO setting
+                    draw_setting->alpha_slot_animation,
+                    draw_setting->duration_slot_animation);
             }
 
             if (page_setting->item_name && !page_setting->slot_settings.empty()) {
@@ -386,7 +378,7 @@ namespace ui {
                 if (slot_setting && slot_setting->form) {
                     slot_name = page_setting->slot_settings.front()->form->GetName();
                 } else if (slot_setting && slot_setting->actor_value != RE::ActorValue::kNone &&
-                           slot_setting->type == handle::slot_setting::slot_type::consumable &&
+                           slot_setting->type == slot_type::consumable &&
                            util::actor_value_to_base_potion_map_.contains(slot_setting->actor_value)) {
                     auto potion_form =
                         RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[slot_setting->actor_value]);
@@ -396,12 +388,12 @@ namespace ui {
                 }
 
                 if (slot_name) {
-                    auto center_text = (page_setting->position == handle::position_setting::position_type::top ||
-                                        page_setting->position == handle::position_setting::position_type::bottom);
-                    auto deduct_text_x = page_setting->position == handle::position_setting::position_type::left;
-                    auto deduct_text_y = page_setting->position == handle::position_setting::position_type::bottom;
+                    auto center_text = (page_setting->position == position_type::top ||
+                                        page_setting->position == position_type::bottom);
+                    auto deduct_text_x = page_setting->position == position_type::left;
+                    auto deduct_text_y = page_setting->position == position_type::bottom;
                     auto add_text_x = false;
-                    auto add_text_y = page_setting->position == handle::position_setting::position_type::top;
+                    auto add_text_y = page_setting->position == position_type::top;
                     draw_text(draw_setting->width_setting,
                         draw_setting->height_setting,
                         draw_setting->offset_slot_x,
@@ -419,7 +411,6 @@ namespace ui {
                 }
             }
 
-
             if (auto slot_settings = page_setting->slot_settings; !slot_settings.empty()) {
                 const auto first_type = slot_settings.front()->type;
                 const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
@@ -427,39 +418,41 @@ namespace ui {
                     mcm::get_slot_count_blue(),
                     page_setting->draw_setting->text_transparency);
                 switch (first_type) {
-                    case handle::slot_setting::slot_type::scroll:
-                    case handle::slot_setting::slot_type::consumable:
+                    case slot_type::scroll:
+                    case slot_type::consumable:
+                        if (slot_settings.front()->display_item_count) {
+                            draw_text(draw_setting->width_setting,
+                                draw_setting->height_setting,
+                                draw_setting->offset_slot_x,
+                                draw_setting->offset_slot_y,
+                                draw_setting->offset_text_x,
+                                draw_setting->offset_text_y,
+                                std::to_string(slot_settings.front()->item_count).c_str(),
+                                color,
+                                page_setting->font_size);
+                        }
+                        break;
+                    case slot_type::shout:
+                    case slot_type::power:
+                    case slot_type::magic:
                         draw_text(draw_setting->width_setting,
                             draw_setting->height_setting,
                             draw_setting->offset_slot_x,
                             draw_setting->offset_slot_y,
                             draw_setting->offset_text_x,
                             draw_setting->offset_text_y,
-                            std::to_string(slot_settings.front()->item_count).c_str(),
+                            slot_settings.front()->action == handle::slot_setting::action_type::instant ? "I" : "E",
                             color,
                             page_setting->font_size);
                         break;
-                    case handle::slot_setting::slot_type::shout:
-                    case handle::slot_setting::slot_type::power:
-                    case handle::slot_setting::slot_type::magic:
-                        draw_text(draw_setting->width_setting,
-                            draw_setting->height_setting,
-                            draw_setting->offset_slot_x,
-                            draw_setting->offset_slot_y,
-                            draw_setting->offset_text_x,
-                            draw_setting->offset_text_y,
-                            slot_settings.front()->action == handle::slot_setting::acton_type::instant ? "I" : "E",
-                            color,
-                            page_setting->font_size);
-                        break;
-                    case handle::slot_setting::slot_type::weapon:
-                    case handle::slot_setting::slot_type::shield:
-                    case handle::slot_setting::slot_type::armor:
-                    case handle::slot_setting::slot_type::empty:
-                    case handle::slot_setting::slot_type::misc:
-                    case handle::slot_setting::slot_type::light:
-                    case handle::slot_setting::slot_type::lantern:
-                    case handle::slot_setting::slot_type::mask:
+                    case slot_type::weapon:
+                    case slot_type::shield:
+                    case slot_type::armor:
+                    case slot_type::empty:
+                    case slot_type::misc:
+                    case slot_type::light:
+                    case slot_type::lantern:
+                    case slot_type::mask:
                         //Nothing, for now
                         break;
                 }
@@ -507,8 +500,8 @@ namespace ui {
                     mcm::get_arrow_slot_offset_x(),
                     mcm::get_arrow_slot_offset_y(),
                     draw_full,
-                    255 / 5,  //TODO setting
-                    0.1f);    //TODO setting
+                    mcm::get_alpha_slot_animation(),
+                    mcm::get_duration_slot_animation());
             }
         }
         draw_animations_frame();
@@ -531,7 +524,9 @@ namespace ui {
         draw_element(texture, center, size, angle, color);
     }
 
-    void ui_renderer::draw_keys(const float a_x, const float a_y, const std::map<position, page_setting*>& a_settings) {
+    void ui_renderer::draw_keys(const float a_x,
+        const float a_y,
+        const std::map<position_type, page_setting*>& a_settings) {
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -585,7 +580,6 @@ namespace ui {
 
         const ImU32 color = IM_COL32(draw_full, draw_full, draw_full, a_alpha);
 
-
         draw_element(texture, center, size, angle, color);
     }
 
@@ -615,7 +609,8 @@ namespace ui {
             return;
 
         if (const auto ui = RE::UI::GetSingleton(); !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
-                                                    !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>()) {
+                                                    !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>() ||
+                                                    ui->IsMenuOpen(RE::LoadingMenu::MENU_NAME)) {
             return;
         }
 
@@ -700,42 +695,6 @@ namespace ui {
         }
     }
 
-
-    void ui_renderer::message_callback(SKSE::MessagingInterface::Message* msg)
-    //CallBack & LoadTextureFromFile should call after resource loaded.
-    {
-        // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
-        switch (msg->type) {
-            case SKSE::MessagingInterface::kDataLoaded:
-                if (d_3d_init_hook::initialized) {
-                    logger::trace("Load Images, scale values width {}, height {}"sv,
-                        get_resolution_scale_width(),
-                        get_resolution_scale_height());
-
-                    load_images(image_type_name_map, image_struct, img_directory);
-                    load_images(icon_type_name_map, icon_struct, icon_directory);
-                    load_images(key_icon_name_map, key_struct, key_directory);
-                    load_images(default_key_icon_name_map, default_key_struct, key_directory);
-                    load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
-                    load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
-
-                    load_animation_frames(highlight_animation_directory,
-                        animation_frame_map[animation_type::highlight]);
-                    logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
-                    load_font();
-                    event::sink_events();
-                    logger::info("done with data loaded"sv);
-                }
-                break;
-            case SKSE::MessagingInterface::kPostLoadGame:
-            case SKSE::MessagingInterface::kNewGame:
-                handle::set_setting_data::read_and_set_data();
-                handle::set_setting_data::get_actives_and_equip();
-                show_ui_ = true;
-                break;
-        }
-    }
-
     template <typename T>
     void ui_renderer::load_images(std::map<std::string, T>& a_map,
         std::map<uint32_t, image>& a_struct,
@@ -778,7 +737,7 @@ namespace ui {
 
     image ui_renderer::get_key_icon(const uint32_t a_key) {
         auto return_image = default_key_struct[static_cast<int32_t>(default_keys::key)];
-        if (a_key >= event::key_manager::k_gamepad_offset) {
+        if (a_key >= control::common::k_gamepad_offset) {
             if (mcm::get_controller_set() == static_cast<uint32_t>(controller_set::playstation)) {
                 return_image = ps_key_struct[a_key];
             } else {
@@ -790,24 +749,6 @@ namespace ui {
             }
         }
         return return_image;
-    }
-
-    bool ui_renderer::install() {
-        auto g_message = SKSE::GetMessagingInterface();
-        if (!g_message) {
-            logger::error("Messaging Interface Not Found. return."sv);
-            return false;
-        }
-
-        g_message->RegisterListener(message_callback);
-
-        SKSE::AllocTrampoline(14 * 2);
-
-        stl::write_thunk_call<d_3d_init_hook>();
-        stl::write_thunk_call<dxgi_present_hook>();
-
-        logger::info("installed callback for ui. return.");
-        return true;
     }
 
     float ui_renderer::get_resolution_scale_width() { return ImGui::GetIO().DisplaySize.x / 1920.f; }
@@ -829,44 +770,48 @@ namespace ui {
     bool ui_renderer::get_fade() { return fade_in; }
 
     void ui_renderer::load_font() {
-        ImGuiIO& io = ImGui::GetIO();
-        ImVector<ImWchar> ranges;
-        ImFontGlyphRangesBuilder builder;
-        builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
-        if (config::file_setting::get_font_chinese_full()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
-        }
-        if (config::file_setting::get_font_chinese_simplified_common()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
-        }
-        if (config::file_setting::get_font_cyrillic()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
-        }
-        if (config::file_setting::get_font_japanese()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
-        }
-        if (config::file_setting::get_font_korean()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
-        }
-        if (config::file_setting::get_font_thai()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesThai());
-        }
-        if (config::file_setting::get_font_vietnamese()) {
-            builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
-        }
-        builder.BuildRanges(&ranges);
-
-
         std::string path = R"(Data\SKSE\Plugins\resources\font\)" + config::file_setting::get_font_file_name();
-        logger::trace("Trying to load Font file {}"sv, path);
+        auto file_path = std::filesystem::path(path);
+        logger::trace("Need to load font {} from file {}"sv, config::file_setting::get_font_load(), path);
+        tried_font_load = true;
+        if (config::file_setting::get_font_load() && std::filesystem::is_regular_file(file_path) &&
+            ((file_path.extension() == ".ttf") || (file_path.extension() == ".otf"))) {
+            ImGuiIO& io = ImGui::GetIO();
+            ImVector<ImWchar> ranges;
+            ImFontGlyphRangesBuilder builder;
+            builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
+            if (config::file_setting::get_font_chinese_full()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
+            }
+            if (config::file_setting::get_font_chinese_simplified_common()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
+            }
+            if (config::file_setting::get_font_cyrillic()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
+            }
+            if (config::file_setting::get_font_japanese()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
+            }
+            if (config::file_setting::get_font_korean()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
+            }
+            if (config::file_setting::get_font_thai()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesThai());
+            }
+            if (config::file_setting::get_font_vietnamese()) {
+                builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
+            }
+            builder.BuildRanges(&ranges);
 
-        loaded_font =
-            io.Fonts->AddFontFromFileTTF(path.c_str(), config::file_setting::get_font_size(), nullptr, ranges.Data);
-        if (io.Fonts->Build()) {
-            ImGui_ImplDX11_InvalidateDeviceObjects();
-            ImGui_ImplDX11_CreateDeviceObjects();
-            logger::info("Custom Font {} loaded."sv, path);
-            return;
+            loaded_font = io.Fonts->AddFontFromFileTTF(file_path.string().c_str(),
+                config::file_setting::get_font_size(),
+                nullptr,
+                ranges.Data);
+            if (io.Fonts->Build()) {
+                ImGui_ImplDX11_CreateDeviceObjects();
+                logger::info("Custom Font {} loaded."sv, path);
+                return;
+            }
         }
     }
 
@@ -876,6 +821,21 @@ namespace ui {
         } else {
             show_ui_ = true;
         }
+        config::file_setting::set_show_ui(show_ui_);
         logger::trace("Show UI is now {}"sv, show_ui_);
+    }
+
+    void ui_renderer::set_show_ui(bool a_show) { show_ui_ = a_show; }
+
+    void ui_renderer::load_all_images() {
+        load_images(image_type_name_map, image_struct, img_directory);
+        load_images(icon_type_name_map, icon_struct, icon_directory);
+        load_images(key_icon_name_map, key_struct, key_directory);
+        load_images(default_key_icon_name_map, default_key_struct, key_directory);
+        load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
+        load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
+
+        load_animation_frames(highlight_animation_directory, animation_frame_map[animation_type::highlight]);
+        logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
     }
 }

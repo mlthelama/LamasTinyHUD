@@ -1,7 +1,7 @@
 ﻿#include "equip_slot.h"
-#include "item.h"
 #include "util/offset.h"
-#include <util/string_util.h>
+#include "util/player/player.h"
+#include "util/string_util.h"
 
 namespace equip {
     RE::BGSEquipSlot* equip_slot::get_right_hand_slot() {
@@ -25,7 +25,7 @@ namespace equip {
     bool equip_slot::un_equip_if_equipped(RE::TESBoundObject*& a_obj,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
-        const auto is_worn = item::is_item_worn(a_obj, a_player);
+        const auto is_worn = is_item_worn(a_obj, a_player);
         if (is_worn) {
             a_actor_equip_manager->UnequipObject(a_player, a_obj);
             logger::trace("unequipped {} armor"sv, a_obj->GetName());
@@ -36,13 +36,15 @@ namespace equip {
     void equip_slot::un_equip_hand(RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         const action_type a_action) {
-        if (a_action != handle::slot_setting::acton_type::un_equip) {
+        if (a_action != handle::slot_setting::action_type::un_equip) {
             return;
         }
+
         RE::TESForm* equipped_object = nullptr;
         if (a_slot == get_left_hand_slot()) {
             equipped_object = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
         }
+
         if (a_slot == get_right_hand_slot()) {
             equipped_object = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         }
@@ -64,15 +66,18 @@ namespace equip {
                     did_call = true;
                 }
             }
+
             if (equipped_object->Is(RE::FormType::Spell)) {
                 un_equip_object_ft_dummy_dagger(a_slot, a_player, equip_manager);
                 did_call = true;
             }
+
             if (equipped_object->Is(RE::FormType::Light)) {
                 const auto light = equipped_object->As<RE::TESObjectLIGH>();
                 equip_manager->UnequipObject(a_player, light, nullptr, 1, a_slot);
                 did_call = true;
             }
+
             logger::trace("called un equip for {}, left {}, did call {}"sv,
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot(),
@@ -121,5 +126,16 @@ namespace equip {
                 equip::equip_slot::un_equip_spell(nullptr, 0, a_player, selected_power->As<RE::SpellItem>(), 2);
             }
         }
+    }
+
+    bool equip_slot::is_item_worn(RE::TESBoundObject*& a_obj, RE::PlayerCharacter*& a_player) {
+        auto worn = false;
+        for (const auto& [item, inv_data] : util::player::get_inventory(a_player, RE::FormType::Armor)) {
+            if (const auto& [count, entry] = inv_data; entry->object->formID == a_obj->formID && entry->IsWorn()) {
+                worn = true;
+                break;
+            }
+        }
+        return worn;
     }
 }

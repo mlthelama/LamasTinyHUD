@@ -3,48 +3,52 @@
 #include "equip/item.h"
 #include "equip/magic.h"
 #include "handle/data/page/position_setting.h"
-#include "handle/handle/key_position_handle.h"
-#include "handle/handle/page_handle.h"
+#include "handle/key_position_handle.h"
+#include "handle/page_handle.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/string_util.h"
 
-namespace handle {
+namespace processing {
     using mcm = config::mcm_setting;
 
-    void setting_execute::execute_settings(const std::vector<slot_setting*>& a_slots,
+    void setting_execute::execute_settings(const std::vector<handle::slot_setting*>& a_slots,
         bool a_only_equip,
         bool a_only_instant) {
-        logger::trace("got {} settings execute"sv, a_slots.size());
+        if (a_slots.empty()) {
+            logger::info("settings are empty. return.");
+            return;
+        }
+        logger::trace("got {} settings execute, only_equip {}, only_instant {}"sv,
+            a_slots.size(),
+            a_only_equip,
+            a_only_instant);
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
-            if (!slot->form && slot->type == slot_setting::slot_type::consumable &&
-                slot->actor_value != RE::ActorValue::kNone) {
+            if (!slot->form && slot->type == slot_type::consumable && slot->actor_value != RE::ActorValue::kNone) {
                 logger::debug("form is null, but actor value is set to {}"sv, static_cast<int>(slot->actor_value));
             } else if (mcm::get_elden_demon_souls() && !slot->form) {
                 logger::debug("form is null and I am in elden mode, skipping."sv);
                 continue;
-            } else if (!slot->form && slot->type != slot_setting::slot_type::empty) {
+            } else if (!slot->form && slot->type != slot_type::empty) {
                 logger::warn("form is null and not type empty, skipping."sv);
                 continue;
             }
 
-            if ((!slot->form && slot->type == slot_setting::slot_type::empty &&
-                    slot->action == slot_setting::acton_type::un_equip) ||
+            if ((!slot->form && slot->type == slot_type::empty && slot->action == action_type::un_equip) ||
                 (slot->form && slot->form->formID == util::unarmed)) {
                 un_equip.push_back(slot->equip_slot);
             }
 
-            if (mcm::get_elden_demon_souls() && a_only_equip &&
-                slot->action != slot_setting::acton_type::default_action) {
+            if (mcm::get_elden_demon_souls() && a_only_equip && slot->action != action_type::default_action) {
                 logger::trace("form {} does not need equip, skipping"sv,
                     slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null");
                 equip::equip_slot::un_equip_shout_slot(player);
                 continue;
             }
 
-            if (mcm::get_elden_demon_souls() && a_only_instant && slot->action != slot_setting::acton_type::instant) {
+            if (mcm::get_elden_demon_souls() && a_only_instant && slot->action != action_type::instant) {
                 logger::trace("form {} does not need any work, skipping"sv,
                     slot->form ? util::string_util::int_to_hex(slot->form->GetFormID()) : "null");
                 continue;
@@ -60,20 +64,20 @@ namespace handle {
 
         if (!un_equip.empty()) {
             for (RE::BGSEquipSlot*& slot : un_equip) {
-                equip::equip_slot::un_equip_hand(slot, player, slot_setting::acton_type::un_equip);
+                equip::equip_slot::un_equip_hand(slot, player, action_type::un_equip);
             }
         }
     }
 
-    position_setting* setting_execute::get_position_setting_for_key(const uint32_t a_key) {
-        const auto position = key_position_handle::get_singleton()->get_position_for_key(a_key);
-        if (position == position_setting::position_type::total) {
+    handle::position_setting* setting_execute::get_position_setting_for_key(const uint32_t a_key) {
+        const auto position = handle::key_position_handle::get_singleton()->get_position_for_key(a_key);
+        if (position == position_type::total) {
             logger::warn("nothing to do, nothing set. return."sv);
             return nullptr;
         }
 
-        const auto page_handle = page_handle::get_singleton();
-        position_setting* position_setting;
+        const auto page_handle = handle::page_handle::get_singleton();
+        handle::position_setting* position_setting;
         uint32_t page;
         if (mcm::get_elden_demon_souls()) {
             page = page_handle->get_active_page_id_position(position);
@@ -100,42 +104,56 @@ namespace handle {
         }
     }
 
-    void setting_execute::execute_setting(slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
+    void setting_execute::reequip_left_hand_if_needed(handle::position_setting* a_setting) {
+        if (!a_setting) {
+            return;
+        }
+        logger::trace("checking and calling re equip for setting {}"sv, static_cast<uint32_t>(a_setting->position));
+        auto left_slot = equip::equip_slot::get_left_hand_slot();
+        auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto player = RE::PlayerCharacter::GetSingleton();
+        equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
+        if (!a_setting->slot_settings.empty()) {
+            processing::setting_execute::execute_settings(a_setting->slot_settings);
+        }
+    }
+
+    void setting_execute::execute_setting(handle::slot_setting*& a_slot, RE::PlayerCharacter*& a_player) {
         switch (a_slot->type) {
-            case slot_setting::slot_type::consumable:
+            case slot_type::consumable:
                 if (a_slot->form) {
                     equip::item::consume_potion(a_slot->form, a_player);
                 } else if (a_slot->actor_value != RE::ActorValue::kNone) {
                     equip::item::find_and_consume_fitting_option(a_slot->actor_value, a_player);
                 }
                 break;
-            case slot_setting::slot_type::magic:
+            case slot_type::magic:
                 equip::magic::magic::cast_magic(a_slot->form, a_slot->action, a_slot->equip_slot, a_player);
                 break;
-            case slot_setting::slot_type::shout:
+            case slot_type::shout:
                 equip::magic::equip_shout(a_slot->form, a_player);
                 break;
-            case slot_setting::slot_type::power:
+            case slot_type::power:
                 equip::magic::equip_or_cast_power(a_slot->form, a_slot->action, a_player);
                 break;
-            case slot_setting::slot_type::weapon:
-            case slot_setting::slot_type::shield:
-            case slot_setting::slot_type::light:
+            case slot_type::weapon:
+            case slot_type::shield:
+            case slot_type::light:
                 equip::item::equip_item(a_slot->form, a_slot->equip_slot, a_player, a_slot->type);
                 break;
-            case slot_setting::slot_type::armor:
-            case slot_setting::slot_type::lantern:
-            case slot_setting::slot_type::mask:
+            case slot_type::armor:
+            case slot_type::lantern:
+            case slot_type::mask:
                 equip::item::equip_armor(a_slot->form, a_player);
                 break;
-            case slot_setting::slot_type::scroll:
+            case slot_type::scroll:
                 equip::magic::cast_scroll(a_slot->form, a_slot->action, a_player);
                 break;
-            case slot_setting::slot_type::misc:
+            case slot_type::misc:
                 //TODO
                 logger::warn("ignoring misc-item."sv);
                 break;
-            case slot_setting::slot_type::empty:
+            case slot_type::empty:
                 equip::equip_slot::un_equip_hand(a_slot->equip_slot, a_player, a_slot->action);
                 break;
         }
