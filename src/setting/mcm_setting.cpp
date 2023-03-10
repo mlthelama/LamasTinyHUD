@@ -87,6 +87,7 @@ namespace config {
     static bool disable_re_equip_of_actives;
     static bool sort_arrow_by_quantity;
     static uint32_t apply_poison_charges;
+    static bool try_dual_cast_top_spell;
 
     static bool auto_cleanup;
     static bool clean_armor;
@@ -212,6 +213,7 @@ namespace config {
             disable_re_equip_of_actives = mcm.GetBoolValue("MiscSetting", "bDisableReEquipOfActives", false);
             sort_arrow_by_quantity = mcm.GetBoolValue("MiscSetting", "bSortArrowByQuantity", false);
             apply_poison_charges = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uApplyPoisonCharges", 5));
+            try_dual_cast_top_spell = mcm.GetBoolValue("MiscSetting", "bTryDualCastTopSpell", 0);
 
             auto_cleanup = mcm.GetBoolValue("CleanupSetting", "bAutoCleanup", false);
             clean_armor = mcm.GetBoolValue("CleanupSetting", "bCleanArmor", true);
@@ -322,6 +324,7 @@ namespace config {
     bool mcm_setting::get_disable_re_equip_of_actives() { return disable_re_equip_of_actives; }
     bool mcm_setting::get_sort_arrow_by_quantity() { return sort_arrow_by_quantity; }
     uint32_t mcm_setting::get_apply_poison_charges() { return apply_poison_charges; }
+    bool mcm_setting::get_try_dual_cast_top_spell() { return try_dual_cast_top_spell; }
 
     bool mcm_setting::get_auto_cleanup() { return auto_cleanup; }
     bool mcm_setting::get_clean_armor() { return clean_armor; }

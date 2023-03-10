@@ -22,14 +22,13 @@ namespace equip {
         }
 
         const auto spell = a_form->As<RE::SpellItem>();
-        
+
         if (!a_player->HasSpell(spell)) {
             logger::warn("player does not have spell {}. return."sv, spell->GetName());
             return;
         }
 
         //maybe check if the spell is already equipped
-        const auto actor = a_player->As<RE::Actor>();
         auto casting_type = spell->GetCastingType();
         logger::trace("spell {} is type {}"sv, spell->GetName(), static_cast<uint32_t>(casting_type));
         if (a_action == action_type::instant && casting_type != RE::MagicSystem::CastingType::kConcentration) {
@@ -37,13 +36,28 @@ namespace equip {
                 //normally in elden just top uses instant for spells
                 equip::equip_slot::un_equip_shout_slot(a_player);
             }
+            const auto actor = a_player->As<RE::Actor>();
+            auto caster = actor->GetMagicCaster(get_casting_source(a_slot));
 
             //might cost nothing if nothing has been equipped into tha hands after start, so it seems
-            auto cost = spell->CalculateMagickaCost(a_player);
+            auto cost = spell->CalculateMagickaCost(actor);
             logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.2f}"), cost));
 
-            float current_magicka = a_player->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
-            logger::trace("got temp magicka {}, cost {}"sv, current_magicka, cost);
+            float current_magicka = actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
+            bool dual_cast = false;
+            if (!spell->IsTwoHanded() && config::mcm_setting::get_try_dual_cast_top_spell() &&
+                config::mcm_setting::get_elden_demon_souls()) {
+                auto game_setting = RE::GameSettingCollection::GetSingleton();
+                auto dual_cast_cost_multiplier = game_setting->GetSetting("fMagicDualCastingCostMult")->GetFloat();
+                logger::trace("dual cast multiplier is {}"sv,
+                    fmt::format(FMT_STRING("{:.2f}"), dual_cast_cost_multiplier));
+                dual_cast = can_dual_cast(cost, current_magicka, dual_cast_cost_multiplier);
+                if (dual_cast) {
+                    cost = cost * dual_cast_cost_multiplier;
+                    caster->SetDualCasting(true);
+                }
+            }
+            logger::trace("got temp magicka {}, cost {}, can dual cast {}"sv, current_magicka, cost, dual_cast);
 
             if (current_magicka < cost) {
                 if (const auto ui = RE::UI::GetSingleton(); !ui->GetMenu<RE::HUDMenu>()) {
@@ -58,7 +72,7 @@ namespace equip {
                 return;
             }
 
-            a_player->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
+            actor->AsActorValueOwner()->RestoreActorValue(RE::ACTOR_VALUE_MODIFIER::kDamage,
                 RE::ActorValue::kMagicka,
                 -cost);
 
@@ -74,19 +88,19 @@ namespace equip {
             if (auto* effect = spell->GetCostliestEffectItem()) {
                 magnitude = effect->GetMagnitude();
             }
+            //auto dual_cast_scale = spell->avEffectSetting->data.dualCastScale;
             logger::trace("casting spell {}, magnitude {}, effecticeness {}"sv,
                 spell->GetName(),
                 fmt::format(FMT_STRING("{:.2f}"), magnitude),
                 fmt::format(FMT_STRING("{:.2f}"), effectiveness));
 
-            actor->GetMagicCaster(get_casting_source(a_slot))
-                ->CastSpellImmediate(spell,
-                    false,
-                    target,
-                    effectiveness,
-                    false,
-                    magnitude,
-                    is_self_target ? nullptr : actor);
+            caster->CastSpellImmediate(spell,
+                false,
+                target,
+                effectiveness,
+                false,
+                magnitude,
+                is_self_target ? nullptr : actor);
         } else {
             const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
@@ -168,7 +182,6 @@ namespace equip {
         }
 
         const auto spell = a_form->As<RE::SpellItem>();
-
         if (!a_player->HasSpell(spell)) {
             logger::warn("player does not have spell {}. return."sv, spell->GetName());
             return;
@@ -227,5 +240,12 @@ namespace equip {
             return RE::MagicSystem::CastingSource::kLeftHand;
         }
         return RE::MagicSystem::CastingSource::kOther;
+    }
+
+    bool magic::can_dual_cast(float a_cost, float a_magicka, float a_multiplier) {
+        if ((a_cost * a_multiplier) < a_magicka) {
+            return true;
+        }
+        return false;
     }
 }
