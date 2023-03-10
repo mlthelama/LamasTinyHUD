@@ -9,6 +9,7 @@
 
 namespace handle {
     using mcm = config::mcm_setting;
+    using position_type = position_setting::position_type;
 
     page_handle* page_handle::get_singleton() {
         static page_handle singleton;
@@ -215,14 +216,14 @@ namespace handle {
         return nullptr;
     }
 
-    std::map<uint32_t, std::map<position_setting::position_type, position_setting*>> page_handle::get_pages() const {
+    std::map<uint32_t, std::map<position_type, position_setting*>> page_handle::get_pages() const {
         if (const page_handle_data* data = this->data_; data && !data->page_settings.empty()) {
             return data->page_settings;
         }
         return {};
     }
 
-    std::map<position_setting::position_type, position_setting*> page_handle::get_active_page() const {
+    std::map<position_type, position_setting*> page_handle::get_active_page() const {
         if (config::mcm_setting::get_elden_demon_souls()) {
             std::map<position_type, position_setting*> a_active;
             for (auto i = 0; i < static_cast<int>(position_type::total); ++i) {

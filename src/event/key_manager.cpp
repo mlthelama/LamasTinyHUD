@@ -8,6 +8,10 @@
 
 namespace event {
     using event_result = RE::BSEventNotifyControl;
+    using position_type = handle::position_setting::position_type;
+    using common = control::common;
+    using mcm = config::mcm_setting;
+    using setting_execute = processing::setting_execute;
 
     key_manager* key_manager::get_singleton() {
         static key_manager singleton;
@@ -21,7 +25,7 @@ namespace event {
 
     event_result key_manager::ProcessEvent(RE::InputEvent* const* a_event,
         [[maybe_unused]] RE::BSTEventSource<RE::InputEvent*>* a_event_source) {
-        button_press_modify_ = config::mcm_setting::get_slot_button_feedback();
+        button_press_modify_ = mcm::get_slot_button_feedback();
         auto key_binding = control::binding::get_singleton();
 
         //top execute btn is bound to the shout key, no need to check here
@@ -37,8 +41,8 @@ namespace event {
         if (!ui) {
             return event_result::kContinue;
         }
-        const auto interface_strings = RE::InterfaceStrings::GetSingleton();
 
+        const auto interface_strings = RE::InterfaceStrings::GetSingleton();
         if (ui->IsMenuOpen(interface_strings->console)) {
             return event_result::kContinue;
         }
@@ -57,11 +61,11 @@ namespace event {
                 static_cast<RE::ButtonEvent*>(event);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
 
             key_ = button->idCode;
-            if (key_ == control::common::k_invalid) {
+            if (key_ == common::k_invalid) {
                 continue;
             }
 
-            control::common::get_key_id(button, key_);
+            common::get_key_id(button, key_);
 
             if (const auto control_map = RE::ControlMap::GetSingleton(); !control_map->IsMovementControlsEnabled()) {
                 continue;
@@ -73,7 +77,7 @@ namespace event {
                 continue;
             }
 
-            if (RE::UI::GetSingleton()->IsMenuOpen("LootMenu") && config::mcm_setting::get_disable_input_quick_loot()) {
+            if (RE::UI::GetSingleton()->IsMenuOpen("LootMenu") && mcm::get_disable_input_quick_loot()) {
                 continue;
             }
 
@@ -84,13 +88,13 @@ namespace event {
             }
 
             //get shout key
-            auto elden = config::mcm_setting::get_elden_demon_souls();
+            auto elden = mcm::get_elden_demon_souls();
             if (elden) {
                 RE::UserEvents* user_events = RE::UserEvents::GetSingleton();
                 key_binding->set_top_execute(control_map->GetMappedKey(user_events->shout, button->device.get()));
             }
 
-            if (config::mcm_setting::get_hide_outside_combat() && !ui::ui_renderer::get_fade()) {
+            if (mcm::get_hide_outside_combat() && !ui::ui_renderer::get_fade()) {
                 if ((key_binding->is_position_button(key_) ||
                         key_ == key_binding->get_bottom_execute_or_toggle_action() ||
                         (elden && key_ == key_binding->get_top_execute())) &&
@@ -101,32 +105,32 @@ namespace event {
 
             if (button->IsDown() && key_binding->is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
-                auto position_setting = processing::setting_execute::get_position_setting_for_key(key_);
+                auto position_setting = setting_execute::get_position_setting_for_key(key_);
                 do_button_down(position_setting);
             }
 
             if (button->IsUp() && key_binding->is_position_button(key_)) {
                 logger::debug("configured Key ({}) is up"sv, key_);
                 //set slot back to normal color
-                const auto position_setting = processing::setting_execute::get_position_setting_for_key(key_);
+                const auto position_setting = setting_execute::get_position_setting_for_key(key_);
                 if (position_setting == nullptr) {
                     logger::trace("setting for key {} is null. return."sv, key_);
                     break;
                 }
                 position_setting->button_press_modify = ui::draw_full;
-                if (position_setting->position == handle::position_setting::position_type::left) {
+                if (position_setting->position == position_type::left) {
                     if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
                         current_ammo->button_press_modify = ui::draw_full;
                     }
                 }
             }
 
-            if (elden && config::mcm_setting::get_bottom_execute_key_combo_only() &&
+            if (elden && mcm::get_bottom_execute_key_combo_only() &&
                 key_ == key_binding->get_bottom_execute_or_toggle_action() && button->IsUp() && is_toggle_down_) {
                 is_toggle_down_ = false;
             }
 
-            if (elden && config::mcm_setting::get_bottom_execute_key_combo_only() &&
+            if (elden && mcm::get_bottom_execute_key_combo_only() &&
                 key_ == key_binding->get_bottom_execute_or_toggle_action() && button->IsDown()) {
                 is_toggle_down_ = true;
             }
@@ -135,12 +139,12 @@ namespace event {
                 continue;
             }
 
-            if (button->IsPressed() && control::common::is_key_valid_and_matches(key_, key_binding->get_hide_show())) {
+            if (button->IsPressed() && common::is_key_valid_and_matches(key_, key_binding->get_hide_show())) {
                 ui::ui_renderer::toggle_show_ui();
             }
 
             if (button->IsPressed() && !elden &&
-                control::common::is_key_valid_and_matches(key_, key_binding->get_bottom_execute_or_toggle_action())) {
+                common::is_key_valid_and_matches(key_, key_binding->get_bottom_execute_or_toggle_action())) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
 
                 const auto handler = handle::page_handle::get_singleton();
@@ -148,20 +152,17 @@ namespace event {
             }
 
             if (elden && button->IsPressed()) {
-                if ((!config::mcm_setting::get_bottom_execute_key_combo_only() &&
-                        control::common::is_key_valid_and_matches(key_,
-                            key_binding->get_bottom_execute_or_toggle_action())) ||
-                    (config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
+                if ((!mcm::get_bottom_execute_key_combo_only() &&
+                        common::is_key_valid_and_matches(key_, key_binding->get_bottom_execute_or_toggle_action())) ||
+                    (mcm::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
                         key_ == key_binding->get_bottom_action())) {
-                    auto page_setting =
-                        processing::setting_execute::get_position_setting_for_key(key_binding->get_bottom_action());
-                    processing::setting_execute::execute_settings(page_setting->slot_settings);
+                    auto page_setting = setting_execute::get_position_setting_for_key(key_binding->get_bottom_action());
+                    setting_execute::execute_settings(page_setting->slot_settings);
                 }
-                if (control::common::is_key_valid_and_matches(key_, key_binding->get_top_execute())) {
-                    auto page_setting =
-                        processing::setting_execute::get_position_setting_for_key(key_binding->get_top_action());
+                if (common::is_key_valid_and_matches(key_, key_binding->get_top_execute())) {
+                    auto page_setting = setting_execute::get_position_setting_for_key(key_binding->get_top_action());
                     //only instant should need work, the default shout will be handled by the game
-                    processing::setting_execute::execute_settings(page_setting->slot_settings, false, true);
+                    setting_execute::execute_settings(page_setting->slot_settings, false, true);
                 }
             }
 
@@ -176,10 +177,10 @@ namespace event {
 
     void key_manager::do_button_press(uint32_t a_key, control::binding*& a_binding) const {
         logger::debug("configured Key ({}) pressed"sv, a_key);
-        auto position_setting = processing::setting_execute::get_position_setting_for_key(a_key);
+        auto position_setting = setting_execute::get_position_setting_for_key(a_key);
 
-        if (config::mcm_setting::get_elden_demon_souls()) {
-            if (config::mcm_setting::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
+        if (mcm::get_elden_demon_souls()) {
+            if (mcm::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
                 a_key == a_binding->get_bottom_action()) {
                 return;
             }
@@ -189,24 +190,24 @@ namespace event {
                 handler->set_active_page_position(
                     handler->get_next_non_empty_setting_for_position(position_setting->position),
                     position_setting->position);
-                position_setting = processing::setting_execute::get_position_setting_for_key(a_key);
+                position_setting = setting_execute::get_position_setting_for_key(a_key);
                 position_setting->highlight_slot = true;
                 if (!scroll_position(a_key, a_binding)) {
-                    processing::setting_execute::execute_settings(position_setting->slot_settings);
-                } else if (position_setting->position == handle::position_setting::position_type::top) {
-                    processing::setting_execute::execute_settings(position_setting->slot_settings, true);
+                    setting_execute::execute_settings(position_setting->slot_settings);
+                } else if (position_setting->position == position_type::top) {
+                    setting_execute::execute_settings(position_setting->slot_settings, true);
                 }
             } else {
                 logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->position));
                 //check ammo is set, might be a bow or crossbow present
                 const auto ammo_handle = handle::ammo_handle::get_singleton();
                 if (const auto next_ammo = ammo_handle->get_next_ammo()) {
-                    processing::setting_execute::execute_ammo(next_ammo);
+                    setting_execute::execute_ammo(next_ammo);
                     handle::ammo_handle::get_singleton()->get_current()->highlight_slot = true;
                 }
             }
         } else {
-            processing::setting_execute::execute_settings(position_setting->slot_settings);
+            setting_execute::execute_settings(position_setting->slot_settings);
         }
     }
 
@@ -224,7 +225,7 @@ namespace event {
         if (!handle::key_position_handle::get_singleton()->is_position_locked(a_position_setting->position)) {
             a_position_setting->button_press_modify = button_press_modify_;
         } else {
-            if (a_position_setting->position == handle::position_setting::position_type::left) {
+            if (a_position_setting->position == position_type::left) {
                 if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
                     current_ammo->button_press_modify = button_press_modify_;
                 }

@@ -32,6 +32,7 @@ namespace papyrus {
         static std::string get_section_by_index(uint32_t a_index, uint32_t a_position);
         static bool check_name(const std::string& a_name);
         static std::vector<std::string> search_for_config_files(bool a_elden);
+        static std::string get_form_name_string_for_section(const std::string& a_str);
     };
 
     void Register();

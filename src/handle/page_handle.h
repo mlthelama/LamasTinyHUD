@@ -52,7 +52,7 @@ namespace handle {
             slot_setting::hand_equip a_hand,
             RE::BGSEquipSlot*& a_slot,
             bool a_left);
-        static ui::icon_image_type get_icon_type(slot_type a_type, RE::TESForm*& a_form);
+        static icon_type get_icon_type(slot_type a_type, RE::TESForm*& a_form);
         static void get_weapon_type_icon(RE::TESForm*& a_form, icon_type& a_icon);
         static void get_spell_icon(RE::TESForm*& a_form, icon_type& a_icon);
         static void get_consumable_icon(RE::TESForm*& a_form, icon_type& a_icon);

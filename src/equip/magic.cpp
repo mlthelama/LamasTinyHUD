@@ -63,7 +63,7 @@ namespace equip {
                 if (const auto ui = RE::UI::GetSingleton(); !ui->GetMenu<RE::HUDMenu>()) {
                     logger::warn("Will not flash HUD Menu, because I could not find it.");
                 } else {
-                    offset::flash_hud_menu_meter(RE::ActorValue::kMagicka);
+                    flash_hud_meter(RE::ActorValue::kMagicka);
                 }
                 logger::warn("not enough magicka for spell {}, magicka {}, cost {} return."sv,
                     a_form->GetName(),
@@ -247,5 +247,11 @@ namespace equip {
             return true;
         }
         return false;
+    }
+
+    void magic::flash_hud_meter(RE::ActorValue a_actor_value) {
+        static REL::Relocation<decltype(magic::flash_hud_meter)> flash_hud_meter{ REL::ID(
+            offset::get_flash_hud_meter) };
+        return flash_hud_meter(a_actor_value);
     }
 }

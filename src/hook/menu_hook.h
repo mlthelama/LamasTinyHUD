@@ -6,6 +6,7 @@ namespace hook {
     class menu_hook : public RE::MenuControls {
     public:
         using common = control::common;
+
         static void install();
 
     private:
