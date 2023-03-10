@@ -162,7 +162,9 @@ namespace equip {
 
         auto alchemy_item = obj->As<RE::AlchemyItem>();
         if (alchemy_item->IsPoison()) {
+            logger::trace("try to apply poison to weapon, count left {}"sv, left);
             //check if there is a weapon to apply it to
+            //check count here as well, since we need 2
             auto equipped_object = a_player->GetEquippedEntryData(false);
             if (equipped_object && equipped_object->object->IsWeapon() && !equipped_object->IsPoisoned()) {
                 logger::trace("try to add poison {} to right {}"sv,
@@ -170,11 +172,12 @@ namespace equip {
                     equipped_object->GetDisplayName());
                 equipped_object->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
                 a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
+                left--;
             }
 
             auto equipped_object_left = a_player->GetEquippedEntryData(true);
             if (equipped_object_left && equipped_object_left->object->IsWeapon() &&
-                !equipped_object_left->IsPoisoned()) {
+                !equipped_object_left->IsPoisoned() && left > 0) {
                 logger::trace("try to add poison {} to left {}"sv,
                     alchemy_item->GetName(),
                     equipped_object_left->GetDisplayName());
@@ -294,7 +297,7 @@ namespace equip {
                 if (duration == 0) {
                     duration = 1;
                 }
-                
+
                 auto max_healed = magnitude * duration;
                 if (max_healed >= (missing * min_perfect) && max_healed <= (missing * max_perfect)) {
                     logger::trace("found potion {}, magnitude * duration {}"sv,

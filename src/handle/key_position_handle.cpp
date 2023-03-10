@@ -3,6 +3,7 @@
 
 namespace handle {
     using mcm = config::mcm_setting;
+    using position_type = position_setting::position_type;
 
     key_position_handle* key_position_handle::get_singleton() {
         static key_position_handle singleton;
@@ -38,7 +39,7 @@ namespace handle {
         data->position_lock_map[a_position] = a_locked;
     }
 
-    position_setting::position_type key_position_handle::get_position_for_key(const uint32_t a_key) const {
+    position_type key_position_handle::get_position_for_key(const uint32_t a_key) const {
         if (const key_position_handle_data* data = this->data_;
             data && !data->key_position_map.empty() && data->key_position_map.contains(a_key)) {
             const auto pos = data->key_position_map.at(a_key);

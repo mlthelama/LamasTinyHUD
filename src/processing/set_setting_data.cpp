@@ -79,7 +79,6 @@ namespace processing {
             static_cast<uint32_t>(hand_equip));
     }
 
-
     void set_setting_data::set_queue_slot(position_type a_pos, const std::vector<data_helper*>& a_data) {
         //each data item will be a new page with this position
         logger::trace("Got {} items to process"sv, a_data.size());

@@ -38,7 +38,7 @@ namespace papyrus {
         const auto sections = util::helper::get_configured_section_page_names(a_position);
         std::vector<RE::BSFixedString> sections_bs_string;
         for (const auto& section : sections) {
-            sections_bs_string.emplace_back(util::helper::get_form_name_string_for_section(section));
+            sections_bs_string.emplace_back(get_form_name_string_for_section(section));
         }
         logger::trace("Returning {} sections for Position {}"sv, sections_bs_string.size(), a_position);
         return sections_bs_string;
@@ -171,7 +171,9 @@ namespace papyrus {
         return file;
     }
 
-    void hud_mcm::set_config(RE::TESQuest*, bool a_elden, RE::BSFixedString a_name) {
+    void hud_mcm::set_config(RE::TESQuest*,
+        bool a_elden,
+        RE::BSFixedString a_name) {  // NOLINT(performance-unnecessary-value-param)
         std::string name;
         if (a_elden) {
             name = util::ini_elden_name + "_" + a_name.data() + util::ini_ending;
@@ -358,6 +360,50 @@ namespace papyrus {
         }
         logger::trace("Got {} Files to return in Path"sv, file_list.size());
         return file_list;
+    }
+
+    std::string hud_mcm::get_form_name_string_for_section(const std::string& a_str) {
+        std::string display_string;
+        auto form_string = config::custom_setting::get_item_form_by_section(a_str);
+        auto form_string_left = config::custom_setting::get_item_form_left_by_section(a_str);
+
+        RE::TESForm* form = nullptr;
+        if (!form_string.empty()) {
+            form = util::helper::get_form_from_mod_id_string(form_string);
+        }
+        RE::TESForm* form_left = nullptr;
+        if (!form_string_left.empty()) {
+            form_left = util::helper::get_form_from_mod_id_string(form_string_left);
+        }
+
+        //if form is null check if av is set
+        //if form is 1f4
+        if (form && form->formID == util::unarmed) {
+            display_string = util::unarmed_mcm_text;
+        } else {
+            display_string = form ? form->GetName() : "";
+        }
+
+        if (form_left) {
+            if (!display_string.empty()) {
+                display_string = display_string + util::delimiter;
+            }
+            if (form_left->formID == util::unarmed) {
+                display_string = display_string + util::unarmed_mcm_text;
+            } else {
+                display_string = display_string + form_left->GetName();
+            }
+        }
+
+        if (display_string.empty()) {
+            auto actor_value = static_cast<RE::ActorValue>(config::custom_setting::get_effect_actor_value(a_str));
+            if (util::actor_value_to_base_potion_map_.contains(actor_value)) {
+                auto potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
+                display_string = potion_form ? potion_form->GetName() : "";
+            }
+        }
+
+        return display_string.empty() ? a_str : display_string;
     }
 
     void Register() {
