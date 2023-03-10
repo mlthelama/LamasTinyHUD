@@ -1417,6 +1417,17 @@
                     }
                 },
                 {
+                    "id": "bTryDualCastTopSpell:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_TryDualCastTopSpell_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_MiscSetting_TryDualCastTopSpell_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_MiscSetting_Settings",
                     "type": "header",
                     "position": 1

@@ -16,5 +16,6 @@ namespace equip {
 
     private:
         static RE::MagicSystem::CastingSource get_casting_source(const RE::BGSEquipSlot* a_slot);
+        static bool can_dual_cast(float a_cost, float a_magicka, float a_multiplier);
     };
 }
