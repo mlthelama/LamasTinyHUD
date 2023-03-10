@@ -21,7 +21,7 @@ namespace processing {
             max,
             pos_max);
         if (pos_max != -1) {
-            max = config::mcm_setting::get_max_page_count() - pos_max;
+            max = config::mcm_setting::get_max_page_count() - 1 - pos_max;
         }
 
         if (!a_overwrite && (data.size() == max || max == 0)) {
