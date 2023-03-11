@@ -20,5 +20,6 @@ namespace processing {
         static bool already_used(const RE::TESForm* a_form,
             position_type a_position,
             const std::vector<data_helper*>& a_config_data);
+        static void add_empty_data(std::vector<data_helper*>& a_config_data);
     };
 }
