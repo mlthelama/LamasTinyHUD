@@ -127,6 +127,8 @@ namespace processing {
                 data_item->left));
         }
 
+        std::vector<data_helper*> new_data;
+        add_empty_data(new_data);
         auto page_handle = handle::page_handle::get_singleton();
         auto page = page_handle->get_active_page_id();
         //for some types we need to check if there is something on the other hand
@@ -136,19 +138,7 @@ namespace processing {
                 auto slot_settings = page_handle->get_page_setting(page, a_position_type)->slot_settings;
 
                 std::vector<data_helper*> current_data;
-                const auto item_current = new data_helper();
-                item_current->form = nullptr;
-                item_current->left = false;
-                item_current->type = slot_type::empty;
-                item_current->action_type = handle::slot_setting::action_type::default_action;
-                current_data.push_back(item_current);
-
-                const auto item2_current = new data_helper();
-                item2_current->form = nullptr;
-                item2_current->left = true;
-                item2_current->type = slot_type::empty;
-                item2_current->action_type = handle::slot_setting::action_type::default_action;
-                current_data.push_back(item2_current);
+                add_empty_data(current_data);
 
                 auto current_two_handed = false;
                 RE::TESForm* current_right = nullptr;
@@ -177,12 +167,18 @@ namespace processing {
                     current_data.erase(current_data.begin() + 1);
                 }
 
-                if (current_right) {
-                    current_data[0]->form = current_right;
-                    current_data[0]->left = false;
-                    current_data[0]->type = slot_settings.front()->type;
-                    current_data[0]->action_type = slot_settings.front()->action;
-                    current_data[0]->actor_value = slot_settings.front()->actor_value;
+                if (!current_two_handed && current_right) {
+                    if (slot_settings.front()->type == slot_type::weapon ||
+                        slot_settings.front()->type == slot_type::magic ||
+                        slot_settings.front()->type == slot_type::shield ||
+                        slot_settings.front()->type == slot_type::light) {
+                        current_data[0]->form = current_right;
+                        current_data[0]->left = false;
+                        current_data[0]->type = slot_settings.front()->type;
+                        current_data[0]->action_type = slot_settings.front()->action;
+                        current_data[0]->actor_value = slot_settings.front()->actor_value;
+                    }
+                    //will just keep it null
                 }
 
                 if (current_left) {
@@ -190,30 +186,35 @@ namespace processing {
                     current_data[1]->left = true;
                     current_data[1]->type = slot_settings.at(1)->type;
                     current_data[1]->action_type = slot_settings.at(1)->action;
-                } else {
-                    current_data.erase(current_data.begin() + 1);
                 }
 
                 //should be nothing we need here, overwrite everything
                 if (current_data.size() == 1 && !current_two_handed) {
+                    new_data[0] = data[0];
                     const auto item2 = new data_helper();
                     item2->form = RE::TESForm::LookupByID(util::unarmed);
                     item2->left = !a_left;  //need the opposite
                     item2->type = slot_type::weapon;
                     item2->action_type = handle::slot_setting::action_type::default_action;
-                    data.push_back(item2);
+                    new_data[1] = item2;
                 } else {
                     if (a_left) {
-                        data.push_back(item_current);
+                        new_data[0] = current_data[0];
+                        new_data[1] = data[0];
                     } else {
-                        data.push_back(item2_current);
+                        new_data[0] = data[0];
+                        new_data[1] = current_data[1];
                     }
                 }
+            } else {
+                new_data = data;
             }
+        } else {
+            new_data = data;
         }
 
-        logger::trace("Size is {}. calling to set data now."sv, data.size());
-        for (const auto data_item : data) {
+        logger::trace("Size is {}. calling to set data now."sv, new_data.size());
+        for (const auto data_item : new_data) {
             logger::trace("Name {}, Type {}, Action {}, Left {}",
                 data_item->form ? data_item->form->GetName() : "null",
                 static_cast<uint32_t>(data_item->type),
@@ -221,7 +222,7 @@ namespace processing {
                 data_item->left);
         }
         //do things
-        processing::set_setting_data::set_single_slot(page, a_position_type, data);
+        processing::set_setting_data::set_single_slot(page, a_position_type, new_data);
     }
 
     uint32_t game_menu_setting::get_selected_form(RE::UI*& a_ui) {
@@ -427,5 +428,21 @@ namespace processing {
             }
         }
         return false;
+    }
+
+    void game_menu_setting::add_empty_data(std::vector<data_helper*>& a_config_data) {
+        const auto item_current = new data_helper();
+        item_current->form = nullptr;
+        item_current->left = false;
+        item_current->type = slot_type::empty;
+        item_current->action_type = handle::slot_setting::action_type::default_action;
+        a_config_data.push_back(item_current);
+
+        const auto item2_current = new data_helper();
+        item2_current->form = nullptr;
+        item2_current->left = true;
+        item2_current->type = slot_type::empty;
+        item2_current->action_type = handle::slot_setting::action_type::default_action;
+        a_config_data.push_back(item2_current);
     }
 }

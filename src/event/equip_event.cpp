@@ -19,14 +19,7 @@ namespace event {
             return event_result::kContinue;
         }
 
-        const auto ui = RE::UI::GetSingleton();
-        if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
-                       ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
-            return event_result::kContinue;
-        }
-
         auto form = RE::TESForm::LookupByID(a_event->baseObject);
-
         if (!form) {
             return event_result::kContinue;
         }
@@ -34,6 +27,12 @@ namespace event {
         if (config::mcm_setting::get_draw_current_items_text() &&
             (form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo() || form->Is(RE::FormType::Light))) {
             handle::name_handle::get_singleton()->init_names(util::player::get_hand_assignment());
+        }
+
+        const auto ui = RE::UI::GetSingleton();
+        if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
+                       ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
+            return event_result::kContinue;
         }
 
         //add check if we need to block left

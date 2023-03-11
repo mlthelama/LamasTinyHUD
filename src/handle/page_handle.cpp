@@ -3,6 +3,7 @@
 #include "handle/data/data_helper.h"
 #include "handle/data/page/position_setting.h"
 #include "setting/mcm_setting.h"
+#include "util/constant.h"
 #include "util/helper.h"
 #include "util/player/player.h"
 #include "util/string_util.h"
@@ -147,7 +148,8 @@ namespace handle {
 
         auto first_slot = slots->front();
         if (first_slot->item_count == 0 && ((first_slot->type == slot_type::consumable) ||
-                                               (first_slot->form && first_slot->form->IsInventoryObject()))) {
+                                               (first_slot->form && first_slot->form->IsInventoryObject() &&
+                                                   first_slot->form->formID != util::unarmed))) {
             draw->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
         }
 
