@@ -745,34 +745,7 @@ namespace ui {
                 } else {
                     logger::error("failed to load svg texture {}"sv, entry.path().filename().string().c_str());
                 }
-                /*if (entry.path().filename().extension() == ".svg") {
-                    if (load_texture_from_file_svg(entry.path().string().c_str(),
-                            &a_struct[index].texture,
-                            a_struct[index].width,
-                            a_struct[index].height)) {
-                        logger::trace("loading svg texture {} width: {}, height: {}"sv,
-                            entry.path().filename().string().c_str(),
-                            a_struct[index].width,
-                            a_struct[index].height);
-                    } else {
-                        logger::error("failed to load svg texture {}"sv, entry.path().filename().string().c_str());
-                    }
-                } else if (entry.path().filename().extension() == ".png") {
-                    if (load_texture_from_file_png(entry.path().string().c_str(),
-                            &a_struct[index].texture,
-                            a_struct[index].width,
-                            a_struct[index].height)) {
-                        logger::trace("loading texture {} width: {}, height: {}"sv,
-                            entry.path().filename().string().c_str(),
-                            a_struct[index].width,
-                            a_struct[index].height);
-                    } else {
-                        logger::error("failed to load texture {}"sv, entry.path().filename().string().c_str());
-                    }
-                } else {
-                    continue;
-                }*/
-
+                
                 a_struct[index].width = static_cast<int32_t>(a_struct[index].width * get_resolution_scale_width());
                 a_struct[index].height = static_cast<int32_t>(a_struct[index].height * get_resolution_scale_height());
             }
