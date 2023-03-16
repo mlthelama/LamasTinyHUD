@@ -100,6 +100,8 @@ include_directories(extern/stb)
 
 find_package(imgui REQUIRED)
 
+find_package(unofficial-nanosvg CONFIG REQUIRED)
+
 # ---- Add source files ----
 
 include(cmake/sourcelist.cmake)
@@ -150,7 +152,8 @@ target_link_libraries(
 	PRIVATE
 		CommonLibSSE::CommonLibSSE
 		spdlog::spdlog
-        	imgui::imgui
+		imgui::imgui
+		unofficial::nanosvg::nanosvg
 )
 
 link_directories(extern/stb) 

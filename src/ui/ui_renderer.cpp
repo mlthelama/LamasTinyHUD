@@ -10,7 +10,14 @@
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include <stb_image.h>
-
+#pragma warning(push)
+#pragma warning(disable : 4702)
+#define NANOSVG_IMPLEMENTATION
+#define NANOSVG_ALL_COLOR_KEYWORDS
+#include <nanosvg.h>
+#define NANOSVGRAST_IMPLEMENTATION
+#include <nanosvgrast.h>
+#pragma warning(pop)
 
 namespace ui {
     using mcm = config::mcm_setting;
@@ -122,8 +129,9 @@ namespace ui {
     // Simple helper function to load an image into a DX11 texture with common settings
     bool ui_renderer::load_texture_from_file(const char* filename,
         ID3D11ShaderResourceView** out_srv,
-        std::int32_t& out_width,
-        std::int32_t& out_height) {
+        int32_t& out_width,
+        int32_t& out_height,
+        const std::filesystem::path& extension) {
         auto render_manager = RE::BSRenderManager::GetSingleton();
         if (!render_manager) {
             logger::error("Cannot find render manager. Initialization failed."sv);
@@ -136,8 +144,24 @@ namespace ui {
         // Load from disk into a raw RGBA buffer
         int image_width = 0;
         int image_height = 0;
-        unsigned char* image_data = stbi_load(filename, &image_width, &image_height, nullptr, 4);
-        if (image_data == nullptr) {
+        unsigned char* image_data;
+        if (extension == ".png") {
+            image_data = stbi_load(filename, &image_width, &image_height, nullptr, 4);
+            if (image_data == nullptr) {
+                return false;
+            }
+        } else if (extension == ".svg") {
+            NSVGimage* svg = nsvgParseFromFile(filename, "px", 96.0f);
+            NSVGrasterizer* rast = nsvgCreateRasterizer();
+
+            image_width = static_cast<int32_t>(svg->width);
+            image_height = static_cast<int32_t>(svg->height);
+
+            image_data = (unsigned char*)malloc(image_width * image_height * 4);
+            nsvgRasterize(rast, svg, 0, 0, 1, image_data, image_width, image_height, image_width * 4);
+            nsvgDelete(svg);
+            nsvgDeleteRasterizer(rast);
+        } else {
             return false;
         }
 
@@ -153,6 +177,7 @@ namespace ui {
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
         desc.CPUAccessFlags = 0;
+        desc.MiscFlags = 0;
 
         ID3D11Texture2D* p_texture = nullptr;
         D3D11_SUBRESOURCE_DATA sub_resource;
@@ -171,9 +196,14 @@ namespace ui {
         forwarder->CreateShaderResourceView(p_texture, &srv_desc, out_srv);
         p_texture->Release();
 
+        if (extension == ".png") {
+            stbi_image_free(image_data);
+        } else if (extension == ".svg") {
+            free(image_data);
+        }
+
         out_width = image_width;
         out_height = image_height;
-        stbi_image_free(image_data);
 
         return true;
     }
@@ -705,15 +735,17 @@ namespace ui {
                 if (load_texture_from_file(entry.path().string().c_str(),
                         &a_struct[index].texture,
                         a_struct[index].width,
-                        a_struct[index].height)) {
-                    logger::trace("loading texture {} width: {}, height: {}"sv,
+                        a_struct[index].height,
+                        entry.path().filename().extension())) {
+                    logger::trace("loading texture {}, type: {}, width: {}, height: {}"sv,
                         entry.path().filename().string().c_str(),
+                        entry.path().filename().extension().string().c_str(),
                         a_struct[index].width,
                         a_struct[index].height);
                 } else {
                     logger::error("failed to load texture {}"sv, entry.path().filename().string().c_str());
                 }
-
+                
                 a_struct[index].width = static_cast<int32_t>(a_struct[index].width * get_resolution_scale_width());
                 a_struct[index].height = static_cast<int32_t>(a_struct[index].height * get_resolution_scale_height());
             }
@@ -725,7 +757,15 @@ namespace ui {
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
             int32_t height = 0;
-            load_texture_from_file(entry.path().string().c_str(), &texture, width, height);
+            if (entry.path().filename().extension() == ".svg") {
+                load_texture_from_file(entry.path().string().c_str(),
+                    &texture,
+                    width,
+                    height,
+                    entry.path().filename().extension());
+            } else {
+                continue;
+            }
             logger::trace("loading animation frame: {}"sv, entry.path().string().c_str());
             image img;
             img.texture = texture;
