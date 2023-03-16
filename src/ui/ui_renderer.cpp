@@ -743,7 +743,7 @@ namespace ui {
                         a_struct[index].width,
                         a_struct[index].height);
                 } else {
-                    logger::error("failed to load svg texture {}"sv, entry.path().filename().string().c_str());
+                    logger::error("failed to load texture {}"sv, entry.path().filename().string().c_str());
                 }
                 
                 a_struct[index].width = static_cast<int32_t>(a_struct[index].width * get_resolution_scale_width());
