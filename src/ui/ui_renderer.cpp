@@ -151,8 +151,8 @@ namespace ui {
                 return false;
             }
         } else if (extension == ".svg") {
-            NSVGimage* svg = nsvgParseFromFile(filename, "px", 96.0f);
-            NSVGrasterizer* rast = nsvgCreateRasterizer();
+            auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
+            auto* rast = nsvgCreateRasterizer();
 
             image_width = static_cast<int32_t>(svg->width);
             image_height = static_cast<int32_t>(svg->height);
@@ -745,7 +745,7 @@ namespace ui {
                 } else {
                     logger::error("failed to load texture {}"sv, entry.path().filename().string().c_str());
                 }
-                
+
                 a_struct[index].width = static_cast<int32_t>(a_struct[index].width * get_resolution_scale_width());
                 a_struct[index].height = static_cast<int32_t>(a_struct[index].height * get_resolution_scale_height());
             }
