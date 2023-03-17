@@ -48,11 +48,30 @@ namespace handle {
             }
             data->name = fmt::format("{} {} {}", name_left, util::delimiter, name_right);
         }
+        logger::trace("name set to {}"sv, data->name);
+    }
+
+    void name_handle::init_voice_name(const RE::TESForm* a_form) {
+        if (!this->data_) {
+            this->data_ = new name_handle_data();
+        }
+
+        name_handle_data* data = this->data_;
+
+        data->voice_name = a_form ? a_form->GetName() : "";
+        logger::trace("voice name set to {}"sv, data->voice_name);
     }
 
     std::string name_handle::get_item_name_string() const {
         if (const name_handle_data* data = this->data_; data) {
             return data->name;
+        }
+        return {};
+    }
+
+    std::string name_handle::get_voice_name_string() const {
+        if (const name_handle_data* data = this->data_; data) {
+            return data->voice_name;
         }
         return {};
     }

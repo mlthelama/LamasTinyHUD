@@ -34,7 +34,7 @@ namespace util {
 
     std::vector<data_helper*> player::get_hand_assignment(bool a_two_handed) {
         std::vector<data_helper*> data;
-        const auto player = RE::PlayerCharacter::GetSingleton();
+        const auto* player = RE::PlayerCharacter::GetSingleton();
         auto right_obj = player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         auto left_obj = player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
 

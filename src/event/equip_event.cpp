@@ -29,6 +29,13 @@ namespace event {
             handle::name_handle::get_singleton()->init_names(util::player::get_hand_assignment());
         }
 
+        if (config::mcm_setting::get_draw_current_shout_text() && form->Is(RE::FormType::Shout) ||
+            form->Is(RE::FormType::Spell)) {
+            // call function there and check selected power, spell trigger and spells as well but that is ok for now
+            handle::name_handle::get_singleton()->init_voice_name(
+                RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().selectedPower);
+        }
+
         const auto ui = RE::UI::GetSingleton();
         if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
                        ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
