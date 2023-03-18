@@ -47,6 +47,8 @@ namespace config {
         static float get_slot_item_name_offset_vertical_y();
         static float get_arrow_slot_offset_x();
         static float get_arrow_slot_offset_y();
+        static float get_current_shout_offset_x();
+        static float get_current_shout_offset_y();
 
         static uint32_t get_background_transparency();
         static uint32_t get_background_icon_transparency();
@@ -66,6 +68,8 @@ namespace config {
         static uint32_t get_slot_button_feedback();
         static bool get_draw_current_items_text();
         static bool get_draw_item_name_text();
+        static bool get_draw_current_shout_text();
+        static float get_current_shout_font_size();
 
         static uint32_t get_alpha_slot_animation();
         static float get_duration_slot_animation();

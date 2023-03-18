@@ -6,7 +6,9 @@ namespace handle {
     public:
         static name_handle* get_singleton();
         void init_names(const std::vector<data_helper*>& data_helpers);
+        void init_voice_name(const RE::TESForm* a_form);
         [[nodiscard]] std::string get_item_name_string() const;
+        [[nodiscard]] std::string get_voice_name_string() const;
 
         name_handle(const name_handle&) = delete;
         name_handle(name_handle&&) = delete;
@@ -21,6 +23,7 @@ namespace handle {
 
         struct name_handle_data {
             std::string name;
+            std::string voice_name;
         };
 
         name_handle_data* data_;

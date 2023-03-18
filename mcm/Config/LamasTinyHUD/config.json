@@ -900,6 +900,32 @@
                         "formatString": "{1}",
                         "sourceType": "ModSettingFloat"
                     }
+                },
+                {
+                    "id": "fCurrentShoutOffsetX:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentShoutOffsetX_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentShoutOffsetX_InfoText",
+                    "valueOptions": {
+                        "min": -500.0,
+                        "max": 500.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
+                    "id": "fCurrentShoutOffsetY:HudSetting",
+                    "text": "$LamasTinyHUD_HudSetting_CurrentShoutOffsetY_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_HudSetting_CurrentShoutOffsetY_InfoText",
+                    "valueOptions": {
+                        "min": -500.0,
+                        "max": 500.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
                 }
             ]
         },
@@ -1044,6 +1070,19 @@
                     }
                 },
                 {
+                    "id": "fCurrentShoutFontSize:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_CurrentShoutFontSize_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_CurrentShoutFontSize_InfoText",
+                    "valueOptions": {
+                        "min": 10.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_GraphicSetting_Color",
                     "type": "header",
                     "position": 1
@@ -1169,10 +1208,18 @@
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }
+                },
+                {
+                    "id": "bDrawCurrentShoutText:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_DrawCurrentShoutText_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_GraphicSetting_DrawCurrentShoutText_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
                 }
             ]
         },
-        
         {
             "pageDisplayName": "$LamasTinyHUD_AnimationSetting",
             "cursorFillMode": "topToBottom",

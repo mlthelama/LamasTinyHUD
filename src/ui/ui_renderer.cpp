@@ -151,8 +151,8 @@ namespace ui {
                 return false;
             }
         } else if (extension == ".svg") {
-            NSVGimage* svg = nsvgParseFromFile(filename, "px", 96.0f);
-            NSVGrasterizer* rast = nsvgCreateRasterizer();
+            auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
+            auto* rast = nsvgCreateRasterizer();
 
             image_width = static_cast<int32_t>(svg->width);
             image_height = static_cast<int32_t>(svg->height);
@@ -686,20 +686,33 @@ namespace ui {
             draw_hud(x, y, scale_x, scale_y, alpha);
             draw_slots(x, y, settings);
             draw_keys(x, y, settings);
-            if (mcm::get_draw_current_items_text()) {
+            if (mcm::get_draw_current_items_text() || mcm::get_draw_current_shout_text()) {
                 const ImU32 color = IM_COL32(mcm::get_current_items_red(),
                     mcm::get_current_items_green(),
                     mcm::get_current_items_blue(),
                     mcm::get_text_transparency());
-                draw_text(x,
-                    y,
-                    mcm::get_current_items_offset_x(),
-                    mcm::get_current_items_offset_y(),
-                    0.f,
-                    0.f,
-                    handle::name_handle::get_singleton()->get_item_name_string().c_str(),
-                    color,
-                    mcm::get_current_items_font_size());
+                if (mcm::get_draw_current_items_text()) {
+                    draw_text(x,
+                        y,
+                        mcm::get_current_items_offset_x(),
+                        mcm::get_current_items_offset_y(),
+                        0.f,
+                        0.f,
+                        handle::name_handle::get_singleton()->get_item_name_string().c_str(),
+                        color,
+                        mcm::get_current_items_font_size());
+                }
+                if (mcm::get_draw_current_shout_text()) {
+                    draw_text(x,
+                        y,
+                        mcm::get_current_shout_offset_x(),
+                        mcm::get_current_shout_offset_y(),
+                        0.f,
+                        0.f,
+                        handle::name_handle::get_singleton()->get_voice_name_string().c_str(),
+                        color,
+                        mcm::get_current_shout_font_size());
+                }
             }
         }
 
@@ -745,7 +758,7 @@ namespace ui {
                 } else {
                     logger::error("failed to load texture {}"sv, entry.path().filename().string().c_str());
                 }
-                
+
                 a_struct[index].width = static_cast<int32_t>(a_struct[index].width * get_resolution_scale_width());
                 a_struct[index].height = static_cast<int32_t>(a_struct[index].height * get_resolution_scale_height());
             }

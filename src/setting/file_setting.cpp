@@ -6,7 +6,7 @@ namespace config {
 
     CSimpleIniA ini;
 
-    static int is_debug;
+    static bool is_debug;
     static bool draw_key_background;
 
     static bool font_load;
@@ -55,7 +55,7 @@ namespace config {
         logger::info("finished reading dll ini files. return.");
     }
 
-    int file_setting::get_is_debug() { return is_debug; }
+    bool file_setting::get_is_debug() { return is_debug; }
     bool file_setting::get_draw_key_background() { return draw_key_background; }
 
     bool file_setting::get_font_load() { return font_load; }

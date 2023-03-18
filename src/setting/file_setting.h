@@ -5,7 +5,7 @@ namespace config {
     public:
         static void load_setting();
 
-        static int get_is_debug();
+        static bool get_is_debug();
         static bool get_draw_key_background();
 
         static bool get_font_load();
