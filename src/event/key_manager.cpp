@@ -106,6 +106,10 @@ namespace event {
             if (button->IsDown() && key_binding->is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
                 auto position_setting = setting_execute::get_position_setting_for_key(key_);
+                if (!position_setting) {
+                    logger::warn("setting for key {} is null. break."sv, key_);
+                    break;
+                }
                 do_button_down(position_setting);
             }
 
@@ -113,8 +117,8 @@ namespace event {
                 logger::debug("configured Key ({}) is up"sv, key_);
                 //set slot back to normal color
                 const auto position_setting = setting_execute::get_position_setting_for_key(key_);
-                if (position_setting == nullptr) {
-                    logger::trace("setting for key {} is null. return."sv, key_);
+                if (!position_setting) {
+                    logger::warn("setting for key {} is null. break."sv, key_);
                     break;
                 }
                 position_setting->button_press_modify = ui::draw_full;
@@ -157,10 +161,18 @@ namespace event {
                     (mcm::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
                         key_ == key_binding->get_bottom_action())) {
                     auto page_setting = setting_execute::get_position_setting_for_key(key_binding->get_bottom_action());
+                    if (!page_setting) {
+                        logger::warn("setting for key {} is null. break."sv, key_);
+                        break;
+                    }
                     setting_execute::execute_settings(page_setting->slot_settings);
                 }
                 if (common::is_key_valid_and_matches(key_, key_binding->get_top_execute())) {
                     auto page_setting = setting_execute::get_position_setting_for_key(key_binding->get_top_action());
+                    if (!page_setting) {
+                        logger::warn("setting for key {} is null. break."sv, key_);
+                        break;
+                    }
                     //only instant should need work, the default shout will be handled by the game
                     setting_execute::execute_settings(page_setting->slot_settings, false, true);
                 }
@@ -191,6 +203,10 @@ namespace event {
                     handler->get_next_non_empty_setting_for_position(position_setting->position),
                     position_setting->position);
                 position_setting = setting_execute::get_position_setting_for_key(a_key);
+                if (!position_setting) {
+                    logger::warn("setting for key {} is null. break."sv, key_);
+                    return;
+                }
                 position_setting->highlight_slot = true;
                 if (!scroll_position(a_key, a_binding)) {
                     setting_execute::execute_settings(position_setting->slot_settings);
