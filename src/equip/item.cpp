@@ -22,6 +22,7 @@ namespace equip {
 
         RE::TESBoundObject* obj = nullptr;
         RE::ExtraDataList* extra = nullptr;
+        std::vector<RE::ExtraDataList*> extra_vector;
         std::map<RE::TESBoundObject*, std::pair<int, std::unique_ptr<RE::InventoryEntryData>>> potential_items;
         if (a_type == handle::slot_setting::slot_type::weapon) {
             if (!a_form->Is(RE::FormType::Weapon)) {
@@ -48,14 +49,44 @@ namespace equip {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
                 item_count = num_items;
+                auto simple_extra_data_list = entry->extraLists;
+                if (simple_extra_data_list) {
+                    for (auto* extra_data : *simple_extra_data_list) {
+                        extra = extra_data;
+                        auto worn_right = extra_data->HasType(RE::ExtraDataType::kWorn);
+                        auto worn_left = extra_data->HasType(RE::ExtraDataType::kWornLeft);
+                        logger::trace("extra data {}, worn right {}, worn left {}"sv,
+                            extra_data->GetCount(),
+                            worn_right,
+                            worn_left);
+                        if (!worn_right && !worn_left) {
+                            extra_vector.push_back(extra_data);
+                        }
+                    }
+                }
                 break;
             }
         }
 
-        if (obj == nullptr) {
+        if (!obj) {
             logger::warn("could not find selected weapon/shield, maybe it is gone"sv);
             //update ui in this case
             return;
+        }
+
+        if (!extra_vector.empty()) {
+            //extra = extra_vector.front();
+            extra = extra_vector.back();
+            /*if (left) {
+                REL::Relocation<std::uintptr_t> extra_worn_left_vtbl{ RE::VTABLE_ExtraWornLeft[0] };
+                auto* worn_left =
+                    (RE::ExtraWornLeft*)RE::BSExtraData::Create(sizeof(RE::ExtraWornLeft), extra_worn_left_vtbl.get());
+                extra->Add(worn_left);
+            } else {
+                REL::Relocation<std::uintptr_t> extra_worn_vtbl{ RE::VTABLE_ExtraWorn[0] };
+                auto* worn = (RE::ExtraWorn*)RE::BSExtraData::Create(sizeof(RE::ExtraWorn), extra_worn_vtbl.get());
+                extra->Add(worn);
+            }*/
         }
 
         const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
