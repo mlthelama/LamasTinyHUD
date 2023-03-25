@@ -7,17 +7,17 @@ from pathlib import Path
 def make_rel_archive(a_args):
     languages: list[str] = ["english", "czech", "french", "german", "italian", "japanese", "polish", "russian",
                             "spanish"]
-    resource_extensions: list[str] = ["*.png", "*.ttf", "*.otf", "*.svg"]
+    resource_extensions: list[str] = ["*.ttf", "*.otf", "*.svg"]
 
     archive: zipfile = zipfile.ZipFile(a_args.name + ".zip", "w", zipfile.ZIP_DEFLATED)
     archive.write(a_args.dll, "SKSE/Plugins/{}".format(os.path.basename(a_args.dll)))
     archive.write(a_args.pdb, "SKSE/Plugins/{}".format(os.path.basename(a_args.pdb)))
     archive.write(os.path.join(a_args.src_dir, "LamasTinyHUD.ini"), "SKSE/Plugins/LamasTinyHUD.ini")
 
-    v_path: str = os.path.join(a_args.src_dir, "extern", "resources")
+    v_path: str = os.path.join(a_args.src_dir, "extern", "resources", "resources")
     for extension in resource_extensions:
         for path in Path(v_path).rglob(extension):
-            archive.write(path, os.path.join("SKSE/Plugins/", path.relative_to(v_path)))
+            archive.write(path, os.path.join("SKSE/Plugins/resources", path.relative_to(v_path)))
 
     archive.write(os.path.join(a_args.src_dir, "mcm", "LamasTinyHUD.esl"), "LamasTinyHUD.esl")
     v_path: str = os.path.join(a_args.src_dir, "mcm", "scripts")

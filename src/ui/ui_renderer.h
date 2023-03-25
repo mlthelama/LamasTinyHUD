@@ -91,8 +91,7 @@ namespace ui {
         static bool load_texture_from_file(const char* filename,
             ID3D11ShaderResourceView** out_srv,
             std::int32_t& out_width,
-            std::int32_t& out_height,
-            const std::filesystem::path& extension);
+            std::int32_t& out_height);
 
         static inline bool show_ui_ = false;
         static inline ID3D11Device* device_ = nullptr;

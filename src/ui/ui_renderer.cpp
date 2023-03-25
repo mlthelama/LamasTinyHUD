@@ -9,7 +9,6 @@
 #include "setting/file_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
-#include <stb_image.h>
 #pragma warning(push)
 #pragma warning(disable : 4702)
 #define NANOSVG_IMPLEMENTATION
@@ -130,8 +129,7 @@ namespace ui {
     bool ui_renderer::load_texture_from_file(const char* filename,
         ID3D11ShaderResourceView** out_srv,
         int32_t& out_width,
-        int32_t& out_height,
-        const std::filesystem::path& extension) {
+        int32_t& out_height) {
         auto render_manager = RE::BSRenderManager::GetSingleton();
         if (!render_manager) {
             logger::error("Cannot find render manager. Initialization failed."sv);
@@ -145,25 +143,17 @@ namespace ui {
         int image_width = 0;
         int image_height = 0;
         unsigned char* image_data;
-        if (extension == ".png") {
-            image_data = stbi_load(filename, &image_width, &image_height, nullptr, 4);
-            if (image_data == nullptr) {
-                return false;
-            }
-        } else if (extension == ".svg") {
-            auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
-            auto* rast = nsvgCreateRasterizer();
 
-            image_width = static_cast<int32_t>(svg->width);
-            image_height = static_cast<int32_t>(svg->height);
+        auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
+        auto* rast = nsvgCreateRasterizer();
 
-            image_data = (unsigned char*)malloc(image_width * image_height * 4);
-            nsvgRasterize(rast, svg, 0, 0, 1, image_data, image_width, image_height, image_width * 4);
-            nsvgDelete(svg);
-            nsvgDeleteRasterizer(rast);
-        } else {
-            return false;
-        }
+        image_width = static_cast<int32_t>(svg->width);
+        image_height = static_cast<int32_t>(svg->height);
+
+        image_data = (unsigned char*)malloc(image_width * image_height * 4);
+        nsvgRasterize(rast, svg, 0, 0, 1, image_data, image_width, image_height, image_width * 4);
+        nsvgDelete(svg);
+        nsvgDeleteRasterizer(rast);
 
         // Create texture
         D3D11_TEXTURE2D_DESC desc;
@@ -196,11 +186,7 @@ namespace ui {
         forwarder->CreateShaderResourceView(p_texture, &srv_desc, out_srv);
         p_texture->Release();
 
-        if (extension == ".png") {
-            stbi_image_free(image_data);
-        } else if (extension == ".svg") {
-            free(image_data);
-        }
+        free(image_data);
 
         out_width = image_width;
         out_height = image_height;
@@ -744,12 +730,16 @@ namespace ui {
         std::string& file_path) {
         for (const auto& entry : std::filesystem::directory_iterator(file_path)) {
             if (a_map.contains(entry.path().filename().string())) {
+                if (entry.path().filename().extension() != ".svg") {
+                    logger::warn("file {}, does not match supported extension '.svg'"sv,
+                        entry.path().filename().string().c_str());
+                    continue;
+                }
                 const auto index = static_cast<int32_t>(a_map[entry.path().filename().string()]);
                 if (load_texture_from_file(entry.path().string().c_str(),
                         &a_struct[index].texture,
                         a_struct[index].width,
-                        a_struct[index].height,
-                        entry.path().filename().extension())) {
+                        a_struct[index].height)) {
                     logger::trace("loading texture {}, type: {}, width: {}, height: {}"sv,
                         entry.path().filename().string().c_str(),
                         entry.path().filename().extension().string().c_str(),
@@ -770,15 +760,14 @@ namespace ui {
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
             int32_t height = 0;
-            if (entry.path().filename().extension() == ".svg") {
-                load_texture_from_file(entry.path().string().c_str(),
-                    &texture,
-                    width,
-                    height,
-                    entry.path().filename().extension());
-            } else {
+            if (entry.path().filename().extension() != ".svg") {
+                logger::warn("file {}, does not match supported extension '.svg'"sv,
+                    entry.path().filename().string().c_str());
                 continue;
             }
+
+            load_texture_from_file(entry.path().string().c_str(), &texture, width, height);
+
             logger::trace("loading animation frame: {}"sv, entry.path().string().c_str());
             image img;
             img.texture = texture;
