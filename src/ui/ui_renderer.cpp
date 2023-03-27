@@ -140,17 +140,13 @@ namespace ui {
             render_manager->GetRuntimeData();
 
         // Load from disk into a raw RGBA buffer
-        int image_width = 0;
-        int image_height = 0;
-        unsigned char* image_data;
-
         auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
         auto* rast = nsvgCreateRasterizer();
 
-        image_width = static_cast<int32_t>(svg->width);
-        image_height = static_cast<int32_t>(svg->height);
+        auto image_width = static_cast<int>(svg->width);
+        auto image_height = static_cast<int>(svg->height);
 
-        image_data = (unsigned char*)malloc(image_width * image_height * 4);
+        auto image_data = (unsigned char*)malloc(image_width * image_height * 4);
         nsvgRasterize(rast, svg, 0, 0, 1, image_data, image_width, image_height, image_width * 4);
         nsvgDelete(svg);
         nsvgDeleteRasterizer(rast);

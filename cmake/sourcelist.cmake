@@ -64,6 +64,8 @@ set(sources ${sources}
 	src/util/helper.cpp
 	src/util/helper.h
 	src/util/offset.h
+	src/util/player/perk_visitor.cpp
+	src/util/player/perk_visitor.h
 	src/util/player/player.cpp
 	src/util/player/player.h
 	src/util/string_util.h
