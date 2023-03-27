@@ -40,7 +40,6 @@ namespace handle {
 
     private:
         page_handle() : data_(nullptr) {}
-
         ~page_handle() = default;
 
         static void get_offset_values(position_type a_position,

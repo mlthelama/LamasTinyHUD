@@ -35,9 +35,11 @@ namespace hook {
         pick_up_object_(a_this, a_object, a_count, a_arg3, a_play_sound);
 
         if (a_object->GetPlayable()) {
-            if (const auto obj = a_object->GetBaseObject(); obj->IsInventoryObject()) {
-                processing::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
-            }
+            //if (const auto obj = a_object->GetBaseObject(); obj->IsInventoryObject()) {
+            //processing::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
+            //}
+            processing::set_setting_data::set_new_item_count_if_needed(a_object->GetBaseObject(),
+                static_cast<int32_t>(a_count));
         }
     }
 

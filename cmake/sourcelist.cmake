@@ -25,6 +25,8 @@ set(sources ${sources}
 	src/handle/data/page/position_draw_setting.h
 	src/handle/data/page/position_setting.h
 	src/handle/data/page/slot_setting.h
+	src/handle/extra_data_holder.cpp
+	src/handle/extra_data_holder.h
 	src/handle/key_position_handle.cpp
 	src/handle/key_position_handle.h
 	src/handle/name_handle.cpp

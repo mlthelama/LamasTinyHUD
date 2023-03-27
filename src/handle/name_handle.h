@@ -18,7 +18,6 @@ namespace handle {
 
     private:
         name_handle() : data_(nullptr) {}
-
         ~name_handle() = default;
 
         struct name_handle_data {

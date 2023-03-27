@@ -21,7 +21,6 @@ namespace handle {
 
     private:
         key_position_handle() : data_(nullptr) {}
-
         ~key_position_handle() = default;
 
         struct key_position_handle_data {
