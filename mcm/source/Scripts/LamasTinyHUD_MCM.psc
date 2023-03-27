@@ -9,6 +9,7 @@ bool property bUnarmed Auto
 bool property bGroupPotions Auto
 bool property bEditKey Auto
 bool property bCleanup Auto
+bool property bPoisonDose Auto
 
 Event OnConfigClose() native
 string function GetResolutionWidth() native
@@ -142,6 +143,9 @@ Event OnSettingChange(String a_ID)
     elseif (a_ID == "bAutoCleanup:CleanupSetting")
         bCleanup = GetModSettingBool(a_ID)
         RefreshMenu()
+    elseif (a_ID == "bPoisonDoseOverwrite:MiscSetting")
+        bPoisonDose = GetModSettingBool(a_ID)
+        RefreshMenu()
     endif
 EndEvent
 
@@ -169,4 +173,5 @@ Event OnConfigOpen()
     bSpellLeft = false
     bEditKey = GetModSettingBool("bKeyPressToEnterEdit:Controls")
     bCleanup = GetModSettingBool("bAutoCleanup:CleanupSetting")
+    bPoisonDose = GetModSettingBool("bPoisonDoseOverwrite:MiscSetting")
 EndEvent

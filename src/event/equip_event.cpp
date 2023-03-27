@@ -37,10 +37,10 @@ namespace event {
         }
 
         const auto ui = RE::UI::GetSingleton();
-        if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
+        /*if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
                        ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
             return event_result::kContinue;
-        }
+        }*/
 
         //add check if we need to block left
         if (!ui->GameIsPaused() && config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {

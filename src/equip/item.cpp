@@ -4,6 +4,7 @@
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
+#include "util/player/perk_visitor.h"
 #include "util/player/player.h"
 #include "util/string_util.h"
 
@@ -92,20 +93,6 @@ namespace equip {
             }
         }
 
-        //if (!extra_vector.empty()) {
-        //extra = extra_vector.back();
-        /*if (left) {
-                REL::Relocation<std::uintptr_t> extra_worn_left_vtbl{ RE::VTABLE_ExtraWornLeft[0] };
-                auto* worn_left =
-                    (RE::ExtraWornLeft*)RE::BSExtraData::Create(sizeof(RE::ExtraWornLeft), extra_worn_left_vtbl.get());
-                extra->Add(worn_left);
-            } else {
-                REL::Relocation<std::uintptr_t> extra_worn_vtbl{ RE::VTABLE_ExtraWorn[0] };
-                auto* worn = (RE::ExtraWorn*)RE::BSExtraData::Create(sizeof(RE::ExtraWorn), extra_worn_vtbl.get());
-                extra->Add(worn);
-            }*/
-        //}
-
         const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
         if (left && obj_left && obj_left->formID == obj->formID) {
@@ -155,7 +142,7 @@ namespace equip {
         auto item_count = 0;
         for (const auto& [item, inv_data] : util::player::get_inventory(a_player, RE::FormType::Armor)) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
-                obj = inv_data.second->object;
+                obj = entry->object;
                 item_count = num_items;
                 break;
             }
@@ -211,14 +198,34 @@ namespace equip {
         auto alchemy_item = obj->As<RE::AlchemyItem>();
         if (alchemy_item->IsPoison()) {
             logger::trace("try to apply poison to weapon, count left {}"sv, left);
+            uint32_t potion_doses = 1;
+            /* it works for vanilla and adamant
+            * vanilla does a basic set value to 3
+            * adamant does 2 times a add value 2 
+            * ordinator we could handle it "dirty" because the Information we need needs to be RE, but if perk xy Is set
+             we could calculate it ourself. It is basically AV multiply base + "alchemy level" * 0.1 * 3 = dose count
+            * vokrii should be fine as well
+            * other add av multiply implementations need to be handled by getting the data from the game 
+            * the MCM setting will be left for overwrite handling */
+            if (config::mcm_setting::get_overwrite_poison_dose()) {
+                potion_doses = config::mcm_setting::get_apply_poison_dose();
+            } else {
+                if (a_player->HasPerkEntries(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount)) {
+                    auto perk_visit = util::perk_visitor(a_player, static_cast<float>(potion_doses));
+                    a_player->ForEachPerkEntry(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount, perk_visit);
+                    potion_doses = static_cast<int>(perk_visit.get_result());
+                }
+            }
+            logger::trace("Poison dose set value is {}"sv, potion_doses);
+
             //check if there is a weapon to apply it to
-            //check count here as well, since we need 2
+            //check count here as well, since we need max 2
             auto equipped_object = a_player->GetEquippedEntryData(false);
             if (equipped_object && equipped_object->object->IsWeapon() && !equipped_object->IsPoisoned()) {
                 logger::trace("try to add poison {} to right {}"sv,
                     alchemy_item->GetName(),
                     equipped_object->GetDisplayName());
-                equipped_object->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
+                equipped_object->PoisonObject(alchemy_item, potion_doses);
                 a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
                 left--;
             }
@@ -229,7 +236,7 @@ namespace equip {
                 logger::trace("try to add poison {} to left {}"sv,
                     alchemy_item->GetName(),
                     equipped_object_left->GetDisplayName());
-                equipped_object_left->PoisonObject(alchemy_item, config::mcm_setting::get_apply_poison_charges());
+                equipped_object_left->PoisonObject(alchemy_item, potion_doses);
                 a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
             }
             logger::trace("Is a poison, I am done here. return.");
@@ -252,7 +259,7 @@ namespace equip {
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
-                left = inv_data.first;
+                left = num_items;
                 break;
             }
         }

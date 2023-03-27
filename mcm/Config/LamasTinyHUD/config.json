@@ -1287,6 +1287,14 @@
                     }
                 },
                 {
+                    "type": "hiddenToggle",
+                    "groupControl": 10,
+                    "valueOptions": {
+                        "sourceType": "PropertyValueBool",
+                        "propertyName": "bPoisonDose"
+                    }
+                },
+                {
                     "id": "bHideOutsideCombat:MiscSetting",
                     "text": "$LamasTinyHUD_MiscSetting_HideOutsideCombat_OptionText",
                     "type": "toggle",
@@ -1451,13 +1459,24 @@
                     }
                 },
                 {
-                    "id": "uApplyPoisonCharges:MiscSetting",
-                    "text": "$LamasTinyHUD_MiscSetting_ApplyPoisonCharges_OptionText",
+                    "id": "bPoisonDoseOverwrite:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_PoisonDoseOverwrite_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_MiscSetting_PoisonDoseOverwrite_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "uApplyPoisonDose:MiscSetting",
+                    "text": "$LamasTinyHUD_MiscSetting_ApplyPoisonDose_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_MiscSetting_ApplyPoisonCharges_InfoText",
+                    "help": "$LamasTinyHUD_MiscSetting_ApplyPoisonDose_InfoText",
+                    "groupCondition": 10,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "min": 1,
-                        "max": 20,
+                        "max": 30,
                         "step": 1,
                         "formatString": "{0}",
                         "sourceType": "ModSettingInt"

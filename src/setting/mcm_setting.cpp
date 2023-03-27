@@ -90,7 +90,8 @@ namespace config {
     static float potion_max_perfect;
     static bool disable_re_equip_of_actives;
     static bool sort_arrow_by_quantity;
-    static uint32_t apply_poison_charges;
+    static bool overwrite_poison_dose;
+    static uint32_t apply_poison_dose;
     static bool try_dual_cast_top_spell;
 
     static bool auto_cleanup;
@@ -221,7 +222,8 @@ namespace config {
             potion_max_perfect = static_cast<float>(mcm.GetDoubleValue("MiscSetting", "fPotionMaxPerfect", 1.2));
             disable_re_equip_of_actives = mcm.GetBoolValue("MiscSetting", "bDisableReEquipOfActives", false);
             sort_arrow_by_quantity = mcm.GetBoolValue("MiscSetting", "bSortArrowByQuantity", false);
-            apply_poison_charges = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uApplyPoisonCharges", 5));
+            overwrite_poison_dose = mcm.GetBoolValue("MiscSetting", "bPoisonDoseOverwrite", false);
+            apply_poison_dose = static_cast<uint32_t>(mcm.GetLongValue("MiscSetting", "uApplyPoisonDose", 5));
             try_dual_cast_top_spell = mcm.GetBoolValue("MiscSetting", "bTryDualCastTopSpell", false);
 
             auto_cleanup = mcm.GetBoolValue("CleanupSetting", "bAutoCleanup", false);
@@ -336,7 +338,8 @@ namespace config {
     float mcm_setting::get_potion_max_perfect() { return potion_max_perfect; }
     bool mcm_setting::get_disable_re_equip_of_actives() { return disable_re_equip_of_actives; }
     bool mcm_setting::get_sort_arrow_by_quantity() { return sort_arrow_by_quantity; }
-    uint32_t mcm_setting::get_apply_poison_charges() { return apply_poison_charges; }
+    bool mcm_setting::get_overwrite_poison_dose() { return overwrite_poison_dose; }
+    uint32_t mcm_setting::get_apply_poison_dose() { return apply_poison_dose; }
     bool mcm_setting::get_try_dual_cast_top_spell() { return try_dual_cast_top_spell; }
 
     bool mcm_setting::get_auto_cleanup() { return auto_cleanup; }

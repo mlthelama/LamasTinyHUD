@@ -91,7 +91,8 @@ namespace config {
         static float get_potion_max_perfect();
         static bool get_disable_re_equip_of_actives();
         static bool get_sort_arrow_by_quantity();
-        static uint32_t get_apply_poison_charges();
+        static bool get_overwrite_poison_dose();
+        static uint32_t get_apply_poison_dose();
         static bool get_try_dual_cast_top_spell();
 
         static bool get_auto_cleanup();

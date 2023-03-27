@@ -132,12 +132,12 @@ namespace equip {
         }
 
         RE::TESBoundObject* obj = nullptr;
-        uint32_t left = 0;
+        auto left = 0;
         for (auto potential_items = util::player::get_inventory(a_player, RE::FormType::Scroll);
              const auto& [item, inv_data] : potential_items) {
             if (const auto& [num_items, entry] = inv_data; entry->object->formID == a_form->formID) {
                 obj = item;
-                left = inv_data.first;
+                left = num_items;
                 break;
             }
         }

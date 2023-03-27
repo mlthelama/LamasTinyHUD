@@ -1,5 +1,4 @@
 #include "extra_data_holder.h"
-#include "util/string_util.h"
 
 namespace handle {
     extra_data_holder* extra_data_holder::get_singleton() {
