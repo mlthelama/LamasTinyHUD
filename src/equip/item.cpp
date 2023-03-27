@@ -1,5 +1,6 @@
 ﻿#include "item.h"
 #include "equip_slot.h"
+#include "handle/extra_data_holder.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
@@ -74,10 +75,26 @@ namespace equip {
             return;
         }
 
-        if (!extra_vector.empty()) {
-            //extra = extra_vector.front();
-            extra = extra_vector.back();
-            /*if (left) {
+        auto* extra_handler = handle::extra_data_holder::get_singleton();
+        if (extra_handler->is_form_set(a_form)) {
+            auto extra_list = extra_handler->get_extra_list_for_form(a_form);
+            if (!extra_list.empty()) {
+                extra = extra_list.back();
+                extra_list.pop_back();
+                extra_handler->overwrite_extra_data_for_form(a_form, extra_list);
+            }
+        } else {
+            if (!extra_vector.empty()) {
+                extra = extra_vector.back();
+                extra_vector.pop_back();  //remove last item, because we already use that
+                extra_handler->init_extra_data(a_form, extra_vector);
+                logger::trace("set {} extra data for form {}"sv, extra_vector.size(), a_form->GetName());
+            }
+        }
+
+        //if (!extra_vector.empty()) {
+        //extra = extra_vector.back();
+        /*if (left) {
                 REL::Relocation<std::uintptr_t> extra_worn_left_vtbl{ RE::VTABLE_ExtraWornLeft[0] };
                 auto* worn_left =
                     (RE::ExtraWornLeft*)RE::BSExtraData::Create(sizeof(RE::ExtraWornLeft), extra_worn_left_vtbl.get());
@@ -87,7 +104,7 @@ namespace equip {
                 auto* worn = (RE::ExtraWorn*)RE::BSExtraData::Create(sizeof(RE::ExtraWorn), extra_worn_vtbl.get());
                 extra->Add(worn);
             }*/
-        }
+        //}
 
         const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
         const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();

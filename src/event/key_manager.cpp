@@ -1,5 +1,6 @@
 ﻿#include "key_manager.h"
 #include "handle/ammo_handle.h"
+#include "handle/extra_data_holder.h"
 #include "handle/page_handle.h"
 #include "processing/game_menu_setting.h"
 #include "processing/setting_execute.h"
@@ -50,6 +51,8 @@ namespace event {
         if (processing::game_menu_setting::is_need_menu_open(ui)) {
             return event_result::kContinue;
         }
+
+        handle::extra_data_holder::get_singleton()->reset_data();
 
         for (auto event = *a_event; event; event = event->next) {
             if (event->eventType != RE::INPUT_EVENT_TYPE::kButton) {
