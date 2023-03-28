@@ -20,10 +20,8 @@ namespace hook {
         RE::TESObjectREFR* a_from_refr) {
         add_object_to_container_(a_this, a_object, a_extra_list, a_count, a_from_refr);
 
-        if (a_object->GetPlayable()) {
-            if (a_object->IsInventoryObject()) {
-                processing::set_setting_data::set_new_item_count_if_needed(a_object, a_count);
-            }
+        if (a_object->IsInventoryObject()) {
+            processing::set_setting_data::set_new_item_count_if_needed(a_object, a_count);
         }
     }
 
@@ -34,10 +32,7 @@ namespace hook {
         bool a_play_sound) {
         pick_up_object_(a_this, a_object, a_count, a_arg3, a_play_sound);
 
-        if (a_object->GetPlayable()) {
-            //if (const auto obj = a_object->GetBaseObject(); obj->IsInventoryObject()) {
-            //processing::set_setting_data::set_new_item_count_if_needed(obj, static_cast<int32_t>(a_count));
-            //}
+        if (a_object->GetBaseObject()->IsInventoryObject()) {
             processing::set_setting_data::set_new_item_count_if_needed(a_object->GetBaseObject(),
                 static_cast<int32_t>(a_count));
         }
@@ -51,10 +46,8 @@ namespace hook {
         RE::TESObjectREFR* a_move_to_ref,
         const RE::NiPoint3* a_drop_loc,
         const RE::NiPoint3* a_rotate) {
-        if (a_item->GetPlayable()) {
-            if (a_item->IsInventoryObject()) {
-                processing::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
-            }
+        if (a_item->IsInventoryObject()) {
+            processing::set_setting_data::set_new_item_count_if_needed(a_item, -a_count);
         }
 
         return remove_item_(a_this, a_item, a_count, a_reason, a_extra_list, a_move_to_ref, a_drop_loc, a_rotate);

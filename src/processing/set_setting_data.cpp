@@ -31,8 +31,8 @@ namespace processing {
         logger::trace("done executing. return."sv);
     }
 
-    void set_setting_data::set_new_item_count_if_needed(const RE::TESBoundObject* a_object, const int32_t a_count) {
-        set_new_item_count(const_cast<RE::TESBoundObject*>(a_object), a_count);
+    void set_setting_data::set_new_item_count_if_needed(RE::TESBoundObject* a_object, int32_t a_count) {
+        set_new_item_count(a_object, a_count);
     }
 
     void set_setting_data::set_single_slot(const uint32_t a_page,

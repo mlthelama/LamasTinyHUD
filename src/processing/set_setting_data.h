@@ -11,7 +11,7 @@ namespace processing {
         using slot_type = handle::slot_setting::slot_type;
 
         static void read_and_set_data();
-        static void set_new_item_count_if_needed(const RE::TESBoundObject* a_object, int32_t a_count);
+        static void set_new_item_count_if_needed(RE::TESBoundObject* a_object, int32_t a_count);
         static void set_single_slot(uint32_t a_page, position_type a_position, const std::vector<data_helper*>& a_data);
         static void set_queue_slot(position_type a_pos, const std::vector<data_helper*>& a_data);
         static void get_actives_and_equip();
