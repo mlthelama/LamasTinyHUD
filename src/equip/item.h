@@ -13,5 +13,8 @@ namespace equip {
         static void equip_ammo(const RE::TESForm* a_form, RE::PlayerCharacter*& a_player);
         static void un_equip_ammo();
         static void find_and_consume_fitting_option(RE::ActorValue a_actor_value, RE::PlayerCharacter*& a_player);
+
+    private:
+        static void poison_weapon(RE::PlayerCharacter*& a_player, RE::AlchemyItem*& a_poison, uint32_t a_count);
     };
 }

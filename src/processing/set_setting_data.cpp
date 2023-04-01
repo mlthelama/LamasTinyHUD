@@ -365,7 +365,7 @@ namespace processing {
             return;
         }
 
-        clear_hands();
+        //clear_hands();
 
         logger::trace("execute first setting for left/right/top"sv);
 
@@ -481,7 +481,9 @@ namespace processing {
         for (const auto& [item, inv_data] : inv) {
             const auto& [num_items, entry] = inv_data;
             const auto ammo = item->As<RE::TESAmmo>();
-            if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
+
+            if (ammo->IsBoundObject() || !ammo->GetPlayable() ||
+                ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
                 continue;
             }
 
