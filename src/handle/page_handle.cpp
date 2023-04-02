@@ -2,6 +2,7 @@
 #include "equip/equip_slot.h"
 #include "handle/data/data_helper.h"
 #include "handle/data/page/position_setting.h"
+#include "handle/data/page/slot_setting.h"
 #include "setting/mcm_setting.h"
 #include "util/constant.h"
 #include "util/helper.h"
@@ -68,6 +69,7 @@ namespace handle {
             if (slot->type == slot_type::consumable || slot->type == slot_type::scroll) {
                 slot->display_item_count = true;
             }
+
             slot->equip_slot = equip_slot;
 
             slots->push_back(slot);
@@ -120,7 +122,7 @@ namespace handle {
         draw->offset_text_x = config::mcm_setting::get_slot_count_text_offset();
         draw->offset_text_y = config::mcm_setting::get_slot_count_text_offset();
 
-        if ((mcm::get_elden_demon_souls() || mcm::get_draw_item_name_text()) &&
+        if ((elden || mcm::get_draw_item_name_text()) &&
             (a_position == position_type::bottom || a_position == position_type::top)) {
             page->item_name = true;
             get_offset_values(a_position,
@@ -156,7 +158,8 @@ namespace handle {
         page->draw_setting = draw;
 
         page->key = a_key_pos->get_key_for_position(a_position);
-        page->font_size = config::mcm_setting::get_slot_count_text_font_size();
+        page->item_name_font_size = config::mcm_setting::get_item_name_font_size();
+        page->count_font_size = config::mcm_setting::get_slot_count_text_font_size();
 
         if (elden) {
             if (first_slot->type != slot_type::empty || slots->size() == 2 && slots->at(1)->type != slot_type::empty) {

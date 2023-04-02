@@ -24,6 +24,7 @@ namespace handle {
             mask = 12
         };
 
+
         RE::TESForm* form = nullptr;
         slot_type type = slot_type::empty;
         action_type action = action_type::default_action;

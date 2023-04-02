@@ -69,6 +69,8 @@ namespace config {
     static bool draw_toggle_button;
     static bool draw_current_shout_text;
     static float current_shout_font_size;
+    static float item_name_font_size;
+    static bool draw_page_id;
 
     static uint32_t alpha_slot_animation;
     static float duration_slot_animation;
@@ -197,6 +199,8 @@ namespace config {
             draw_current_shout_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentShoutText", false);
             current_shout_font_size =
                 static_cast<float>(mcm.GetDoubleValue("GraphicSetting", "fCurrentShoutFontSize", 20));
+            item_name_font_size = static_cast<float>(mcm.GetDoubleValue("GraphicSetting", "fItemNameTextFontSize", 20));
+            draw_page_id = mcm.GetBoolValue("GraphicSetting", "bDrawPageId", false);
 
             alpha_slot_animation =
                 static_cast<uint32_t>(mcm.GetLongValue("AnimationSetting", "uAlphaSlotAnimation", 51));
@@ -315,6 +319,9 @@ namespace config {
     bool mcm_setting::get_draw_toggle_button() { return draw_toggle_button; }
     bool mcm_setting::get_draw_current_shout_text() { return draw_current_shout_text; }
     float mcm_setting::get_current_shout_font_size() { return current_shout_font_size; }
+    float mcm_setting::get_item_name_font_size() { return item_name_font_size; }
+    bool mcm_setting::get_draw_page_id() { return draw_page_id; }
+
 
     uint32_t mcm_setting::get_alpha_slot_animation() { return alpha_slot_animation; }
     float mcm_setting::get_duration_slot_animation() { return duration_slot_animation; }

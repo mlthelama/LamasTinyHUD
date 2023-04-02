@@ -16,7 +16,8 @@ namespace handle {
         uint32_t button_press_modify = ui::draw_full;
         uint32_t key = 0;
         position_draw_setting* draw_setting = nullptr;
-        float font_size = 0.f;
+        float item_name_font_size = 0.f;
+        float count_font_size = 0.f;
         bool item_name = false;
         bool highlight_slot = false;
     };
