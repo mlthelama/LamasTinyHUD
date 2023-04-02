@@ -347,6 +347,8 @@ namespace ui {
     void ui_renderer::draw_slots(const float a_x,
         const float a_y,
         const std::map<position_type, page_setting*>& a_settings) {
+        auto draw_page = mcm::get_draw_page_id();
+        auto elden = mcm::get_elden_demon_souls();
         for (auto [position, page_setting] : a_settings) {
             if (!page_setting) {
                 continue;
@@ -414,7 +416,7 @@ namespace ui {
                         draw_setting->offset_name_text_y,
                         slot_name,
                         color,
-                        page_setting->font_size,
+                        page_setting->item_name_font_size,
                         center_text,
                         deduct_text_x,
                         deduct_text_y,
@@ -429,44 +431,76 @@ namespace ui {
                     mcm::get_slot_count_green(),
                     mcm::get_slot_count_blue(),
                     page_setting->draw_setting->text_transparency);
+                std::string slot_text;
                 switch (first_type) {
                     case slot_type::scroll:
                     case slot_type::consumable:
                         if (slot_settings.front()->display_item_count) {
-                            draw_text(draw_setting->width_setting,
-                                draw_setting->height_setting,
-                                draw_setting->offset_slot_x,
-                                draw_setting->offset_slot_y,
-                                draw_setting->offset_text_x,
-                                draw_setting->offset_text_y,
-                                std::to_string(slot_settings.front()->item_count).c_str(),
-                                color,
-                                page_setting->font_size);
+                            slot_text = std::to_string(slot_settings.front()->item_count);
                         }
                         break;
                     case slot_type::shout:
                     case slot_type::power:
+                        slot_text =
+                            slot_settings.front()->action == handle::slot_setting::action_type::instant ? "I" : "E";
+                        break;
                     case slot_type::magic:
-                        draw_text(draw_setting->width_setting,
-                            draw_setting->height_setting,
-                            draw_setting->offset_slot_x,
-                            draw_setting->offset_slot_y,
-                            draw_setting->offset_text_x,
-                            draw_setting->offset_text_y,
-                            slot_settings.front()->action == handle::slot_setting::action_type::instant ? "I" : "E",
-                            color,
-                            page_setting->font_size);
+                        if ((position == position_type::top && elden) || !elden) {
+                            slot_text =
+                                slot_settings.front()->action == handle::slot_setting::action_type::instant ? "I" : "E";
+                        } else if (draw_page) {
+                            slot_text = std::to_string(page_setting->page);
+                        }
                         break;
                     case slot_type::weapon:
                     case slot_type::shield:
+                    case slot_type::light:
+                        if (draw_page) {
+                            slot_text = std::to_string(page_setting->page);
+                        }
+                        break;
                     case slot_type::armor:
                     case slot_type::empty:
                     case slot_type::misc:
-                    case slot_type::light:
                     case slot_type::lantern:
                     case slot_type::mask:
                         //Nothing, for now
                         break;
+                }
+
+                if (draw_page && elden && position == position_type::left && slot_settings.size() == 2) {
+                    const auto second_type = slot_settings[1]->type;
+                    switch (second_type) {
+                        case slot_type::magic:
+                        case slot_type::weapon:
+                        case slot_type::shield:
+                        case slot_type::light:
+                            slot_text = std::to_string(page_setting->page);
+                            break;
+                        case slot_type::scroll:
+                        case slot_type::consumable:
+                        case slot_type::shout:
+                        case slot_type::power:
+                        case slot_type::armor:
+                        case slot_type::empty:
+                        case slot_type::misc:
+                        case slot_type::lantern:
+                        case slot_type::mask:
+                            //Nothing, for now
+                            break;
+                    }
+                }
+
+                if (!slot_text.empty()) {
+                    draw_text(draw_setting->width_setting,
+                        draw_setting->height_setting,
+                        draw_setting->offset_slot_x,
+                        draw_setting->offset_slot_y,
+                        draw_setting->offset_text_x,
+                        draw_setting->offset_text_y,
+                        slot_text.c_str(),
+                        color,
+                        page_setting->count_font_size);
                 }
             }
         }

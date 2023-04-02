@@ -1083,6 +1083,19 @@
                     }
                 },
                 {
+                    "id": "fItemNameTextFontSize:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_ItemNameTextFontSize_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_ItemNameTextFontSize_InfoText",
+                    "valueOptions": {
+                        "min": 10.0,
+                        "max": 35.0,
+                        "step": 1.0,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingFloat"
+                    }
+                },
+                {
                     "text": "$LamasTinyHUD_GraphicSetting_Color",
                     "type": "header",
                     "position": 1
@@ -1214,6 +1227,17 @@
                     "text": "$LamasTinyHUD_GraphicSetting_DrawCurrentShoutText_OptionText",
                     "type": "toggle",
                     "help": "$LamasTinyHUD_GraphicSetting_DrawCurrentShoutText_InfoText",
+                    "valueOptions": {
+                        "sourceType": "ModSettingBool"
+                    }
+                },
+                {
+                    "id": "bDrawPageId:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_DrawPageId_OptionText",
+                    "type": "toggle",
+                    "help": "$LamasTinyHUD_GraphicSetting_DrawPageId_InfoText",
+                    "groupCondition": 5,
+                    "groupBehavior": "disable",
                     "valueOptions": {
                         "sourceType": "ModSettingBool"
                     }

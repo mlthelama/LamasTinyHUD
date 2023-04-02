@@ -79,7 +79,7 @@ namespace equip {
             //could trigger an animation here
             //might need to set some things
             //TODO make an animation to play here
-            //a_player->NotifyAnimationGraph("RightCastSelf");
+            //a_player->NotifyAnimationGraph("IdleMagic_01"); //works
             auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
             auto target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
 
@@ -88,12 +88,10 @@ namespace equip {
             if (auto* effect = spell->GetCostliestEffectItem()) {
                 magnitude = effect->GetMagnitude();
             }
-            //auto dual_cast_scale = spell->avEffectSetting->data.dualCastScale;
-            logger::trace("casting spell {}, magnitude {}, effecticeness {}"sv,
+            logger::trace("casting spell {}, magnitude {}, effectiveness {}"sv,
                 spell->GetName(),
                 fmt::format(FMT_STRING("{:.2f}"), magnitude),
                 fmt::format(FMT_STRING("{:.2f}"), effectiveness));
-
             caster->CastSpellImmediate(spell,
                 false,
                 target,

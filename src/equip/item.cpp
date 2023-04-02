@@ -197,48 +197,7 @@ namespace equip {
 
         auto alchemy_item = obj->As<RE::AlchemyItem>();
         if (alchemy_item->IsPoison()) {
-            logger::trace("try to apply poison to weapon, count left {}"sv, left);
-            uint32_t potion_doses = 1;
-            /* it works for vanilla and adamant
-            * vanilla does a basic set value to 3
-            * adamant does 2 times a add value 2 
-            * ordinator we could handle it "dirty" because the Information we need needs to be RE, but if perk xy Is set
-             we could calculate it ourself. It is basically AV multiply base + "alchemy level" * 0.1 * 3 = dose count
-            * vokrii should be fine as well
-            * other add av multiply implementations need to be handled by getting the data from the game 
-            * the MCM setting will be left for overwrite handling */
-            if (config::mcm_setting::get_overwrite_poison_dose()) {
-                potion_doses = config::mcm_setting::get_apply_poison_dose();
-            } else {
-                if (a_player->HasPerkEntries(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount)) {
-                    auto perk_visit = util::perk_visitor(a_player, static_cast<float>(potion_doses));
-                    a_player->ForEachPerkEntry(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount, perk_visit);
-                    potion_doses = static_cast<int>(perk_visit.get_result());
-                }
-            }
-            logger::trace("Poison dose set value is {}"sv, potion_doses);
-
-            //check if there is a weapon to apply it to
-            //check count here as well, since we need max 2
-            auto equipped_object = a_player->GetEquippedEntryData(false);
-            if (equipped_object && equipped_object->object->IsWeapon() && !equipped_object->IsPoisoned()) {
-                logger::trace("try to add poison {} to right {}"sv,
-                    alchemy_item->GetName(),
-                    equipped_object->GetDisplayName());
-                equipped_object->PoisonObject(alchemy_item, potion_doses);
-                a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
-                left--;
-            }
-
-            auto equipped_object_left = a_player->GetEquippedEntryData(true);
-            if (equipped_object_left && equipped_object_left->object->IsWeapon() &&
-                !equipped_object_left->IsPoisoned() && left > 0) {
-                logger::trace("try to add poison {} to left {}"sv,
-                    alchemy_item->GetName(),
-                    equipped_object_left->GetDisplayName());
-                equipped_object_left->PoisonObject(alchemy_item, potion_doses);
-                a_player->RemoveItem(alchemy_item, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
-            }
+            poison_weapon(a_player, alchemy_item, left);
             logger::trace("Is a poison, I am done here. return.");
             return;
         }
@@ -369,5 +328,58 @@ namespace equip {
         } else {
             logger::warn("No suitable potion found. return.");
         }
+    }
+
+    void item::poison_weapon(RE::PlayerCharacter*& a_player, RE::AlchemyItem*& a_poison, uint32_t a_count) {
+        logger::trace("try to apply poison to weapon, count left {}"sv, a_count);
+        uint32_t potion_doses = 1;
+        /* it works for vanilla and adamant
+            * vanilla does a basic set value to 3
+            * adamant does 2 times add value 2 
+            * ordinator we could handle it "dirty" because the Information we need needs to be RE, but if perk xy Is set
+             we could calculate it ourselves. It is basically AV multiply base + "alchemy level" * 0.1 * 3 = dose count
+            * vokrii should be fine as well
+            * other add av multiply implementations need to be handled by getting the data from the game 
+            * the MCM setting will be left for overwrite handling */
+        if (config::mcm_setting::get_overwrite_poison_dose()) {
+            potion_doses = config::mcm_setting::get_apply_poison_dose();
+        } else {
+            if (a_player->HasPerkEntries(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount)) {
+                auto perk_visit = util::perk_visitor(a_player, static_cast<float>(potion_doses));
+                a_player->ForEachPerkEntry(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount, perk_visit);
+                potion_doses = static_cast<int>(perk_visit.get_result());
+            }
+        }
+        logger::trace("Poison dose set value is {}"sv, potion_doses);
+
+        RE::BGSSoundDescriptor* sound_descriptor;
+        if (a_poison->data.consumptionSound) {
+            sound_descriptor = a_poison->data.consumptionSound->soundDescriptor;
+        } else {
+            sound_descriptor = RE::TESForm::LookupByID(0x00106614)->As<RE::BGSSoundDescriptorForm>()->soundDescriptor;
+        }
+
+        //check if there is a weapon to apply it to
+        //check count here as well, since we need max 2
+        auto equipped_object = a_player->GetEquippedEntryData(false);
+        if (equipped_object && equipped_object->object->IsWeapon() && !equipped_object->IsPoisoned()) {
+            logger::trace("try to add poison {} to right {}"sv, a_poison->GetName(), equipped_object->GetDisplayName());
+            equipped_object->PoisonObject(a_poison, potion_doses);
+            util::player::play_sound(sound_descriptor, a_player);
+            a_player->RemoveItem(a_poison, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
+            a_count--;
+        }
+
+        auto equipped_object_left = a_player->GetEquippedEntryData(true);
+        if (equipped_object_left && equipped_object_left->object->IsWeapon() && !equipped_object_left->IsPoisoned() &&
+            a_count > 0) {
+            logger::trace("try to add poison {} to left {}"sv,
+                a_poison->GetName(),
+                equipped_object_left->GetDisplayName());
+            equipped_object_left->PoisonObject(a_poison, potion_doses);
+            a_player->RemoveItem(a_poison, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
+            a_count--;
+        }
+        //
     }
 }

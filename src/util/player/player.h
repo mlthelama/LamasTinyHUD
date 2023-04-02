@@ -11,6 +11,7 @@ namespace util {
         static std::vector<data_helper*> get_hand_assignment(bool a_two_handed = false);
         static bool has_item_or_spell(RE::TESForm* a_form);
         static bool has_shout(RE::Actor* a_actor, RE::TESShout* a_shout);
+        static void play_sound(RE::BGSSoundDescriptor* a_sound_descriptor_form, RE::PlayerCharacter*& a_player);
 
     private:
         static uint32_t

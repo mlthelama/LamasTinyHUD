@@ -70,6 +70,8 @@ namespace config {
         static bool get_draw_item_name_text();
         static bool get_draw_current_shout_text();
         static float get_current_shout_font_size();
+        static float get_item_name_font_size();
+        static bool get_draw_page_id();
 
         static uint32_t get_alpha_slot_animation();
         static float get_duration_slot_animation();
