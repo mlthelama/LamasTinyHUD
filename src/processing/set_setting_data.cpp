@@ -7,6 +7,7 @@
 #include "setting/custom_setting.h"
 #include "setting/mcm_setting.h"
 #include "setting_execute.h"
+#include "util/constant.h"
 #include "util/helper.h"
 #include "util/player/player.h"
 #include "util/string_util.h"
@@ -482,8 +483,11 @@ namespace processing {
             const auto& [num_items, entry] = inv_data;
             const auto ammo = item->As<RE::TESAmmo>();
 
-            if (ammo->IsBoundObject() || !ammo->GetPlayable() ||
-                ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
+            if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
+                continue;
+            }
+
+            if (ammo->formID == util::bound_arrow) {
                 continue;
             }
 

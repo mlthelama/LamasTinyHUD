@@ -17,4 +17,6 @@ namespace util {
                                                                                                0x0003EADE },
         { RE::ActorValue::kStamina, 0x00039BE8 },
         { RE::ActorValue::kMagicka, 0x0003EAE1 } };
+    
+    constexpr RE::FormID bound_arrow = 0x0010b0a7;
 }
