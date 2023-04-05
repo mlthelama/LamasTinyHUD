@@ -52,7 +52,10 @@ namespace config {
     static uint32_t background_icon_transparency;
     static uint32_t icon_transparency;
     static uint32_t key_transparency;
-    static uint32_t text_transparency;
+    static uint32_t current_items_transparency;
+    static uint32_t current_shout_transparency;
+    static uint32_t slot_count_transparency;
+    static uint32_t slot_item_name_transparency;
     static uint32_t icon_transparency_blocked;
     static float slot_count_text_font_size;
     static float current_items_font_size;
@@ -63,6 +66,9 @@ namespace config {
     static uint32_t slot_count_red;
     static uint32_t slot_count_green;
     static uint32_t slot_count_blue;
+    static uint32_t slot_item_red;
+    static uint32_t slot_item_green;
+    static uint32_t slot_item_blue;
     static uint32_t slot_button_feedback;
     static bool draw_current_items_text;
     static bool draw_item_name_text;
@@ -177,7 +183,14 @@ namespace config {
                 static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uBackgroundIconTransparency", 175));
             icon_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparency", 125));
             key_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uKeyTransparency", 225));
-            text_transparency = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uTextTransparency", 255));
+            current_items_transparency =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentItemsTransparency", 255));
+            current_shout_transparency =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uCurrentShoutTransparency", 255));
+            slot_count_transparency =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountTransparency", 255));
+            slot_item_name_transparency =
+                static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotItemNameTransparency", 255));
             icon_transparency_blocked =
                 static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uIconTransparencyBlocked", 50));
             slot_count_text_font_size =
@@ -191,6 +204,10 @@ namespace config {
             slot_count_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountRed", 255));
             slot_count_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountGreen", 255));
             slot_count_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotCountBlue", 255));
+            slot_item_red = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotItemRed", 255));
+            slot_item_green = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotItemGreen", 255));
+            slot_item_blue = static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotItemBlue", 255));
+
             slot_button_feedback =
                 static_cast<uint32_t>(mcm.GetLongValue("GraphicSetting", "uSlotButtonFeedback", 150));
             draw_current_items_text = mcm.GetBoolValue("GraphicSetting", "bDrawCurrentItemsText", true);
@@ -302,7 +319,10 @@ namespace config {
     uint32_t mcm_setting::get_background_icon_transparency() { return background_icon_transparency; }
     uint32_t mcm_setting::get_icon_transparency() { return icon_transparency; }
     uint32_t mcm_setting::get_key_transparency() { return key_transparency; }
-    uint32_t mcm_setting::get_text_transparency() { return text_transparency; }
+    uint32_t mcm_setting::get_current_items_transparency() { return current_items_transparency; }
+    uint32_t mcm_setting::get_current_shout_transparency() { return current_shout_transparency; }
+    uint32_t mcm_setting::get_slot_count_transparency() { return slot_count_transparency; }
+    uint32_t mcm_setting::get_slot_item_name_transparency() { return slot_item_name_transparency; }
     uint32_t mcm_setting::get_icon_transparency_blocked() { return icon_transparency_blocked; }
     float mcm_setting::get_slot_count_text_font_size() { return slot_count_text_font_size * master_scale; }
     float mcm_setting::get_current_items_font_size() { return current_items_font_size * master_scale; }
@@ -313,6 +333,9 @@ namespace config {
     uint32_t mcm_setting::get_slot_count_red() { return slot_count_red; }
     uint32_t mcm_setting::get_slot_count_green() { return slot_count_green; }
     uint32_t mcm_setting::get_slot_count_blue() { return slot_count_blue; }
+    uint32_t mcm_setting::get_slot_item_red() { return slot_item_red; }
+    uint32_t mcm_setting::get_slot_item_green() { return slot_item_green; }
+    uint32_t mcm_setting::get_slot_item_blue() { return slot_item_blue; }
     bool mcm_setting::get_draw_current_items_text() { return draw_current_items_text; }
     uint32_t mcm_setting::get_slot_button_feedback() { return slot_button_feedback; }
     bool mcm_setting::get_draw_item_name_text() { return draw_item_name_text; }
@@ -321,7 +344,6 @@ namespace config {
     float mcm_setting::get_current_shout_font_size() { return current_shout_font_size; }
     float mcm_setting::get_item_name_font_size() { return item_name_font_size; }
     bool mcm_setting::get_draw_page_id() { return draw_page_id; }
-
 
     uint32_t mcm_setting::get_alpha_slot_animation() { return alpha_slot_animation; }
     float mcm_setting::get_duration_slot_animation() { return duration_slot_animation; }

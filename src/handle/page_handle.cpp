@@ -102,7 +102,16 @@ namespace handle {
         draw->background_icon_transparency = mcm::get_background_icon_transparency();
         draw->icon_transparency = mcm::get_icon_transparency();
         draw->key_transparency = mcm::get_key_transparency();
-        draw->text_transparency = mcm::get_text_transparency();
+        draw->slot_count_transparency = mcm::get_slot_count_transparency();
+        draw->slot_item_name_transparency = mcm::get_slot_item_name_transparency();
+
+        draw->slot_count_red = mcm::get_slot_count_red();
+        draw->slot_count_green = mcm::get_slot_count_green();
+        draw->slot_count_blue = mcm::get_slot_count_blue();
+        draw->slot_item_red = mcm::get_slot_item_red();
+        draw->slot_item_green = mcm::get_slot_item_green();
+        draw->slot_item_blue = mcm::get_slot_item_blue();
+
         draw->alpha_slot_animation = mcm::get_alpha_slot_animation();
         draw->duration_slot_animation = mcm::get_duration_slot_animation();
 

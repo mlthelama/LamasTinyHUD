@@ -91,6 +91,11 @@ namespace util {
     }
 
     bool helper::is_two_handed(RE::TESForm*& a_form) {
+        if (!a_form) {
+            logger::warn("return false, form is null."sv);
+            return false;
+        }
+
         //check if two-handed
         if (a_form->Is(RE::FormType::Spell)) {
             if (const auto spell = a_form->As<RE::SpellItem>(); spell->IsTwoHanded()) {

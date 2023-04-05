@@ -54,7 +54,10 @@ namespace config {
         static uint32_t get_background_icon_transparency();
         static uint32_t get_icon_transparency();
         static uint32_t get_key_transparency();
-        static uint32_t get_text_transparency();
+        static uint32_t get_current_items_transparency();
+        static uint32_t get_current_shout_transparency();
+        static uint32_t get_slot_count_transparency();
+        static uint32_t get_slot_item_name_transparency();
         static uint32_t get_icon_transparency_blocked();
         static float get_slot_count_text_font_size();
         static float get_current_items_font_size();
@@ -65,6 +68,10 @@ namespace config {
         static uint32_t get_slot_count_red();
         static uint32_t get_slot_count_green();
         static uint32_t get_slot_count_blue();
+        static uint32_t get_slot_item_red();
+        static uint32_t get_slot_item_green();
+        static uint32_t get_slot_item_blue();
+
         static uint32_t get_slot_button_feedback();
         static bool get_draw_current_items_text();
         static bool get_draw_item_name_text();
