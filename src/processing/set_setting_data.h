@@ -37,7 +37,7 @@ namespace processing {
         static void set_active_and_equip(handle::page_handle*& a_page_handle);
         static void process_config_data();
         static void write_empty_config_and_init_active();
-        static void clear_hands();
+        [[maybe_unused]] static void clear_hands();
         static void block_location(handle::position_setting* a_position_setting, bool a_condition);
         static void look_for_ammo(bool a_crossbow);
         //easier to have both, first only needed to get the page, position. the second, so it is easier to have the form

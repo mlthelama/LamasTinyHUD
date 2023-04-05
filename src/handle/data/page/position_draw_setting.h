@@ -13,7 +13,15 @@ namespace handle {
         uint32_t background_icon_transparency = ui::draw_full;
         uint32_t icon_transparency = ui::draw_full;
         uint32_t key_transparency = ui::draw_full;
-        uint32_t text_transparency = ui::draw_full;
+        uint32_t slot_count_transparency = ui::draw_full;
+        uint32_t slot_item_name_transparency = ui::draw_full;
+
+        uint32_t slot_count_red = ui::draw_full;
+        uint32_t slot_count_green = ui::draw_full;
+        uint32_t slot_count_blue = ui::draw_full;
+        uint32_t slot_item_red = ui::draw_full;
+        uint32_t slot_item_green = ui::draw_full;
+        uint32_t slot_item_blue = ui::draw_full;
 
         float offset_slot_x = 0.f;
         float offset_slot_y = 0.f;

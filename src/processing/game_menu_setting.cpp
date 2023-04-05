@@ -75,7 +75,7 @@ namespace processing {
             logger::warn("form is null. return."sv);
             return;
         }
-        
+
         const auto two_handed = util::helper::is_two_handed(a_form);
         if (two_handed && a_left) {
             auto log_string = fmt::format("Going to Ignore {}, because Two Handed {} and Left {}",

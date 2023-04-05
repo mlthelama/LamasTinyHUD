@@ -997,10 +997,49 @@
                     }
                 },
                 {
-                    "id": "uTextTransparency:GraphicSetting",
-                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_Text_OptionText",
+                    "id": "uCurrentItemsTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_CurrentItemsText_OptionText",
                     "type": "slider",
-                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_Text_InfoText",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_CurrentItemsText_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uCurrentShoutTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_CurrentShoutText_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_CurrentShoutText_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotCountTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_SlotCountText_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_SlotCountText_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotItemNameTransparency:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_Transparency_SlotItemNameText_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_Transparency_SlotItemNameText_InfoText",
                     "valueOptions": {
                         "min": 0,
                         "max": 255,
@@ -1170,6 +1209,45 @@
                     "text": "$LamasTinyHUD_GraphicSetting_SlotCountBlue_OptionText",
                     "type": "slider",
                     "help": "$LamasTinyHUD_GraphicSetting_SlotCountBlue_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotItemRed:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotItemRed_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotItemRed_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotItemGreen:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotItemGreen_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotItemGreen_InfoText",
+                    "valueOptions": {
+                        "min": 0,
+                        "max": 255,
+                        "step": 1,
+                        "formatString": "{0}",
+                        "sourceType": "ModSettingInt"
+                    }
+                },
+                {
+                    "id": "uSlotItemBlue:GraphicSetting",
+                    "text": "$LamasTinyHUD_GraphicSetting_SlotItemBlue_OptionText",
+                    "type": "slider",
+                    "help": "$LamasTinyHUD_GraphicSetting_SlotItemBlue_InfoText",
                     "valueOptions": {
                         "min": 0,
                         "max": 255,

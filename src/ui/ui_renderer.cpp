@@ -217,7 +217,10 @@ namespace ui {
         const float a_offset_extra_x,
         const float a_offset_extra_y,
         const char* a_text,
-        const ImU32 a_color,
+        uint32_t a_alpha,
+        uint32_t a_red,
+        uint32_t a_green,
+        uint32_t a_blue,
         const float a_font_size,
         bool a_center_text,
         bool a_deduct_text_x,
@@ -228,9 +231,11 @@ namespace ui {
         auto text_x = 0.f;
         auto text_y = 0.f;
 
-        if (!a_text || !*a_text) {
+        if (!a_text || !*a_text || a_alpha == 0) {
             return;
         }
+
+        const ImU32 color = IM_COL32(a_red, a_green, a_blue, a_alpha);
 
         const ImVec2 text_size = ImGui::CalcTextSize(a_text);
         if (a_center_text) {
@@ -258,7 +263,7 @@ namespace ui {
             font = ImGui::GetDefaultFont();
         }
 
-        ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, a_color, a_text, nullptr, 0.0f, nullptr);
+        ImGui::GetWindowDrawList()->AddText(font, a_font_size, position, color, a_text, nullptr, 0.0f, nullptr);
     }
 
     void ui_renderer::draw_element(ID3D11ShaderResourceView* a_texture,
@@ -393,8 +398,6 @@ namespace ui {
             }
 
             if (page_setting->item_name && !page_setting->slot_settings.empty()) {
-                const ImU32 color =
-                    IM_COL32(draw_full, draw_full, draw_full, page_setting->draw_setting->text_transparency);
                 auto slot_setting = page_setting->slot_settings.front();
                 auto slot_name = "";
                 if (slot_setting && slot_setting->form) {
@@ -423,7 +426,10 @@ namespace ui {
                         draw_setting->offset_name_text_x,
                         draw_setting->offset_name_text_y,
                         slot_name,
-                        color,
+                        draw_setting->slot_item_name_transparency,
+                        draw_setting->slot_item_red,
+                        draw_setting->slot_item_green,
+                        draw_setting->slot_item_blue,
                         page_setting->item_name_font_size,
                         center_text,
                         deduct_text_x,
@@ -435,10 +441,6 @@ namespace ui {
 
             if (auto slot_settings = page_setting->slot_settings; !slot_settings.empty()) {
                 const auto first_type = slot_settings.front()->type;
-                const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
-                    mcm::get_slot_count_green(),
-                    mcm::get_slot_count_blue(),
-                    page_setting->draw_setting->text_transparency);
                 std::string slot_text;
                 switch (first_type) {
                     case slot_type::scroll:
@@ -507,17 +509,16 @@ namespace ui {
                         draw_setting->offset_text_x,
                         draw_setting->offset_text_y,
                         slot_text.c_str(),
-                        color,
+                        draw_setting->slot_count_transparency,
+                        draw_setting->slot_count_red,
+                        draw_setting->slot_count_green,
+                        draw_setting->slot_count_blue,
                         page_setting->count_font_size);
                 }
             }
         }
         const auto ammo_handle = handle::ammo_handle::get_singleton();
         if (const auto current_ammo = ammo_handle->get_current(); current_ammo && mcm::get_elden_demon_souls()) {
-            const ImU32 color = IM_COL32(mcm::get_slot_count_red(),
-                mcm::get_slot_count_green(),
-                mcm::get_slot_count_blue(),
-                mcm::get_text_transparency());
             draw_slot(a_x,
                 a_y,
                 mcm::get_hud_arrow_image_scale_width(),
@@ -541,7 +542,10 @@ namespace ui {
                 mcm::get_arrow_slot_count_text_offset(),
                 mcm::get_arrow_slot_count_text_offset(),
                 std::to_string(current_ammo->item_count ? current_ammo->item_count : 0).c_str(),
-                color,
+                mcm::get_slot_count_transparency(),
+                mcm::get_slot_count_red(),
+                mcm::get_slot_count_green(),
+                mcm::get_slot_count_blue(),
                 mcm::get_arrow_count_font_size());
 
             if (current_ammo->highlight_slot) {
@@ -723,10 +727,6 @@ namespace ui {
             draw_slots(x, y, settings);
             draw_keys(x, y, settings);
             if (mcm::get_draw_current_items_text() || mcm::get_draw_current_shout_text()) {
-                const ImU32 color = IM_COL32(mcm::get_current_items_red(),
-                    mcm::get_current_items_green(),
-                    mcm::get_current_items_blue(),
-                    mcm::get_text_transparency());
                 if (mcm::get_draw_current_items_text()) {
                     draw_text(x,
                         y,
@@ -735,7 +735,10 @@ namespace ui {
                         0.f,
                         0.f,
                         handle::name_handle::get_singleton()->get_item_name_string().c_str(),
-                        color,
+                        mcm::get_current_items_transparency(),
+                        mcm::get_current_items_red(),
+                        mcm::get_current_items_green(),
+                        mcm::get_current_items_blue(),
                         mcm::get_current_items_font_size());
                 }
                 if (mcm::get_draw_current_shout_text()) {
@@ -746,7 +749,10 @@ namespace ui {
                         0.f,
                         0.f,
                         handle::name_handle::get_singleton()->get_voice_name_string().c_str(),
-                        color,
+                        mcm::get_current_shout_transparency(),
+                        mcm::get_current_items_red(),
+                        mcm::get_current_items_green(),
+                        mcm::get_current_items_blue(),
                         mcm::get_current_shout_font_size());
                 }
             }

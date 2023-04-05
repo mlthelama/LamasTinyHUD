@@ -398,7 +398,7 @@ namespace processing {
         logger::trace("done equip for first set"sv);
     }
 
-    void set_setting_data::clear_hands() {
+    [[maybe_unused]] void set_setting_data::clear_hands() {
         logger::trace("clear hands"sv);
         auto player = RE::PlayerCharacter::GetSingleton();
         auto equip_manager = RE::ActorEquipManager::GetSingleton();
@@ -628,7 +628,7 @@ namespace processing {
             logger::warn("form is null. return."sv);
             return;
         }
-        
+
         auto page_handle = handle::page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
