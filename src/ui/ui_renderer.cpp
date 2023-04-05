@@ -285,6 +285,10 @@ namespace ui {
         const float a_scale_x,
         const float a_scale_y,
         const uint32_t a_alpha) {
+        if (a_alpha == 0) {
+            return;
+        }
+
         constexpr auto angle = 0.f;
 
         const auto center = ImVec2(a_x, a_y);
@@ -323,6 +327,10 @@ namespace ui {
         const uint32_t a_modify,
         const uint32_t a_alpha,
         float a_duration) {
+        if (a_alpha == 0) {
+            return;
+        }
+
         logger::trace("starting inited animation");
         constexpr auto angle = 0.0f;
 
@@ -560,6 +568,10 @@ namespace ui {
         const float a_offset_x,
         const float a_offset_y,
         const uint32_t a_alpha) {
+        if (a_alpha == 0) {
+            return;
+        }
+
         constexpr auto angle = 0.f;
 
         const auto center = ImVec2(a_x + a_offset_x, a_y + a_offset_y);
@@ -616,6 +628,10 @@ namespace ui {
         const float a_offset_y,
         const icon_image_type a_type,
         const uint32_t a_alpha) {
+        if (a_alpha == 0) {
+            return;
+        }
+
         constexpr auto angle = 0.f;
 
         const auto center = ImVec2(a_x + a_offset_x, a_y + a_offset_y);
@@ -637,6 +653,10 @@ namespace ui {
         const float a_offset_y,
         const uint32_t a_key,
         const uint32_t a_alpha) {
+        if (a_alpha == 0) {
+            return;
+        }
+
         constexpr auto angle = 0.f;
 
         const auto center = ImVec2(a_x + a_offset_x, a_y + a_offset_y);

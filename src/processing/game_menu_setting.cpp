@@ -9,6 +9,11 @@
 
 namespace processing {
     void game_menu_setting::elden_souls_config(RE::TESForm* a_form, position_type a_position, bool a_overwrite) {
+        if (!a_form) {
+            logger::warn("form is null. return."sv);
+            return;
+        }
+
         std::vector<data_helper*> data;
 
         write_notification(fmt::format("Elden Souls Config, Position {}, overwrite {}"sv,
@@ -66,6 +71,11 @@ namespace processing {
         logger::trace("Setting done. return.");
     }
     void game_menu_setting::default_config(RE::TESForm*& a_form, position_type a_position_type, bool a_left) {
+        if (!a_form) {
+            logger::warn("form is null. return."sv);
+            return;
+        }
+        
         const auto two_handed = util::helper::is_two_handed(a_form);
         if (two_handed && a_left) {
             auto log_string = fmt::format("Going to Ignore {}, because Two Handed {} and Left {}",

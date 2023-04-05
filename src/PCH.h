@@ -1,6 +1,5 @@
 #pragma once
 
-#define STB_IMAGE_IMPLEMENTATION
 #define IMGUI_DEFINE_MATH_OPERATORS
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX

@@ -624,6 +624,11 @@ namespace processing {
     }
 
     void set_setting_data::default_remove(RE::TESForm* a_form) {
+        if (!a_form) {
+            logger::warn("form is null. return."sv);
+            return;
+        }
+        
         auto page_handle = handle::page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
