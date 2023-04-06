@@ -99,6 +99,8 @@ namespace equip {
                 false,
                 magnitude,
                 is_self_target ? nullptr : actor);
+            //tested with adamant, works with the silent casting perk as well
+            send_spell_casting_sound_alert(caster, spell);
         } else {
             const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
@@ -251,5 +253,11 @@ namespace equip {
         static REL::Relocation<decltype(magic::flash_hud_meter)> flash_hud_meter{ REL::ID(
             offset::get_flash_hud_meter) };
         return flash_hud_meter(a_actor_value);
+    }
+    
+    void magic::send_spell_casting_sound_alert(RE::MagicCaster* a_magic_caster, RE::SpellItem* a_spell_item) {
+        static REL::Relocation<decltype(magic::send_spell_casting_sound_alert)> send_spell_casting_sound_alert{ REL::ID(
+            offset::send_spell_casting_sound_alert) };
+        return send_spell_casting_sound_alert(a_magic_caster, a_spell_item);
     }
 }
