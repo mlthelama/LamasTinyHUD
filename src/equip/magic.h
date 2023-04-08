@@ -18,5 +18,6 @@ namespace equip {
         static RE::MagicSystem::CastingSource get_casting_source(const RE::BGSEquipSlot* a_slot);
         static bool can_dual_cast(float a_cost, float a_magicka, float a_multiplier);
         static void flash_hud_meter(RE::ActorValue a_actor_value);
+        static void send_spell_casting_sound_alert(RE::MagicCaster* a_magic_caster, RE::SpellItem* a_spell_item);
     };
 }

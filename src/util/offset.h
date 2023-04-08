@@ -10,4 +10,5 @@ namespace offset {
     constexpr REL::RelocationID get_un_equip_spell(227784, 54669);
     constexpr REL::RelocationID get_un_equip_shout(53863, 54664);
     constexpr REL::RelocationID has_shout(37829, 38783);
+    constexpr REL::RelocationID send_spell_casting_sound_alert(33668, 34448);
 }
