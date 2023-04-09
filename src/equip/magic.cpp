@@ -33,8 +33,13 @@ namespace equip {
         logger::trace("spell {} is type {}"sv, spell->GetName(), static_cast<uint32_t>(casting_type));
         if (a_action == action_type::instant && casting_type != RE::MagicSystem::CastingType::kConcentration) {
             if (config::mcm_setting::get_elden_demon_souls()) {
-                //normally in elden just top uses instant for spells
-                equip::equip_slot::un_equip_shout_slot(a_player);
+                auto selected_power = a_player->GetActorRuntimeData().selectedPower;
+                if (selected_power) {
+                    logger::trace(
+                        "power/shout {} is equipped, will only cast spell in elden mode if shout slot is empty. return."sv,
+                        selected_power->GetName());
+                    return;
+                }
             }
             const auto actor = a_player->As<RE::Actor>();
             auto caster = actor->GetMagicCaster(get_casting_source(a_slot));
@@ -188,10 +193,9 @@ namespace equip {
         }
 
         if (a_action == handle::slot_setting::action_type::instant) {
-            //try that
             if (config::mcm_setting::get_elden_demon_souls()) {
-                //normally in elden just top uses instant for spells
-                equip::equip_slot::un_equip_shout_slot(a_player);
+                logger::warn("form {}, will only not instant cast power in elden mode. return."sv, spell->GetName());
+                return;
             }
             //might not consider daily cool downs
             const auto actor = a_player->As<RE::Actor>();
