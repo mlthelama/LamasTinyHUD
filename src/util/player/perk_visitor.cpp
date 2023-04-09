@@ -26,6 +26,7 @@ namespace util {
                     result_ += static_cast<float>(av * 0.1 * 3);
                 }
             }
+
             logger::trace("Got value {} for Perk, total now is {}"sv, value->data, result_);
         }
 

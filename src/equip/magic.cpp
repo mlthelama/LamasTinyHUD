@@ -49,7 +49,7 @@ namespace equip {
                 config::mcm_setting::get_elden_demon_souls()) {
                 auto game_setting = RE::GameSettingCollection::GetSingleton();
                 auto dual_cast_cost_multiplier = game_setting->GetSetting("fMagicDualCastingCostMult")->GetFloat();
-                logger::trace("dual cast multiplier is {}"sv,
+                logger::trace("dual cast, multiplier {}"sv,
                     fmt::format(FMT_STRING("{:.2f}"), dual_cast_cost_multiplier));
                 dual_cast = can_dual_cast(cost, current_magicka, dual_cast_cost_multiplier);
                 if (dual_cast) {
@@ -254,7 +254,7 @@ namespace equip {
             offset::get_flash_hud_meter) };
         return flash_hud_meter(a_actor_value);
     }
-    
+
     void magic::send_spell_casting_sound_alert(RE::MagicCaster* a_magic_caster, RE::SpellItem* a_spell_item) {
         static REL::Relocation<decltype(magic::send_spell_casting_sound_alert)> send_spell_casting_sound_alert{ REL::ID(
             offset::send_spell_casting_sound_alert) };

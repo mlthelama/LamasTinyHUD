@@ -87,7 +87,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
 
     Init(a_skse);
 
-    SKSE::AllocTrampoline(14 * 2);
+    SKSE::AllocTrampoline(14 * 3);
 
     stl::write_thunk_call<ui::ui_renderer::d_3d_init_hook>();
     stl::write_thunk_call<ui::ui_renderer::dxgi_present_hook>();

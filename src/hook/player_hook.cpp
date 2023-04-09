@@ -10,6 +10,10 @@ namespace hook {
         pick_up_object_ = player_character_vtbl.write_vfunc(0xCC, pick_up_object);
         remove_item_ = player_character_vtbl.write_vfunc(0x56, remove_item);
 
+        auto& trampoline = SKSE::GetTrampoline();
+        REL::Relocation<std::uintptr_t> add_item_functor_hook{ RELOCATION_ID(55946, 56490) };
+        add_item_functor_ = trampoline.write_call<5>(add_item_functor_hook.address() + 0x15D, add_item_functor);
+
         logger::info("Hooked."sv);
     }
 
@@ -51,5 +55,18 @@ namespace hook {
         }
 
         return remove_item_(a_this, a_item, a_count, a_reason, a_extra_list, a_move_to_ref, a_drop_loc, a_rotate);
+    }
+
+    void player_hook::add_item_functor(RE::TESObjectREFR* a_this,
+        RE::TESObjectREFR* a_object,
+        int32_t a_count,
+        bool a4,
+        bool a5) {
+        add_item_functor_(a_this, a_object, a_count, a4, a5);
+
+        if (a_object->GetBaseObject()->IsInventoryObject()) {
+            processing::set_setting_data::set_new_item_count_if_needed(a_object->GetBaseObject(),
+                static_cast<int32_t>(a_count));
+        }
     }
 }
