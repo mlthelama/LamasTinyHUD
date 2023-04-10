@@ -157,8 +157,7 @@ namespace equip {
                 ->CastSpellImmediate(scroll, false, actor, 1.0f, false, 0.0f, nullptr);
             actor->RemoveItem(scroll, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
         } else {
-            auto* equip_manager = RE::ActorEquipManager::GetSingleton();
-            equip_manager->EquipObject(a_player, obj);
+            RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
         }
 
         logger::trace("worked scroll {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));

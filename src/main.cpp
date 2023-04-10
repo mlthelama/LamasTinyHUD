@@ -92,7 +92,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(con
     stl::write_thunk_call<ui::ui_renderer::d_3d_init_hook>();
     stl::write_thunk_call<ui::ui_renderer::dxgi_present_hook>();
 
-    auto g_message = SKSE::GetMessagingInterface();
+    auto* g_message = SKSE::GetMessagingInterface();
     if (!g_message) {
         logger::error("Messaging Interface Not Found. return."sv);
         return false;

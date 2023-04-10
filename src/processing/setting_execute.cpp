@@ -25,7 +25,7 @@ namespace processing {
             a_only_instant);
         std::vector<RE::BGSEquipSlot*> un_equip;
         auto* player = RE::PlayerCharacter::GetSingleton();
-        for (auto slot : a_slots) {
+        for (auto* slot : a_slots) {
             if (!slot->form && slot->type == slot_type::consumable && slot->actor_value != RE::ActorValue::kNone) {
                 logger::debug("form is null, but actor value is set to {}"sv, static_cast<int>(slot->actor_value));
             } else if (mcm::get_elden_demon_souls() && !slot->form) {

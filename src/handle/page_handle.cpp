@@ -243,7 +243,7 @@ namespace handle {
             for (auto i = 0; i < static_cast<int>(position_type::total); ++i) {
                 const auto pos = static_cast<position_type>(i);
                 const auto page = get_active_page_id_position(pos);
-                auto page_setting = get_page_setting(page, pos);
+                auto* page_setting = get_page_setting(page, pos);
                 a_active.insert({ pos, page_setting });
             }
             return a_active;

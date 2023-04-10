@@ -400,7 +400,7 @@ namespace papyrus {
         if (display_string.empty()) {
             auto actor_value = static_cast<RE::ActorValue>(config::custom_setting::get_effect_actor_value(a_str));
             if (util::actor_value_to_base_potion_map_.contains(actor_value)) {
-                auto potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
+                auto* potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
                 display_string = potion_form ? potion_form->GetName() : "";
             }
         }

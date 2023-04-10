@@ -154,7 +154,7 @@ namespace equip {
         }
         logger::trace("try to equip armor/clothing {}"sv, a_form->GetName());
 
-        if (auto equip_manager = RE::ActorEquipManager::GetSingleton();
+        if (auto* equip_manager = RE::ActorEquipManager::GetSingleton();
             !equip_slot::un_equip_if_equipped(obj, a_player, equip_manager)) {
             equip_manager->EquipObject(a_player, obj);
             logger::trace("equipped armor {}. return."sv, a_form->GetName());

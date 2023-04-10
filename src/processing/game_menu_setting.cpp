@@ -224,7 +224,7 @@ namespace processing {
         }
 
         logger::trace("Size is {}. calling to set data now."sv, new_data.size());
-        for (const auto data_item : new_data) {
+        for (const auto* data_item : new_data) {
             logger::trace("Name {}, Type {}, Action {}, Left {}",
                 data_item->form ? data_item->form->GetName() : "null",
                 static_cast<uint32_t>(data_item->type),
@@ -409,7 +409,7 @@ namespace processing {
             for (auto& [page, page_settings] : pages) {
                 for (auto [position, page_setting] : page_settings) {
                     if (position == a_position) {
-                        for (const auto setting : page_setting->slot_settings) {
+                        for (const auto* setting : page_setting->slot_settings) {
                             if (setting &&
                                 ((setting->form && setting->form->formID == a_form->formID) ||
                                     (setting->actor_value == actor_value && actor_value != RE::ActorValue::kNone))) {

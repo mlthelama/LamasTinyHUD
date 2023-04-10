@@ -310,8 +310,8 @@ namespace processing {
 
     void set_setting_data::process_config_data() {
         custom::read_setting();
-        auto key_position = handle::key_position_handle::get_singleton();
-        auto handler = handle::page_handle::get_singleton();
+        auto* key_position = handle::key_position_handle::get_singleton();
+        auto* handler = handle::page_handle::get_singleton();
 
         if (mcm::get_elden_demon_souls()) {
             for (auto i = 0; i < static_cast<int>(position_type::total); ++i) {
@@ -451,7 +451,7 @@ namespace processing {
         }
 
         if (!left_reequip_called) {
-            auto obj_right =
+            auto* obj_right =
                 RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             if ((obj_right && !util::helper::is_two_handed(obj_right)) || !obj_right) {
                 processing::setting_execute::reequip_left_hand_if_needed(setting);
@@ -481,7 +481,7 @@ namespace processing {
         std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
         for (const auto& [item, inv_data] : inv) {
             const auto& [num_items, entry] = inv_data;
-            const auto ammo = item->As<RE::TESAmmo>();
+            auto* ammo = item->As<RE::TESAmmo>();
 
             if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
                 continue;
@@ -598,7 +598,7 @@ namespace processing {
                 logger::trace("checking page {}, position {}"sv,
                     page_setting->page,
                     static_cast<uint32_t>(page_setting->position));
-                for (auto setting : page_setting->slot_settings) {
+                for (auto* setting : page_setting->slot_settings) {
                     if (setting->form || (!setting->form && setting->actor_value != RE::ActorValue::kNone)) {
                         if (clean_type_allowed(setting->type)) {
                             auto has_it = util::player::has_item_or_spell(setting->form);

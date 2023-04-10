@@ -154,7 +154,7 @@ namespace event {
                 common::is_key_valid_and_matches(key_, key_binding->get_bottom_execute_or_toggle_action())) {
                 logger::debug("configured toggle key ({}) is pressed"sv, key_);
 
-                const auto handler = handle::page_handle::get_singleton();
+                const auto* handler = handle::page_handle::get_singleton();
                 handler->set_active_page(handler->get_next_page_id());
             }
 
@@ -163,7 +163,8 @@ namespace event {
                         common::is_key_valid_and_matches(key_, key_binding->get_bottom_execute_or_toggle_action())) ||
                     (mcm::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
                         key_ == key_binding->get_bottom_action())) {
-                    auto page_setting = setting_execute::get_position_setting_for_key(key_binding->get_bottom_action());
+                    auto* page_setting =
+                        setting_execute::get_position_setting_for_key(key_binding->get_bottom_action());
                     if (!page_setting) {
                         logger::warn("setting for key {} is null. break."sv, key_);
                         break;
@@ -171,7 +172,7 @@ namespace event {
                     setting_execute::execute_settings(page_setting->slot_settings);
                 }
                 if (common::is_key_valid_and_matches(key_, key_binding->get_top_execute())) {
-                    auto page_setting = setting_execute::get_position_setting_for_key(key_binding->get_top_action());
+                    auto* page_setting = setting_execute::get_position_setting_for_key(key_binding->get_top_action());
                     if (!page_setting) {
                         logger::warn("setting for key {} is null. break."sv, key_);
                         break;
@@ -192,15 +193,15 @@ namespace event {
 
     void key_manager::do_button_press(uint32_t a_key, control::binding*& a_binding) const {
         logger::debug("configured Key ({}) pressed"sv, a_key);
-        auto position_setting = setting_execute::get_position_setting_for_key(a_key);
+        auto* position_setting = setting_execute::get_position_setting_for_key(a_key);
 
         if (mcm::get_elden_demon_souls()) {
             if (mcm::get_bottom_execute_key_combo_only() && is_toggle_down_ &&
                 a_key == a_binding->get_bottom_action()) {
                 return;
             }
-            const auto key_handler = handle::key_position_handle::get_singleton();
-            const auto handler = handle::page_handle::get_singleton();
+            const auto* key_handler = handle::key_position_handle::get_singleton();
+            const auto* handler = handle::page_handle::get_singleton();
             if (!key_handler->is_position_locked(position_setting->position)) {
                 handler->set_active_page_position(
                     handler->get_next_non_empty_setting_for_position(position_setting->position),
@@ -219,7 +220,7 @@ namespace event {
             } else {
                 logger::trace("position {} is locked, skip"sv, static_cast<uint32_t>(position_setting->position));
                 //check ammo is set, might be a bow or crossbow present
-                const auto ammo_handle = handle::ammo_handle::get_singleton();
+                const auto* ammo_handle = handle::ammo_handle::get_singleton();
                 if (const auto next_ammo = ammo_handle->get_next_ammo()) {
                     setting_execute::execute_ammo(next_ammo);
                     handle::ammo_handle::get_singleton()->get_current()->highlight_slot = true;
@@ -245,7 +246,7 @@ namespace event {
             a_position_setting->button_press_modify = button_press_modify_;
         } else {
             if (a_position_setting->position == position_type::left) {
-                if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
+                if (auto* current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
                     current_ammo->button_press_modify = button_press_modify_;
                 }
             }
