@@ -366,7 +366,7 @@ namespace ui {
             if (!page_setting) {
                 continue;
             }
-            const auto draw_setting = page_setting->draw_setting;
+            const auto* draw_setting = page_setting->draw_setting;
             draw_slot(a_x,
                 a_y,
                 draw_setting->hud_image_scale_width,
@@ -398,14 +398,14 @@ namespace ui {
             }
 
             if (page_setting->item_name && !page_setting->slot_settings.empty()) {
-                auto slot_setting = page_setting->slot_settings.front();
+                auto* slot_setting = page_setting->slot_settings.front();
                 auto slot_name = "";
                 if (slot_setting && slot_setting->form) {
                     slot_name = page_setting->slot_settings.front()->form->GetName();
                 } else if (slot_setting && slot_setting->actor_value != RE::ActorValue::kNone &&
                            slot_setting->type == slot_type::consumable &&
                            util::actor_value_to_base_potion_map_.contains(slot_setting->actor_value)) {
-                    auto potion_form =
+                    auto* potion_form =
                         RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[slot_setting->actor_value]);
                     if (potion_form->Is(RE::FormType::AlchemyItem)) {
                         slot_name = potion_form->GetName();
@@ -517,8 +517,8 @@ namespace ui {
                 }
             }
         }
-        const auto ammo_handle = handle::ammo_handle::get_singleton();
-        if (const auto current_ammo = ammo_handle->get_current(); current_ammo && mcm::get_elden_demon_souls()) {
+        const auto* ammo_handle = handle::ammo_handle::get_singleton();
+        if (auto* current_ammo = ammo_handle->get_current(); current_ammo && mcm::get_elden_demon_souls()) {
             draw_slot(a_x,
                 a_y,
                 mcm::get_hud_arrow_image_scale_width(),
@@ -593,7 +593,7 @@ namespace ui {
             if (!page_setting) {
                 continue;
             }
-            const auto draw_setting = page_setting->draw_setting;
+            const auto* draw_setting = page_setting->draw_setting;
             if (config::file_setting::get_draw_key_background()) {
                 draw_key(a_x,
                     a_y,
@@ -678,13 +678,13 @@ namespace ui {
         if (!show_ui_)
             return;
 
-        if (const auto ui = RE::UI::GetSingleton(); !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
-                                                    !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>() ||
-                                                    ui->IsMenuOpen(RE::LoadingMenu::MENU_NAME)) {
+        if (auto* ui = RE::UI::GetSingleton(); !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
+                                               !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>() ||
+                                               ui->IsMenuOpen(RE::LoadingMenu::MENU_NAME)) {
             return;
         }
 
-        if (const auto control_map = RE::ControlMap::GetSingleton();
+        if (const auto* control_map = RE::ControlMap::GetSingleton();
             !control_map || !control_map->IsMovementControlsEnabled() ||
             control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
             return;

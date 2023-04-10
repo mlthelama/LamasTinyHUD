@@ -93,8 +93,8 @@ namespace equip {
             }
         }
 
-        const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
-        const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+        const auto* obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+        const auto* obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
         if (left && obj_left && obj_left->formID == obj->formID) {
             logger::debug("Object Left {} is already where it should be already equipped. return."sv, obj->GetName());
             return;
@@ -129,9 +129,8 @@ namespace equip {
         }
 
         logger::trace("try to equip weapon/shield/light {}"sv, a_form->GetName());
-        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
 
-        equip_manager->EquipObject(a_player, obj, extra, 1, a_slot);
+        RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj, extra, 1, a_slot);
         logger::trace("equipped weapon/shield/light {}, left {}. return."sv, a_form->GetName(), left);
     }
 
@@ -195,7 +194,7 @@ namespace equip {
             return;
         }
 
-        auto alchemy_item = obj->As<RE::AlchemyItem>();
+        auto* alchemy_item = obj->As<RE::AlchemyItem>();
         if (alchemy_item->IsPoison()) {
             poison_weapon(a_player, alchemy_item, left);
             logger::trace("Is a poison, I am done here. return.");
@@ -204,8 +203,7 @@ namespace equip {
 
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
 
-        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
-        equip_manager->EquipObject(a_player, obj);
+        RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
         logger::trace("drank/ate potion/food {}. return."sv, obj->GetName());
     }
 
@@ -228,13 +226,13 @@ namespace equip {
             return;
         }
 
-        if (const auto current_ammo = a_player->GetCurrentAmmo(); current_ammo && current_ammo->formID == obj->formID) {
+        if (const auto* current_ammo = a_player->GetCurrentAmmo();
+            current_ammo && current_ammo->formID == obj->formID) {
             logger::debug("Ammo {} already equipped, return."sv, obj->GetName());
             return;
         }
 
-        const auto equip_manager = RE::ActorEquipManager::GetSingleton();
-        equip_manager->EquipObject(a_player, obj);
+        RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
         logger::trace("equipped {}. return."sv, obj->GetName());
     }
 
@@ -242,16 +240,15 @@ namespace equip {
         logger::debug("check if we need to un equip ammo"sv);
         auto player = RE::PlayerCharacter::GetSingleton();
 
-        auto obj = player->GetCurrentAmmo();
+        auto* obj = player->GetCurrentAmmo();
         if (!obj || !obj->IsAmmo()) {
             return;
         }
 
-        auto ammo = obj->As<RE::TESAmmo>();
+        auto* ammo = obj->As<RE::TESAmmo>();
         if (ammo->GetRuntimeData().data.flags.all(RE::AMMO_DATA::Flag::kNonBolt) ||
             ammo->GetRuntimeData().data.flags.none(RE::AMMO_DATA::Flag::kNonBolt)) {
-            auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            equip_manager->UnequipObject(player, ammo);
+            RE::ActorEquipManager::GetSingleton()->UnequipObject(player, ammo);
             logger::trace("Called to un equip {}"sv, ammo->GetName());
         }
         logger::trace("Done work. return"sv);
@@ -284,7 +281,7 @@ namespace equip {
              const auto& [item, inv_data] : potential_items) {
             const auto& [num_items, entry] = inv_data;
 
-            auto alchemy_item = item->As<RE::AlchemyItem>();
+            auto* alchemy_item = item->As<RE::AlchemyItem>();
             if (alchemy_item->IsPoison() || alchemy_item->IsFood()) {
                 continue;
             }
@@ -361,7 +358,7 @@ namespace equip {
 
         //check if there is a weapon to apply it to
         //check count here as well, since we need max 2
-        auto equipped_object = a_player->GetEquippedEntryData(false);
+        auto* equipped_object = a_player->GetEquippedEntryData(false);
         if (equipped_object && equipped_object->object->IsWeapon() && !equipped_object->IsPoisoned()) {
             logger::trace("try to add poison {} to right {}"sv, a_poison->GetName(), equipped_object->GetDisplayName());
             equipped_object->PoisonObject(a_poison, potion_doses);
@@ -370,7 +367,7 @@ namespace equip {
             a_count--;
         }
 
-        auto equipped_object_left = a_player->GetEquippedEntryData(true);
+        auto* equipped_object_left = a_player->GetEquippedEntryData(true);
         if (equipped_object_left && equipped_object_left->object->IsWeapon() && !equipped_object_left->IsPoisoned() &&
             a_count > 0) {
             logger::trace("try to add poison {} to left {}"sv,
@@ -380,6 +377,5 @@ namespace equip {
             a_player->RemoveItem(a_poison, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
             a_count--;
         }
-        //
     }
 }

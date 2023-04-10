@@ -45,7 +45,7 @@ namespace handle {
         page->page = a_page;
 
         auto* slots = new std::vector<slot_setting*>;
-        for (const auto element : data_helpers) {
+        for (auto* element : data_helpers) {
             logger::trace("processing form {}, type {}, action {}, left {}, actor_value {}"sv,
                 element->form ? util::string_util::int_to_hex(element->form->GetFormID()) : "null",
                 static_cast<int>(element->type),
@@ -157,7 +157,7 @@ namespace handle {
             draw->offset_name_text_y = 0.f;
         }
 
-        auto first_slot = slots->front();
+        auto* first_slot = slots->front();
         if (first_slot->item_count == 0 && ((first_slot->type == slot_type::consumable) ||
                                                (first_slot->form && first_slot->form->IsInventoryObject() &&
                                                    first_slot->form->formID != util::unarmed))) {
@@ -403,7 +403,7 @@ namespace handle {
             a_icon = icon_type::icon_default;
             return;
         }
-        switch (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
+        switch (const auto* weapon = a_form->As<RE::TESObjectWEAP>(); weapon->GetWeaponType()) {
             case RE::WEAPON_TYPE::kHandToHandMelee:
                 a_icon = icon_type::hand_to_hand;
                 break;
@@ -465,8 +465,8 @@ namespace handle {
         if (!a_form && !a_form->Is(RE::FormType::Spell)) {
             return;
         }
-        const auto spell = a_form->As<RE::SpellItem>();
-        const auto effect = spell->GetCostliestEffectItem()->baseEffect;
+        auto* spell = a_form->As<RE::SpellItem>();
+        const auto* effect = spell->GetCostliestEffectItem()->baseEffect;
         auto actor_value = effect->GetMagickSkill();
         if (actor_value == RE::ActorValue::kNone) {
             actor_value = effect->data.primaryAV;
@@ -510,7 +510,7 @@ namespace handle {
         if (!a_form || !a_form->Is(RE::FormType::AlchemyItem)) {
             return;
         }
-        const auto alchemy_potion = a_form->As<RE::AlchemyItem>();
+        auto* alchemy_potion = a_form->As<RE::AlchemyItem>();
 
         if (alchemy_potion->IsFood()) {
             a_icon = icon_type::food;
@@ -532,7 +532,7 @@ namespace handle {
         }
 
         if (a_form->IsInventoryObject()) {
-            const auto player = RE::PlayerCharacter::GetSingleton();
+            auto* player = RE::PlayerCharacter::GetSingleton();
             for (auto potential_items = player->GetInventory(); const auto& [item, invData] : potential_items) {
                 if (invData.second->object->formID == a_form->formID) {
                     a_count = invData.first;
@@ -549,7 +549,7 @@ namespace handle {
         if (!a_form && !a_form->IsArmor()) {
             return;
         }
-        switch (const auto armor = a_form->As<RE::TESObjectARMO>(); armor->GetArmorType()) {
+        switch (const auto* armor = a_form->As<RE::TESObjectARMO>(); armor->GetArmorType()) {
             case RE::BIPED_MODEL::ArmorType::kLightArmor:
                 a_icon = icon_type::armor_light;
                 break;
@@ -596,7 +596,7 @@ namespace handle {
     }
 
     void page_handle::get_consumable_item_count(RE::ActorValue& a_actor_value, int32_t& a_count) {
-        auto player = RE::PlayerCharacter::GetSingleton();
+        auto* player = RE::PlayerCharacter::GetSingleton();
         a_count = 0;
         for (auto potential_items = util::player::get_inventory(player, RE::FormType::AlchemyItem);
              const auto& [item, inv_data] : potential_items) {

@@ -16,15 +16,17 @@ namespace handle {
             this->data_ = new key_position_handle_data();
         }
 
-        data_->key_position_map[mcm::get_top_action_key()] = position_type::top;
-        data_->key_position_map[mcm::get_right_action_key()] = position_type::right;
-        data_->key_position_map[mcm::get_bottom_action_key()] = position_type::bottom;
-        data_->key_position_map[mcm::get_left_action_key()] = position_type::left;
+        key_position_handle_data* data = this->data_;
 
-        data_->position_key_map[position_type::top] = mcm::get_top_action_key();
-        data_->position_key_map[position_type::right] = mcm::get_right_action_key();
-        data_->position_key_map[position_type::bottom] = mcm::get_bottom_action_key();
-        data_->position_key_map[position_type::left] = mcm::get_left_action_key();
+        data->key_position_map[mcm::get_top_action_key()] = position_type::top;
+        data->key_position_map[mcm::get_right_action_key()] = position_type::right;
+        data->key_position_map[mcm::get_bottom_action_key()] = position_type::bottom;
+        data->key_position_map[mcm::get_left_action_key()] = position_type::left;
+
+        data->position_key_map[position_type::top] = mcm::get_top_action_key();
+        data->position_key_map[position_type::right] = mcm::get_right_action_key();
+        data->position_key_map[position_type::bottom] = mcm::get_bottom_action_key();
+        data->position_key_map[position_type::left] = mcm::get_left_action_key();
 
 
         logger::trace("done with init of position key map."sv);

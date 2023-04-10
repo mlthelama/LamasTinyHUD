@@ -17,7 +17,7 @@ namespace event {
         if (!a_event->opening &&
             (a_event->menuName == RE::InventoryMenu::MENU_NAME || a_event->menuName == RE::MagicMenu::MENU_NAME ||
                 a_event->menuName == RE::FavoritesMenu::MENU_NAME)) {
-            auto binding = control::binding::get_singleton();
+            auto* binding = control::binding::get_singleton();
             if (binding->get_is_edit_down()) {
                 binding->set_is_edit_down(false);
             }

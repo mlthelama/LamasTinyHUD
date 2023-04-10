@@ -27,7 +27,7 @@ namespace event {
     event_result key_manager::ProcessEvent(RE::InputEvent* const* a_event,
         [[maybe_unused]] RE::BSTEventSource<RE::InputEvent*>* a_event_source) {
         button_press_modify_ = mcm::get_slot_button_feedback();
-        auto key_binding = control::binding::get_singleton();
+        auto* key_binding = control::binding::get_singleton();
 
         //top execute btn is bound to the shout key, no need to check here
         if (!key_binding->are_main_key_valid()) {
@@ -38,12 +38,12 @@ namespace event {
             return event_result::kContinue;
         }
 
-        auto ui = RE::UI::GetSingleton();
+        auto* ui = RE::UI::GetSingleton();
         if (!ui) {
             return event_result::kContinue;
         }
 
-        const auto interface_strings = RE::InterfaceStrings::GetSingleton();
+        const auto* interface_strings = RE::InterfaceStrings::GetSingleton();
         if (ui->IsMenuOpen(interface_strings->console)) {
             return event_result::kContinue;
         }
@@ -54,13 +54,13 @@ namespace event {
 
         handle::extra_data_holder::get_singleton()->reset_data();
 
-        for (auto event = *a_event; event; event = event->next) {
+        for (auto* event = *a_event; event; event = event->next) {
             if (event->eventType != RE::INPUT_EVENT_TYPE::kButton) {
                 continue;
             }
 
             //this stays static_cast
-            const auto button =
+            const auto* button =
                 static_cast<RE::ButtonEvent*>(event);  // NOLINT(cppcoreguidelines-pro-type-static-cast-downcast)
 
             key_ = button->idCode;
@@ -70,7 +70,7 @@ namespace event {
 
             common::get_key_id(button, key_);
 
-            if (const auto control_map = RE::ControlMap::GetSingleton(); !control_map->IsMovementControlsEnabled()) {
+            if (const auto* control_map = RE::ControlMap::GetSingleton(); !control_map->IsMovementControlsEnabled()) {
                 continue;
             }
 
@@ -84,7 +84,7 @@ namespace event {
                 continue;
             }
 
-            const auto control_map = RE::ControlMap::GetSingleton();
+            const auto* control_map = RE::ControlMap::GetSingleton();
             if (!control_map || !control_map->IsMovementControlsEnabled() ||
                 control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
                 continue;
@@ -108,7 +108,7 @@ namespace event {
 
             if (button->IsDown() && key_binding->is_position_button(key_)) {
                 logger::debug("configured key ({}) is down"sv, key_);
-                auto position_setting = setting_execute::get_position_setting_for_key(key_);
+                auto* position_setting = setting_execute::get_position_setting_for_key(key_);
                 if (!position_setting) {
                     logger::warn("setting for key {} is null. break."sv, key_);
                     break;
@@ -119,14 +119,14 @@ namespace event {
             if (button->IsUp() && key_binding->is_position_button(key_)) {
                 logger::debug("configured Key ({}) is up"sv, key_);
                 //set slot back to normal color
-                const auto position_setting = setting_execute::get_position_setting_for_key(key_);
+                auto* position_setting = setting_execute::get_position_setting_for_key(key_);
                 if (!position_setting) {
                     logger::warn("setting for key {} is null. break."sv, key_);
                     break;
                 }
                 position_setting->button_press_modify = ui::draw_full;
                 if (position_setting->position == position_type::left) {
-                    if (const auto current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
+                    if (auto* current_ammo = handle::ammo_handle::get_singleton()->get_current()) {
                         current_ammo->button_press_modify = ui::draw_full;
                     }
                 }

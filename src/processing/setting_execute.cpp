@@ -24,7 +24,7 @@ namespace processing {
             a_only_equip,
             a_only_instant);
         std::vector<RE::BGSEquipSlot*> un_equip;
-        auto player = RE::PlayerCharacter::GetSingleton();
+        auto* player = RE::PlayerCharacter::GetSingleton();
         for (auto slot : a_slots) {
             if (!slot->form && slot->type == slot_type::consumable && slot->actor_value != RE::ActorValue::kNone) {
                 logger::debug("form is null, but actor value is set to {}"sv, static_cast<int>(slot->actor_value));
@@ -76,7 +76,7 @@ namespace processing {
             return nullptr;
         }
 
-        const auto page_handle = handle::page_handle::get_singleton();
+        const auto* page_handle = handle::page_handle::get_singleton();
         handle::position_setting* position_setting;
         uint32_t page;
         if (mcm::get_elden_demon_souls()) {
@@ -99,7 +99,7 @@ namespace processing {
 
     void setting_execute::execute_ammo(const RE::TESForm* a_form) {
         if (a_form) {
-            auto player = RE::PlayerCharacter::GetSingleton();
+            auto* player = RE::PlayerCharacter::GetSingleton();
             equip::item::equip_ammo(a_form, player);
         }
     }
@@ -109,9 +109,9 @@ namespace processing {
             return;
         }
         logger::trace("checking and calling re equip for setting {}"sv, static_cast<uint32_t>(a_setting->position));
-        auto left_slot = equip::equip_slot::get_left_hand_slot();
-        auto equip_manager = RE::ActorEquipManager::GetSingleton();
-        auto player = RE::PlayerCharacter::GetSingleton();
+        auto* left_slot = equip::equip_slot::get_left_hand_slot();
+        auto* equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto* player = RE::PlayerCharacter::GetSingleton();
         equip::equip_slot::un_equip_object_ft_dummy_dagger(left_slot, player, equip_manager);
         if (!a_setting->slot_settings.empty()) {
             processing::setting_execute::execute_settings(a_setting->slot_settings);

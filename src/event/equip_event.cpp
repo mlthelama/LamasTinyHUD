@@ -19,7 +19,7 @@ namespace event {
             return event_result::kContinue;
         }
 
-        auto form = RE::TESForm::LookupByID(a_event->baseObject);
+        auto* form = RE::TESForm::LookupByID(a_event->baseObject);
         if (!form) {
             return event_result::kContinue;
         }
@@ -36,14 +36,9 @@ namespace event {
                 RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().selectedPower);
         }
 
-        const auto ui = RE::UI::GetSingleton();
-        /*if (!ui || (ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME) || ui->IsMenuOpen(RE::MagicMenu::MENU_NAME) ||
-                       ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME))) {
-            return event_result::kContinue;
-        }*/
-
         //add check if we need to block left
-        if (!ui->GameIsPaused() && config::mcm_setting::get_elden_demon_souls() && util::helper::is_two_handed(form)) {
+        if (!RE::UI::GetSingleton()->GameIsPaused() && config::mcm_setting::get_elden_demon_souls() &&
+            util::helper::is_two_handed(form)) {
             processing::set_setting_data::check_if_location_needs_block(form, a_event->equipped);
         }
 
