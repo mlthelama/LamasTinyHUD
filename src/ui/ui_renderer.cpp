@@ -66,7 +66,7 @@ namespace ui {
             render_manager->GetRuntimeData();
 
         logger::info("Getting swapchain..."sv);
-        const auto swapchain = swapChain;
+        auto* swapchain = swapChain;
         if (!swapchain) {
             logger::error("Cannot find render manager. Initialization failed."sv);
             return;
@@ -130,7 +130,7 @@ namespace ui {
         ID3D11ShaderResourceView** out_srv,
         int32_t& out_width,
         int32_t& out_height) {
-        auto render_manager = RE::BSRenderManager::GetSingleton();
+        auto* render_manager = RE::BSRenderManager::GetSingleton();
         if (!render_manager) {
             logger::error("Cannot find render manager. Initialization failed."sv);
             return false;
@@ -196,7 +196,7 @@ namespace ui {
         auto it = animation_list.begin();
         while (it != animation_list.end()) {
             if (!it->second->is_over()) {
-                animation* anim = it->second.get();
+                auto* anim = it->second.get();
                 draw_element(animation_frame_map[it->first][anim->current_frame].texture,
                     anim->center,
                     anim->size,
@@ -258,7 +258,7 @@ namespace ui {
         const auto position =
             ImVec2(a_x + a_offset_x + a_offset_extra_x + text_x, a_y + a_offset_y + a_offset_extra_y + text_y);
 
-        auto font = loaded_font;
+        auto* font = loaded_font;
         if (!font) {
             font = ImGui::GetDefaultFont();
         }
