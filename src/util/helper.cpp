@@ -15,7 +15,7 @@ namespace util {
             return form_string;
         }
 
-        const auto form = RE::TESForm::LookupByID(a_form_id);
+        const auto* form = RE::TESForm::LookupByID(a_form_id);
         logger::trace("Item is {}, formid {}, formid not translated {}. return."sv,
             form->GetName(),
             string_util::int_to_hex(form->GetFormID()),
@@ -25,7 +25,7 @@ namespace util {
             form_string = fmt::format("{}{}{}", dynamic_name, delimiter, string_util::int_to_hex(form->GetFormID()));
         } else {
             //it is not, search for the file it is from
-            auto source_file = form->sourceFiles.array->front()->fileName;
+            auto* source_file = form->sourceFiles.array->front()->fileName;
             auto local_form = form->GetLocalFormID();
 
             logger::trace("form is from {}, local id is {}, translated {}"sv,
@@ -98,13 +98,13 @@ namespace util {
 
         //check if two-handed
         if (a_form->Is(RE::FormType::Spell)) {
-            if (const auto spell = a_form->As<RE::SpellItem>(); spell->IsTwoHanded()) {
+            if (const auto* spell = a_form->As<RE::SpellItem>(); spell->IsTwoHanded()) {
                 return true;
             }
         }
 
         if (a_form->IsWeapon()) {
-            if (const auto weapon = a_form->As<RE::TESObjectWEAP>();
+            if (const auto* weapon = a_form->As<RE::TESObjectWEAP>();
                 weapon->IsTwoHandedAxe() || weapon->IsTwoHandedSword() || weapon->IsBow() || weapon->IsCrossbow()) {
                 return true;
             }
@@ -119,13 +119,13 @@ namespace util {
         }
 
         if (a_form->IsWeapon()) {
-            if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); !weapon->IsBound()) {
+            if (const auto* weapon = a_form->As<RE::TESObjectWEAP>(); !weapon->IsBound()) {
                 return slot_type::weapon;
             }
         }
 
         if (a_form->IsArmor()) {
-            const auto armor = a_form->As<RE::TESObjectARMO>();
+            const auto* armor = a_form->As<RE::TESObjectARMO>();
             //GetSlotMask 49
             if (armor->IsShield()) {
                 return slot_type::shield;
@@ -243,12 +243,12 @@ namespace util {
             return RE::ActorValue::kNone;
         }
 
-        auto alchemy_potion = a_form->As<RE::AlchemyItem>();
+        auto* alchemy_potion = a_form->As<RE::AlchemyItem>();
         if (alchemy_potion->IsFood() || alchemy_potion->IsPoison()) {
             return RE::ActorValue::kNone;
         }
 
-        const auto effect = alchemy_potion->GetCostliestEffectItem()->baseEffect;
+        const auto* effect = alchemy_potion->GetCostliestEffectItem()->baseEffect;
         auto actor_value = effect->GetMagickSkill();
         if (actor_value == RE::ActorValue::kNone) {
             actor_value = effect->data.primaryAV;
@@ -348,7 +348,7 @@ namespace util {
 
     bool helper::can_instant_cast(RE::TESForm* a_form, const slot_type a_type) {
         if (a_type == slot_type::magic) {
-            const auto spell = a_form->As<RE::SpellItem>();
+            const auto* spell = a_form->As<RE::SpellItem>();
             if (spell->GetSpellType() == RE::MagicSystem::SpellType::kSpell ||
                 spell->GetSpellType() == RE::MagicSystem::SpellType::kLeveledSpell) {
                 if (spell->GetCastingType() != RE::MagicSystem::CastingType::kConcentration) {

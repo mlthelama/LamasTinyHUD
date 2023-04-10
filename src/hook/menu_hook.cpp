@@ -17,20 +17,20 @@ namespace hook {
 
     RE::BSEventNotifyControl menu_hook::process_event(RE::InputEvent** a_event,
         RE::BSTEventSource<RE::InputEvent*>* a_source) {
-        auto ui = RE::UI::GetSingleton();
-        auto binding = control::binding::get_singleton();
+        auto* ui = RE::UI::GetSingleton();
+        auto* binding = control::binding::get_singleton();
         auto edit_key = config::mcm_setting::get_key_press_to_enter_edit();
-        auto user_event = RE::UserEvents::GetSingleton();
-        auto control_map = RE::ControlMap::GetSingleton();
+        auto* user_event = RE::UserEvents::GetSingleton();
+        auto* control_map = RE::ControlMap::GetSingleton();
 
         if (a_event && *a_event && processing::game_menu_setting::is_need_menu_open(ui)) {
-            for (auto event = *a_event; event; event = event->next) {
+            for (auto* event = *a_event; event; event = event->next) {
                 if (event->eventType != RE::INPUT_EVENT_TYPE::kButton) {
                     continue;
                 }
 
                 if (event->HasIDCode()) {
-                    auto button = static_cast<RE::ButtonEvent*>(event);
+                    auto* button = static_cast<RE::ButtonEvent*>(event);
 
                     key_ = button->idCode;
                     if (key_ == common::k_invalid) {
@@ -93,7 +93,7 @@ namespace hook {
                     if (button->IsPressed() && binding->is_position_button(key_)) {
                         auto menu_form = processing::game_menu_setting::get_selected_form(ui);
                         if (menu_form) {
-                            auto tes_form_menu = RE::TESForm::LookupByID(menu_form);
+                            auto* tes_form_menu = RE::TESForm::LookupByID(menu_form);
                             auto key_position =
                                 handle::key_position_handle::get_singleton()->get_position_for_key(key_);
                             if (binding->get_is_remove_down()) {

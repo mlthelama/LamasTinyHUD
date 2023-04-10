@@ -40,7 +40,7 @@ namespace processing {
         const position_type a_position,
         const std::vector<data_helper*>& a_data) {
         //well for now we have to match
-        auto key_pos = handle::key_position_handle::get_singleton();
+        auto* key_pos = handle::key_position_handle::get_singleton();
         auto hand_equip = handle::slot_setting::hand_equip::total;
         if (const auto hand = a_data.size(); hand == 1) {
             hand_equip = handle::slot_setting::hand_equip::both;
@@ -88,11 +88,11 @@ namespace processing {
         }
 
         auto pos = static_cast<uint32_t>(a_pos);
-        auto key_pos = handle::key_position_handle::get_singleton();
-        const auto page_handle = handle::page_handle::get_singleton();
+        auto* key_pos = handle::key_position_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         //so we get the next we need, or we can use
         auto page = page_handle->get_highest_page_id_position(a_pos) + 1;
-        for (auto item : a_data) {
+        for (auto* item : a_data) {
             auto hand =
                 item->two_handed ? handle::slot_setting::hand_equip::both : handle::slot_setting::hand_equip::single;
             logger::trace("working page {}, pos {}"sv, page, pos);
@@ -137,8 +137,8 @@ namespace processing {
         RE::ActorValue a_actor_value,
         handle::key_position_handle*& a_key_pos,
         const std::string& a_section) {
-        const auto form = util::helper::get_form_from_mod_id_string(a_form);
-        const auto form_left = util::helper::get_form_from_mod_id_string(a_form_left);
+        auto* form = util::helper::get_form_from_mod_id_string(a_form);
+        auto* form_left = util::helper::get_form_from_mod_id_string(a_form_left);
 
         if (form == nullptr && form_left == nullptr && a_actor_value == RE::ActorValue::kNone) {
             //reset section here if allowed
@@ -257,10 +257,10 @@ namespace processing {
 
     void set_setting_data::set_new_item_count(RE::TESBoundObject* a_object, int32_t a_count) {
         //just consider magic items for now, that includes
-        auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
-                for (auto setting : page_setting->slot_settings) {
+                for (auto* setting : page_setting->slot_settings) {
                     if ((setting->form && setting->form->formID == a_object->formID) ||
                         (setting->actor_value != RE::ActorValue::kNone &&
                             util::helper::get_actor_value_effect_from_potion(a_object) != RE::ActorValue::kNone)) {
@@ -284,9 +284,9 @@ namespace processing {
 
         if (mcm::get_elden_demon_souls()) {
             //check if we have ammo to update
-            const auto ammo_handle = handle::ammo_handle::get_singleton();
+            const auto* ammo_handle = handle::ammo_handle::get_singleton();
             if (const auto ammo_list = ammo_handle->get_all(); !ammo_list.empty()) {
-                for (const auto ammo : ammo_list) {
+                for (auto* ammo : ammo_list) {
                     if (a_object->formID == ammo->form->formID) {
                         ammo->item_count = ammo->item_count + a_count;
                     }
@@ -310,8 +310,8 @@ namespace processing {
 
     void set_setting_data::process_config_data() {
         custom::read_setting();
-        auto key_position = handle::key_position_handle::get_singleton();
-        auto handler = handle::page_handle::get_singleton();
+        auto* key_position = handle::key_position_handle::get_singleton();
+        auto* handler = handle::page_handle::get_singleton();
 
         if (mcm::get_elden_demon_souls()) {
             for (auto i = 0; i < static_cast<int>(position_type::total); ++i) {
@@ -344,14 +344,14 @@ namespace processing {
     void set_setting_data::write_empty_config_and_init_active() {
         //we start at 0, so it is max count -1
         if (!mcm::get_elden_demon_souls()) {
-            if (const auto page_handle = handle::page_handle::get_singleton();
+            if (const auto* page_handle = handle::page_handle::get_singleton();
                 mcm::get_max_page_count() - 1 < page_handle->get_active_page_id()) {
                 logger::warn("active page count is smaller than max count, set active to 0");
                 page_handle->set_active_page(0);
             }
         }
 
-        auto key_position = handle::key_position_handle::get_singleton();
+        auto* key_position = handle::key_position_handle::get_singleton();
         //set empty for each position, it will be overwritten if it is configured
         const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
@@ -370,10 +370,10 @@ namespace processing {
 
         logger::trace("execute first setting for left/right/top"sv);
 
-        auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         auto is_right_two_handed = false;
 
-        auto right_position_setting =
+        auto* right_position_setting =
             page_handle->get_page_setting(page_handle->get_active_page_id_position(position_type::right),
                 position_type::right);
         if (right_position_setting && !right_position_setting->slot_settings.empty() &&
@@ -400,10 +400,10 @@ namespace processing {
 
     [[maybe_unused]] void set_setting_data::clear_hands() {
         logger::trace("clear hands"sv);
-        auto player = RE::PlayerCharacter::GetSingleton();
-        auto equip_manager = RE::ActorEquipManager::GetSingleton();
-        auto right = equip::equip_slot::get_right_hand_slot();
-        auto left = equip::equip_slot::get_left_hand_slot();
+        auto* player = RE::PlayerCharacter::GetSingleton();
+        auto* equip_manager = RE::ActorEquipManager::GetSingleton();
+        auto* right = equip::equip_slot::get_right_hand_slot();
+        auto* left = equip::equip_slot::get_left_hand_slot();
 
         //execute first setting for left, then right
         equip::equip_slot::un_equip_object_ft_dummy_dagger(right, player, equip_manager);
@@ -418,20 +418,20 @@ namespace processing {
         //is two-handed, if equipped
         //hardcode left for now, because we just need it there
         auto left_reequip_called = false;
-        const auto key_handle = handle::key_position_handle::get_singleton();
+        auto* key_handle = handle::key_position_handle::get_singleton();
         key_handle->set_position_lock(position_type::left, a_equipped ? 1 : 0);
-        const auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         auto page = page_handle->get_active_page_id_position(position_type::left);
-        auto setting = page_handle->get_page_setting(page, position_type::left);
+        auto* setting = page_handle->get_page_setting(page, position_type::left);
         //use settings here
         if (setting && setting->draw_setting && setting->draw_setting->icon_transparency) {
             block_location(setting, a_equipped);
         }
         //check if bow or crossbow, now we look for ammo that is in the favor list
         if (a_equipped && a_form->Is(RE::FormType::Weapon)) {
-            if (const auto weapon = a_form->As<RE::TESObjectWEAP>(); weapon->IsBow() || weapon->IsCrossbow()) {
+            if (const auto* weapon = a_form->As<RE::TESObjectWEAP>(); weapon->IsBow() || weapon->IsCrossbow()) {
                 look_for_ammo(weapon->IsCrossbow());
-                if (const auto next_ammo = handle::ammo_handle::get_singleton()->get_next_ammo()) {
+                if (const auto* next_ammo = handle::ammo_handle::get_singleton()->get_next_ammo()) {
                     processing::setting_execute::execute_ammo(next_ammo);
                 }
             }
@@ -451,7 +451,7 @@ namespace processing {
         }
 
         if (!left_reequip_called) {
-            auto obj_right =
+            auto* obj_right =
                 RE::PlayerCharacter::GetSingleton()->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
             if ((obj_right && !util::helper::is_two_handed(obj_right)) || !obj_right) {
                 processing::setting_execute::reequip_left_hand_if_needed(setting);
@@ -476,12 +476,12 @@ namespace processing {
         bool only_favorite = config::mcm_setting::get_only_favorite_ammo();
         bool sort_by_quantity = config::mcm_setting::get_sort_arrow_by_quantity();
         const auto max_items = config::mcm_setting::get_max_ammunition_type();
-        auto player = RE::PlayerCharacter::GetSingleton();
+        auto* player = RE::PlayerCharacter::GetSingleton();
         const auto inv = util::player::get_inventory(player, RE::FormType::Ammo);
         std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
         for (const auto& [item, inv_data] : inv) {
             const auto& [num_items, entry] = inv_data;
-            const auto ammo = item->As<RE::TESAmmo>();
+            auto* ammo = item->As<RE::TESAmmo>();
 
             if (!ammo->GetPlayable() || ammo->GetRuntimeData().data.flags.any(RE::AMMO_DATA::Flag::kNonPlayable)) {
                 continue;
@@ -525,7 +525,7 @@ namespace processing {
             }
         }
         std::vector<handle::ammo_data*> sorted_ammo;
-        const auto ammo_handle = handle::ammo_handle::get_singleton();
+        auto* ammo_handle = handle::ammo_handle::get_singleton();
         for (auto [dmg, data] : ammo_list) {
             sorted_ammo.push_back(data);
             logger::trace("got {} count {}"sv, data->form->GetName(), data->item_count);
@@ -557,7 +557,7 @@ namespace processing {
 
             std::vector<data_helper*> data;
 
-            for (auto setting : a_position_setting->slot_settings) {
+            for (auto* setting : a_position_setting->slot_settings) {
                 auto item = new data_helper();
                 item->form = setting->form;
                 item->left = setting->equip_slot == equip::equip_slot::get_left_hand_slot();
@@ -591,14 +591,14 @@ namespace processing {
         if (!mcm::get_auto_cleanup()) {
             return;
         }
-        auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         auto need_reprocess = false;
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
                 logger::trace("checking page {}, position {}"sv,
                     page_setting->page,
                     static_cast<uint32_t>(page_setting->position));
-                for (auto setting : page_setting->slot_settings) {
+                for (auto* setting : page_setting->slot_settings) {
                     if (setting->form || (!setting->form && setting->actor_value != RE::ActorValue::kNone)) {
                         if (clean_type_allowed(setting->type)) {
                             auto has_it = util::player::has_item_or_spell(setting->form);
@@ -629,10 +629,10 @@ namespace processing {
             return;
         }
 
-        auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         for (auto pages = page_handle->get_pages(); auto& [page, page_settings] : pages) {
             for (auto [position, page_setting] : page_settings) {
-                for (auto setting : page_setting->slot_settings) {
+                for (auto* setting : page_setting->slot_settings) {
                     if ((setting->form && setting->form->formID == a_form->formID) ||
                         (setting->actor_value != RE::ActorValue::kNone &&
                             util::helper::get_actor_value_effect_from_potion(a_form) != RE::ActorValue::kNone)) {

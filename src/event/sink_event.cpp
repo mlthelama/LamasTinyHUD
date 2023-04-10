@@ -8,7 +8,7 @@ namespace event {
         key_manager::sink();
         equip_event::sink();
         menu_manager::sink();
-        
+
         logger::info("added all sinks.");
     }
 }

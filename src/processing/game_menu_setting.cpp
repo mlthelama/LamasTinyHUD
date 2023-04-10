@@ -37,7 +37,7 @@ namespace processing {
 
         const auto check_duplicates = config::mcm_setting::get_check_duplicate_items();
 
-        const auto item = is_suitable_for_position(a_form, a_position);
+        auto* item = is_suitable_for_position(a_form, a_position);
         if (item->form || (a_form && item->actor_value != RE::ActorValue::kNone)) {
             if (check_duplicates && already_used(a_form, a_position, data)) {
                 auto log_string =
@@ -129,7 +129,7 @@ namespace processing {
                 break;
         }
 
-        for (const auto data_item : data) {
+        for (const auto* data_item : data) {
             write_notification(fmt::format("Name {}, Type {}, Action {}, Left {}",
                 data_item->form ? data_item->form->GetName() : "null",
                 static_cast<uint32_t>(data_item->type),
@@ -139,7 +139,7 @@ namespace processing {
 
         std::vector<data_helper*> new_data;
         add_empty_data(new_data);
-        auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         auto page = page_handle->get_active_page_id();
         //for some types we need to check if there is something on the other hand
         if (type == slot_type::weapon || type == slot_type::magic || type == slot_type::shield ||
@@ -224,7 +224,7 @@ namespace processing {
         }
 
         logger::trace("Size is {}. calling to set data now."sv, new_data.size());
-        for (const auto data_item : new_data) {
+        for (const auto* data_item : new_data) {
             logger::trace("Name {}, Type {}, Action {}, Left {}",
                 data_item->form ? data_item->form->GetName() : "null",
                 static_cast<uint32_t>(data_item->type),
@@ -238,7 +238,7 @@ namespace processing {
     uint32_t game_menu_setting::get_selected_form(RE::UI*& a_ui) {
         uint32_t menu_form = 0;
         if (a_ui->IsMenuOpen(RE::InventoryMenu::MENU_NAME)) {
-            auto inventory_menu = static_cast<RE::InventoryMenu*>(a_ui->GetMenu(RE::InventoryMenu::MENU_NAME).get());
+            auto* inventory_menu = static_cast<RE::InventoryMenu*>(a_ui->GetMenu(RE::InventoryMenu::MENU_NAME).get());
             if (inventory_menu) {
                 RE::GFxValue result;
                 //inventory_menu->uiMovie->SetPause(true);
@@ -252,7 +252,7 @@ namespace processing {
         }
 
         if (a_ui->IsMenuOpen(RE::MagicMenu::MENU_NAME)) {
-            auto magic_menu = static_cast<RE::MagicMenu*>(a_ui->GetMenu(RE::MagicMenu::MENU_NAME).get());
+            auto* magic_menu = static_cast<RE::MagicMenu*>(a_ui->GetMenu(RE::MagicMenu::MENU_NAME).get());
             if (magic_menu) {
                 RE::GFxValue result;
                 magic_menu->uiMovie->GetVariable(&result, "_root.Menu_mc.inventoryLists.itemList.selectedEntry.formId");
@@ -264,7 +264,7 @@ namespace processing {
         }
 
         if (a_ui->IsMenuOpen(RE::FavoritesMenu::MENU_NAME)) {
-            auto favorite_menu = static_cast<RE::FavoritesMenu*>(a_ui->GetMenu(RE::FavoritesMenu::MENU_NAME).get());
+            auto* favorite_menu = static_cast<RE::FavoritesMenu*>(a_ui->GetMenu(RE::FavoritesMenu::MENU_NAME).get());
             if (favorite_menu) {
                 RE::GFxValue result;
                 favorite_menu->uiMovie->GetVariable(&result, "_root.MenuHolder.Menu_mc.itemList.selectedEntry.formId");
@@ -390,7 +390,7 @@ namespace processing {
             return false;
         }
         //get pages and check for the form id in the position we are editing
-        const auto page_handle = handle::page_handle::get_singleton();
+        const auto* page_handle = handle::page_handle::get_singleton();
 
         uint32_t max_count = 1;
         uint32_t count = 0;
@@ -409,7 +409,7 @@ namespace processing {
             for (auto& [page, page_settings] : pages) {
                 for (auto [position, page_setting] : page_settings) {
                     if (position == a_position) {
-                        for (const auto setting : page_setting->slot_settings) {
+                        for (const auto* setting : page_setting->slot_settings) {
                             if (setting &&
                                 ((setting->form && setting->form->formID == a_form->formID) ||
                                     (setting->actor_value == actor_value && actor_value != RE::ActorValue::kNone))) {
@@ -426,7 +426,7 @@ namespace processing {
         }
 
         if (!a_config_data.empty()) {
-            for (const auto data_item : a_config_data) {
+            for (const auto* data_item : a_config_data) {
                 if ((data_item->form && data_item->form->formID == a_form->formID) ||
                     (data_item->actor_value == actor_value && actor_value != RE::ActorValue::kNone)) {
                     count++;

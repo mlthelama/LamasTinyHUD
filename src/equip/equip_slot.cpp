@@ -54,7 +54,7 @@ namespace equip {
                 equipped_object->GetName(),
                 a_slot == get_left_hand_slot());
             bool did_call = false;
-            auto equip_manager = RE::ActorEquipManager::GetSingleton();
+            auto* equip_manager = RE::ActorEquipManager::GetSingleton();
             if (equipped_object->IsWeapon()) {
                 const auto weapon = equipped_object->As<RE::TESObjectWEAP>();
                 equip_manager->UnequipObject(a_player, weapon, nullptr, 1, a_slot);
@@ -88,7 +88,7 @@ namespace equip {
     void equip_slot::un_equip_object_ft_dummy_dagger(RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
-        const auto dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
+        auto* dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
         //sound false, queue false, force true
         a_actor_equip_manager->EquipObject(a_player, dummy, nullptr, 1, a_slot, false, true, false);
         a_actor_equip_manager->UnequipObject(a_player, dummy, nullptr, 1, a_slot, false, true, false);
@@ -114,7 +114,7 @@ namespace equip {
     }
 
     void equip_slot::un_equip_shout_slot(RE::PlayerCharacter*& a_player) {
-        auto selected_power = a_player->GetActorRuntimeData().selectedPower;
+        auto* selected_power = a_player->GetActorRuntimeData().selectedPower;
         if (selected_power) {
             logger::trace("Equipped form is {}, try to un equip"sv,
                 util::string_util::int_to_hex(selected_power->formID));

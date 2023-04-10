@@ -25,7 +25,7 @@ namespace handle {
                 name_right = data_helpers[0]->form->GetName();
                 if (data_helpers[0]->form->IsWeapon()) {
                     //check_ammo
-                    if (const auto weapon = data_helpers[0]->form->As<RE::TESObjectWEAP>();
+                    if (auto* weapon = data_helpers[0]->form->As<RE::TESObjectWEAP>();
                         (weapon->IsBow() || weapon->IsCrossbow()) && !weapon->IsBound()) {
                         check_ammo = true;
                     }
@@ -35,8 +35,8 @@ namespace handle {
         }
 
         if (check_ammo && data_helpers.size() != 2) {
-            const auto player = RE::PlayerCharacter::GetSingleton();
-            if (const auto ammo = player->GetCurrentAmmo(); ammo && (ammo->IsBolt() || ammo->IsAmmo())) {
+            auto* player = RE::PlayerCharacter::GetSingleton();
+            if (auto* ammo = player->GetCurrentAmmo(); ammo && (ammo->IsBolt() || ammo->IsAmmo())) {
                 data->name = fmt::format("{} {} {}", ammo->GetName(), util::delimiter, name_right);
             }
         }

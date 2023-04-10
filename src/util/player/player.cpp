@@ -20,7 +20,7 @@ namespace util {
             return count;
         }
 
-        auto player = RE::PlayerCharacter::GetSingleton();
+        auto* player = RE::PlayerCharacter::GetSingleton();
         if (a_form->IsWeapon()) {
             count = get_inventory_count(a_form, RE::FormType::Weapon, player);
         } else if (a_form->IsArmor()) {
@@ -99,7 +99,7 @@ namespace util {
         }
 
         //add option to skip check for Items
-        auto player = RE::PlayerCharacter::GetSingleton();
+        auto* player = RE::PlayerCharacter::GetSingleton();
         if (a_form->IsWeapon()) {
             has_it = get_inventory_count(a_form, RE::FormType::Weapon, player) > 0;
         } else if (a_form->IsArmor()) {
@@ -107,7 +107,7 @@ namespace util {
         } else if (a_form->Is(RE::FormType::Light)) {
             has_it = get_inventory_count(a_form, RE::FormType::Light, player) > 0;
         } else if (a_form->Is(RE::FormType::Spell) || a_form->Is(RE::FormType::LeveledSpell)) {
-            const auto spell = a_form->As<RE::SpellItem>();
+            auto* spell = a_form->As<RE::SpellItem>();
             has_it = player->HasSpell(spell);
         } else if (a_form->Is(RE::FormType::AlchemyItem)) {
             has_it = get_inventory_count(a_form, RE::FormType::AlchemyItem, player) > 0;

@@ -37,6 +37,7 @@ namespace papyrus {
     std::vector<RE::BSFixedString> hud_mcm::get_section_names(RE::TESQuest*, uint32_t a_position) {
         const auto sections = util::helper::get_configured_section_page_names(a_position);
         std::vector<RE::BSFixedString> sections_bs_string;
+        sections_bs_string.reserve(sections.size());
         for (const auto& section : sections) {
             sections_bs_string.emplace_back(get_form_name_string_for_section(section));
         }
@@ -124,7 +125,7 @@ namespace papyrus {
             return form_string;
         }
 
-        const auto form = util::helper::get_form_from_mod_id_string(form_string);
+        const auto* form = util::helper::get_form_from_mod_id_string(form_string);
         if (!form) {
             return form_string;
         }
@@ -158,6 +159,7 @@ namespace papyrus {
         logger::trace("getting config files for elden {}"sv, a_elden);
         auto files = search_for_config_files(a_elden);
         std::vector<RE::BSFixedString> file_list;
+        file_list.reserve(files.size());
         for (const auto& file : files) {
             file_list.emplace_back(file);
         }
@@ -210,7 +212,7 @@ namespace papyrus {
     void hud_mcm::add_unarmed_setting(RE::TESQuest*, uint32_t a_position) {
         auto elden = config::mcm_setting::get_elden_demon_souls();
         logger::trace("Try to add Unarmed for Position {}, Elden {}"sv, a_position, elden);
-        auto page_handle = handle::page_handle::get_singleton();
+        auto* page_handle = handle::page_handle::get_singleton();
         auto position = static_cast<handle::position_setting::position_type>(a_position);
         std::vector<data_helper*> data;
         auto next_page = 0;
@@ -226,9 +228,9 @@ namespace papyrus {
             }
 
             for (auto i = 0; i <= highest_page; ++i) {
-                auto page = page_handle->get_page_setting(i, position);
+                auto* page = page_handle->get_page_setting(i, position);
                 //in theory in elden there should be just one setting in the list
-                auto setting = page->slot_settings.front();
+                auto* setting = page->slot_settings.front();
                 if (setting->form && setting->form->formID == util::unarmed) {
                     logger::warn("Already got a Unarmed Setting in this Position. Return"sv);
                     return;
@@ -398,7 +400,7 @@ namespace papyrus {
         if (display_string.empty()) {
             auto actor_value = static_cast<RE::ActorValue>(config::custom_setting::get_effect_actor_value(a_str));
             if (util::actor_value_to_base_potion_map_.contains(actor_value)) {
-                auto potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
+                auto* potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
                 display_string = potion_form ? potion_form->GetName() : "";
             }
         }
@@ -407,7 +409,7 @@ namespace papyrus {
     }
 
     void Register() {
-        const auto papyrus = SKSE::GetPapyrusInterface();
+        const auto* papyrus = SKSE::GetPapyrusInterface();
         papyrus->Register(hud_mcm::Register);
         logger::info("Registered papyrus functions. return."sv);
     }

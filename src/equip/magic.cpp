@@ -21,7 +21,7 @@ namespace equip {
             return;
         }
 
-        const auto spell = a_form->As<RE::SpellItem>();
+        auto* spell = a_form->As<RE::SpellItem>();
 
         if (!a_player->HasSpell(spell)) {
             logger::warn("player does not have spell {}. return."sv, spell->GetName());
@@ -41,18 +41,18 @@ namespace equip {
                     return;
                 }
             }
-            const auto actor = a_player->As<RE::Actor>();
-            auto caster = actor->GetMagicCaster(get_casting_source(a_slot));
+            auto* actor = a_player->As<RE::Actor>();
+            auto* caster = actor->GetMagicCaster(get_casting_source(a_slot));
 
             //might cost nothing if nothing has been equipped into tha hands after start, so it seems
             auto cost = spell->CalculateMagickaCost(actor);
             logger::trace("spell cost for {} is {}"sv, spell->GetName(), fmt::format(FMT_STRING("{:.2f}"), cost));
 
-            float current_magicka = actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
-            bool dual_cast = false;
+            auto current_magicka = actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
+            auto dual_cast = false;
             if (!spell->IsTwoHanded() && config::mcm_setting::get_try_dual_cast_top_spell() &&
                 config::mcm_setting::get_elden_demon_souls()) {
-                auto game_setting = RE::GameSettingCollection::GetSingleton();
+                auto* game_setting = RE::GameSettingCollection::GetSingleton();
                 auto dual_cast_cost_multiplier = game_setting->GetSetting("fMagicDualCastingCostMult")->GetFloat();
                 logger::trace("dual cast, multiplier {}"sv,
                     fmt::format(FMT_STRING("{:.2f}"), dual_cast_cost_multiplier));
@@ -65,7 +65,7 @@ namespace equip {
             logger::trace("got temp magicka {}, cost {}, can dual cast {}"sv, current_magicka, cost, dual_cast);
 
             if (current_magicka < cost) {
-                if (const auto ui = RE::UI::GetSingleton(); !ui->GetMenu<RE::HUDMenu>()) {
+                if (!RE::UI::GetSingleton()->GetMenu<RE::HUDMenu>()) {
                     logger::warn("Will not flash HUD Menu, because I could not find it.");
                 } else {
                     flash_hud_meter(RE::ActorValue::kMagicka);
@@ -86,7 +86,7 @@ namespace equip {
             //TODO make an animation to play here
             //a_player->NotifyAnimationGraph("IdleMagic_01"); //works
             auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
-            auto target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
+            auto* target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
 
             auto magnitude = 1.f;
             auto effectiveness = 1.f;
@@ -107,8 +107,8 @@ namespace equip {
             //tested with adamant, works with the silent casting perk as well
             send_spell_casting_sound_alert(caster, spell);
         } else {
-            const auto obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
-            const auto obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
+            const auto* obj_right = a_player->GetActorRuntimeData().currentProcess->GetEquippedRightHand();
+            const auto* obj_left = a_player->GetActorRuntimeData().currentProcess->GetEquippedLeftHand();
             if (left && obj_left && obj_left->formID == spell->formID) {
                 logger::debug("Object Left {} is already where it should be already equipped. return."sv,
                     spell->GetName());
@@ -120,9 +120,7 @@ namespace equip {
                 return;
             }
 
-            //other slot options like I thought did not work, so I get it like this now
-            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            equip_manager->EquipSpell(a_player, spell, a_slot);
+            RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell, a_slot);
         }
 
         logger::trace("worked spell {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
@@ -153,14 +151,13 @@ namespace equip {
         }
 
         if (a_action == action_type::instant) {
-            const auto actor = a_player->As<RE::Actor>();
-            const auto scroll = obj->As<RE::ScrollItem>();
+            auto* actor = a_player->As<RE::Actor>();
+            auto* scroll = obj->As<RE::ScrollItem>();
             actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
                 ->CastSpellImmediate(scroll, false, actor, 1.0f, false, 0.0f, nullptr);
             actor->RemoveItem(scroll, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
         } else {
-            const auto equip_manager = RE::ActorEquipManager::GetSingleton();
-            equip_manager->EquipObject(a_player, obj);
+            RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
         }
 
         logger::trace("worked scroll {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));
@@ -174,7 +171,7 @@ namespace equip {
             return;
         }
 
-        if (const auto selected_power = a_player->GetActorRuntimeData().selectedPower;
+        if (const auto* selected_power = a_player->GetActorRuntimeData().selectedPower;
             selected_power && a_action != handle::slot_setting::action_type::instant) {
             logger::trace("current selected power is {}, is shout {}, is spell {}"sv,
                 selected_power->GetName(),
@@ -186,7 +183,7 @@ namespace equip {
             }
         }
 
-        const auto spell = a_form->As<RE::SpellItem>();
+        auto* spell = a_form->As<RE::SpellItem>();
         if (!a_player->HasSpell(spell)) {
             logger::warn("player does not have spell {}. return."sv, spell->GetName());
             return;
@@ -198,9 +195,29 @@ namespace equip {
                 return;
             }
             //might not consider daily cool downs
-            const auto actor = a_player->As<RE::Actor>();
-            actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant)
-                ->CastSpellImmediate(spell, false, actor, 1.0f, false, 0.0f, nullptr);
+            auto* actor = a_player->As<RE::Actor>();
+            auto* caster = actor->GetMagicCaster(RE::MagicSystem::CastingSource::kInstant);
+            auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
+            auto* target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
+
+            auto magnitude = 1.f;
+            auto effectiveness = 1.f;
+            if (auto* effect = spell->GetCostliestEffectItem()) {
+                magnitude = effect->GetMagnitude();
+            }
+            logger::trace("casting spell {}, magnitude {}, effectiveness {}"sv,
+                spell->GetName(),
+                fmt::format(FMT_STRING("{:.2f}"), magnitude),
+                fmt::format(FMT_STRING("{:.2f}"), effectiveness));
+
+            caster->CastSpellImmediate(spell,
+                false,
+                target,
+                effectiveness,
+                false,
+                magnitude,
+                is_self_target ? nullptr : actor);
+            send_spell_casting_sound_alert(caster, spell);
         } else {
             RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell);
         }
@@ -226,7 +243,7 @@ namespace equip {
             }
         }
 
-        const auto shout = a_form->As<RE::TESShout>();
+        auto* shout = a_form->As<RE::TESShout>();
         if (!util::player::has_shout(a_player, shout)) {
             logger::warn("player does not have spell {}. return."sv, shout->GetName());
             return;
