@@ -35,9 +35,10 @@ namespace equip {
             if (config::mcm_setting::get_elden_demon_souls()) {
                 auto selected_power = a_player->GetActorRuntimeData().selectedPower;
                 if (selected_power) {
-                    logger::trace(
+                    logger::warn(
                         "power/shout {} is equipped, will only cast spell in elden mode if shout slot is empty. return."sv,
                         selected_power->GetName());
+                    RE::DebugNotification("Shout Slot not Empty, Skipping Spellcast");
                     return;
                 }
             }
