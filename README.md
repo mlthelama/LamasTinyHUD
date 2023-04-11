@@ -10,18 +10,23 @@
 A small UI Element
 
 ## What does it do
-Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to a Hotkey. In order to bind it to a Hotkey the Item needs to be favorited. Before every Execute, it is checked if the Item is still avaliable or in the Inventory.
+Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to a Hotkey. In order to bind it to a Hotkey the Item needs to be favorited. Before every Execute, it is checked if the Item is still avaliable or in the Inventory. There are two settings how the Quick Slots will behave normal is AC Valhalla inspired and the "Elden Souls" by the FromSoftware Games (Setting is in the MCM under "Misc Settings">"Behavior Settings">"Elden Demon Souls")
 
 ### Can be Bound
-* Potions/Food will be consumed on the Hotkey
-* Powers can be equipped or instant casted with the Hotkey. Instant casting will not replace an already slotted Power or Shout.
-* Shouts can only be equipped. Equip will be skipped if it is already slotted.
-* Spells, Weapons and Shields can be combined in one Hotkey and will always just be equipped, current equipped Items will be unequipped before.
-* Spells that do not need Concentration (=Button holding) can be instant casted, they do not have an animation currently. 
-  The Spell will just appear or shoot out of the hand it was set to (still it does not equip it). It is also possible just to equip them.
+* Weapons
+* Shields
+* Spells
+* Shouts
+* Powers
+* Potions
+* Lanterns (Armor Variants)
+* Food
+* Torches
+* Scrolls
+* Mask (Book of Shadow)
+* Poisons
 
 ### Currently can not be bound/set
-* Scrolls
 * Misc Items (e.g. Mods with Traps)
 
 ### UI
@@ -32,17 +37,15 @@ Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to 
 * Yes there is Controller support, in the MCM you can choose between PS/XBOX prompts
 
 ### How is the Setting saved
-* It will be saved by the [MCM Helper](https://www.nexusmods.com/skyrimspecialedition/mods/53000) under MCM\Settings\LamasTinyHUD.ini
+* The Settings will be saved in an ini File. The Filename can be changed in the MCM under "Misc Settings"
 * Generated [examples](https://github.com/mlthelama/LamasTinyHUD/wiki/Generated-Config-Examples)
 
 ### Settings and Checks
-* Only favourited will be shown in the Selections in the MCM.
-* After the Setting is done, they do not need to be favorited anymore.
 * Before, equipping, casting or consuming something, there is a check if the player has the item/spell.
-* If a consumable hits 0, it will not be removed. The plugin checks, the bound Item has been looted, bought or dropped.
+* If a consumable hits 0, it will not be removed. The plugin checks, the bound Item has been looted, bought or dropped. (Can be Changed in the MCM via "Cleanup Settings")
 
 ## Nexusmods
-* [ LamasTinyHUD](https://www.nexusmods.com/skyrimspecialedition/mods/82545)
+* [LamasTinyHUD](https://www.nexusmods.com/skyrimspecialedition/mods/82545)
 
 ## End User Dependencies
 * [SKSE64](https://skse.silverlock.org/)
