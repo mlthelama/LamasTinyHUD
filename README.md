@@ -53,7 +53,7 @@ Allows you to bind Weapons, Shields, Spells, Shouts, Powers and Potions/Food to 
 * [CommonLibSSE NG](https://github.com/CharmedBaryon/CommonLibSSE-NG)
 * [spdlog](https://github.com/gabime/spdlog)
 * [simpleini](https://github.com/brofield/simpleini)
-* [stb](https://github.com/nothings/stb) (for file reading into dx11 texture)
+* [nanosvg](https://github.com/memononen/nanosvg) (for rastering the svgfiles)
 * [imgui](https://github.com/ocornut/imgui) (for displaying ui elements)
 * [vcpkg](https://github.com/microsoft/vcpkg) 
   - Add the environment variable `VCPKG_ROOT` with the value as the path to the folder containing vcpkg
