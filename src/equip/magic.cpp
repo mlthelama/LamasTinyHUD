@@ -121,7 +121,13 @@ namespace equip {
                 return;
             }
 
-            RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell, a_slot);
+            logger::trace("calling equip spell {}, left {}"sv, spell->GetName(), left);
+            auto* task = SKSE::GetTaskInterface();
+            if (task) {
+                task->AddTask([a_player, spell, a_slot]() {
+                    RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell, a_slot);
+                });
+            }
         }
 
         logger::trace("worked spell {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));

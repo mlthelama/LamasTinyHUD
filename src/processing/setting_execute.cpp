@@ -108,7 +108,9 @@ namespace processing {
         if (!a_setting) {
             return;
         }
-        logger::trace("checking and calling re equip for setting {}"sv, static_cast<uint32_t>(a_setting->position));
+        logger::trace("checking and calling re equip for setting {}, is setting empty {}"sv,
+            static_cast<uint32_t>(a_setting->position),
+            a_setting->slot_settings.empty());
         auto* left_slot = equip::equip_slot::get_left_hand_slot();
         auto* equip_manager = RE::ActorEquipManager::GetSingleton();
         auto* player = RE::PlayerCharacter::GetSingleton();

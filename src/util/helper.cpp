@@ -96,21 +96,20 @@ namespace util {
             return false;
         }
 
-        //check if two-handed
+        auto two_handed = false;
         if (a_form->Is(RE::FormType::Spell)) {
             if (const auto* spell = a_form->As<RE::SpellItem>(); spell->IsTwoHanded()) {
-                return true;
+                two_handed = true;
             }
-        }
-
-        if (a_form->IsWeapon()) {
+        } else if (a_form->IsWeapon()) {
             if (const auto* weapon = a_form->As<RE::TESObjectWEAP>();
                 weapon->IsTwoHandedAxe() || weapon->IsTwoHandedSword() || weapon->IsBow() || weapon->IsCrossbow()) {
-                return true;
+                two_handed = true;
             }
         }
 
-        return false;
+        //logger::trace("form {}, two handed {}"sv, a_form->GetName(), two_handed);
+        return two_handed;
     }
 
     handle::slot_setting::slot_type helper::get_type(RE::TESForm*& a_form) {
