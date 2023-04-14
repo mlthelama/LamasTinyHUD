@@ -72,7 +72,6 @@ namespace equip {
 
         if (!obj) {
             logger::warn("could not find selected weapon/shield, maybe it is gone"sv);
-            //update ui in this case
             return;
         }
 
@@ -129,7 +128,11 @@ namespace equip {
         }
 
         logger::trace("try to equip weapon/shield/light {}"sv, a_form->GetName());
-        RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj, extra, 1, a_slot);
+        auto* task = SKSE::GetTaskInterface();
+        if (task) {
+            task->AddTask(
+                [=]() { RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj, extra, 1, a_slot); });
+        }
         logger::trace("equipped weapon/shield/light {}, left {}. return."sv, a_form->GetName(), left);
     }
 
@@ -230,7 +233,10 @@ namespace equip {
             return;
         }
 
-        RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
+        auto* task = SKSE::GetTaskInterface();
+        if (task) {
+            task->AddTask([=]() { RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj); });
+        }
         logger::trace("equipped {}. return."sv, obj->GetName());
     }
 
