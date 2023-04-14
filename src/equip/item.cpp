@@ -129,7 +129,6 @@ namespace equip {
         }
 
         logger::trace("try to equip weapon/shield/light {}"sv, a_form->GetName());
-
         RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj, extra, 1, a_slot);
         logger::trace("equipped weapon/shield/light {}, left {}. return."sv, a_form->GetName(), left);
     }
@@ -202,7 +201,6 @@ namespace equip {
         }
 
         logger::trace("calling drink/eat potion/food {}, count left {}"sv, obj->GetName(), left);
-
         RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
         logger::trace("drank/ate potion/food {}. return."sv, obj->GetName());
     }
