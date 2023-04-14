@@ -366,7 +366,7 @@ namespace processing {
             return;
         }
 
-        //clear_hands();
+        clear_hands();
 
         logger::trace("execute first setting for left/right/top"sv);
 
@@ -398,7 +398,7 @@ namespace processing {
         logger::trace("done equip for first set"sv);
     }
 
-    [[maybe_unused]] void set_setting_data::clear_hands() {
+    void set_setting_data::clear_hands() {
         logger::trace("clear hands"sv);
         auto* player = RE::PlayerCharacter::GetSingleton();
         auto* equip_manager = RE::ActorEquipManager::GetSingleton();

@@ -124,9 +124,7 @@ namespace equip {
             logger::trace("calling equip spell {}, left {}"sv, spell->GetName(), left);
             auto* task = SKSE::GetTaskInterface();
             if (task) {
-                task->AddTask([a_player, spell, a_slot]() {
-                    RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell, a_slot);
-                });
+                task->AddTask([=]() { RE::ActorEquipManager::GetSingleton()->EquipSpell(a_player, spell, a_slot); });
             }
         }
 
@@ -164,7 +162,10 @@ namespace equip {
                 ->CastSpellImmediate(scroll, false, actor, 1.0f, false, 0.0f, nullptr);
             actor->RemoveItem(scroll, 1, RE::ITEM_REMOVE_REASON::kRemove, nullptr, nullptr);
         } else {
-            RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj);
+            auto* task = SKSE::GetTaskInterface();
+            if (task) {
+                task->AddTask([=]() { RE::ActorEquipManager::GetSingleton()->EquipObject(a_player, obj); });
+            }
         }
 
         logger::trace("worked scroll {}, action {}. return."sv, a_form->GetName(), static_cast<uint32_t>(a_action));

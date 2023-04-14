@@ -5,7 +5,7 @@ namespace equip {
     class magic {
     public:
         using action_type = handle::slot_setting::action_type;
-        
+
         static void cast_magic(RE::TESForm* a_form,
             action_type a_action,
             const RE::BGSEquipSlot* a_slot,
