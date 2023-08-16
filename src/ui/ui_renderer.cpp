@@ -17,6 +17,7 @@
 #define NANOSVGRAST_IMPLEMENTATION
 #include <nanosvgrast.h>
 #pragma warning(pop)
+#include <stb_image.h>
 
 namespace ui {
     using mcm = config::mcm_setting;
@@ -129,7 +130,8 @@ namespace ui {
     bool ui_renderer::load_texture_from_file(const char* filename,
         ID3D11ShaderResourceView** out_srv,
         int32_t& out_width,
-        int32_t& out_height) {
+        int32_t& out_height,
+        const std::filesystem::path& extension) {
         auto* render_manager = RE::BSRenderManager::GetSingleton();
         if (!render_manager) {
             logger::error("Cannot find render manager. Initialization failed."sv);
@@ -139,18 +141,30 @@ namespace ui {
         auto [forwarder, context, unk58, unk60, unk68, swapChain, unk78, unk80, renderView, resourceView] =
             render_manager->GetRuntimeData();
 
-        // Load from disk into a raw RGBA buffer
-        auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
-        auto* rast = nsvgCreateRasterizer();
+        unsigned char* image_data;
+        int image_width = 0;
+        int image_height = 0;
+        if (extension == ".png") {
+            image_data = stbi_load(filename, &image_width, &image_height, nullptr, 4);
+            if (image_data == nullptr) {
+                return false;
+            }
+        } else if (extension == ".svg") {
+            // Load from disk into a raw RGBA buffer
+            auto* svg = nsvgParseFromFile(filename, "px", 96.0f);
+            auto* rast = nsvgCreateRasterizer();
 
-        auto image_width = static_cast<int>(svg->width);
-        auto image_height = static_cast<int>(svg->height);
+            image_width = static_cast<int>(svg->width);
+            image_height = static_cast<int>(svg->height);
 
-        auto image_data = (unsigned char*)malloc(image_width * image_height * 4);
-        nsvgRasterize(rast, svg, 0, 0, 1, image_data, image_width, image_height, image_width * 4);
-        nsvgDelete(svg);
-        nsvgDeleteRasterizer(rast);
-
+            image_data = (unsigned char*)malloc(image_width * image_height * 4);
+            nsvgRasterize(rast, svg, 0, 0, 1, image_data, image_width, image_height, image_width * 4);
+            nsvgDelete(svg);
+            nsvgDeleteRasterizer(rast);
+        } else {
+            return false;
+        }
+        
         // Create texture
         D3D11_TEXTURE2D_DESC desc;
         ZeroMemory(&desc, sizeof(desc));
@@ -164,7 +178,7 @@ namespace ui {
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
         desc.CPUAccessFlags = 0;
         desc.MiscFlags = 0;
-
+        
         ID3D11Texture2D* p_texture = nullptr;
         D3D11_SUBRESOURCE_DATA sub_resource;
         sub_resource.pSysMem = image_data;
@@ -182,11 +196,17 @@ namespace ui {
         forwarder->CreateShaderResourceView(p_texture, &srv_desc, out_srv);
         p_texture->Release();
 
-        free(image_data);
+        if (extension == ".png") {
+            stbi_image_free(image_data);
+        } else if (extension == ".svg") {
+            free(image_data);
+        }
 
         out_width = image_width;
         out_height = image_height;
 
+        logger::trace("done loading file {} with ending {}"sv, filename, extension.string().c_str());
+        
         return true;
     }
 
@@ -783,21 +803,26 @@ namespace ui {
     template <typename T>
     void ui_renderer::load_images(std::map<std::string, T>& a_map,
         std::map<uint32_t, image>& a_struct,
-        std::string& file_path) {
+        std::string& file_path,
+        std::string file_ending) {
         for (const auto& entry : std::filesystem::directory_iterator(file_path)) {
-            if (a_map.contains(entry.path().filename().string())) {
-                if (entry.path().filename().extension() != ".svg") {
-                    logger::warn("file {}, does not match supported extension '.svg'"sv,
-                        entry.path().filename().string().c_str());
+            if (a_map.contains(entry.path().stem().string())) {
+                if (entry.path().filename().extension() != file_ending) {
+                    logger::warn("file {}, stem {}, does not match supported extension '{}'"sv,
+                        entry.path().filename().string().c_str(),
+                        entry.path().stem().string().c_str(),
+                        file_ending);
                     continue;
                 }
-                const auto index = static_cast<int32_t>(a_map[entry.path().filename().string()]);
+                const auto index = static_cast<int32_t>(a_map[entry.path().stem().string()]);
                 if (load_texture_from_file(entry.path().string().c_str(),
                         &a_struct[index].texture,
                         a_struct[index].width,
-                        a_struct[index].height)) {
-                    logger::trace("loading texture {}, type: {}, width: {}, height: {}"sv,
+                        a_struct[index].height,
+                        entry.path().filename().extension())) {
+                    logger::trace("loading texture {}, stem: {}, type: {}, width: {}, height: {}"sv,
                         entry.path().filename().string().c_str(),
+                        entry.path().stem().string().c_str(),
                         entry.path().filename().extension().string().c_str(),
                         a_struct[index].width,
                         a_struct[index].height);
@@ -811,18 +836,25 @@ namespace ui {
         }
     }
 
-    void ui_renderer::load_animation_frames(std::string& file_path, std::vector<image>& frame_list) {
+    void ui_renderer::load_animation_frames(std::string& file_path,
+        std::vector<image>& frame_list,
+        std::string file_ending) {
         for (const auto& entry : std::filesystem::directory_iterator(file_path)) {
             ID3D11ShaderResourceView* texture = nullptr;
             int32_t width = 0;
             int32_t height = 0;
-            if (entry.path().filename().extension() != ".svg") {
-                logger::warn("file {}, does not match supported extension '.svg'"sv,
-                    entry.path().filename().string().c_str());
+            if (entry.path().filename().extension() != file_ending) {
+                logger::warn("file {}, does not match supported extension '{}'"sv,
+                    entry.path().filename().string().c_str(),
+                    file_ending);
                 continue;
             }
 
-            load_texture_from_file(entry.path().string().c_str(), &texture, width, height);
+            load_texture_from_file(entry.path().string().c_str(),
+                &texture,
+                width,
+                height,
+                entry.path().filename().extension());
 
             logger::trace("loading animation frame: {}"sv, entry.path().string().c_str());
             image img;
@@ -926,14 +958,25 @@ namespace ui {
     void ui_renderer::set_show_ui(bool a_show) { show_ui_ = a_show; }
 
     void ui_renderer::load_all_images() {
-        load_images(image_type_name_map, image_struct, img_directory);
-        load_images(icon_type_name_map, icon_struct, icon_directory);
-        load_images(key_icon_name_map, key_struct, key_directory);
-        load_images(default_key_icon_name_map, default_key_struct, key_directory);
-        load_images(gamepad_ps_icon_name_map, ps_key_struct, key_directory);
-        load_images(gamepad_xbox_icon_name_map, xbox_key_struct, key_directory);
+        load_images(image_type_name_map, image_struct, img_directory, config::file_setting::get_image_file_ending());
+        load_images(icon_type_name_map, icon_struct, icon_directory, config::file_setting::get_image_file_ending());
+        load_images(key_icon_name_map, key_struct, key_directory, config::file_setting::get_key_file_ending());
+        load_images(default_key_icon_name_map,
+            default_key_struct,
+            key_directory,
+            config::file_setting::get_key_file_ending());
+        load_images(gamepad_ps_icon_name_map,
+            ps_key_struct,
+            key_directory,
+            config::file_setting::get_key_file_ending());
+        load_images(gamepad_xbox_icon_name_map,
+            xbox_key_struct,
+            key_directory,
+            config::file_setting::get_key_file_ending());
 
-        load_animation_frames(highlight_animation_directory, animation_frame_map[animation_type::highlight]);
+        load_animation_frames(highlight_animation_directory,
+            animation_frame_map[animation_type::highlight],
+            config::file_setting::get_image_file_ending());
         logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
     }
 }

@@ -21,13 +21,16 @@ namespace processing {
 
         handle::key_position_handle::get_singleton()->init_key_position_map();
 
-        handle::name_handle::get_singleton()->init_names(util::player::get_hand_assignment());
+        auto hand_assignment = util::player::get_hand_assignment();
+        handle::name_handle::get_singleton()->init_names(hand_assignment);
 
         write_empty_config_and_init_active();
 
         logger::trace("continue with overwriting data from configuration ..."sv);
 
         process_config_data();
+
+        //check_block(hand_assignment);
 
         logger::trace("done executing. return."sv);
     }
@@ -162,7 +165,7 @@ namespace processing {
             action_check);
 
         handle::slot_setting::action_type action;
-        if (action_check) {
+        if (action_check && !mcm::get_elden_demon_souls()) {
             if (a_action == a_action_left) {
                 action = static_cast<handle::slot_setting::action_type>(a_action);
             } else {
@@ -539,6 +542,12 @@ namespace processing {
 
     void set_setting_data::do_cleanup(handle::position_setting*& a_position_setting,
         handle::slot_setting*& a_slot_setting) {
+        if (a_slot_setting->form && a_slot_setting->form->formID == util::unarmed) {
+            logger::trace("skipping cleanup for form {}, because of unarmed"sv,
+                util::string_util::int_to_hex(a_slot_setting->form->formID));
+            return;
+        }
+
         auto log_string = fmt::format("doing cleanup at page {}, position {}, form {}"sv,
             a_position_setting->page,
             static_cast<uint32_t>(a_position_setting->position),
@@ -686,5 +695,35 @@ namespace processing {
                 break;
         }
         return allowed;
+    }
+
+    [[maybe_unused]] void set_setting_data::check_block(const std::vector<data_helper*>& data_helpers) {
+        if (mcm::get_elden_demon_souls() && !mcm::get_disable_re_equip_of_actives() &&
+            !RE::UI::GetSingleton()->GameIsPaused()) {
+            logger::trace("continue with if location needs block, because reequip is {} and elden is {}"sv,
+                mcm::get_elden_demon_souls(),
+                mcm::get_disable_re_equip_of_actives());
+            RE::TESForm* two_handed_form = nullptr;
+            if (!data_helpers.empty() && data_helpers.size() == 1 && data_helpers.front() &&
+                data_helpers.front()->form && util::helper::is_two_handed(data_helpers.front()->form)) {
+                two_handed_form = data_helpers.front()->form;
+            }
+
+            if (!two_handed_form) {
+                return;
+            }
+            logger::trace("form is {} in right hand"sv, util::string_util::int_to_hex(two_handed_form));
+
+            auto* page_handle = handle::page_handle::get_singleton();
+            auto page = page_handle->get_active_page_id_position(position_type::right);
+            auto* setting = page_handle->get_page_setting(page, position_type::right);
+            if (!setting->slot_settings.empty() && setting->slot_settings.front() &&
+                setting->slot_settings.front()->form) {
+                if (setting->slot_settings.front()->form == two_handed_form) {
+                    processing::set_setting_data::check_if_location_needs_block(two_handed_form, true);
+                }
+            }
+            logger::trace("done checking if location needs block. return.");
+        }
     }
 }

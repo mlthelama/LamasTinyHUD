@@ -94,7 +94,8 @@ namespace ui {
         static bool load_texture_from_file(const char* filename,
             ID3D11ShaderResourceView** out_srv,
             std::int32_t& out_width,
-            std::int32_t& out_height);
+            std::int32_t& out_height,
+            const std::filesystem::path& extension);
 
         static inline bool show_ui_ = false;
         static inline ID3D11Device* device_ = nullptr;
@@ -102,9 +103,9 @@ namespace ui {
 
         template <typename T>
         static void
-            load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path);
+            load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path, std::string file_ending);
 
-        static void load_animation_frames(std::string& file_path, std::vector<image>& frame_list);
+        static void load_animation_frames(std::string& file_path, std::vector<image>& frame_list, std::string file_ending);
 
         static image get_key_icon(uint32_t a_key);
         static void load_font();
@@ -128,8 +129,8 @@ namespace ui {
             static void thunk();
             static inline REL::Relocation<decltype(thunk)> func;
 
-            static constexpr auto id = REL::RelocationID(75595, 77226);
-            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x00);  // VR unknown
+            static constexpr auto id = REL::RelocationID(75595, 77226, 0xDC5530);
+            static constexpr auto offset = REL::VariantOffset(0x9, 0x275, 0x9);
 
             static inline std::atomic<bool> initialized = false;
         };
@@ -138,8 +139,8 @@ namespace ui {
             static void thunk(std::uint32_t a_p1);
             static inline REL::Relocation<decltype(thunk)> func;
 
-            static constexpr auto id = REL::RelocationID(75461, 77246);
-            static constexpr auto offset = REL::Offset(0x9);
+            static constexpr auto id = REL::RelocationID(75461, 77246, 0xDBBDD);
+            static constexpr auto offset = REL::VariantOffset(0x9, 0x9, 0x15);
         };
     };
 }
