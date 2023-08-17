@@ -6,7 +6,7 @@ namespace config {
         static void load_setting();
 
         static bool get_is_debug();
-        
+
         static bool get_draw_key_background();
         static std::string get_image_file_ending();
         static std::string get_key_file_ending();

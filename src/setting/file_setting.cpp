@@ -38,7 +38,7 @@ namespace config {
         draw_key_background = ini.GetBoolValue("Image", "bDrawKeyBackground", false);
         image_file_ending = ini.GetValue("Image", "sFileEnding", ".svg");
         key_file_ending = ini.GetValue("Key", "sFileEnding", ".svg");
-        
+
         font_load = ini.GetBoolValue("Font", "bLoad", true);
         font_file_name = ini.GetValue("Font", "sName", "");
         font_size = static_cast<float>(ini.GetDoubleValue("Font", "fSize", 20));

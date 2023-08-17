@@ -89,7 +89,7 @@ namespace ui {
             float a_offset_y,
             uint32_t a_key,
             uint32_t a_alpha);
-        static void draw_ui();
+        static void draw_main();
 
         static bool load_texture_from_file(const char* filename,
             ID3D11ShaderResourceView** out_srv,
@@ -102,10 +102,13 @@ namespace ui {
         static inline ID3D11DeviceContext* context_ = nullptr;
 
         template <typename T>
-        static void
-            load_images(std::map<std::string, T>& a_map, std::map<uint32_t, image>& a_struct, std::string& file_path, std::string file_ending);
+        static void load_images(std::map<std::string, T>& a_map,
+            std::map<uint32_t, image>& a_struct,
+            std::string& file_path,
+            std::string file_ending);
 
-        static void load_animation_frames(std::string& file_path, std::vector<image>& frame_list, std::string file_ending);
+        static void
+            load_animation_frames(std::string& file_path, std::vector<image>& frame_list, std::string file_ending);
 
         static image get_key_icon(uint32_t a_key);
         static void load_font();
@@ -124,6 +127,10 @@ namespace ui {
         static void set_show_ui(bool a_show);
 
         static void load_all_images();
+
+        static void draw_ui(float a_x, float a_y);
+
+        static bool should_show_ui();
 
         struct d_3d_init_hook {
             static void thunk();

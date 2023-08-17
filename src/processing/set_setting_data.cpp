@@ -61,7 +61,7 @@ namespace processing {
 
         std::vector<data_helper*> data;
         if (a_data.empty()) {
-            const auto item = new data_helper();
+            auto* const item = new data_helper();
             item->form = nullptr;
             item->action_type = handle::slot_setting::action_type::default_action;
             item->type = slot_type::empty;
@@ -115,7 +115,7 @@ namespace processing {
     void set_setting_data::set_empty_slot(const int a_page, int a_pos, handle::key_position_handle*& a_key_pos) {
         logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;
-        const auto item = new data_helper();
+        auto* const item = new data_helper();
         item->form = nullptr;
         item->action_type = handle::slot_setting::action_type::default_action;
         item->type = slot_type::empty;
@@ -210,7 +210,7 @@ namespace processing {
             }
         }
 
-        const auto item = new data_helper();
+        auto* const item = new data_helper();
         item->form = form ? form : nullptr;
         item->type = type;
         item->action_type = action;
@@ -243,7 +243,7 @@ namespace processing {
                 }
             }
 
-            const auto item_left = new data_helper();
+            auto* const item_left = new data_helper();
             item_left->form = form_left ? form_left : nullptr;
             item_left->type = type_left;
             item_left->action_type = action;
