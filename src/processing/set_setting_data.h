@@ -43,5 +43,6 @@ namespace processing {
         //easier to have both, first only needed to get the page, position. the second, so it is easier to have the form
         static void do_cleanup(handle::position_setting*& a_position_setting, handle::slot_setting*& a_slot_setting);
         static bool clean_type_allowed(slot_type a_type);
+        [[maybe_unused]] static void check_block(const std::vector<data_helper*>& data_helpers);
     };
 }

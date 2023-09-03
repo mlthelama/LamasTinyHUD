@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(NAME "LamasTinyHUD")
-set(VERSION 1.4.4.0)
+set(VERSION 1.5.0.0)
 
 # ---- Options ----
 
@@ -96,6 +96,8 @@ find_package(CommonLibSSE CONFIG REQUIRED)
 
 find_package(spdlog REQUIRED CONFIG)
 
+include_directories(extern/stb)
+
 find_package(imgui REQUIRED)
 
 find_package(unofficial-nanosvg CONFIG REQUIRED)
@@ -153,6 +155,8 @@ target_link_libraries(
 		imgui::imgui
 		unofficial::nanosvg::nanosvg
 )
+
+link_directories(extern/stb)
 
 if (MSVC)
 	target_compile_options(

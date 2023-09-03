@@ -1,3 +1,6 @@
 [submodule "extern/resources"]
 	path = extern/resources
 	url = https://github.com/mlthelama/ResourcesForLamasTinyHUD.git
+[submodule "extern/stb"]
+	path = extern/stb
+	url = https://github.com/nothings/stb.git

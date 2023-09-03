@@ -8,7 +8,8 @@ namespace config {
 
     static bool is_debug;
     static bool draw_key_background;
-
+    static std::string image_file_ending;
+    static std::string key_file_ending;
     static bool font_load;
     static std::string font_file_name;
     static float font_size;
@@ -35,6 +36,8 @@ namespace config {
         is_debug = ini.GetBoolValue("General", "bIsDebug", false);
 
         draw_key_background = ini.GetBoolValue("Image", "bDrawKeyBackground", false);
+        image_file_ending = ini.GetValue("Image", "sFileEnding", ".svg");
+        key_file_ending = ini.GetValue("Key", "sFileEnding", ".svg");
 
         font_load = ini.GetBoolValue("Font", "bLoad", true);
         font_file_name = ini.GetValue("Font", "sName", "");
@@ -57,7 +60,8 @@ namespace config {
 
     bool file_setting::get_is_debug() { return is_debug; }
     bool file_setting::get_draw_key_background() { return draw_key_background; }
-
+    std::string file_setting::get_image_file_ending() { return image_file_ending; }
+    std::string file_setting::get_key_file_ending() { return key_file_ending; }
     bool file_setting::get_font_load() { return font_load; }
     std::string file_setting::get_font_file_name() { return font_file_name; }
     float file_setting::get_font_size() { return font_size; }
