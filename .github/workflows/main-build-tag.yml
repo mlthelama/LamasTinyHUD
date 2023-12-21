@@ -1,8 +1,9 @@
-name: Main CI
+name: Main Tag CI
 
 on:
   push:
-    branches: [ main ]
+    tags:
+    - '*'
     paths:
       - '.github/workflows/main_ci.yml'
       - 'cmake/**'
@@ -11,15 +12,13 @@ on:
       - 'CMakePresets.json'
       - 'vcpkg-configuration.json'
       - 'vcpkg.json'
-  pull_request:
-    branches: [ main, feature/* ]
   workflow_dispatch:
 
 env:
   VCPKG_COMMIT_ID: 93895b28ea7bc8cda10f156c5d336f3fc070f8b1
 
 jobs:
-  build-vcpkg:
+  build-tag-release:
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -45,4 +44,24 @@ jobs:
           cmakeListsTxtPath: ${{ github.workspace }}/main/CMakeLists.txt
           configurePreset: 'vs2022-windows'
           buildPreset: 'vs2022-windows'
+          buildPresetAdditionalArgs: "['--config Release']"
 
+      - name: setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' # install the python version needed
+
+      - name: execute py script 
+        run: python ${{ github.workspace }}/main/scripts/archive_artifacts.py --name LamasTinyHUD --dll build/Release/LamasTinyHUD.dll --pdb build/Release/LamasTinyHUD.pdb --dir main
+
+      - uses: xresloader/upload-to-github-release@main
+        with:
+          file: "${{ github.workspace }}/artifacts/LamasTinyHUD.zip"
+          branches: "main;dev"
+          tags: true
+          verbose: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LamasTinyHUD
+          path: ${{ github.workspace }}/artifacts/LamasTinyHUD.zip
