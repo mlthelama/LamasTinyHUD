@@ -2,6 +2,7 @@
 #include "equip/equip_slot.h"
 #include "equip/item.h"
 #include "handle/ammo_handle.h"
+#include "handle/extra_data_holder.h"
 #include "handle/name_handle.h"
 #include "handle/page_handle.h"
 #include "setting/custom_setting.h"
@@ -392,12 +393,15 @@ namespace processing {
             setting_execute::execute_settings(position_setting->slot_settings);
         }
 
-        setting_execute::execute_settings(right_position_setting->slot_settings);
+        if (right_position_setting && !right_position_setting->slot_settings.empty()) {
+            setting_execute::execute_settings(right_position_setting->slot_settings);
+        }
 
         position_setting = page_handle->get_page_setting(page_handle->get_active_page_id_position(position_type::top),
             position_type::top);
         setting_execute::execute_settings(position_setting->slot_settings, true);
 
+        handle::extra_data_holder::get_singleton()->reset_data();
         logger::trace("done equip for first set"sv);
     }
 
@@ -460,6 +464,7 @@ namespace processing {
                 processing::setting_execute::reequip_left_hand_if_needed(setting);
             }
         }
+        handle::extra_data_holder::get_singleton()->reset_data();
         logger::trace("checking for block done. return."sv);
     }
 

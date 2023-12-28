@@ -52,7 +52,7 @@ namespace event {
             return event_result::kContinue;
         }
 
-        handle::extra_data_holder::get_singleton()->reset_data();
+        //handle::extra_data_holder::get_singleton()->reset_data();
 
         for (auto* event = *a_event; event; event = event->next) {
             if (event->eventType != RE::INPUT_EVENT_TYPE::kButton) {
@@ -188,6 +188,7 @@ namespace event {
                 }
             }
         }
+
         return event_result::kContinue;
     }
 

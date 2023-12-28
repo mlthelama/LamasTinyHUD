@@ -54,16 +54,18 @@ namespace equip {
                 auto simple_extra_data_list = entry->extraLists;
                 if (simple_extra_data_list) {
                     for (auto* extra_data : *simple_extra_data_list) {
-                        extra = extra_data;
+                        //extra = extra_data;
                         auto worn_right = extra_data->HasType(RE::ExtraDataType::kWorn);
                         auto worn_left = extra_data->HasType(RE::ExtraDataType::kWornLeft);
                         logger::trace("extra data {}, worn right {}, worn left {}"sv,
                             extra_data->GetCount(),
                             worn_right,
                             worn_left);
-                        if (!worn_right || !worn_left) {
-                            extra_vector.push_back(extra_data);
+                        if (worn_right || worn_left) {
+                            continue;
                         }
+
+                        extra_vector.push_back(extra_data);
                     }
                 }
                 break;
@@ -88,13 +90,7 @@ namespace equip {
             if (!extra_vector.empty()) {
                 extra = extra_vector.back();
                 extra_vector.pop_back();  //remove last item, because we already use that
-                if (extra_vector.empty() && ((left && extra->HasType(RE::ExtraDataType::kWorn) ||
-                                                (!left && extra->HasType(RE::ExtraDataType::kWornLeft))))) {
-                    extra = nullptr;
-                } else if (!extra_vector.empty()) {
-                    extra = extra_vector.back();
-                    extra_vector.pop_back();  //remove last item, because we already use that
-                }
+
                 extra_handler->init_extra_data(a_form, extra_vector);
                 logger::trace("set {} extra data for form {}"sv, extra_vector.size(), a_form->GetName());
             }
@@ -115,12 +111,12 @@ namespace equip {
         auto equipped_count = 0;
         if (obj_right && obj_right->formID == obj->formID) {
             equipped_count++;
-            logger::debug("Object {} already equipped."sv, obj->GetName());
+            logger::debug("Object {} already equipped (right)."sv, obj->GetName());
         }
 
         if (obj_left && obj_left->formID == obj->formID) {
             equipped_count++;
-            logger::debug("Object {} already equipped."sv, obj->GetName());
+            logger::debug("Object {} already equipped (left)."sv, obj->GetName());
         }
 
         logger::trace("Got a count of {} in the Inventory {}, Equipped {}"sv,
