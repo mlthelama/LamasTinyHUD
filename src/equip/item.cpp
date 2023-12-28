@@ -61,7 +61,7 @@ namespace equip {
                             extra_data->GetCount(),
                             worn_right,
                             worn_left);
-                        if (!worn_right && !worn_left) {
+                        if (!worn_right || !worn_left) {
                             extra_vector.push_back(extra_data);
                         }
                     }
@@ -75,6 +75,7 @@ namespace equip {
             return;
         }
 
+        logger::debug("extra vector is {}"sv, extra_vector.size());
         auto* extra_handler = handle::extra_data_holder::get_singleton();
         if (extra_handler->is_form_set(a_form)) {
             auto extra_list = extra_handler->get_extra_list_for_form(a_form);
@@ -87,6 +88,13 @@ namespace equip {
             if (!extra_vector.empty()) {
                 extra = extra_vector.back();
                 extra_vector.pop_back();  //remove last item, because we already use that
+                if (extra_vector.empty() && ((left && extra->HasType(RE::ExtraDataType::kWorn) ||
+                                                (!left && extra->HasType(RE::ExtraDataType::kWornLeft))))) {
+                    extra = nullptr;
+                } else if (!extra_vector.empty()) {
+                    extra = extra_vector.back();
+                    extra_vector.pop_back();  //remove last item, because we already use that
+                }
                 extra_handler->init_extra_data(a_form, extra_vector);
                 logger::trace("set {} extra data for form {}"sv, extra_vector.size(), a_form->GetName());
             }
