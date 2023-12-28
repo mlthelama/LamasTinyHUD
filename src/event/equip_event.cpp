@@ -41,7 +41,7 @@ namespace event {
             util::helper::is_two_handed(form)) {
             processing::set_setting_data::check_if_location_needs_block(form, a_event->equipped);
         }
-        
+
         return event_result::kContinue;
     }
 }
