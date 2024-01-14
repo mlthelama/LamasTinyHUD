@@ -29,14 +29,14 @@ namespace event {
                 binding->set_is_remove_down(false);
             }
         }
-        
+
         if (a_event->menuName == RE::InventoryMenu::MENU_NAME || a_event->menuName == RE::MagicMenu::MENU_NAME ||
             a_event->menuName == RE::FavoritesMenu::MENU_NAME || a_event->menuName == RE::BarterMenu::MENU_NAME ||
             a_event->menuName == RE::GiftMenu::MENU_NAME || a_event->menuName == RE::BookMenu::MENU_NAME ||
             a_event->menuName == RE::FaderMenu::MENU_NAME || a_event->menuName == RE::CraftingMenu::MENU_NAME) {
             handle::extra_data_holder::get_singleton()->reset_data();
         }
-        
+
         return event_result::kContinue;
     }
 }  // event
