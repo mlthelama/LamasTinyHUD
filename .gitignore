@@ -399,3 +399,4 @@ fomod/ShowStats/gui
 fomod/ShowStats/main
 cmake-build-debug
 cmake-build-release
+venv/

@@ -982,7 +982,8 @@ namespace ui {
     bool ui_renderer::should_show_ui() {
         if (auto* ui = RE::UI::GetSingleton(); !ui || ui->GameIsPaused() || !ui->IsCursorHiddenWhenTopmost() ||
                                                !ui->IsShowingMenus() || !ui->GetMenu<RE::HUDMenu>() ||
-                                               ui->IsMenuOpen(RE::LoadingMenu::MENU_NAME)) {
+                                               ui->IsMenuOpen(RE::LoadingMenu::MENU_NAME) ||
+                                               ui->IsMenuOpen(RE::FaderMenu::MENU_NAME)) {
             return false;
         }
 
