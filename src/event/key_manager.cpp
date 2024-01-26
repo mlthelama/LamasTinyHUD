@@ -85,7 +85,7 @@ namespace event {
             }
 
             const auto* control_map = RE::ControlMap::GetSingleton();
-            if (!control_map || !control_map->IsMovementControlsEnabled() ) {/*||
+            if (!control_map || !control_map->IsMovementControlsEnabled()) { /*||
                 control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {*/
                 continue;
             }
