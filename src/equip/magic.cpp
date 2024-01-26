@@ -3,6 +3,8 @@
 #include "setting/mcm_setting.h"
 #include "util/offset.h"
 #include "util/player/player.h"
+#include <util/helper.h>
+#include <util/string_util.h>
 
 namespace equip {
     //add toggle mcm if equip or cast
@@ -86,6 +88,19 @@ namespace equip {
             //might need to set some things
             //TODO make an animation to play here
             //a_player->NotifyAnimationGraph("IdleMagic_01"); //works
+            /*if constexpr (!std::is_same_v<RE::TESIdleForm, RE::TESIdleForm>) {
+                for (const auto& form : RE::TESDataHandler::GetSingleton()->GetFormArray<T>()) {
+                    //AddForm(EditorID::GetEditorID(form), form);
+                    
+                }*/
+            /*for (const auto& form : RE::TESDataHandler::GetSingleton()->GetFormArray<RE::TESIdleForm>()){
+                logger::debug("formid {}, form name {}"sv, util::string_util::int_to_hex(form->formID), form->GetName());
+            }*/
+            if(const auto* current = a_player->GetActorRuntimeData().currentProcess; current) {
+                //if (current)
+                //auto* idle = RE::TESForm::LookupByEditorID<RE::TESIdleForm>("RightCastSelf");
+            }
+            
             auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
             auto* target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
 

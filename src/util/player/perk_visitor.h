@@ -7,8 +7,8 @@ namespace util {
             actor_ = a_actor;
             result_ = a_base;
         }
-
-        ReturnType Visit(RE::BGSPerkEntry* perk_entry) override;
+        
+        RE::BSContainer::ForEachResult Visit(RE::BGSPerkEntry* perk_entry) override;
 
         [[nodiscard]] float get_result() const;
 

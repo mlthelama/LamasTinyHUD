@@ -4,3 +4,7 @@
 [submodule "extern/stb"]
 	path = extern/stb
 	url = https://github.com/nothings/stb.git
+[submodule "extern/CommonLibSSE-NG"]
+	path = extern/CommonLibSSE-NG
+	url = https://github.com/mlthelama/CommonLibSSE.git
+	branch = ng

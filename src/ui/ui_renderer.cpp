@@ -57,15 +57,18 @@ namespace ui {
         func();
 
         logger::info("D3DInit Hooked"sv);
-        const auto render_manager = RE::BSRenderManager::GetSingleton();
-        if (!render_manager) {
+        const auto renderer = RE::BSGraphics::Renderer::GetSingleton();
+        if (!renderer) {
             logger::error("Cannot find render manager. Initialization failed."sv);
             return;
         }
 
-        const auto [forwarder, context, unk58, unk60, unk68, swapChain, unk78, unk80, renderView, resourceView] =
-            render_manager->GetRuntimeData();
-
+        const auto rendererData = renderer->GetRendererDataSingleton();
+        
+        const auto context   = rendererData->context;
+        const auto swapChain = rendererData->renderWindows->swapChain;
+        const auto forwarder = rendererData->forwarder;
+        
         logger::info("Getting swapchain..."sv);
         auto* swapchain = swapChain;
         if (!swapchain) {
@@ -132,14 +135,14 @@ namespace ui {
         int32_t& out_width,
         int32_t& out_height,
         const std::filesystem::path& extension) {
-        auto* render_manager = RE::BSRenderManager::GetSingleton();
-        if (!render_manager) {
+        const auto renderer = RE::BSGraphics::Renderer::GetSingleton();
+        if (!renderer) {
             logger::error("Cannot find render manager. Initialization failed."sv);
             return false;
         }
 
-        auto [forwarder, context, unk58, unk60, unk68, swapChain, unk78, unk80, renderView, resourceView] =
-            render_manager->GetRuntimeData();
+        const auto rendererData = renderer->GetRendererDataSingleton();
+        const auto forwarder    = rendererData->forwarder;
 
         unsigned char* image_data{};
         int image_width = 0;
@@ -701,9 +704,20 @@ namespace ui {
     }
 
     void ui_renderer::draw_main() {
-        if (!show_ui_ || fade == 0.0f || !should_show_ui()) {
+        if (fade == 0.0f) {
             return;
         }
+        
+        if (!show_ui_) {
+            return;
+        }
+        
+        if ( !should_show_ui()){
+            return;
+        }
+        /*if (!show_ui_ || fade == 0.0f || !should_show_ui()) {
+            return;
+        }*/
 
         if (mcm::get_hide_outside_combat()) {
             if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
@@ -987,11 +1001,14 @@ namespace ui {
             return false;
         }
 
-        if (const auto* control_map = RE::ControlMap::GetSingleton();
+        if (auto* control_map = RE::ControlMap::GetSingleton(); !control_map->IsMovementControlsEnabled()) {
+            return false;
+        }
+        /*if (const auto* control_map = RE::ControlMap::GetSingleton();
             !control_map || !control_map->IsMovementControlsEnabled() ||
             control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
             return false;
-        }
+        }*/
 
         return true;
     }

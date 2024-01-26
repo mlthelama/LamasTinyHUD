@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(NAME "LamasTinyHUD")
-set(VERSION 1.5.0.0)
+set(VERSION 1.5.1.0)
 
 # ---- Options ----
 
@@ -92,15 +92,15 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_DEBUG OFF)
 set(Boost_USE_STATIC_LIBS ON)
 
 # ---- Dependencies ----
-find_package(CommonLibSSE CONFIG REQUIRED)
-
+#find_package(CommonLibSSE CONFIG REQUIRED)
 find_package(spdlog REQUIRED CONFIG)
-
 include_directories(extern/stb)
-
 find_package(imgui REQUIRED)
-
 find_package(unofficial-nanosvg CONFIG REQUIRED)
+
+set(CommonLibPath "extern/CommonLibSSE-NG")
+set(CommonLibName "CommonLibSSE")
+set(GameVersion "Skyrim")
 
 # ---- Add source files ----
 
@@ -139,6 +139,8 @@ target_compile_features(
 	PRIVATE
 		cxx_std_23
 )
+
+add_subdirectory(${CommonLibPath} ${CommonLibName} EXCLUDE_FROM_ALL)
 
 target_include_directories(
 	${PROJECT_NAME}
