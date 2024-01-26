@@ -64,11 +64,11 @@ namespace ui {
         }
 
         const auto rendererData = renderer->GetRendererDataSingleton();
-        
-        const auto context   = rendererData->context;
+
+        const auto context = rendererData->context;
         const auto swapChain = rendererData->renderWindows->swapChain;
         const auto forwarder = rendererData->forwarder;
-        
+
         logger::info("Getting swapchain..."sv);
         auto* swapchain = swapChain;
         if (!swapchain) {
@@ -142,7 +142,7 @@ namespace ui {
         }
 
         const auto rendererData = renderer->GetRendererDataSingleton();
-        const auto forwarder    = rendererData->forwarder;
+        const auto forwarder = rendererData->forwarder;
 
         unsigned char* image_data{};
         int image_width = 0;
@@ -707,12 +707,12 @@ namespace ui {
         if (fade == 0.0f) {
             return;
         }
-        
+
         if (!show_ui_) {
             return;
         }
-        
-        if ( !should_show_ui()){
+
+        if (!should_show_ui()) {
             return;
         }
         /*if (!show_ui_ || fade == 0.0f || !should_show_ui()) {

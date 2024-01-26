@@ -96,11 +96,11 @@ namespace equip {
             /*for (const auto& form : RE::TESDataHandler::GetSingleton()->GetFormArray<RE::TESIdleForm>()){
                 logger::debug("formid {}, form name {}"sv, util::string_util::int_to_hex(form->formID), form->GetName());
             }*/
-            if(const auto* current = a_player->GetActorRuntimeData().currentProcess; current) {
+            if (const auto* current = a_player->GetActorRuntimeData().currentProcess; current) {
                 //if (current)
                 //auto* idle = RE::TESForm::LookupByEditorID<RE::TESIdleForm>("RightCastSelf");
             }
-            
+
             auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
             auto* target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
 
