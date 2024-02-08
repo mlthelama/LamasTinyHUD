@@ -24,12 +24,12 @@ namespace event {
             return event_result::kContinue;
         }
 
-        if (config::mcm_setting::get_draw_current_items_text() &&
+        if (setting::mcm_setting::get_draw_current_items_text() &&
             (form->IsWeapon() || form->Is(RE::FormType::Spell) || form->IsAmmo() || form->Is(RE::FormType::Light))) {
             handle::name_handle::get_singleton()->init_names(util::player::get_hand_assignment());
         }
 
-        if (config::mcm_setting::get_draw_current_shout_text() && form->Is(RE::FormType::Shout) ||
+        if (setting::mcm_setting::get_draw_current_shout_text() && form->Is(RE::FormType::Shout) ||
             form->Is(RE::FormType::Spell)) {
             // call function there and check selected power, spell trigger and spells as well but that is ok for now
             handle::name_handle::get_singleton()->init_voice_name(
@@ -37,7 +37,7 @@ namespace event {
         }
 
         //add check if we need to block left
-        if (!RE::UI::GetSingleton()->GameIsPaused() && config::mcm_setting::get_elden_demon_souls() &&
+        if (!RE::UI::GetSingleton()->GameIsPaused() && setting::mcm_setting::get_elden_demon_souls() &&
             util::helper::is_two_handed(form)) {
             processing::set_setting_data::check_if_location_needs_block(form, a_event->equipped);
         }

@@ -20,7 +20,7 @@
 #include <stb_image.h>
 
 namespace ui {
-    using mcm = config::mcm_setting;
+    using mcm = setting::mcm_setting;
 
     static std::map<animation_type, std::vector<image>> animation_frame_map = {};
     static std::vector<std::pair<animation_type, std::unique_ptr<animation>>> animation_list;
@@ -622,7 +622,7 @@ namespace ui {
                 continue;
             }
             const auto* draw_setting = page_setting->draw_setting;
-            if (config::file_setting::get_draw_key_background()) {
+            if (setting::file_setting::get_draw_key_background()) {
                 draw_key(a_x,
                     a_y,
                     draw_setting->key_icon_scale_width,
@@ -704,20 +704,9 @@ namespace ui {
     }
 
     void ui_renderer::draw_main() {
-        if (fade == 0.0f) {
+        if (!show_ui_ || fade == 0.0f || !should_show_ui()) {
             return;
         }
-
-        if (!show_ui_) {
-            return;
-        }
-
-        if (!should_show_ui()) {
-            return;
-        }
-        /*if (!show_ui_ || fade == 0.0f || !should_show_ui()) {
-            return;
-        }*/
 
         if (mcm::get_hide_outside_combat()) {
             if (!RE::PlayerCharacter::GetSingleton()->IsInCombat()) {
@@ -865,41 +854,41 @@ namespace ui {
     bool ui_renderer::get_fade() { return fade_in; }
 
     void ui_renderer::load_font() {
-        std::string path = R"(Data\SKSE\Plugins\resources\font\)" + config::file_setting::get_font_file_name();
+        std::string path = R"(Data\SKSE\Plugins\resources\font\)" + setting::file_setting::get_font_file_name();
         auto file_path = std::filesystem::path(path);
-        logger::trace("Need to load font {} from file {}"sv, config::file_setting::get_font_load(), path);
+        logger::trace("Need to load font {} from file {}"sv, setting::file_setting::get_font_load(), path);
         tried_font_load = true;
-        if (config::file_setting::get_font_load() && std::filesystem::is_regular_file(file_path) &&
+        if (setting::file_setting::get_font_load() && std::filesystem::is_regular_file(file_path) &&
             ((file_path.extension() == ".ttf") || (file_path.extension() == ".otf"))) {
             ImGuiIO& io = ImGui::GetIO();
             ImVector<ImWchar> ranges;
             ImFontGlyphRangesBuilder builder;
             builder.AddRanges(io.Fonts->GetGlyphRangesDefault());
-            if (config::file_setting::get_font_chinese_full()) {
+            if (setting::file_setting::get_font_chinese_full()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesChineseFull());
             }
-            if (config::file_setting::get_font_chinese_simplified_common()) {
+            if (setting::file_setting::get_font_chinese_simplified_common()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesChineseSimplifiedCommon());
             }
-            if (config::file_setting::get_font_cyrillic()) {
+            if (setting::file_setting::get_font_cyrillic()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesCyrillic());
             }
-            if (config::file_setting::get_font_japanese()) {
+            if (setting::file_setting::get_font_japanese()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesJapanese());
             }
-            if (config::file_setting::get_font_korean()) {
+            if (setting::file_setting::get_font_korean()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesKorean());
             }
-            if (config::file_setting::get_font_thai()) {
+            if (setting::file_setting::get_font_thai()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesThai());
             }
-            if (config::file_setting::get_font_vietnamese()) {
+            if (setting::file_setting::get_font_vietnamese()) {
                 builder.AddRanges(io.Fonts->GetGlyphRangesVietnamese());
             }
             builder.BuildRanges(&ranges);
 
             loaded_font = io.Fonts->AddFontFromFileTTF(file_path.string().c_str(),
-                config::file_setting::get_font_size(),
+                setting::file_setting::get_font_size(),
                 nullptr,
                 ranges.Data);
             if (io.Fonts->Build()) {
@@ -916,32 +905,32 @@ namespace ui {
         } else {
             show_ui_ = true;
         }
-        config::file_setting::set_show_ui(show_ui_);
+        setting::file_setting::set_show_ui(show_ui_);
         logger::trace("Show UI is now {}"sv, show_ui_);
     }
 
     void ui_renderer::set_show_ui(bool a_show) { show_ui_ = a_show; }
 
     void ui_renderer::load_all_images() {
-        load_images(image_type_name_map, image_struct, img_directory, config::file_setting::get_image_file_ending());
-        load_images(icon_type_name_map, icon_struct, icon_directory, config::file_setting::get_image_file_ending());
-        load_images(key_icon_name_map, key_struct, key_directory, config::file_setting::get_key_file_ending());
+        load_images(image_type_name_map, image_struct, img_directory, setting::file_setting::get_image_file_ending());
+        load_images(icon_type_name_map, icon_struct, icon_directory, setting::file_setting::get_image_file_ending());
+        load_images(key_icon_name_map, key_struct, key_directory, setting::file_setting::get_key_file_ending());
         load_images(default_key_icon_name_map,
             default_key_struct,
             key_directory,
-            config::file_setting::get_key_file_ending());
+            setting::file_setting::get_key_file_ending());
         load_images(gamepad_ps_icon_name_map,
             ps_key_struct,
             key_directory,
-            config::file_setting::get_key_file_ending());
+            setting::file_setting::get_key_file_ending());
         load_images(gamepad_xbox_icon_name_map,
             xbox_key_struct,
             key_directory,
-            config::file_setting::get_key_file_ending());
+            setting::file_setting::get_key_file_ending());
 
         load_animation_frames(highlight_animation_directory,
             animation_frame_map[animation_type::highlight],
-            config::file_setting::get_image_file_ending());
+            setting::file_setting::get_image_file_ending());
         logger::trace("frame length is {}"sv, animation_frame_map[animation_type::highlight].size());
     }
 
@@ -1004,11 +993,6 @@ namespace ui {
         if (auto* control_map = RE::ControlMap::GetSingleton(); !control_map->IsMovementControlsEnabled()) {
             return false;
         }
-        /*if (const auto* control_map = RE::ControlMap::GetSingleton();
-            !control_map || !control_map->IsMovementControlsEnabled() ||
-            control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
-            return false;
-        }*/
 
         return true;
     }

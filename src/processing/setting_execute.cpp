@@ -10,7 +10,7 @@
 #include "util/string_util.h"
 
 namespace processing {
-    using mcm = config::mcm_setting;
+    using mcm = setting::mcm_setting;
 
     void setting_execute::execute_settings(const std::vector<handle::slot_setting*>& a_slots,
         bool a_only_equip,

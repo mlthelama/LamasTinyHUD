@@ -12,9 +12,9 @@ namespace papyrus {
     static const char* mcm_name = "LamasTinyHUD_MCM";
 
     void hud_mcm::on_config_close(RE::TESQuest*) {
-        logger::info("on config close"sv);
-        config::mcm_setting::read_setting();
-        if (config::mcm_setting::get_elden_demon_souls()) {
+        logger::info("on setting close"sv);
+        setting::mcm_setting::read_setting();
+        if (setting::mcm_setting::get_elden_demon_souls()) {
             util::helper::rewrite_settings();
         }
         processing::set_setting_data::read_and_set_data();
@@ -23,7 +23,7 @@ namespace papyrus {
         //In case the setting was changed
         ui::ui_renderer::set_fade(true, 1.f);
 
-        logger::debug("on config close done. return."sv);
+        logger::debug("on setting close done. return."sv);
     }
 
     RE::BSFixedString hud_mcm::get_resolution_width(RE::TESQuest*) {
@@ -48,7 +48,7 @@ namespace papyrus {
     RE::BSFixedString hud_mcm::get_page(RE::TESQuest*, const uint32_t a_index, uint32_t a_position) {
         logger::trace("page was requested for index {}"sv, a_index);
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
-            return std::to_string(config::custom_setting::get_page_by_section(section));
+            return std::to_string(setting::custom_setting::get_page_by_section(section));
         }
         return "";
     }
@@ -56,7 +56,7 @@ namespace papyrus {
     RE::BSFixedString hud_mcm::get_position(RE::TESQuest*, const uint32_t a_index, uint32_t a_position) {
         logger::trace("position was requested for index {}"sv, a_index);
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
-            return std::to_string(config::custom_setting::get_position_by_section(section));
+            return std::to_string(setting::custom_setting::get_position_by_section(section));
         }
         return "";
     }
@@ -66,9 +66,9 @@ namespace papyrus {
         uint32_t type = 0;
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
             if (a_left) {
-                type = config::custom_setting::get_type_left_by_section(section);
+                type = setting::custom_setting::get_type_left_by_section(section);
             } else {
-                type = config::custom_setting::get_type_by_section(section);
+                type = setting::custom_setting::get_type_by_section(section);
             }
         }
         logger::trace("return type {} index {}"sv, type, a_index);
@@ -80,9 +80,9 @@ namespace papyrus {
         std::string form_string;
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
             if (a_left) {
-                form_string = config::custom_setting::get_item_form_left_by_section(section);
+                form_string = setting::custom_setting::get_item_form_left_by_section(section);
             } else {
-                form_string = config::custom_setting::get_item_form_by_section(section);
+                form_string = setting::custom_setting::get_item_form_by_section(section);
             }
         }
         return form_string;
@@ -92,9 +92,9 @@ namespace papyrus {
         uint32_t action = 0;
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
             if (a_left) {
-                action = config::custom_setting::get_slot_action_left_by_section(section);
+                action = setting::custom_setting::get_slot_action_left_by_section(section);
             } else {
-                action = config::custom_setting::get_slot_action_by_section(section);
+                action = setting::custom_setting::get_slot_action_by_section(section);
             }
         }
         logger::trace("return action {} index {}"sv, action, a_index);
@@ -104,7 +104,7 @@ namespace papyrus {
     uint32_t hud_mcm::get_hand_selection(RE::TESQuest*, const uint32_t a_index, uint32_t a_position) {
         uint32_t hand = 0;
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
-            hand = config::custom_setting::get_hand_selection_by_section(section);
+            hand = setting::custom_setting::get_hand_selection_by_section(section);
         }
         logger::trace("return hand {} index {}"sv, hand, a_index);
         return hand;
@@ -115,9 +115,9 @@ namespace papyrus {
         std::string form_string;
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
             if (a_left) {
-                form_string = config::custom_setting::get_item_form_left_by_section(section);
+                form_string = setting::custom_setting::get_item_form_left_by_section(section);
             } else {
-                form_string = config::custom_setting::get_item_form_by_section(section);
+                form_string = setting::custom_setting::get_item_form_by_section(section);
             }
         }
 
@@ -136,7 +136,7 @@ namespace papyrus {
     void hud_mcm::reset_section(RE::TESQuest*, const uint32_t a_index, uint32_t a_position) {
         logger::trace("reset section was called for index {}"sv, a_index);
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
-            config::custom_setting::reset_section(section);
+            setting::custom_setting::reset_section(section);
         }
     }
 
@@ -148,15 +148,15 @@ namespace papyrus {
         logger::trace("set action was called for index {}, left {}, value {}"sv, a_index, a_left, a_value);
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
             if (a_left) {
-                config::custom_setting::write_slot_action_left_by_section(section, a_value);
+                setting::custom_setting::write_slot_action_left_by_section(section, a_value);
             } else {
-                config::custom_setting::write_slot_action_by_section(section, a_value);
+                setting::custom_setting::write_slot_action_by_section(section, a_value);
             }
         }
     }
 
     std::vector<RE::BSFixedString> hud_mcm::get_config_files(RE::TESQuest*, bool a_elden) {
-        logger::trace("getting config files for elden {}"sv, a_elden);
+        logger::trace("getting setting files for elden {}"sv, a_elden);
         auto files = search_for_config_files(a_elden);
         std::vector<RE::BSFixedString> file_list;
         file_list.reserve(files.size());
@@ -168,7 +168,7 @@ namespace papyrus {
     }
 
     RE::BSFixedString hud_mcm::get_active_config(RE::TESQuest*, bool a_elden) {
-        auto file = a_elden ? config::file_setting::get_config_elden() : config::file_setting::get_config_default();
+        auto file = a_elden ? setting::file_setting::get_config_elden() : setting::file_setting::get_config_default();
         logger::trace("getting active Config File, Elden {}, File {}"sv, a_elden, file);
         return file;
     }
@@ -180,19 +180,19 @@ namespace papyrus {
         if (a_elden) {
             name = util::ini_elden_name + "_" + a_name.data() + util::ini_ending;
             if (check_name(name)) {
-                config::file_setting::set_config_elden(name);
+                setting::file_setting::set_config_elden(name);
             } else {
                 logger::warn("Did not set new file, already exists, name {}"sv, name);
             }
         } else {
             name = util::ini_default_name + "_" + a_name.data() + util::ini_ending;
             if (check_name(name)) {
-                config::file_setting::set_config_default(name);
+                setting::file_setting::set_config_default(name);
             } else {
                 logger::warn("Did not set new file, already exists, name {}"sv, name);
             }
         }
-        logger::trace("set config elden {}, file {}"sv, a_elden, name);
+        logger::trace("set setting elden {}, file {}"sv, a_elden, name);
     }
 
     void hud_mcm::set_active_config(RE::TESQuest*, bool a_elden, uint32_t a_index) {
@@ -203,23 +203,25 @@ namespace papyrus {
         }
 
         if (a_elden) {
-            config::file_setting::set_config_elden(file);
+            setting::file_setting::set_config_elden(file);
         } else {
-            config::file_setting::set_config_default(file);
+            setting::file_setting::set_config_default(file);
         }
     }
 
     void hud_mcm::add_unarmed_setting(RE::TESQuest*, uint32_t a_position) {
-        auto elden = config::mcm_setting::get_elden_demon_souls();
+        auto elden = setting::mcm_setting::get_elden_demon_souls();
         logger::trace("Try to add Unarmed for Position {}, Elden {}"sv, a_position, elden);
         auto* page_handle = handle::page_handle::get_singleton();
         auto position = static_cast<handle::position_setting::position_type>(a_position);
         std::vector<data_helper*> data;
         auto next_page = 0;
+        const auto data_handler = RE::TESDataHandler::GetSingleton();
+
         if (elden && (a_position == static_cast<uint32_t>(handle::position_setting::position_type::right) ||
                          a_position == static_cast<uint32_t>(handle::position_setting::position_type::left))) {
             auto left = a_position == static_cast<uint32_t>(handle::position_setting::position_type::left);
-            auto max_pages = config::mcm_setting::get_max_page_count();
+            auto max_pages = setting::mcm_setting::get_max_page_count();
 
             auto highest_page = page_handle->get_highest_page_id_position(position);
             if (static_cast<int>(max_pages) == highest_page) {
@@ -241,7 +243,8 @@ namespace papyrus {
             const auto item = new data_helper();
             item->type = handle::slot_setting::slot_type::weapon;
             item->left = left;
-            item->form = RE::TESForm::LookupByID(util::unarmed);  //unarmed
+            //item->form = RE::TESForm::LookupByID(util::unarmed);  //unarmed
+            item->form = data_handler->LookupForm(util::unarmed, util::skyrim_esm);
             item->two_handed = false;
             item->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item);
@@ -250,14 +253,16 @@ namespace papyrus {
             next_page = static_cast<int>(page_handle->get_active_page_id());
 
             const auto item = new data_helper();
-            item->form = RE::TESForm::LookupByID(util::unarmed);
+            //item->form = RE::TESForm::LookupByID(util::unarmed);
+            item->form = data_handler->LookupForm(util::unarmed, util::skyrim_esm);
             item->left = false;
             item->type = handle::slot_setting::slot_type::weapon;
             item->action_type = handle::slot_setting::action_type::default_action;
             data.push_back(item);
 
             const auto item2 = new data_helper();
-            item2->form = RE::TESForm::LookupByID(util::unarmed);
+            //item2->form = RE::TESForm::LookupByID(util::unarmed);
+            item2->form = data_handler->LookupForm(util::unarmed, util::skyrim_esm);
             item2->left = true;
             item2->type = handle::slot_setting::slot_type::weapon;
             item2->action_type = handle::slot_setting::action_type::default_action;
@@ -273,7 +278,7 @@ namespace papyrus {
     RE::BSFixedString hud_mcm::get_actor_value(RE::TESQuest*, uint32_t a_index, uint32_t a_position) {
         std::string form_string;
         if (const auto section = get_section_by_index(a_index, a_position); !section.empty()) {
-            form_string = std::to_string(config::custom_setting::get_effect_actor_value(section));
+            form_string = std::to_string(setting::custom_setting::get_effect_actor_value(section));
         }
         return form_string;
     }
@@ -366,8 +371,8 @@ namespace papyrus {
 
     std::string hud_mcm::get_form_name_string_for_section(const std::string& a_str) {
         std::string display_string;
-        auto form_string = config::custom_setting::get_item_form_by_section(a_str);
-        auto form_string_left = config::custom_setting::get_item_form_left_by_section(a_str);
+        auto form_string = setting::custom_setting::get_item_form_by_section(a_str);
+        auto form_string_left = setting::custom_setting::get_item_form_left_by_section(a_str);
 
         RE::TESForm* form = nullptr;
         if (!form_string.empty()) {
@@ -398,9 +403,12 @@ namespace papyrus {
         }
 
         if (display_string.empty()) {
-            auto actor_value = static_cast<RE::ActorValue>(config::custom_setting::get_effect_actor_value(a_str));
+            auto actor_value = static_cast<RE::ActorValue>(setting::custom_setting::get_effect_actor_value(a_str));
+            const auto data_handler = RE::TESDataHandler::GetSingleton();
             if (util::actor_value_to_base_potion_map_.contains(actor_value)) {
-                auto* potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
+                //auto* potion_form = RE::TESForm::LookupByID(util::actor_value_to_base_potion_map_[actor_value]);
+                auto* potion_form =
+                    data_handler->LookupForm(util::actor_value_to_base_potion_map_[actor_value], util::skyrim_esm);
                 display_string = potion_form ? potion_form->GetName() : "";
             }
         }

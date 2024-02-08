@@ -3,16 +3,16 @@
 #include "mcm_setting.h"
 #include "util/constant.h"
 
-namespace config {
+namespace setting {
     CSimpleIniA custom_ini;
 
     void custom_setting::read_setting() {
         custom_ini.Reset();
         custom_ini.SetUnicode();
-        if (config::mcm_setting::get_elden_demon_souls()) {
-            custom_ini.LoadFile((util::ini_path + config::file_setting::get_config_elden()).c_str());
+        if (setting::mcm_setting::get_elden_demon_souls()) {
+            custom_ini.LoadFile((util::ini_path + setting::file_setting::get_config_elden()).c_str());
         } else {
-            custom_ini.LoadFile((util::ini_path + config::file_setting::get_config_default()).c_str());
+            custom_ini.LoadFile((util::ini_path + setting::file_setting::get_config_default()).c_str());
         }
     }
 
@@ -131,10 +131,10 @@ namespace config {
     }
 
     void custom_setting::save_setting() {
-        if (config::mcm_setting::get_elden_demon_souls()) {
-            (void)custom_ini.SaveFile((util::ini_path + config::file_setting::get_config_elden()).c_str());
+        if (setting::mcm_setting::get_elden_demon_souls()) {
+            (void)custom_ini.SaveFile((util::ini_path + setting::file_setting::get_config_elden()).c_str());
         } else {
-            (void)custom_ini.SaveFile((util::ini_path + config::file_setting::get_config_default()).c_str());
+            (void)custom_ini.SaveFile((util::ini_path + setting::file_setting::get_config_default()).c_str());
         }
         read_setting();
     }

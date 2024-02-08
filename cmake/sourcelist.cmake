@@ -50,6 +50,8 @@ set(sources ${sources}
 	src/processing/setting_execute.h
 	src/setting/custom_setting.cpp
 	src/setting/custom_setting.h
+	src/setting/display_tweaks.cpp
+	src/setting/display_tweaks.h
 	src/setting/file_setting.cpp
 	src/setting/file_setting.h
 	src/setting/mcm_setting.cpp

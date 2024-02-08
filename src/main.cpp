@@ -34,14 +34,14 @@ void init_logger() {
         logger::info("{} v{}"sv, Version::PROJECT, Version::NAME);
 
         try {
-            config::file_setting::load_setting();
-            config::mcm_setting::read_setting();
-            config::custom_setting::read_setting();
+            setting::file_setting::load_setting();
+            setting::mcm_setting::read_setting();
+            setting::custom_setting::read_setting();
         } catch (const std::exception& e) {
             logger::warn("failed to load setting {}"sv, e.what());
         }
 
-        if (config::file_setting::get_is_debug()) {
+        if (setting::file_setting::get_is_debug()) {
             spdlog::set_level(spdlog::level::trace);
             spdlog::flush_on(spdlog::level::trace);
         }
@@ -72,7 +72,7 @@ void message_callback(SKSE::MessagingInterface::Message* msg) {
             processing::set_setting_data::read_and_set_data();
             processing::set_setting_data::get_actives_and_equip();
             processing::set_setting_data::check_config_data();
-            ui::ui_renderer::set_show_ui(config::file_setting::get_show_ui());
+            ui::ui_renderer::set_show_ui(setting::file_setting::get_show_ui());
             logger::info("Done running after {}"sv, static_cast<uint32_t>(msg->type));
             break;
         default:

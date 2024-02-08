@@ -19,4 +19,6 @@ namespace util {
         { RE::ActorValue::kMagicka, 0x0003EAE1 } };
 
     constexpr RE::FormID bound_arrow = 0x0010b0a7;
+    
+    constexpr std::string skyrim_esm = "Skyrim.esm";
 }

@@ -34,7 +34,7 @@ namespace equip {
         auto casting_type = spell->GetCastingType();
         logger::trace("spell {} is type {}"sv, spell->GetName(), static_cast<uint32_t>(casting_type));
         if (a_action == action_type::instant && casting_type != RE::MagicSystem::CastingType::kConcentration) {
-            if (config::mcm_setting::get_elden_demon_souls()) {
+            if (setting::mcm_setting::get_elden_demon_souls()) {
                 auto selected_power = a_player->GetActorRuntimeData().selectedPower;
                 if (selected_power) {
                     logger::warn(
@@ -53,8 +53,8 @@ namespace equip {
 
             auto current_magicka = actor->AsActorValueOwner()->GetActorValue(RE::ActorValue::kMagicka);
             auto dual_cast = false;
-            if (!spell->IsTwoHanded() && config::mcm_setting::get_try_dual_cast_top_spell() &&
-                config::mcm_setting::get_elden_demon_souls()) {
+            if (!spell->IsTwoHanded() && setting::mcm_setting::get_try_dual_cast_top_spell() &&
+                setting::mcm_setting::get_elden_demon_souls()) {
                 auto* game_setting = RE::GameSettingCollection::GetSingleton();
                 auto dual_cast_cost_multiplier = game_setting->GetSetting("fMagicDualCastingCostMult")->GetFloat();
                 logger::trace("dual cast, multiplier {}"sv,
@@ -88,18 +88,6 @@ namespace equip {
             //might need to set some things
             //TODO make an animation to play here
             //a_player->NotifyAnimationGraph("IdleMagic_01"); //works
-            /*if constexpr (!std::is_same_v<RE::TESIdleForm, RE::TESIdleForm>) {
-                for (const auto& form : RE::TESDataHandler::GetSingleton()->GetFormArray<T>()) {
-                    //AddForm(EditorID::GetEditorID(form), form);
-                    
-                }*/
-            /*for (const auto& form : RE::TESDataHandler::GetSingleton()->GetFormArray<RE::TESIdleForm>()){
-                logger::debug("formid {}, form name {}"sv, util::string_util::int_to_hex(form->formID), form->GetName());
-            }*/
-            if (const auto* current = a_player->GetActorRuntimeData().currentProcess; current) {
-                //if (current)
-                //auto* idle = RE::TESForm::LookupByEditorID<RE::TESIdleForm>("RightCastSelf");
-            }
 
             auto is_self_target = spell->GetDelivery() == RE::MagicSystem::Delivery::kSelf;
             auto* target = is_self_target ? actor : actor->GetActorRuntimeData().currentCombatTarget.get().get();
@@ -213,7 +201,7 @@ namespace equip {
         }
 
         if (a_action == handle::slot_setting::action_type::instant) {
-            if (config::mcm_setting::get_elden_demon_souls()) {
+            if (setting::mcm_setting::get_elden_demon_souls()) {
                 logger::warn("form {}, will only not instant cast power in elden mode. return."sv, spell->GetName());
                 return;
             }
