@@ -120,6 +120,17 @@ namespace ui {
 
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
+        {
+            // trick imgui into rendering at game's real resolution (ie. if upscaled with Display Tweaks)
+            static const auto screenSize = RE::BSGraphics::Renderer::GetScreenSize();
+#pragma warning(push)
+#pragma warning(disable : 4244)
+            auto& io = ImGui::GetIO();
+            io.DisplaySize.x = screenSize.width;
+            io.DisplaySize.y = screenSize.height;
+#pragma warning(pop)
+            
+        }
         ImGui::NewFrame();
 
         draw_main();
