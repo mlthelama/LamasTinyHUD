@@ -487,7 +487,7 @@ namespace processing {
         auto* player = RE::PlayerCharacter::GetSingleton();
         const auto inv = util::player::get_inventory(player, RE::FormType::Ammo);
         const auto data_handler = RE::TESDataHandler::GetSingleton();
-        
+
         std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
         for (const auto& [item, inv_data] : inv) {
             const auto& [num_items, entry] = inv_data;
