@@ -1,7 +1,7 @@
 ﻿#include "file_setting.h"
 #include "util/constant.h"
 
-namespace config {
+namespace setting {
     static const char* ini_path = R"(.\Data\SKSE\Plugins\LamasTinyHUD.ini)";
 
     CSimpleIniA ini;

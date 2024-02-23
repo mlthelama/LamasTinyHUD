@@ -42,11 +42,11 @@ namespace util {
     std::vector<std::string> helper::get_configured_section_page_names(uint32_t a_position) {
         //4 is all
         std::vector<std::string> names;
-        for (const auto entries = config::custom_setting::get_sections(); const auto& entry : entries) {
+        for (const auto entries = setting::custom_setting::get_sections(); const auto& entry : entries) {
             if (a_position == static_cast<uint32_t>(handle::position_setting::position_type::total)) {
                 names.emplace_back(entry.pItem);
             } else {
-                auto section_position = config::custom_setting::get_position_by_section(entry.pItem);
+                auto section_position = setting::custom_setting::get_position_by_section(entry.pItem);
                 if (section_position == a_position) {
                     names.emplace_back(entry.pItem);
                 }
@@ -178,7 +178,7 @@ namespace util {
     }
 
     void helper::rewrite_settings() {
-        logger::trace("rewriting config ..."sv);
+        logger::trace("rewriting setting ..."sv);
         std::map<uint32_t, uint32_t> next_page_for_position;
 
         for (auto i = 0; i < static_cast<int>(handle::position_setting::position_type::total); ++i) {
@@ -188,33 +188,33 @@ namespace util {
         const auto sections = get_configured_section_page_names();
         logger::trace("got {} sections, rewrite that they are in consecutive pages"sv, sections.size());
         for (const auto& section : sections) {
-            auto position = config::custom_setting::get_position_by_section(section);
+            auto position = setting::custom_setting::get_position_by_section(section);
             const auto next_page = next_page_for_position[position];
 
             auto* config = new config_writer_helper();
             config->section = section;
             config->page = next_page;
             config->position = position;
-            config->form = config::custom_setting::get_item_form_by_section(section);
-            config->type = config::custom_setting::get_type_by_section(section);
-            config->hand = config::custom_setting::get_hand_selection_by_section(section);
-            config->action = config::custom_setting::get_slot_action_by_section(section);
-            config->form_left = config::custom_setting::get_item_form_left_by_section(section);
-            config->type_left = config::custom_setting::get_type_left_by_section(section);
-            config->action_left = config::custom_setting::get_slot_action_left_by_section(section);
-            config->actor_value = config::custom_setting::get_effect_actor_value(section);
+            config->form = setting::custom_setting::get_item_form_by_section(section);
+            config->type = setting::custom_setting::get_type_by_section(section);
+            config->hand = setting::custom_setting::get_hand_selection_by_section(section);
+            config->action = setting::custom_setting::get_slot_action_by_section(section);
+            config->form_left = setting::custom_setting::get_item_form_left_by_section(section);
+            config->type_left = setting::custom_setting::get_type_left_by_section(section);
+            config->action_left = setting::custom_setting::get_slot_action_left_by_section(section);
+            config->actor_value = setting::custom_setting::get_effect_actor_value(section);
 
             configs.push_back(config);
             next_page_for_position[position] = next_page + 1;
         }
 
-        logger::trace("start writing config, got {} items"sv, configs.size());
+        logger::trace("start writing setting, got {} items"sv, configs.size());
 
         for (const auto config : configs) {
-            config::custom_setting::reset_section(config->section);
+            setting::custom_setting::reset_section(config->section);
             const auto section = get_section_name_for_page_position(config->page, config->position);
 
-            config::custom_setting::write_section_setting(section,
+            setting::custom_setting::write_section_setting(section,
                 config->page,
                 config->position,
                 config->type,
@@ -238,7 +238,7 @@ namespace util {
     }
 
     RE::ActorValue helper::get_actor_value_effect_from_potion(RE::TESForm* a_form, bool a_check) {
-        if (!a_form->Is(RE::FormType::AlchemyItem) || (!config::mcm_setting::get_group_potions() && a_check)) {
+        if (!a_form->Is(RE::FormType::AlchemyItem) || (!setting::mcm_setting::get_group_potions() && a_check)) {
             return RE::ActorValue::kNone;
         }
 
@@ -284,7 +284,7 @@ namespace util {
             return;
         }
 
-        if (config::mcm_setting::get_elden_demon_souls()) {
+        if (setting::mcm_setting::get_elden_demon_souls()) {
             if (!a_data.empty()) {
                 if (a_data[0]->left) {
                     type_left = static_cast<uint32_t>(a_data[0]->type);
@@ -329,9 +329,9 @@ namespace util {
                 actor_value = a_data[1]->actor_value;
             }
         }
-        config::mcm_setting::read_setting();
+        setting::mcm_setting::read_setting();
 
-        config::custom_setting::write_section_setting(section,
+        setting::custom_setting::write_section_setting(section,
             a_page,
             a_position,
             type,
@@ -342,7 +342,7 @@ namespace util {
             form_string_left,
             action_left,
             static_cast<int>(actor_value));
-        config::custom_setting::read_setting();
+        setting::custom_setting::read_setting();
     }
 
     bool helper::can_instant_cast(RE::TESForm* a_form, const slot_type a_type) {

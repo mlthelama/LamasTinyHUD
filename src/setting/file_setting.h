@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace config {
+namespace setting {
     class file_setting {
     public:
         static void load_setting();

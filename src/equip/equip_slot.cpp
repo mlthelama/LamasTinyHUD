@@ -2,6 +2,7 @@
 #include "util/offset.h"
 #include "util/player/player.h"
 #include "util/string_util.h"
+#include <util/constant.h>
 
 namespace equip {
     RE::BGSEquipSlot* equip_slot::get_right_hand_slot() {
@@ -88,7 +89,11 @@ namespace equip {
     void equip_slot::un_equip_object_ft_dummy_dagger(RE::BGSEquipSlot*& a_slot,
         RE::PlayerCharacter*& a_player,
         RE::ActorEquipManager*& a_actor_equip_manager) {
-        auto* dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
+        //auto* dummy = RE::TESForm::LookupByID<RE::TESForm>(0x00020163)->As<RE::TESObjectWEAP>();
+        auto* dummy =
+            RE::TESForm::LookupByID(RE::TESDataHandler::GetSingleton()->LookupFormID(0x00020163, util::skyrim_esm))
+                ->As<RE::TESObjectWEAP>();
+
         //sound false, queue false, force true
         a_actor_equip_manager->EquipObject(a_player, dummy, nullptr, 1, a_slot, false, true, false);
         a_actor_equip_manager->UnequipObject(a_player, dummy, nullptr, 1, a_slot, false, true, false);

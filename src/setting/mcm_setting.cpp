@@ -1,6 +1,6 @@
 ﻿#include "mcm_setting.h"
 
-namespace config {
+namespace setting {
     static const char* mcm_default_setting = R"(.\Data\MCM\Config\LamasTinyHUD\settings.ini)";
     static const char* mcm_config_setting = R"(.\Data\MCM\Settings\LamasTinyHUD.ini)";
 

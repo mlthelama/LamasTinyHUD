@@ -19,7 +19,7 @@ namespace hook {
         RE::BSTEventSource<RE::InputEvent*>* a_source) {
         auto* ui = RE::UI::GetSingleton();
         auto* binding = control::binding::get_singleton();
-        auto edit_key = config::mcm_setting::get_key_press_to_enter_edit();
+        auto edit_key = setting::mcm_setting::get_key_press_to_enter_edit();
         auto* user_event = RE::UserEvents::GetSingleton();
         auto* control_map = RE::ControlMap::GetSingleton();
 
@@ -60,7 +60,7 @@ namespace hook {
 
                     if (button->IsDown()) {
                         if (common::is_key_valid_and_matches(key_, binding->get_bottom_execute_or_toggle_action()) ||
-                            (config::mcm_setting::get_key_press_to_enter_edit() &&
+                            (setting::mcm_setting::get_key_press_to_enter_edit() &&
                                 common::is_key_valid_and_matches(key_, binding->get_edit_key()))) {
                             binding->set_is_edit_down(true);
                         }
@@ -101,7 +101,7 @@ namespace hook {
                                 processing::set_setting_data::default_remove(tes_form_menu);
                             } else {
                                 logger::trace("doing add or place for form."sv);
-                                if (config::mcm_setting::get_elden_demon_souls()) {
+                                if (setting::mcm_setting::get_elden_demon_souls()) {
                                     processing::game_menu_setting::elden_souls_config(tes_form_menu,
                                         key_position,
                                         binding->get_is_edit_left_down());

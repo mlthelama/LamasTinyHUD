@@ -3,7 +3,7 @@
 
 namespace util {
 
-    RE::PerkEntryVisitor::ReturnType perk_visitor::Visit(RE::BGSPerkEntry* perk_entry) {
+    RE::BSContainer::ForEachResult perk_visitor::Visit(RE::BGSPerkEntry* perk_entry) {
         const auto* entry_point = static_cast<RE::BGSEntryPointPerkEntry*>(perk_entry);
         const auto* perk = entry_point->perk;
 
@@ -30,7 +30,8 @@ namespace util {
             logger::trace("Got value {} for Perk, total now is {}"sv, value->data, result_);
         }
 
-        return ReturnType::kContinue;
+        return RE::BSContainer::ForEachResult::kContinue;
+        //return RE::BSContainer::ForEachResult::kStop;
     }
 
     float perk_visitor::get_result() const { return result_; }

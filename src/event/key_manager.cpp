@@ -11,7 +11,7 @@ namespace event {
     using event_result = RE::BSEventNotifyControl;
     using position_type = handle::position_setting::position_type;
     using common = control::common;
-    using mcm = config::mcm_setting;
+    using mcm = setting::mcm_setting;
     using setting_execute = processing::setting_execute;
 
     key_manager* key_manager::get_singleton() {
@@ -52,7 +52,7 @@ namespace event {
             return event_result::kContinue;
         }
 
-        handle::extra_data_holder::get_singleton()->reset_data();
+        //handle::extra_data_holder::get_singleton()->reset_data();
 
         for (auto* event = *a_event; event; event = event->next) {
             if (event->eventType != RE::INPUT_EVENT_TYPE::kButton) {
@@ -85,8 +85,8 @@ namespace event {
             }
 
             const auto* control_map = RE::ControlMap::GetSingleton();
-            if (!control_map || !control_map->IsMovementControlsEnabled() ||
-                control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {
+            if (!control_map || !control_map->IsMovementControlsEnabled()) { /*||
+                control_map->contextPriorityStack.back() != RE::UserEvents::INPUT_CONTEXT_ID::kGameplay) {*/
                 continue;
             }
 
@@ -188,6 +188,7 @@ namespace event {
                 }
             }
         }
+
         return event_result::kContinue;
     }
 

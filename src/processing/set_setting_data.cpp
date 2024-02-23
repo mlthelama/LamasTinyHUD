@@ -2,6 +2,7 @@
 #include "equip/equip_slot.h"
 #include "equip/item.h"
 #include "handle/ammo_handle.h"
+#include "handle/extra_data_holder.h"
 #include "handle/name_handle.h"
 #include "handle/page_handle.h"
 #include "setting/custom_setting.h"
@@ -13,8 +14,8 @@
 #include "util/string_util.h"
 
 namespace processing {
-    using mcm = config::mcm_setting;
-    using custom = config::custom_setting;
+    using mcm = setting::mcm_setting;
+    using custom = setting::custom_setting;
 
     void set_setting_data::read_and_set_data() {
         logger::trace("Setting handlers, elden demon souls {} ..."sv, mcm::get_elden_demon_souls());
@@ -113,7 +114,7 @@ namespace processing {
     }
 
     void set_setting_data::set_empty_slot(const int a_page, int a_pos, handle::key_position_handle*& a_key_pos) {
-        logger::trace("setting empty config for page {}, position {}"sv, a_page, a_pos);
+        logger::trace("setting empty setting for page {}, position {}"sv, a_page, a_pos);
         std::vector<data_helper*> data;
         auto* const item = new data_helper();
         item->form = nullptr;
@@ -157,7 +158,7 @@ namespace processing {
         auto hand = static_cast<handle::slot_setting::hand_equip>(a_hand);
         std::vector<data_helper*> data;
 
-        auto action_check = config::mcm_setting::get_action_check();
+        auto action_check = setting::mcm_setting::get_action_check();
         logger::trace("page {}, pos {}, start working data hands {}, action_check {} ..."sv,
             a_page,
             static_cast<uint32_t>(a_position),
@@ -338,11 +339,11 @@ namespace processing {
                 section);
         }
 
-        //do not trigger reequip if config a config is set
+        //do not trigger reequip if setting a setting is set
         if (mcm::get_elden_demon_souls()) {
             set_active_and_equip(handler);
         }
-        logger::trace("processed config data"sv);
+        logger::trace("processed setting data"sv);
     }
     void set_setting_data::write_empty_config_and_init_active() {
         //we start at 0, so it is max count -1
@@ -356,7 +357,7 @@ namespace processing {
 
         auto* key_position = handle::key_position_handle::get_singleton();
         //set empty for each position, it will be overwritten if it is configured
-        const auto max = static_cast<int>(config::mcm_setting::get_max_page_count());
+        const auto max = static_cast<int>(setting::mcm_setting::get_max_page_count());
         for (auto i = 0; i < max; ++i) {
             for (auto j = 0; j < static_cast<int>(position_type::total); ++j) {
                 set_empty_slot(i, j, key_position);
@@ -392,12 +393,15 @@ namespace processing {
             setting_execute::execute_settings(position_setting->slot_settings);
         }
 
-        setting_execute::execute_settings(right_position_setting->slot_settings);
+        if (right_position_setting && !right_position_setting->slot_settings.empty()) {
+            setting_execute::execute_settings(right_position_setting->slot_settings);
+        }
 
         position_setting = page_handle->get_page_setting(page_handle->get_active_page_id_position(position_type::top),
             position_type::top);
         setting_execute::execute_settings(position_setting->slot_settings, true);
 
+        handle::extra_data_holder::get_singleton()->reset_data();
         logger::trace("done equip for first set"sv);
     }
 
@@ -441,7 +445,7 @@ namespace processing {
         } else {
             handle::ammo_handle::get_singleton()->clear_ammo();
             //un equip armor here
-            if (config::mcm_setting::get_un_equip_ammo()) {
+            if (setting::mcm_setting::get_un_equip_ammo()) {
                 equip::item::un_equip_ammo();
             }
         }
@@ -460,6 +464,7 @@ namespace processing {
                 processing::setting_execute::reequip_left_hand_if_needed(setting);
             }
         }
+        handle::extra_data_holder::get_singleton()->reset_data();
         logger::trace("checking for block done. return."sv);
     }
 
@@ -469,18 +474,20 @@ namespace processing {
             return;
         }
         if (a_condition) {
-            a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency_blocked();
+            a_position_setting->draw_setting->icon_transparency = setting::mcm_setting::get_icon_transparency_blocked();
         } else {
-            a_position_setting->draw_setting->icon_transparency = config::mcm_setting::get_icon_transparency();
+            a_position_setting->draw_setting->icon_transparency = setting::mcm_setting::get_icon_transparency();
         }
     }
 
     void set_setting_data::look_for_ammo(const bool a_crossbow) {
-        bool only_favorite = config::mcm_setting::get_only_favorite_ammo();
-        bool sort_by_quantity = config::mcm_setting::get_sort_arrow_by_quantity();
-        const auto max_items = config::mcm_setting::get_max_ammunition_type();
+        bool only_favorite = setting::mcm_setting::get_only_favorite_ammo();
+        bool sort_by_quantity = setting::mcm_setting::get_sort_arrow_by_quantity();
+        const auto max_items = setting::mcm_setting::get_max_ammunition_type();
         auto* player = RE::PlayerCharacter::GetSingleton();
         const auto inv = util::player::get_inventory(player, RE::FormType::Ammo);
+        const auto data_handler = RE::TESDataHandler::GetSingleton();
+
         std::multimap<uint32_t, handle::ammo_data*, std::greater<>> ammo_list;
         for (const auto& [item, inv_data] : inv) {
             const auto& [num_items, entry] = inv_data;
@@ -490,7 +497,8 @@ namespace processing {
                 continue;
             }
 
-            if (ammo->formID == util::bound_arrow) {
+            //if (ammo->formID == util::bound_arrow) {
+            if (ammo->formID == data_handler->LookupFormID(util::bound_arrow, util::skyrim_esm)) {
                 continue;
             }
 
@@ -556,7 +564,7 @@ namespace processing {
         logger::trace("{}"sv, log_string);
 
         if (mcm::get_elden_demon_souls()) {
-            config::custom_setting::reset_section(
+            setting::custom_setting::reset_section(
                 util::helper::get_section_name_for_page_position(a_position_setting->page,
                     static_cast<uint32_t>(a_position_setting->position)));
         } else {
@@ -646,7 +654,7 @@ namespace processing {
                         (setting->actor_value != RE::ActorValue::kNone &&
                             util::helper::get_actor_value_effect_from_potion(a_form) != RE::ActorValue::kNone)) {
                         do_cleanup(page_setting, setting);
-                        if (config::mcm_setting::get_elden_demon_souls()) {
+                        if (setting::mcm_setting::get_elden_demon_souls()) {
                             util::helper::rewrite_settings();
                         }
                         write_empty_config_and_init_active();
@@ -659,35 +667,35 @@ namespace processing {
     }
 
     bool set_setting_data::clean_type_allowed(slot_type a_type) {
-        if (!config::mcm_setting::get_auto_cleanup()) {
+        if (!setting::mcm_setting::get_auto_cleanup()) {
             return false;
         }
         auto allowed = false;
         switch (a_type) {
             case slot_type::weapon:
-                allowed = config::mcm_setting::get_clean_weapon();
+                allowed = setting::mcm_setting::get_clean_weapon();
                 break;
             case slot_type::magic:
             case slot_type::power:
-                allowed = config::mcm_setting::get_clean_spell();
+                allowed = setting::mcm_setting::get_clean_spell();
                 break;
             case slot_type::shield:
             case slot_type::armor:
             case slot_type::lantern:
             case slot_type::mask:
-                allowed = config::mcm_setting::get_clean_armor();
+                allowed = setting::mcm_setting::get_clean_armor();
                 break;
             case slot_type::shout:
-                allowed = config::mcm_setting::get_clean_shout();
+                allowed = setting::mcm_setting::get_clean_shout();
                 break;
             case slot_type::consumable:
-                allowed = config::mcm_setting::get_clean_alchemy_item();
+                allowed = setting::mcm_setting::get_clean_alchemy_item();
                 break;
             case slot_type::scroll:
-                allowed = config::mcm_setting::get_clean_scroll();
+                allowed = setting::mcm_setting::get_clean_scroll();
                 break;
             case slot_type::light:
-                allowed = config::mcm_setting::get_clean_light();
+                allowed = setting::mcm_setting::get_clean_light();
                 break;
             case slot_type::empty:
             case slot_type::misc:

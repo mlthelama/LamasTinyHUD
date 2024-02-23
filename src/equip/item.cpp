@@ -54,16 +54,18 @@ namespace equip {
                 auto simple_extra_data_list = entry->extraLists;
                 if (simple_extra_data_list) {
                     for (auto* extra_data : *simple_extra_data_list) {
-                        extra = extra_data;
+                        //extra = extra_data;
                         auto worn_right = extra_data->HasType(RE::ExtraDataType::kWorn);
                         auto worn_left = extra_data->HasType(RE::ExtraDataType::kWornLeft);
                         logger::trace("extra data {}, worn right {}, worn left {}"sv,
                             extra_data->GetCount(),
                             worn_right,
                             worn_left);
-                        if (!worn_right && !worn_left) {
-                            extra_vector.push_back(extra_data);
+                        if (worn_right || worn_left) {
+                            continue;
                         }
+
+                        extra_vector.push_back(extra_data);
                     }
                 }
                 break;
@@ -75,6 +77,7 @@ namespace equip {
             return;
         }
 
+        logger::debug("extra vector is {}"sv, extra_vector.size());
         auto* extra_handler = handle::extra_data_holder::get_singleton();
         if (extra_handler->is_form_set(a_form)) {
             auto extra_list = extra_handler->get_extra_list_for_form(a_form);
@@ -84,9 +87,12 @@ namespace equip {
                 extra_handler->overwrite_extra_data_for_form(a_form, extra_list);
             }
         } else {
+            //if the data is not set, something else might be, but we might not care about that anymore
+            extra_handler->reset_data();
             if (!extra_vector.empty()) {
                 extra = extra_vector.back();
                 extra_vector.pop_back();  //remove last item, because we already use that
+
                 extra_handler->init_extra_data(a_form, extra_vector);
                 logger::trace("set {} extra data for form {}"sv, extra_vector.size(), a_form->GetName());
             }
@@ -107,12 +113,12 @@ namespace equip {
         auto equipped_count = 0;
         if (obj_right && obj_right->formID == obj->formID) {
             equipped_count++;
-            logger::debug("Object {} already equipped."sv, obj->GetName());
+            logger::debug("Object {} already equipped (right)."sv, obj->GetName());
         }
 
         if (obj_left && obj_left->formID == obj->formID) {
             equipped_count++;
-            logger::debug("Object {} already equipped."sv, obj->GetName());
+            logger::debug("Object {} already equipped (left)."sv, obj->GetName());
         }
 
         logger::trace("Got a count of {} in the Inventory {}, Equipped {}"sv,
@@ -177,7 +183,7 @@ namespace equip {
             }
         }
 
-        if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && obj && obj->IsDynamicForm() &&
+        if (setting::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() && obj && obj->IsDynamicForm() &&
             left == 1) {
             logger::warn(
                 "Somehow the game crashes on potions with dynamic id if the count is 0 (happens with or without the mod). So I am not consuming it. Form {}, Name {}"sv,
@@ -273,8 +279,8 @@ namespace equip {
             fmt::format(FMT_STRING("{:.2f}"), missing));
 
         //min heal, max heal
-        auto min_perfect = config::mcm_setting::get_potion_min_perfect();
-        auto max_perfect = config::mcm_setting::get_potion_max_perfect();
+        auto min_perfect = setting::mcm_setting::get_potion_min_perfect();
+        auto max_perfect = setting::mcm_setting::get_potion_max_perfect();
         logger::trace("min perfect {}, max perfect {}, missing {}"sv,
             fmt::format(FMT_STRING("{:.2f}"), missing * min_perfect),
             fmt::format(FMT_STRING("{:.2f}"), missing * max_perfect),
@@ -297,7 +303,7 @@ namespace equip {
 
             if (actor_value == a_actor_value) {
                 //set obj here, because if we do not have a perfect hit, we still need to consume something
-                if (config::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() &&
+                if (setting::mcm_setting::get_prevent_consumption_of_last_dynamic_potion() &&
                     alchemy_item->IsDynamicForm() && num_items == 1) {
                     logger::warn(
                         "Somehow the game crashes on potions with dynamic id if the count is 0 (happens with or without the mod). So I am not consuming it. Form {}, Name {}"sv,
@@ -342,8 +348,8 @@ namespace equip {
             * vokrii should be fine as well
             * other add av multiply implementations need to be handled by getting the data from the game 
             * the MCM setting will be left for overwrite handling */
-        if (config::mcm_setting::get_overwrite_poison_dose()) {
-            potion_doses = config::mcm_setting::get_apply_poison_dose();
+        if (setting::mcm_setting::get_overwrite_poison_dose()) {
+            potion_doses = setting::mcm_setting::get_apply_poison_dose();
         } else {
             if (a_player->HasPerkEntries(RE::BGSEntryPoint::ENTRY_POINTS::kModPoisonDoseCount)) {
                 auto perk_visit = util::perk_visitor(a_player, static_cast<float>(potion_doses));

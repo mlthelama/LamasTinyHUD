@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace config {
+namespace setting {
     class custom_setting {
     public:
         static void read_setting();

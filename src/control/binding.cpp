@@ -23,15 +23,15 @@ namespace control {
     uint32_t binding::get_remove_key() const { return key_remove_key_; }
 
     void binding::set_all_keys() {
-        key_top_action_ = config::mcm_setting::get_top_action_key();
-        key_right_action_ = config::mcm_setting::get_right_action_key();
-        key_bottom_action_ = config::mcm_setting::get_bottom_action_key();
-        key_left_action_ = config::mcm_setting::get_left_action_key();
-        key_bottom_execute_or_toggle_ = config::mcm_setting::get_toggle_key();
-        key_hide_show_ = config::mcm_setting::get_show_hide_key();
-        key_edit_key_ = config::mcm_setting::get_edit_key();
-        key_edit_left_or_overwrite_ = config::mcm_setting::get_left_or_overwrite_edit_key();
-        key_remove_key_ = config::mcm_setting::get_remove_key();
+        key_top_action_ = setting::mcm_setting::get_top_action_key();
+        key_right_action_ = setting::mcm_setting::get_right_action_key();
+        key_bottom_action_ = setting::mcm_setting::get_bottom_action_key();
+        key_left_action_ = setting::mcm_setting::get_left_action_key();
+        key_bottom_execute_or_toggle_ = setting::mcm_setting::get_toggle_key();
+        key_hide_show_ = setting::mcm_setting::get_show_hide_key();
+        key_edit_key_ = setting::mcm_setting::get_edit_key();
+        key_edit_left_or_overwrite_ = setting::mcm_setting::get_left_or_overwrite_edit_key();
+        key_remove_key_ = setting::mcm_setting::get_remove_key();
     }
 
     void binding::set_top_execute(uint32_t a_key) { key_top_execute_ = a_key; }
