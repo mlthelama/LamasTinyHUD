@@ -129,7 +129,6 @@ namespace ui {
             io.DisplaySize.x = screenSize.width;
             io.DisplaySize.y = screenSize.height;
 #pragma warning(pop)
-            
         }
         ImGui::NewFrame();
 
